@@ -1,0 +1,12 @@
+How to compile the source
+-------------------------
+
+Visual C++
+----------
+
+This requires Microsoft Visual C++ 2003 or greater.
+Just open the solution file at gbxemu/windows/gba_sdl.sln
+Select either Debug or Release and compile it.
+Copy the dll files from gbxemu/windows/dll either
+to the folder where gbxemu's compiled binary was created
+or into your WINDOWS/system32 folder.
