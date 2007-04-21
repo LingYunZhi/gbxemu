@@ -1084,7 +1084,7 @@ bool CPUWriteBMPFile(const char *fileName)
   return utilWriteBMPFile(fileName, 240, 160, pix);
 }
 
-bool CPUIsZipFile(const char * file)
+bool CPUIsZipFile(char * file)
 {
   if(strlen(file) > 4) {
     char * p = strrchr(file,'.');
@@ -1098,7 +1098,7 @@ bool CPUIsZipFile(const char * file)
   return false;
 }
 
-bool CPUIsGBAImage(const char * file)
+bool CPUIsGBAImage(char * file)
 {
   cpuIsMultiBoot = false;
   if(strlen(file) > 4) {
@@ -1123,7 +1123,7 @@ bool CPUIsGBAImage(const char * file)
   return false;
 }
 
-bool CPUIsGBABios(const char * file)
+bool CPUIsGBABios(char * file)
 {
   if(strlen(file) > 4) {
     char * p = strrchr(file,'.');
@@ -1143,7 +1143,7 @@ bool CPUIsGBABios(const char * file)
   return false;
 }
 
-bool CPUIsELF(const char *file)
+bool CPUIsELF(char *file)
 {
   if(strlen(file) > 4) {
     char * p = strrchr(file,'.');
@@ -1210,7 +1210,7 @@ void CPUCleanUp()
   emulating = 0;
 }
 
-int CPULoadRom(const char *szFile)
+int CPULoadRom(char *szFile)
 {
   int size = 0x2000000;
   
@@ -2675,7 +2675,7 @@ void CPUWriteByte(u32 address, u8 b)
 u8 cpuBitsSet[256];
 u8 cpuLowestBitSet[256];
 
-void CPUInit(const char *biosFileName, bool useBiosFile)
+void CPUInit(char *biosFileName, bool useBiosFile)
 {
 #ifdef WORDS_BIGENDIAN
   if(!cpuBiosSwapped) {

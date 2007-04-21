@@ -99,16 +99,16 @@ extern bool CPUReadMemState(char *, int);
 extern bool CPUReadState(const char *);
 extern bool CPUWriteMemState(char *, int);
 extern bool CPUWriteState(const char *);
-extern int CPULoadRom(const char *);
+extern int CPULoadRom(char *);
 extern void CPUUpdateRegister(u32, u16);
 extern void CPUWriteHalfWord(u32, u16);
 extern void CPUWriteByte(u32, u8);
-extern void CPUInit(const char *,bool);
+extern void CPUInit(char *,bool);
 extern void CPUReset();
 extern void CPULoop(int);
 extern void CPUCheckDMA(int,int);
-extern bool CPUIsGBAImage(const char *);
-extern bool CPUIsZipFile(const char *);
+extern bool CPUIsGBAImage(char *);
+extern bool CPUIsZipFile(char *);
 extern struct EmulatedSystem GBASystem;
 
 #define R13_IRQ  18

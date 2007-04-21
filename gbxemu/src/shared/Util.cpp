@@ -470,7 +470,7 @@ void utilApplyIPS(const char *ips, u8 **r, int *s)
 
 extern bool cpuIsMultiBoot;
 
-bool utilIsGBAImage(const char * file)
+bool utilIsGBAImage(char * file)
 {
   cpuIsMultiBoot = false;
   if(strlen(file) > 4) {
@@ -495,7 +495,7 @@ bool utilIsGBAImage(const char * file)
   return false;
 }
 
-bool utilIsZipFile(const char *file)
+bool utilIsZipFile(char *file)
 {
   if(strlen(file) > 4) {
     char * p = strrchr(file,'.');
@@ -509,7 +509,7 @@ bool utilIsZipFile(const char *file)
   return false;  
 }
 
-bool utilIsGzipFile(const char *file)
+bool utilIsGzipFile(char *file)
 {
   if(strlen(file) > 3) {
     char * p = strrchr(file,'.');
@@ -525,7 +525,7 @@ bool utilIsGzipFile(const char *file)
   return false;  
 }
 
-void utilGetBaseName(const char *file, char *buffer)
+void utilGetBaseName(char *file, char *buffer)
 {
   strcpy(buffer, file);
 
@@ -537,7 +537,7 @@ void utilGetBaseName(const char *file, char *buffer)
   }
 }
 
-IMAGE_TYPE utilFindType(const char *file)
+IMAGE_TYPE utilFindType(char *file)
 {
   char buffer[2048];
   
@@ -616,7 +616,7 @@ static int utilGetSize(int size)
 }
 
 static u8 *utilLoadFromZip(const char *file,
-                           bool (*accept)(const char *),
+                           bool (*accept)(char *),
                            u8 *data,
                            int &size)
 {
@@ -720,7 +720,7 @@ static u8 *utilLoadFromZip(const char *file,
 }
 
 static u8 *utilLoadGzipFile(const char *file,
-                            bool (*accept)(const char *),
+                            bool (*accept)(char *),
                             u8 *data,
                             int &size)
 {
@@ -774,8 +774,8 @@ static u8 *utilLoadGzipFile(const char *file,
   return image;  
 }
 
-u8 *utilLoad(const char *file,
-             bool (*accept)(const char *),
+u8 *utilLoad(char *file,
+             bool (*accept)(char *),
              u8 *data,
              int &size)
 {
