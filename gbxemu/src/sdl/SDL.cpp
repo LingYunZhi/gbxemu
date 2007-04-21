@@ -1362,7 +1362,7 @@ void sdlPollEvents()
       case SDLK_f:
         if(!(event.key.keysym.mod & MOD_NOCTRL) &&
            (event.key.keysym.mod & KMOD_CTRL)) {
-          int flags = 0;
+          int flags = SDL_ANYFORMAT|SDL_HWSURFACE|SDL_DOUBLEBUF;
           fullscreen = !fullscreen;
           if(fullscreen)
             flags |= SDL_FULLSCREEN;
