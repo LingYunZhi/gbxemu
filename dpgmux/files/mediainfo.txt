@@ -1,0 +1,3 @@
+Make sure you always have a 'MediaInfo.dll' in the same directory where dpgmux.exe resides.
+
+The latest DLL version is always available at http://mediainfo.sourceforge.net

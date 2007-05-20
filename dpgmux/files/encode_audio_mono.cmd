@@ -1,0 +1,1 @@
+ffmpeg -i %1 -acodec mp2 -ab 64k -ar 32000 -ac 1  c:\out.mp2

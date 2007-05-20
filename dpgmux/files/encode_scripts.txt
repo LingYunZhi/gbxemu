@@ -1,0 +1,19 @@
+These scripts in conjunction with dpgmux allow fast and easy
+compression of your video files for use with MoonShell.
+
+Before you can use these scripts, download the latest ffmpeg
+from http://ffdshow.faireal.net/mirror/ffmpeg/
+
+Uncompress the executable to a directory mentioned in your PATH variable,
+for example to C:\Windows\System32
+
+The scripts are now easily usable:
+Just drop a video file onto 'encode_video_#_#.cmd' (select correct aspect)
+and drop an audio file onto 'encode_audio_###.cmd' (decide which you prefer).
+When ffmpeg is finished, there will be two files in your C:\ directory:
+'out.m1v' (MPEG-1 Video) and 'out.mp2' (MPEG-1 Audio Layer 2).
+
+To create a playable DPG file, just select those two files and
+drag and drop them onto 'dpgmux.exe'. It will create 'out.dpg'.
+
+Rename the DPG file as you wish and copy it to your Nintendo DS.

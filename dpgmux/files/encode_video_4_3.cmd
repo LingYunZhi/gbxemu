@@ -1,0 +1,1 @@
+ffmpeg -i %1 -s 256x192 -vcodec mpeg1video -b 448k c:\out.m1v

@@ -1,0 +1,49 @@
+#include "standard-types.hsl"
+
+#pragma byteorder(little_endian) 
+
+struct DPG2_AND_3_HEADER {
+    DWORD   version_id;
+    DWORD   frames_total;
+    UBYTE   pad;
+    WORD    fps;
+    UBYTE   pad;
+    DWORD   audio_freq;
+    DWORD   audio_id;
+    DWORD   audio_offset;
+    DWORD   audio_size;
+    DWORD   video_offset;
+    DWORD   video_size;
+    DWORD   goplist_offset;
+    DWORD   goplist_size;
+    DWORD   pixel_format;
+} ;
+
+struct DPG1_HEADER {
+    DWORD   version_id;
+    DWORD   frames_total;
+    UBYTE   pad;
+    WORD    fps;
+    UBYTE   pad;
+    DWORD   audio_freq;
+    DWORD   audio_id;
+    DWORD   audio_offset;
+    DWORD   audio_size;
+    DWORD   video_offset;
+    DWORD   video_size;
+    DWORD   pixel_format;
+} ;
+
+struct DPG0_HEADER {
+    DWORD   version_id;
+    DWORD   frames_total;
+    UBYTE   pad;
+    WORD    fps;
+    UBYTE   pad;
+    DWORD   audio_freq;
+    DWORD   audio_id;
+    DWORD   audio_offset;
+    DWORD   audio_size;
+    DWORD   video_offset;
+    DWORD   video_size;
+} ;

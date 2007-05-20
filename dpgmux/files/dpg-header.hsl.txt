@@ -1,0 +1,4 @@
+The 'dpg-header.hsl' can be used with BreakPoint Software's Hex Workshop.
+Visit http://bpsoft.com/ to get Hex Workshop.
+When you loaded this structure definition file, you can use it to
+inspect your DPG file headers for mistakes and correct them easily.
