@@ -557,7 +557,14 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 	header.frames_total = (unsigned int)_tstoi( tmp.c_str() );
 	tmp = mi.Get( Stream_Video, 0, 36 ); // FrameRate
 	_tprintf( _T("INFO: FrameRate: %s\n"), tmp.c_str() );
-	header.fps = (unsigned int)_tstoi( tmp.c_str() ) * 0x100;
+	//header.fps = (unsigned int)(_tstof( tmp.c_str() ) * 0x100);
+	double new_fps = _tstof( tmp.c_str() );
+	new_fps = new_fps * 0x100;
+	double d = pow( 10.0 , 0 ); // round to 0 decimal places (that's closer to the
+	new_fps = floor( new_fps * d + 0.5) / d; // original frame rate than just cutting them off)
+	_tprintf( _T("INFO: Next best FrameRate: %f\n"), new_fps / 0x100 );
+	header.fps = (unsigned int)new_fps;
+
 	header.pixel_format = RGB24; // TODO: detect somehow
 	mi.Close();
 
