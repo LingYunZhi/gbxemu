@@ -431,7 +431,7 @@ int demultiplex( _TCHAR *filename )
 
 
 void inspect_chunk( unsigned char *chunk, unsigned int chunk_offset, unsigned int chunk_size,
-				   GOPLIST_ENTRY *goplist, unsigned int *goplistsize, unsigned int *goplistcount, unsigned int *frameindex )
+				   GOPLIST_ENTRY **goplist, unsigned int *goplistsize, unsigned int *goplistcount, unsigned int *frameindex )
 {
 	// We overlap the chunks by 8 Bytes.
 	// If we would find something in a chunk's last 8 Bytes, we would not be able
@@ -466,13 +466,13 @@ void inspect_chunk( unsigned char *chunk, unsigned int chunk_offset, unsigned in
 					(*goplistcount)++;
 					if( *goplistcount > *goplistsize )
 					{
-						(*goplistsize)++;
-						goplist = (GOPLIST_ENTRY *)realloc( goplist, (sizeof(GOPLIST_ENTRY) * *goplistsize) );
+						(*goplistsize) += 0x80; // increase the GOP list by 1 KB
+						*goplist = (GOPLIST_ENTRY *)realloc( *goplist, (sizeof(GOPLIST_ENTRY) * *goplistsize) );
 					}
 					// set this GOP header's address
-					goplist[ *goplistcount - 1 ].frame_offset = chunk_offset + i;
+					(*goplist)[ *goplistcount - 1 ].frame_offset = chunk_offset + i;
 					// set the corresponding frame number
-					goplist[ *goplistcount - 1 ].frame_index = *frameindex;
+					(*goplist)[ *goplistcount - 1 ].frame_index = *frameindex;
 
 					// skip the sequence header (14 Bytes startcode inclusive)
 					i += 13; // 13 because 'for' will add 1, too
@@ -500,11 +500,13 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 	_tsplitpath_s( video_file, drive, _countof(drive), dir, _countof(dir), basename, _countof(basename), file_ext, _countof(file_ext) );
 	_TCHAR out_dpg[_MAX_PATH];
 	_tmakepath_s( out_dpg, _countof(out_dpg), drive, dir, basename, _T(".dpg") );
+#ifndef _DEBUG
 	if( file_exists( out_dpg ) )
 	{
 		_tprintf( _T("! ERROR: DPG output file does already exist\n") );
 		return -1;
 	}
+#endif
 
 	_tprintf( _T("\n->JOB: Multiplexing '%s.dpg'\n"), basename );
 
@@ -596,7 +598,7 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 	fseek( out, header.video_offset, SEEK_SET );
 
 	// initially prepare for a 32KB GOP list
-	// we can increase the size later if necessary
+	// the size will be increased if necessary
 	unsigned int goplistsize = 0x1000;
 	GOPLIST_ENTRY *goplist = (GOPLIST_ENTRY *)malloc( sizeof(GOPLIST_ENTRY) * goplistsize );
 
@@ -622,7 +624,7 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 		fread( chunk, 1, CHUNK_SIZE, video );
 		fwrite( chunk, 1, CHUNK_SIZE, out );
 
-		inspect_chunk( chunk, ftell( video ) - CHUNK_SIZE, CHUNK_SIZE, goplist, &goplistsize, &goplistcount, &frameindex );
+		inspect_chunk( chunk, ftell( video ) - CHUNK_SIZE, CHUNK_SIZE, &goplist, &goplistsize, &goplistcount, &frameindex );
 
 		fseek( video, -8, SEEK_CUR ); // next time continue where we stopped last
 		fseek( out, -8, SEEK_CUR );
@@ -640,7 +642,7 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 	chunk = (unsigned char *)malloc( last_chunk_size );
 	fread( chunk, 1, last_chunk_size, video );
 	fwrite( chunk, 1, last_chunk_size, out );
-	inspect_chunk( chunk, ftell( video ) - last_chunk_size, last_chunk_size, goplist, &goplistsize, &goplistcount, &frameindex );
+	inspect_chunk( chunk, ftell( video ) - last_chunk_size, last_chunk_size, &goplist, &goplistsize, &goplistcount, &frameindex );
 	free( chunk );
 	_tprintf( _T("100%%\n") );
 	fclose( video );
@@ -664,6 +666,8 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 
 int _tmain( int argc, _TCHAR* argv[] )
 {
+	_tprintf( _T("dpgmux v1.001\ndpgmux comes with ABSOLUTELY NO WARRANTY; see 'gpl.txt'\n\n") );
+
 	char mode = '0';
 	bool audio_first;
 	_TCHAR file_name[_MAX_PATH];
@@ -718,23 +722,33 @@ int _tmain( int argc, _TCHAR* argv[] )
 		}
 	}
 
+	if( ((mode == 'd') || (mode == 'm')) && !file_exists( file_name ) )
+	{
+		_tprintf( _T("! ERROR: First file does not exists!\n\n") );
+		system( "pause" );
+		return -1;
+	}
+
+	if( (mode == 'm') && !file_exists( file_name2 ) )
+	{
+		_tprintf( _T("! ERROR: Second file does not exists!\n\n") );
+		system( "pause" );
+		return -1;
+	}
+
 	switch( mode )
 	{
 	case '0':
 		_tprintf( _T("! ERROR: Wrong parameters!\n\n") );
 		print_usage();
-#ifdef _DEBUG
 		system( "pause" );
-#endif
 		return -1;
 		break;
 	case 'd':
 		if( demultiplex( file_name ) == -1 )
 		{
 			_tprintf( _T("! ERROR: Demultiplexing failed, exiting\n\n") );
-#ifdef _DEBUG
-		system( "pause" );
-#endif
+			system( "pause" );
 			return -1;
 		}
 		else
@@ -746,9 +760,7 @@ int _tmain( int argc, _TCHAR* argv[] )
 		if( multiplex( audio_first ? file_name2 : file_name, audio_first ? file_name : file_name2 ) == -1 )
 		{
 			_tprintf( _T("! ERROR: Multiplexing failed, exiting\n\n") );
-#ifdef _DEBUG
 			system( "pause" );
-#endif
 			return -1;
 		}
 		else
