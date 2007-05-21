@@ -6,6 +6,7 @@ from http://ffdshow.faireal.net/mirror/ffmpeg/
 
 Uncompress the executable to a directory mentioned in your PATH variable,
 for example to C:\Windows\System32
+Also copy 'dpgmux.exe' and 'MediaInfo.dll' to this place.
 
 The scripts are now easily usable:
 Just drop a video file onto 'encode_video_#_#.cmd' (select correct aspect)
@@ -17,3 +18,10 @@ To create a playable DPG file, just select those two files and
 drag and drop them onto 'dpgmux.exe'. It will create 'out.dpg'.
 
 Rename the DPG file as you wish and copy it to your Nintendo DS.
+
+
+
+v1.001:
+I added two scripts: 'encode+mux_#_#.cmd'. When you drop a media file on
+one of them, it will automaticaly encode the video and the audio of that file
+and use dpgmux to create a DPG file. Very handy!
