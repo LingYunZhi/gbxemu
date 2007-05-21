@@ -673,7 +673,7 @@ int multiplex( _TCHAR *video_file, _TCHAR *audio_file )
 
 int _tmain( int argc, _TCHAR* argv[] )
 {
-	_tprintf( _T("dpgmux v1.001\ndpgmux comes with ABSOLUTELY NO WARRANTY; see 'gpl.txt'\n\n") );
+	_tprintf( _T("dpgmux v1.002\ndpgmux comes with ABSOLUTELY NO WARRANTY; see 'gpl.txt'\n\n") );
 
 	char mode = '0';
 	bool audio_first;
