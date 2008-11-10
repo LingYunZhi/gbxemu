@@ -312,7 +312,6 @@ protected:
 	afx_msg void OnOptionsSelectPlugin();
 	afx_msg void OnOptionsEmulatorGameoverrides();
 	afx_msg void OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI);
-	afx_msg void OnHelpGnupubliclicense();
 	afx_msg BOOL OnFileRecentFile(UINT nID);
 	afx_msg BOOL OnFileLoadSlot(UINT nID);
 	afx_msg BOOL OnFileSaveSlot(UINT nID);

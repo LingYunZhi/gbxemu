@@ -1936,8 +1936,6 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "License...",                  ID_HELP_GNUPUBLICLICENSE
-        MENUITEM SEPARATOR
         MENUITEM "About VBA-S...",              ID_HELP_ABOUT
     END
 END
