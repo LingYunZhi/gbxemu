@@ -198,24 +198,22 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,90,102,50,14,WS_GROUP
 END
 
-IDD_ABOUT DIALOGEX 0, 0, 179, 153
+IDD_ABOUT DIALOGEX 0, 0, 192, 147
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "About"
+CAPTION "About VBA-S"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    ICON            IDI_MAINICON,IDC_STATIC,6,6,20,20
-    CTEXT           "VisualBoyAdvance Emulator",IDC_STATIC,36,6,138,8
-    CTEXT           "Copyright © 2008 VBA-M development team",IDC_STATIC,6,48,168,8
-    CTEXT           "http://vba-m.ngemu.com",IDC_URL,7,138,168,8
-    RTEXT           "Version:",IDC_STATIC,36,18,54,8
-    LTEXT           "",IDC_VERSION,96,18,78,8,SS_NOPREFIX
-    GROUPBOX        "VBA-M dev team:",IDC_STATIC,7,65,90,66
-    CTEXT           "mudlord\nNach\nJonas Quinn\nDJRobX\nSpacy\nSquall Leonhart",IDC_STATIC,15,76,76,50
-    RTEXT           "Date compiled:",IDC_STATIC,36,30,54,8
-    LTEXT           "",IDC_DATE,96,30,78,8,SS_NOPREFIX
-    GROUPBOX        "Thanks go to:",IDC_STATIC,100,65,72,66
-    CTEXT           "blargg\nCostis\nchrono\nxKiv\nbgKu\nOrig. VBA team",IDC_STATIC,103,77,60,49
+    ICON            IDI_MAINICON,IDC_STATIC,8,8,20,20
+    LTEXT           "VBA-S open source GB & GBA emulator",IDC_STATIC,40,8,144,8
+    LTEXT           "Copyright © 2008 by Spacy",IDC_STATIC,40,24,144,8
+    CTEXT           "http://code.google.com/p/gbxemu/",IDC_URL,8,72,176,8
+    RTEXT           "Version:",IDC_STATIC,8,40,88,8
+    LTEXT           "",IDC_VERSION,104,40,80,8,SS_NOPREFIX
+    RTEXT           "Date compiled:",IDC_STATIC,8,56,88,8
+    LTEXT           "",IDC_DATE,104,56,80,8,SS_NOPREFIX
+    CTEXT           "This program is free software and may be redistributed according to the terms of the GNU General Public License v2:",IDC_STATIC,8,96,176,24
+    CTEXT           "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",IDC_URL_GPL,8,128,176,8
 END
 
 IDD_DIRECTORIES DIALOGEX 0, 0, 222, 270
@@ -1235,9 +1233,9 @@ BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 172
+        RIGHTMARGIN, 185
         TOPMARGIN, 7
-        BOTTOMMARGIN, 146
+        BOTTOMMARGIN, 140
     END
 
     IDD_DIRECTORIES, DIALOG

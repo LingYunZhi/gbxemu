@@ -1,0 +1,20 @@
+Authors in no particular order:
+
+
+Spacy
+mudlord
+Nach
+Squall Leonhart
+DJRobX
+Jonas Quinn
+Forgotten: almost everything until VBA 1.7.2
+chrono: core, asm pixel filter
+bgKu
+blargg: new audio core
+xKiv
+Costis
+pokemonhacker: GB core
+suanyuan: fps sync, Kega Fusion plugin support
+
+
+Some people might be missing, so please send me a message if you did something too and want to be added to this list!

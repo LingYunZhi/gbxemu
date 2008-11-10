@@ -439,12 +439,13 @@
 #define IDC_URL                         1179
 #define IDC_COLOR_BG2                   1180
 #define IDC_STRETCH                     1180
+#define IDC_URL2                        1180
+#define IDC_URL_GPL                     1180
 #define IDC_COLOR_BG3                   1181
 #define IDC_COLOR_OB0                   1182
 #define IDC_COLOR_OB1                   1183
 #define IDC_COLOR_OB2                   1184
 #define IDC_COLOR_OB3                   1185
-#define IDC_TRANSLATOR_URL              1186
 #define IDC_STATIC1                     1187
 #define IDC_STATIC2                     1188
 #define IDC_STATIC3                     1189
@@ -469,6 +470,7 @@
 #define IDC_VERSION                     1219
 #define IDC_VERSION2                    1220
 #define IDC_DATE                        1220
+#define IDC_DATE2                       1221
 #define IDC_VERBOSE_SWI                 1223
 #define IDC_VERBOSE_UNALIGNED_ACCESS    1224
 #define IDC_VERBOSE_ILLEGAL_WRITE       1225

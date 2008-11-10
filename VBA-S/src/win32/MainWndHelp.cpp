@@ -7,8 +7,7 @@ extern int emulating;
 
 void MainWnd::OnHelpAbout()
 {
-  AboutDialog dlg;
-
+  AboutDialog dlg(this);
   dlg.DoModal();
 }
 

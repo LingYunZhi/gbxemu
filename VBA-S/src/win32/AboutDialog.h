@@ -2,23 +2,16 @@
 
 #include "stdafx.h"
 #include "Hyperlink.h"
-#include "resource.h"
-
 
 class AboutDialog : public CDialog
 {
 public:
-	AboutDialog(CWnd* pParent = NULL);
-	enum { IDD = IDD_ABOUT };
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
-	DECLARE_MESSAGE_MAP()
+  AboutDialog(CWnd* pParent);
 
 private:
-	Hyperlink m_link;
-	Hyperlink m_translator;
-	CString   m_version;
-	CString   m_date;
+  virtual void DoDataExchange(CDataExchange* pDX);
+  CString   m_version;
+  CString   m_date;
+  Hyperlink m_link;
+  Hyperlink m_link_gpl;
 };
