@@ -40,6 +40,7 @@ void Hyperlink::OnClicked()
   CString url;
   GetWindowText(url);
   ::ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
+  SetFont(&m_normalFont);
 }
 
 HBRUSH Hyperlink::CtlColor(CDC* pDC, UINT nCtlColor)
