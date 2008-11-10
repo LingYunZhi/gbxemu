@@ -1936,7 +1936,6 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "Report Bugs",                 ID_HELP_BUGREPORT
         MENUITEM "VBA-M Support Forum",         ID_HELP_FAQ
         MENUITEM "License...",                  ID_HELP_GNUPUBLICLICENSE
         MENUITEM SEPARATOR

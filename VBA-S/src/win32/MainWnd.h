@@ -297,7 +297,6 @@ protected:
 	afx_msg void OnUpdateToolsRewind(CCmdUI* pCmdUI);
 	afx_msg void OnToolsCustomize();
 	afx_msg void OnUpdateToolsCustomize(CCmdUI* pCmdUI);
-	afx_msg void OnHelpBugreport();
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnInitMenu(CMenu* pMenu);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);

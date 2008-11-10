@@ -189,7 +189,6 @@ struct {
   { "ToolsPlayMovieStopPlaying", ID_TOOLS_PLAY_STOPMOVIEPLAYING },
   { "ToolsRewind", ID_TOOLS_REWIND },
   { "ToolsCustomize", ID_TOOLS_CUSTOMIZE },
-  { "HelpBugReport", ID_HELP_BUGREPORT },
   { "HelpFAQ", ID_HELP_FAQ },
   { "HelpAbout", ID_HELP_ABOUT },
   { "SystemMinimize", ID_SYSTEM_MINIMIZE }
