@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "..\agb\GBALink.h"
 
 static char buffer[2048];
 static HKEY vbKey = NULL;
@@ -28,7 +27,7 @@ void regInit(const char *path)
 	  regVbaPath = NULL;
   }
   regVbaPath = new CString();
-  regVbaPath->Format(MakeInstanceFilename("%s\\vba.ini"), path);
+  regVbaPath->Format("%s\\vba.ini", path);
 }
 
 void regShutdown()

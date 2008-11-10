@@ -874,26 +874,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Linking"
-			>
-			<File
-				RelativePath="..\..\src\agb\gbalink.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\agb\gbalink.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\LinkOptions.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\LinkOptions.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Main"
 			>
 			<File

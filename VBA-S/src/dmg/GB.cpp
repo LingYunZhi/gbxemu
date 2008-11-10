@@ -800,14 +800,6 @@ void  gbWriteMemory(register u16 address, register u8 value)
       gbMemory[0xff02] = value;
       if(gbSerialOn) {
         gbSerialTicks = GBSERIAL_CLOCK_TICKS;
-#ifdef LINK_EMULATION
-        if(linkConnected) {
-          if(value & 1) {
-            linkSendByte(0x100|gbMemory[0xFF01]);
-            Sleep(5);
-          }
-        }
-#endif
       }
 
       gbSerialBits = 0;
@@ -5163,55 +5155,30 @@ void gbEmulate(int ticksToStop)
 
     // serial emulation
     if(gbSerialOn) {
-#ifdef LINK_EMULATION
-      if(linkConnected) {
+      if(gbMemory[0xff02] & 1) {
         gbSerialTicks -= clockTicks;
 
+        // overflow
         while(gbSerialTicks <= 0) {
+          // shift serial byte to right and put a 1 bit in its place
+          //      gbMemory[0xff01] = 0x80 | (gbMemory[0xff01]>>1);
           // increment number of shifted bits
           gbSerialBits++;
-          linkProc();
-          if(gbSerialOn && (gbMemory[0xff02] & 1)) {
-            if(gbSerialBits == 8) {
-              gbSerialBits = 0;
+          if(gbSerialBits == 8) {
+            // end of transmission
+            if(gbSerialFunction) // external device
+              gbMemory[0xff01] = gbSerialFunction(gbMemory[0xff01]);
+            else
               gbMemory[0xff01] = 0xff;
-              gbMemory[0xff02] &= 0x7f;
-              gbSerialOn = 0;
-              gbMemory[0xff0f] = register_IF |= 8;
-              gbSerialTicks = 0;
-            }
-          }
-          gbSerialTicks += GBSERIAL_CLOCK_TICKS;
+            gbSerialTicks = 0;
+            gbMemory[0xff02] &= 0x7f;
+            gbSerialOn = 0;
+            gbMemory[0xff0f] = register_IF |= 8;
+            gbSerialBits  = 0;
+          } else
+            gbSerialTicks += GBSERIAL_CLOCK_TICKS;
         }
-      } else {
-#endif
-        if(gbMemory[0xff02] & 1) {
-          gbSerialTicks -= clockTicks;
-
-          // overflow
-          while(gbSerialTicks <= 0) {
-            // shift serial byte to right and put a 1 bit in its place
-            //      gbMemory[0xff01] = 0x80 | (gbMemory[0xff01]>>1);
-            // increment number of shifted bits
-            gbSerialBits++;
-            if(gbSerialBits == 8) {
-              // end of transmission
-              if(gbSerialFunction) // external device
-                gbMemory[0xff01] = gbSerialFunction(gbMemory[0xff01]);
-              else
-                gbMemory[0xff01] = 0xff;
-              gbSerialTicks = 0;
-              gbMemory[0xff02] &= 0x7f;
-              gbSerialOn = 0;
-              gbMemory[0xff0f] = register_IF |= 8;
-              gbSerialBits  = 0;
-            } else
-              gbSerialTicks += GBSERIAL_CLOCK_TICKS;
-          }
-        }
-#ifdef LINK_EMULATION
       }
-#endif
     }
 
 

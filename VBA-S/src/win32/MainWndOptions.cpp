@@ -6,7 +6,6 @@
 #include "Directories.h"
 #include "FileDlg.h"
 #include "GameOverrides.h"
-#include "LinkOptions.h"
 #include "GBColorDlg.h"
 #include "Joypad.h"
 #include "MaxScale.h"
@@ -29,7 +28,6 @@
 #include "../dmg/gbGlobals.h"
 #include "../dmg/gbPrinter.h"
 #include "../dmg/gbSound.h"
-#include "../agb/GBALink.h"
 
 #include <tchar.h>
 
@@ -1464,56 +1462,6 @@ void MainWnd::OnOptionsVideoFullscreenmaxscale()
 	  theApp.display->setOption( _T("maxScale"), theApp.maxScale );
   }
 }
-
-
-void MainWnd::OnLinkOptions()
-{
-	LinkOptions dlg;
-
-	dlg.DoModal();
-}
-
-void MainWnd::OnOptionsLinkLog()
-{
-	if(linklog){
-		if(linklogfile!=NULL) fclose(linklogfile);
-		linklog = 0;
-		linklogfile = NULL;
-	} else {
-		linklog=1;
-		openLinkLog();
-	}
-}
-
-void MainWnd::OnUpdateOptionsLinkLog(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(linklog);
-}
-
-void MainWnd::OnOptionsLinkRFU()
-{
-	if(adapter) adapter = false;
-	else {
-		adapter = true;
-		MessageBox("Please note this is the first version\nof RFU emulation code and it's not 100% bug free.\nAlso only 2 players single computer are supported at this time.", "Warning", MB_OK);
-	}
-}
-
-void MainWnd::OnUpdateOptionsLinkEnable(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(linkenable);
-}
-
-void MainWnd::OnOptionsLinkEnable()
-{
-	linkenable = !linkenable;
-}
-
-void MainWnd::OnUpdateOptionsLinkRFU(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(adapter);
-}
-
 
 void MainWnd::OnOptionsEmulatorGameoverrides()
 {
