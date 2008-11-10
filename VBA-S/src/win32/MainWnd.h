@@ -62,7 +62,6 @@ protected:
 	afx_msg BOOL OnOptionsFrameskip(UINT nID);
 	afx_msg void OnClose();
 	afx_msg void OnHelpAbout();
-	afx_msg void OnHelpFaq();
 	afx_msg void OnFileQuickopenrom();
 	afx_msg void OnFileOpenGBA();
 	afx_msg void OnFileOpenGBC();

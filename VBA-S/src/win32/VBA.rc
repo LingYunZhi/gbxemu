@@ -1875,7 +1875,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Colors...",                  ID_OPTIONS_GAMEBOY_COLORS
         END
-        POPUP "&Link", GRAYED
+        POPUP "&Link"
         BEGIN
             MENUITEM "Enable GBA Linking",          ID_OPTIONS_LINK_ENABLE
             MENUITEM "&Wireless Adapter",           ID_OPTIONS_LINK_WIRELESSADAPTER
@@ -1936,7 +1936,6 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "VBA-M Support Forum",         ID_HELP_FAQ
         MENUITEM "License...",                  ID_HELP_GNUPUBLICLICENSE
         MENUITEM SEPARATOR
         MENUITEM "About VBA-S...",              ID_HELP_ABOUT
