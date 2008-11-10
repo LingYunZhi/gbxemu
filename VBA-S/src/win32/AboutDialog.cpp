@@ -1,11 +1,10 @@
 #include "AboutDialog.h"
-#include "../AutoBuild.h"
 #include "resource.h"
 
 AboutDialog::AboutDialog(CWnd* pParent)
   : CDialog(IDD_ABOUT, pParent)
 {
-  m_version = _T(VERSION);
+  m_version = _T( "WIP" );
   m_date = _T(__DATE__);
 }
 

@@ -10,7 +10,6 @@
 #include "Logging.h"
 
 #include "../System.h"
-#include "../AutoBuild.h"
 #include "../cheatSearch.h"
 #include "../agb/GBA.h"
 #include "../Globals.h"

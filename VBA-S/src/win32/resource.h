@@ -439,7 +439,6 @@
 #define IDC_URL                         1179
 #define IDC_COLOR_BG2                   1180
 #define IDC_STRETCH                     1180
-#define IDC_URL2                        1180
 #define IDC_URL_GPL                     1180
 #define IDC_COLOR_BG3                   1181
 #define IDC_COLOR_OB0                   1182
