@@ -39,8 +39,6 @@ Less important:
 
 - Apply pixel filter to sprites and BG seperately for better image quality
 
-- Add support for byuu's UPS patching format to replace IPS
-
 
 
 Performance:
@@ -48,7 +46,7 @@ Performance:
 
 - Apply pixel filter only to changed parts of the image
 
-- Make even more use of multi-core CPUs
+- Make more use of multi-core CPUs
 
 - Make use of 64 bit CPUs
 
