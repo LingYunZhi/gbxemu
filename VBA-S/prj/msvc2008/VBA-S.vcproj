@@ -1061,14 +1061,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\Hyperlink.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\Hyperlink.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\IOViewer.cpp"
 				>
 			</File>
@@ -1389,6 +1381,18 @@
 				</File>
 				<File
 					RelativePath="..\..\src\win32\GBTileView.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Custom Controls"
+				>
+				<File
+					RelativePath="..\..\src\win32\Hyperlink.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\win32\Hyperlink.h"
 					>
 				</File>
 			</Filter>
