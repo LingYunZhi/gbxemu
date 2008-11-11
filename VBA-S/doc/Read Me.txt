@@ -27,3 +27,12 @@ GFX: ~32MB VRAM, DirectX 9 compatible drivers
 SND: Anything with working drivers
 
 Image enhancements require additional processing power.
+
+
+==========
+Philosophy
+==========
+
+VBA-S is a project where I can freely decide about the path where it will go.
+I hate bloatware, so some less useful features will have to go.
+I also hate unclean code, so I will try to raise the general code quality of the project.
