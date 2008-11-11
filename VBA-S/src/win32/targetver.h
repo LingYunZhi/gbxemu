@@ -7,18 +7,31 @@
 
 // Modify the following defines if you have to target a platform prior to the ones specified below.
 // Refer to MSDN for the latest info on corresponding values for different platforms.
-#ifndef WINVER                  // Specifies that the minimum required platform is Windows 2000.
-#define WINVER 0x0500           // Change this to the appropriate value to target other versions of Windows.
+// ms-help://MS.VSCC.v90/MS.MSDNQTR.v90.en/winprog/winprog/using_the_windows_headers.htm
+
+#include <sdkddkver.h>
+
+// New versioning macro
+#ifndef NTDDI_VERSION
+#define NTDDI_WIN2K
 #endif
 
-#ifndef _WIN32_WINNT            // Specifies that the minimum required platform is Windows 2000.
-#define _WIN32_WINNT 0x0500     // Change this to the appropriate value to target other versions of Windows.
+// Older versioning macro
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT  _WIN32_WINNT_WIN2K
 #endif
 
-#ifndef _WIN32_WINDOWS          // Specifies that the minimum required platform is Windows 98.
-#define _WIN32_WINDOWS 0x0410   // Change this to the appropriate value to target Windows Me or later.
+// Set WINVER to the same value as _WIN32_WINNT
+#ifndef WINVER
+#define WINVER  _WIN32_WINNT
 #endif
 
-#ifndef _WIN32_IE               // Specifies that the minimum required platform is Internet Explorer 5.0.
-#define _WIN32_IE 0x0500        // Change this to the appropriate value to target other versions of IE.
-#endif                          // Actually, we don't care
+// Set _WIN32_WINDOWS to the same value as _WIN32_WINNT
+#ifndef _WIN32_WINDOWS
+#define _WIN32_WINDOWS  _WIN32_WINNT
+#endif
+
+// We do not care about Internet Explorer
+#ifndef _WIN32_IE
+#define _WIN32_IE  _WIN32_IE_IE20
+#endif
