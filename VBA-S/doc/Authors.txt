@@ -44,3 +44,4 @@ VBA-M:
 VBA (VisualBoyAdvance):
   Costis
   suanyuan: VBA-Smooth
+  Andrew Church: emulation core optimizations
