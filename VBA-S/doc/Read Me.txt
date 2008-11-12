@@ -4,7 +4,7 @@ VBA-S
 VisualBoyAdvance by Spacy
 =========================
 
-An open source Game Boy & Game Boy Advance emulator for Windows
+An open source GB & GBA emulator for Windows
 
 VBA-S is based on VBA-M which is based on VBA
 
@@ -16,12 +16,12 @@ This program is distributed under terms of the GNU GENERAL PUBLIC LICENSE v2
 http://www.gnu.org/licenses/gpl.html
 
 
-===================
-System Requirements
-===================
+===========================
+Minimum System Requirements
+===========================
 
-OS:  Windows 2000 - Vista (x86 or x64)
-CPU: min. 700 MHz for GBA emulation
+OS:  Windows 2000
+CPU: ~700 MHz for GBA emulation
 RAM: ~64MB free
 GFX: ~32MB VRAM, DirectX 9 compatible drivers
 SND: Anything with working drivers
@@ -36,3 +36,4 @@ Philosophy
 VBA-S is a project where I can freely decide about the path where it will go.
 I hate bloatware, so some less useful features will have to go.
 I also hate unclean code, so I will try to raise the general code quality of the project.
+VBA-S targets the more knowledgeable user, but it will try to make every option as clear as possible.
