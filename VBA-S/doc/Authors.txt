@@ -40,6 +40,7 @@ VBA-M:
   blargg: new audio core
   denopqrihg: VBA-L
   xKiv
+  KunaiTeam
 
 VBA (VisualBoyAdvance):
   Costis
