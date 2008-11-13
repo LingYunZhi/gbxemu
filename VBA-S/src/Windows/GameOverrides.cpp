@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vba.h"
+#include "VBA.h"
 #include "GameOverrides.h"
 #include "../agb/GBA.h"
 

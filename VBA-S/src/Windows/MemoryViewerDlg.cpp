@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vba.h"
+#include "VBA.h"
 #include "FileDlg.h"
 #include "MemoryViewerAddressSize.h"
 #include "MemoryViewerDlg.h"

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vba.h"
+#include "VBA.h"
 #include "GBColorDlg.h"
 #include "../System.h"
 #include "Reg.h"

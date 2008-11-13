@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vba.h"
+#include "VBA.h"
 #include "GSACodeSelect.h"
 
 #ifdef _DEBUG

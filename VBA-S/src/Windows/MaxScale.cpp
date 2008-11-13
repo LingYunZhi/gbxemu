@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vba.h"
+#include "VBA.h"
 #include "MaxScale.h"
 
 #ifdef _DEBUG
