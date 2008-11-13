@@ -2167,11 +2167,7 @@ void VBA::winSetLanguageOption(int option, bool force)
         }
         AfxSetResourceHandle(l);
         if(languageModule != NULL)
-#ifdef _AFXDLL
           AfxFreeLibrary( languageModule );
-#else
-          FreeLibrary( languageModule );
-#endif
         languageModule = l;
       } else {
         systemMessage(IDS_FAILED_TO_GET_LOCINFO,
@@ -2182,11 +2178,7 @@ void VBA::winSetLanguageOption(int option, bool force)
     break;
   case 1:
     if(languageModule != NULL)
-#ifdef _AFXDLL
       AfxFreeLibrary( languageModule );
-#else
-      FreeLibrary( languageModule );
-#endif
     languageModule = NULL;
     AfxSetResourceHandle(AfxGetInstanceHandle());
     break;
@@ -2205,11 +2197,7 @@ void VBA::winSetLanguageOption(int option, bool force)
           AfxSetResourceHandle(l);
           if(languageModule != NULL)
 		  {
-#ifdef _AFXDLL
             AfxFreeLibrary( languageModule );
-#else
-            FreeLibrary( languageModule );
-#endif
 		  }
           languageModule = l;
         }
@@ -2241,11 +2229,7 @@ HINSTANCE VBA::winLoadLanguage(const char *name)
 
   buffer.Format( _T("vba_%s.dll"), name);
 
-#ifdef _AFXDLL
   HINSTANCE l = AfxLoadLibrary( buffer );
-#else
-  HMODULE l = LoadLibrary( buffer );
-#endif
 
   if(l == NULL) {
     if(strlen(name) == 3) {
@@ -2255,11 +2239,7 @@ HINSTANCE VBA::winLoadLanguage(const char *name)
       buffer2[2] = 0;
       buffer.Format("vba_%s.dll", buffer2);
 
-#ifdef _AFXDLL
 	  return AfxLoadLibrary( buffer );
-#else
-	  return LoadLibrary( buffer );
-#endif
     }
   }
   return l;
