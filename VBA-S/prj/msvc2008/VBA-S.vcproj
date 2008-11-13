@@ -853,14 +853,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\LoadOAL.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OpenAL.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\OpenGL.cpp"
 				>
 			</File>
@@ -1174,14 +1166,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\MemoryViewerDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OALConfig.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OALConfig.h"
 				>
 			</File>
 			<File

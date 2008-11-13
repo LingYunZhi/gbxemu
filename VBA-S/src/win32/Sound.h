@@ -2,9 +2,6 @@
 
 enum AUDIO_API {
 	DIRECTSOUND = 0
-#ifndef NO_OAL
-	, OPENAL_SOUND = 1
-#endif
 #ifndef NO_XAUDIO2
 	, XAUDIO2 = 2
 #endif

@@ -102,7 +102,6 @@
 #define IDD_GAME_OVERRIDES              156
 #define IDD_SELECT                      159
 #define IDD_SELECT_PLUGIN               159
-#define IDD_OAL_CONFIG                  160
 #define IDD_BIOS                        161
 #define IDD_FULLSCREEN                  162
 #define IDD_XAUDIO2_CONFIG              163
@@ -525,9 +524,6 @@
 #define IDC_MIRRORING                   1266
 #define IDC_LY                          1267
 #define IDC_APPENDMODE                  1268
-#define IDC_DEVICE                      1269
-#define IDC_SLIDER_BUFFERCOUNT          1270
-#define IDC_BUFFERINFO                  1271
 #define IDC_GB_BIOS_PATH                1272
 #define IDC_GBA_BIOS_PATH               1273
 #define IDC_SKIP_BOOT_LOGO              1274
@@ -555,10 +551,7 @@
 #define IDC_DEFAULT_VOLUME              1292
 #define IDC_DECLICKING                  1293
 #define IDC_SOUND_FILTERING             1294
-#define IDC_COMBO1                      1296
 #define IDC_SAMPLE_RATE                 1296
-#define IDS_OAL_NODEVICE                2000
-#define IDS_OAL_NODLL                   2001
 #define IDS_AVI_CANNOT_CREATE_AVI       2002
 #define IDS_AVI_CANNOT_CREATE_VIDEO     2003
 #define IDS_AVI_CANNOT_CREATE_AUDIO     2004
@@ -806,10 +799,7 @@
 #define ID_OPTIONS_SELECT_PLUGIN        40344
 #define IDC_COMBO_PLUGIN                40345
 #define ID_OUTPUTAPI_DIRECTSOUND        40346
-#define ID_OUTPUTAPI_OPENAL             40347
 #define ID_OUTPUTAPI_SOFTWAREMIXING     40348
-#define ID_OUTPUTAPI_CONFIGURATION      40349
-#define ID_OUTPUTAPI_OALCONFIGURATION   40350
 #define ID_RENDERAPI_FILTER             40351
 #define ID_OPTIONS_SPEED                40353
 #define ID_RENDERAPI_MOTIONBLUR         40354
@@ -820,7 +810,6 @@
 #define ID_PIXELFILTER_MULTI            40360
 #define ID_EMULATOR_LOADSTATESHOULD     40361
 #define ID_LOADGAME_DONOTCHANGEBATTERYSAVE 40362
-#define ID_OUTPUTAPI_CONFIGURATION40363 40363
 #define ID_OUTPUTAPI_XAUDIO2CONFIG      40364
 #define ID_AUDIO_CORE_SETTINGS          40365
 #define ID_FILE_OPEN_GBA                40366

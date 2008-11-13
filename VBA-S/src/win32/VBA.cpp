@@ -80,9 +80,6 @@ extern IDisplay *newDirect3DDisplay();
 extern Input *newDirectInput();
 
 extern ISound *newDirectSound();
-#ifndef NO_OAL
-extern ISound *newOpenAL();
-#endif
 #ifndef NO_XAUDIO2
 extern ISound *newXAudio2_Output();
 #endif
@@ -173,7 +170,6 @@ void directXMessage(const char *msg)
 VBA::VBA()
 {
   // COINIT_MULTITHREADED is not supported by SHBrowseForFolder with BIF_USENEWUI
-  // OpenAL also causes trouble when COINIT_MULTITHREADED is used
   if( S_OK != CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ) ) {
 	  systemMessage( IDS_COM_FAILURE, NULL );
   }
@@ -244,10 +240,6 @@ VBA::VBA()
   changingVideoSize = false;
   renderMethod = DIRECT_3D;
   audioAPI = DIRECTSOUND;
-#ifndef NO_OAL
-  oalDevice = NULL;
-  oalBufferCount = 5;
-#endif
 #ifndef NO_XAUDIO2
   audioAPI = XAUDIO2;
   xa2Device = 0;
@@ -374,12 +366,6 @@ VBA::~VBA()
   if(rewindMemory)
     free(rewindMemory);
 
-#ifndef NO_OAL
-  if( oalDevice ) {
-	  free( oalDevice );
-  }
-#endif
-  
   CoUninitialize();
 }
 
@@ -1139,11 +1125,6 @@ bool systemSoundInit()
 	case DIRECTSOUND:
 		theApp.sound = newDirectSound();
 		break;
-#ifndef NO_OAL
-	case OPENAL_SOUND:
-		theApp.sound = newOpenAL();
-		break;
-#endif
 #ifndef NO_XAUDIO2
 	case XAUDIO2:
 		theApp.sound = newXAudio2_Output();
@@ -1401,9 +1382,6 @@ void VBA::loadSettings()
 
   audioAPI = (AUDIO_API)regQueryDwordValue( "audioAPI", XAUDIO2 );
   if( ( audioAPI != DIRECTSOUND )
-#ifndef NO_OAL
-	  && ( audioAPI != OPENAL_SOUND )
-#endif
 #ifndef NO_XAUDIO2
 	  && ( audioAPI != XAUDIO2 )
 #endif
@@ -1621,17 +1599,6 @@ void VBA::loadSettings()
   updateThrottle( (unsigned short)regQueryDwordValue( "throttle", 0 ) );
 
   Sm60FPS::bSaveMoreCPU = regQueryDwordValue("saveMoreCPU", 0);
-
-#ifndef NO_OAL
-  buffer = regQueryStringValue( "oalDevice", "Generic Software" );
-  if( oalDevice ) {
-	  free( oalDevice );
-  }
-  oalDevice = (TCHAR*)malloc( ( buffer.GetLength() + 1 ) * sizeof( TCHAR ) );
-  _tcscpy( oalDevice, buffer.GetBuffer() );
-
-  oalBufferCount = regQueryDwordValue( "oalBufferCount", 5 );
-#endif
 
 #ifndef NO_XAUDIO2
   xa2Device = regQueryDwordValue( "xa2Device", 0 );
@@ -2517,11 +2484,6 @@ void VBA::saveSettings()
   regSetStringValue("pluginName", pluginName);
   regSetDwordValue("saveMoreCPU", Sm60FPS::bSaveMoreCPU);
   regSetDwordValue("lastFullscreen", lastFullscreen);
-
-#ifndef NO_OAL
-  regSetStringValue( "oalDevice", oalDevice );
-  regSetDwordValue( "oalBufferCount", oalBufferCount );
-#endif
 
 #ifndef NO_XAUDIO2
   regSetDwordValue( "xa2Device", xa2Device );

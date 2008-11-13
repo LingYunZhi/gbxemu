@@ -124,10 +124,6 @@ class VBA : public CWinApp
   bool changingVideoSize;
   DISPLAY_TYPE renderMethod;
   AUDIO_API audioAPI;
-#ifndef NO_OAL
-  TCHAR *oalDevice;
-  int oalBufferCount;
-#endif
 #ifndef NO_XAUDIO2
   UINT32 xa2Device;
   UINT32 xa2BufferCount;
