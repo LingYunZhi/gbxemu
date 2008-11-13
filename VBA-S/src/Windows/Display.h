@@ -3,8 +3,7 @@
 #include <memory.h>
 
 enum DISPLAY_TYPE {
-  DIRECT_3D = 0,
-  OPENGL = 1
+  DIRECT_3D = 0
 };
 
 class IDisplay {

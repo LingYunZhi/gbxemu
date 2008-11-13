@@ -1568,10 +1568,6 @@ BEGIN
                 MENUITEM "   Filter: Bilinear",         ID_OPTIONS_VIDEO_RENDEROPTIONS_D3DBILINEAR
                 MENUITEM "   Motion Blur",              ID_RENDERAPI_D3DMOTIONBLUR
                 MENUITEM SEPARATOR
-                MENUITEM "OpenGL",                      ID_OPTIONS_VIDEO_RENDERMETHOD_OPENGL
-                MENUITEM "   Filter: Nearest",          ID_OPTIONS_VIDEO_RENDEROPTIONS_GLNEAREST
-                MENUITEM "   Filter: Bilinear",         ID_OPTIONS_VIDEO_RENDEROPTIONS_GLBILINEAR
-                MENUITEM SEPARATOR
                 MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
                 MENUITEM "Triple Buffering",            ID_OPTIONS_VIDEO_TRIPLEBUFFERING
             END
