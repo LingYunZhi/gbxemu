@@ -6,7 +6,6 @@ static HINSTANCE winResGetInstance(LPCTSTR resType, LPCTSTR resName)
   return AfxFindResourceHandle(resName, resType);
 }
 
-
 UCHAR *winResGetResource(LPCTSTR resType, LPCTSTR resName)
 {
   HINSTANCE winResInstance = winResGetInstance(resType, resName);
@@ -37,42 +36,6 @@ HMENU winResLoadMenu(LPCTSTR menuName)
   }
 
   return LoadMenu(NULL, menuName);
-}
-
-int winResDialogBox(LPCTSTR boxName,
-                    HWND parent,
-                    DLGPROC dlgProc,
-                    LPARAM lParam)
-{
-  /*
-    UCHAR * b = winResGetResource(RT_DIALOG, boxName);
-
-    if(b != NULL) {
-
-    return DialogBoxIndirectParam(hInstance,
-    (LPCDLGTEMPLATE)b,
-    parent,
-    dlgProc,
-    lParam);
-    }
-
-    return DialogBoxParam(hInstance,
-    boxName,
-    parent,
-    dlgProc,
-    lParam);
-  */
-  return 0;
-}
-
-int winResDialogBox(LPCTSTR boxName,
-                    HWND parent,
-                    DLGPROC dlgProc)
-{
-  return winResDialogBox(boxName,
-                         parent,
-                         dlgProc,
-                         0);
 }
 
 CString winResLoadString(UINT id)

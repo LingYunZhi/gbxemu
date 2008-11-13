@@ -798,6 +798,14 @@
 				RelativePath="..\..\src\Util.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\Windows\WinResUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Windows\WinResUtil.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="IO"
@@ -1232,14 +1240,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Windows\WinHelper.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Windows\WinResUtil.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Windows\WinResUtil.h"
 				>
 			</File>
 			<File
