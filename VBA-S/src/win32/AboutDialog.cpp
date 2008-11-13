@@ -16,3 +16,15 @@ void AboutDialog::DoDataExchange(CDataExchange* pDX)
   DDX_Control(pDX, IDC_URL, m_link);
   DDX_Control(pDX, IDC_URL_GPL, m_link_gpl);
 }
+
+BOOL AboutDialog::OnInitDialog()
+{
+  CDialog::OnInitDialog();
+
+  // Put copyright string into text box
+  CEdit *edit = (CEdit *)GetDlgItem(IDC_COPYRIGHT);
+  CString copyright((LPCSTR)IDS_COPYRIGHT);
+  edit->SetWindowText(copyright);
+
+  return TRUE;
+}

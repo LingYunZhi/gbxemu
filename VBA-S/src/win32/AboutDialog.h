@@ -10,6 +10,7 @@ public:
 
 private:
   virtual void DoDataExchange(CDataExchange* pDX);
+  virtual BOOL OnInitDialog();
   CString   m_version;
   CString   m_date;
   Hyperlink m_link;

@@ -51,6 +51,7 @@
 #define IDS_TOOLTIP_SURROUND            44
 #define IDS_TOOLTIP_DECLICKING          45
 #define IDS_FILTER_ALLROM               46
+#define IDS_COPYRIGHT                   47
 #define IDI_MAINICON                    101
 #define IDD_REGISTERS                   102
 #define IDD_DEBUG                       103
@@ -552,6 +553,8 @@
 #define IDC_DECLICKING                  1293
 #define IDC_SOUND_FILTERING             1294
 #define IDC_SAMPLE_RATE                 1296
+#define IDC_EDIT1                       1297
+#define IDC_COPYRIGHT                   1297
 #define IDS_AVI_CANNOT_CREATE_AVI       2002
 #define IDS_AVI_CANNOT_CREATE_VIDEO     2003
 #define IDS_AVI_CANNOT_CREATE_AUDIO     2004
@@ -823,7 +826,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         40372
-#define _APS_NEXT_CONTROL_VALUE         1297
+#define _APS_NEXT_CONTROL_VALUE         1298
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

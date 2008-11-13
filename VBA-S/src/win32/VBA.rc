@@ -121,22 +121,22 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,90,102,50,14,WS_GROUP
 END
 
-IDD_ABOUT DIALOGEX 0, 0, 192, 147
+IDD_ABOUT DIALOGEX 0, 0, 192, 206
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "About VBA-S"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     ICON            IDI_MAINICON,IDC_STATIC,8,8,20,20
-    LTEXT           "VBA-S open source GB && GBA emulator",IDC_STATIC,40,8,144,8
-    LTEXT           "Copyright © 2008 by Spacy",IDC_STATIC,40,24,144,8
-    CTEXT           "http://code.google.com/p/gbxemu/",IDC_URL,8,72,176,8
-    RTEXT           "Version:",IDC_STATIC,8,40,88,8
-    LTEXT           "",IDC_VERSION,104,40,80,8,SS_NOPREFIX
-    RTEXT           "Date compiled:",IDC_STATIC,8,56,88,8
-    LTEXT           "",IDC_DATE,104,56,80,8,SS_NOPREFIX
-    CTEXT           "This program is free software and may be redistributed according to the terms of the GNU General Public License v2:",IDC_STATIC,8,96,176,24
-    CTEXT           "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",IDC_URL_GPL,8,128,176,8
+    CTEXT           "VBA-S\nopen source GB && GBA emulator",IDC_STATIC,40,8,144,16
+    CTEXT           "http://code.google.com/p/gbxemu/",IDC_URL,8,136,176,8
+    RTEXT           "Version:",IDC_STATIC,8,32,88,8
+    LTEXT           "",IDC_VERSION,104,32,80,8,SS_NOPREFIX
+    RTEXT           "Date compiled:",IDC_STATIC,8,48,88,8
+    LTEXT           "",IDC_DATE,104,48,80,8,SS_NOPREFIX
+    CTEXT           "This program is free software and may be redistributed according to the terms of the GNU General Public License v2:",IDC_STATIC,8,160,176,24
+    CTEXT           "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",IDC_URL_GPL,8,192,176,8
+    EDITTEXT        IDC_COPYRIGHT,8,64,176,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL
 END
 
 IDD_DIRECTORIES DIALOGEX 0, 0, 222, 270
@@ -1150,7 +1150,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 185
         TOPMARGIN, 7
-        BOTTOMMARGIN, 140
+        BOTTOMMARGIN, 199
     END
 
     IDD_DIRECTORIES, DIALOG
@@ -2071,6 +2071,7 @@ BEGIN
     IDS_TOOLTIP_SURROUND    "Inverts the phase of some channels, making it sound as if sound is coming from behind."
     IDS_TOOLTIP_DECLICKING  "When enabled, clicks are reduced by using GBA sound hardware. Note that clicks are normal for GB and GBC sound hardware."
     IDS_FILTER_ALLROM       "All ROMs (*.GBA;*.AGB;*.BIN;*.ELF;*.MB;*.GBC;*.CGB;*.GB;*.SGB;*.ZIP;*.7Z;*.Z;*.GZ)_*.GBA;*.AGB;*.BIN;*.ELF;*.MB;*.GBC;*.CGB;*.GB;*.SGB;*.ZIP;*.7Z;*.Z;*.GZ_All Files (*.*)_*.*__"
+    IDS_COPYRIGHT           "Copyright 2008 Spacy, Mudlord, Nach, jbo_85, bgk, xKiv\r\nCopyright 2007 Spacy, Mudlord, Nach, jbo_85, DJRobX\r\nCopyright 2006 Spacy, Pokemonhacker\r\nCopyright 2005 Pokemonhacker\r\nCopyright 2004 Forgotten, fleavba (Adam Green), kxu (Sébastien Guignot), Pokemonhacker\r\nCopyright 2003, 2002, 2001, 2000, 1999 Forgotten"
 END
 
 STRINGTABLE 
