@@ -52,6 +52,7 @@
 #define IDS_TOOLTIP_DECLICKING          45
 #define IDS_FILTER_ALLROM               46
 #define IDS_COPYRIGHT                   47
+#define IDS_APPTITLE                    48
 #define IDI_MAINICON                    101
 #define IDD_REGISTERS                   102
 #define IDD_DEBUG                       103

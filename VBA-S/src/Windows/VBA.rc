@@ -2144,6 +2144,11 @@ BEGIN
     IDS_CHEATS_ENABLED      "Cheats enabled"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_APPTITLE            "VBA-S"
+END
+
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

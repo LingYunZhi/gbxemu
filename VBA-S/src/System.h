@@ -52,40 +52,40 @@ struct EmulatedSystem {
   int emuCount;
 };
 
-extern void log(const char *,...);
+void log(const char *,...);
 
-extern bool systemPauseOnFrame();
-extern void systemGbPrint(u8 *,int,int,int,int);
-extern void systemScreenCapture(int);
-extern void systemDrawScreen();
+bool systemPauseOnFrame();
+void systemGbPrint(u8 *,int,int,int,int);
+void systemScreenCapture(int);
+void systemDrawScreen();
 // updates the joystick data
-extern bool systemReadJoypads();
+bool systemReadJoypads();
 // return information about the given joystick, -1 for default joystick
-extern u32 systemReadJoypad(int);
-extern u32 systemGetClock();
-extern void systemMessage(int, const char *, ...);
-extern void systemSetTitle(const char *);
-extern void systemWriteDataToSoundBuffer();
-extern void systemSoundShutdown();
-extern void systemSoundPause();
-extern void systemSoundResume();
-extern void systemSoundReset();
-extern bool systemSoundInit();
-extern void systemScreenMessage(const char *);
-extern void systemUpdateMotionSensor();
-extern int  systemGetSensorX();
-extern int  systemGetSensorY();
-extern bool systemCanChangeSoundQuality();
-extern void systemShowSpeed(int);
-extern void system10Frames(int);
-extern void systemFrame();
-extern void systemGbBorderOn();
+u32  systemReadJoypad(int);
+u32  systemGetClock();
+void systemMessage(int, const char *, ...);
+void systemSetTitle(const char *title = NULL, bool appendToDefault = false);
+void systemWriteDataToSoundBuffer();
+void systemSoundShutdown();
+void systemSoundPause();
+void systemSoundResume();
+void systemSoundReset();
+bool systemSoundInit();
+void systemScreenMessage(const char *);
+void systemUpdateMotionSensor();
+int  systemGetSensorX();
+int  systemGetSensorY();
+bool systemCanChangeSoundQuality();
+void systemShowSpeed(int);
+void system10Frames(int);
+void systemFrame();
+void systemGbBorderOn();
 
-extern void Sm60FPS_Init();
-extern bool Sm60FPS_CanSkipFrame();
-extern void Sm60FPS_Sleep();
-extern void DbgMsg(const char *msg, ...);
-extern void winlog(const char *,...);
+void Sm60FPS_Init();
+bool Sm60FPS_CanSkipFrame();
+void Sm60FPS_Sleep();
+void DbgMsg(const char *msg, ...);
+void winlog(const char *,...);
 
 extern void (*dbgOutput)(const char *s, u32 addr);
 extern void (*dbgSignal)(int sig,int number);

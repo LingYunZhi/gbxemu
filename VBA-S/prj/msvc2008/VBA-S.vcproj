@@ -85,7 +85,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="zlib1.lib libpng13.lib"
-				OutputFile="$(OutDir)\VisualBoyAdvance.exe"
 				Version=""
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -190,7 +189,6 @@
 				RegisterOutput="false"
 				IgnoreImportLibrary="false"
 				AdditionalDependencies="zlib1.lib libpng13.lib"
-				OutputFile="$(OutDir)\VisualBoyAdvance.exe"
 				Version=""
 				LinkIncremental="0"
 				SuppressStartupBanner="true"

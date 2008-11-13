@@ -1006,10 +1006,21 @@ void systemMessage(int number, const char *defaultMsg, ...)
   va_end(valist);
 }
 
-void systemSetTitle(const char *title)
+void systemSetTitle(const char *title /*= NULL*/, bool appendToDefault /*= false*/)
 {
   if(theApp.m_pMainWnd != NULL) {
-    AfxGetApp()->m_pMainWnd->SetWindowText(title);
+    if( title != NULL ) {
+      if( appendToDefault ) {
+        CString combinedTitle( (LPCSTR)IDS_APPTITLE );
+        combinedTitle.Append( title );
+        AfxGetApp()->m_pMainWnd->SetWindowText( combinedTitle );
+      } else {
+        AfxGetApp()->m_pMainWnd->SetWindowText( title );
+      }
+    } else {
+      // Use default title
+      AfxGetApp()->m_pMainWnd->SetWindowText( CString( (LPCSTR)IDS_APPTITLE ) );
+    }
   }
 }
 
@@ -1018,16 +1029,14 @@ void systemShowSpeed(int speed)
   systemSpeed = speed;
   theApp.showRenderedFrames = theApp.renderedFrames;
   theApp.renderedFrames = 0;
-  if(theApp.videoOption <= VIDEO_4X && theApp.showSpeed) {
+  if( ( theApp.videoOption <= VIDEO_4X ) && theApp.showSpeed ) {
     CString buffer;
-    if(theApp.showSpeed == 1)
-      buffer.Format("VisualBoyAdvance-%3d%%", systemSpeed);
-    else
-      buffer.Format("VisualBoyAdvance-%3d%%(%d, %d fps)", systemSpeed,
-                    systemFrameSkip,
-                    theApp.showRenderedFrames);
-
-    systemSetTitle(buffer);
+    if( theApp.showSpeed == 1 ) {
+      buffer.Format( _T(" - %3d%%"), systemSpeed );
+    } else {
+      buffer.Format( _T(" - %3d%%(%d, %d fps)"), systemSpeed, systemFrameSkip, theApp.showRenderedFrames );
+    }
+    systemSetTitle( buffer, true );
   }
 }
 
@@ -1975,7 +1984,7 @@ bool VBA::preInitialize()
 	pWnd->CreateEx(
 		styleEx,
 		wndClass,
-		_T("VisualBoyAdvance"),
+		CString( (LPCSTR)IDS_APPTITLE ),
 		style,
 		x, y,
 		winSizeX, winSizeY,

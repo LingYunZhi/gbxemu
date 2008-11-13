@@ -153,7 +153,7 @@ void MainWnd::OnFileClose()
   }
   emulating = 0;
   RedrawWindow(NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);
-  systemSetTitle("VisualBoyAdvance");
+  systemSetTitle();
 }
 
 void MainWnd::OnUpdateFileClose(CCmdUI* pCmdUI)
