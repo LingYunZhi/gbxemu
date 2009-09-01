@@ -1,3 +1,0 @@
-- Wrong bit depth image is displayed for 2 frames when switching from/to HQ3x/4x ASM
- - This is caused by the 16bit hack which does not re-process the emulated image.
-   It results in the display devices treating the image at pix with the wrong bit depth.
