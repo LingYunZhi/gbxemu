@@ -71,11 +71,6 @@ extern void SmartIB32(u8*,u32,int,int);
 extern void MotionBlurIB(u8*,u32,int,int);
 extern void MotionBlurIB32(u8*,u32,int,int);
 
-extern IDisplay *newGDIDisplay();
-extern IDisplay *newDirectDrawDisplay();
-#ifndef NO_OGL
-extern IDisplay *newOpenGLDisplay();
-#endif
 #ifndef NO_D3D
 extern IDisplay *newDirect3DDisplay();
 #endif
@@ -254,7 +249,6 @@ VBA::VBA()
   d3dMotionBlur = false;
 #endif
   iconic = false;
-  glFilter = 0;
   regEnabled = false;
  pauseWhenInactive = true;
   speedupToggle = false;
@@ -1244,16 +1238,6 @@ void VBA::loadSettings()
   }
 
   renderMethod = (DISPLAY_TYPE)regQueryDwordValue("renderMethod", DIRECT_3D);
-#ifdef NO_OGL
-  if( renderMethod == OPENGL ) {
-	  renderMethod = DIRECT_3D;
-  }
-#endif
-#ifdef NO_D3D
-  if( renderMethod == DIRECT_3D ) {
-	  renderMethod = OPENGL;
-  }
-#endif
 
   audioAPI = (AUDIO_API)regQueryDwordValue( "audioAPI", XAUDIO2 );
   if( ( audioAPI != DIRECTSOUND )
@@ -1321,11 +1305,6 @@ void VBA::loadSettings()
 
   d3dMotionBlur = ( regQueryDwordValue("d3dMotionBlur", 0) == 1 ) ? true : false;
 #endif
-
-  glFilter = regQueryDwordValue("glFilter", 1);
-  if(glFilter < 0 || glFilter > 1)
-    glFilter = 1;
-
 
   filterType = regQueryDwordValue("filter", 0);
   if(filterType < 0 || filterType > 17)
@@ -1864,11 +1843,6 @@ bool VBA::updateRenderMethod0(bool force)
   }
   if(display == NULL) {
     switch(renderMethod) {
-#ifndef NO_OGL
-	case OPENGL:
-		display = newOpenGLDisplay();
-		break;
-#endif
 #ifndef NO_D3D
     case DIRECT_3D:
 		display = newDirect3DDisplay();
@@ -2187,8 +2161,6 @@ void VBA::saveSettings()
   regSetDwordValue("d3dFilter", d3dFilter);
   regSetDwordValue("d3dMotionBlur", d3dMotionBlur ? 1 : 0);
 #endif
-
-  regSetDwordValue("glFilter", glFilter);
 
   regSetDwordValue("filter", filterType);
 

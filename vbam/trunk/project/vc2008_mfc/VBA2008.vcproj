@@ -48,7 +48,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;;..\..\..\dependencies\msvc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;ASM;_CRT_SECURE_NO_WARNINGS;HAS_FILE_EXTRACTOR;NO_OGL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;_CRT_SECURE_NO_WARNINGS;HAS_FILE_EXTRACTOR"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -157,7 +157,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;;..\..\..\dependencies\msvc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;OEMRESOURCE;ASM;FINAL_VERSION;BKPT_SUPPORT;_CRT_SECURE_NO_DEPRECATE;HAS_FILE_EXTRACTOR;NO_OGL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;OEMRESOURCE;FINAL_VERSION;BKPT_SUPPORT;_CRT_SECURE_NO_DEPRECATE;HAS_FILE_EXTRACTOR"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableEnhancedInstructionSet="0"
@@ -609,34 +609,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\glfont.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\glfont.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\gzglfont.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\Input.h"
 				>
 			</File>
@@ -646,10 +618,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\OpenAL.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OpenGL.cpp"
 				>
 			</File>
 			<File

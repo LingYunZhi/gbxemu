@@ -142,18 +142,12 @@ protected:
 	afx_msg void OnUpdateOptionsVideoRendermethodDirectdraw(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoRendermethodDirect3d();
 	afx_msg void OnUpdateOptionsVideoRendermethodDirect3d(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsVideoRendermethodOpengl();
-	afx_msg void OnUpdateOptionsVideoRendermethodOpengl(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoTriplebuffering();
 	afx_msg void OnUpdateOptionsVideoTriplebuffering(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoRenderoptionsD3dnofilter();
 	afx_msg void OnUpdateOptionsVideoRenderoptionsD3dnofilter(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoRenderoptionsD3dbilinear();
 	afx_msg void OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsVideoRenderoptionsGlnearest();
-	afx_msg void OnUpdateOptionsVideoRenderoptionsGlnearest(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsVideoRenderoptionsGlbilinear();
-	afx_msg void OnUpdateOptionsVideoRenderoptionsGlbilinear(CCmdUI* pCmdUI);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg void OnOptionsEmulatorAssociate();
 	afx_msg void OnOptionsEmulatorDirectories();

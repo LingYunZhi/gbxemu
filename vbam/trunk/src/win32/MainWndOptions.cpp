@@ -422,25 +422,6 @@ void MainWnd::OnUpdateOptionsVideoRendermethodDirect3d(CCmdUI* pCmdUI)
 #endif
 }
 
-void MainWnd::OnOptionsVideoRendermethodOpengl()
-{
-#ifndef NO_OGL
-  theApp.renderMethod = OPENGL;
-  theApp.updateRenderMethod(false);
-  theApp.winAccelMgr.UpdateMenu(theApp.menu);
-#endif
-}
-
-void MainWnd::OnUpdateOptionsVideoRendermethodOpengl(CCmdUI* pCmdUI)
-{
-#ifndef NO_OGL
-	pCmdUI->SetCheck(theApp.renderMethod == OPENGL);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
-
 void MainWnd::OnOptionsVideoTriplebuffering()
 {
 	theApp.tripleBuffering = !theApp.tripleBuffering;
@@ -495,49 +476,6 @@ void MainWnd::OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI)
 	pCmdUI->Enable( FALSE );
 #endif
 }
-
-
-void MainWnd::OnOptionsVideoRenderoptionsGlnearest()
-{
-#ifndef NO_OGL
-	theApp.glFilter = 0;
-	if( theApp.display ) {
-		theApp.display->setOption( _T("glFilter"), theApp.glFilter );
-	}
-#endif
-}
-
-
-void MainWnd::OnUpdateOptionsVideoRenderoptionsGlnearest(CCmdUI* pCmdUI)
-{
-#ifndef NO_OGL
-	pCmdUI->SetCheck(theApp.glFilter == 0);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
-
-void MainWnd::OnOptionsVideoRenderoptionsGlbilinear()
-{
-#ifndef NO_OGL
-	theApp.glFilter = 1;
-	if( theApp.display ) {
-		theApp.display->setOption( _T("glFilter"), theApp.glFilter );
-	}
-#endif
-}
-
-
-void MainWnd::OnUpdateOptionsVideoRenderoptionsGlbilinear(CCmdUI* pCmdUI)
-{
-#ifndef NO_OGL
-	pCmdUI->SetCheck(theApp.glFilter == 1);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
 
 void MainWnd::OnOptionsEmulatorAssociate()
 {

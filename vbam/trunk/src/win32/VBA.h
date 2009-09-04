@@ -129,7 +129,6 @@ class VBA : public CWinApp
   bool d3dMotionBlur;
 #endif
   bool iconic;
-  int glFilter;
   bool dinputKeyFocus;
   bool pauseWhenInactive;
   bool speedupToggle;

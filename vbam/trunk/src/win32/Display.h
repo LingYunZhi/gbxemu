@@ -4,7 +4,7 @@
 
 enum DISPLAY_TYPE {
   DIRECT_3D = 0,
-  OPENGL = 1
+  //OPENGL = 1
 };
 
 class IDisplay {

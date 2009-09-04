@@ -8,7 +8,6 @@ Known preprocessor switches:
 - FINAL_VERSION: Defined for release versions, disables additional GBA logging and completely disables GB logging. Increases the amount of CPU cycles being emulated in one go.
 - BKPT_SUPPORT
 - RGB555: Use 16bit colors with 5bit green instead of 6bit green in hq3x/4x filters (C++ version)
-- NO_OGL: Exclude OpenGL code
 - NO_D3D: Exclude Direct3D code
 - NO_OAL: Exclude OpenAL code
 - NO_XAUDIO2: Exclude XAudio2 code (the XAudio2 interface is DirectSound's successor)
