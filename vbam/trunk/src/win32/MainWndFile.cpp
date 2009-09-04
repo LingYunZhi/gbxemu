@@ -602,26 +602,23 @@ void MainWnd::OnFileScreencapture()
   if(capdir.IsEmpty())
     capdir = getDirFromFile(theApp.filename);
 
-  CString ext = "png";
-
-  if(theApp.captureFormat != 0)
-    ext = "bmp";
+  CString ext = "bmp";
 
   if(isDriveRoot(capdir))
     filename.Format("%s%s.%s", capdir, name, ext);
   else
     filename.Format("%s\\%s.%s", capdir, name, ext);
 
-  LPCTSTR exts[] = {".png", ".bmp" };
+  LPCTSTR exts[] = {".bmp"};
 
-  CString filter = winLoadFilter(IDS_FILTER_PNG);
+  CString filter = winLoadFilter(IDS_FILTER_BMP);
   CString title = winResLoadString(IDS_SELECT_CAPTURE_NAME);
 
   FileDlg dlg(this,
               filename,
               filter,
-              theApp.captureFormat ? 2 : 1,
-              theApp.captureFormat ? "BMP" : "PNG",
+              1,
+              "BMP",
               exts,
               capdir,
               title,
@@ -630,10 +627,7 @@ void MainWnd::OnFileScreencapture()
   if(dlg.DoModal() == IDCANCEL)
     return;
 
-  if(dlg.getFilterIndex() == 2)
-    theApp.emulator.emuWriteBMP(dlg.GetPathName());
-  else
-    theApp.emulator.emuWritePNG(dlg.GetPathName());
+  theApp.emulator.emuWriteBMP(dlg.GetPathName());
 
   systemScreenMessage(winResLoadString(IDS_SCREEN_CAPTURE));
 }

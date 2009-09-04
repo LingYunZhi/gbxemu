@@ -35,7 +35,6 @@ class TileView : public ResizeDlg, IUpdateListener
   void render();
   void renderTile16(int tile, int x, int y, u8 *charBase, u16 *palette);
   void renderTile256(int tile, int x, int y, u8 *charBase, u16 *palette);
-  void savePNG(const char *name);
   void saveBMP(const char *name);
   TileView(CWnd* pParent = NULL);   // standard constructor
   virtual ~TileView();

@@ -821,26 +821,6 @@ void MainWnd::OnOptionsEmulatorSavetypeDetectNow()
     MessageBox( answer );
 }
 
-void MainWnd::OnOptionsEmulatorPngformat()
-{
-  theApp.captureFormat = 0;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorPngformat(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.captureFormat == 0);
-}
-
-void MainWnd::OnOptionsEmulatorBmpformat()
-{
-  theApp.captureFormat = 1;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorBmpformat(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.captureFormat == 1);
-}
-
 void MainWnd::OnAudioCoreSettings()
 {
 	AudioCoreSettingsDlg dlg;

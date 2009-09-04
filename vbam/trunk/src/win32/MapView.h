@@ -34,7 +34,6 @@ class MapView : public ResizeDlg, IUpdateListener
 
   // Construction
  public:
-  void savePNG(const char *name);
   void saveBMP(const char *name);
   afx_msg LRESULT OnColInfo(WPARAM wParam, LPARAM lParam);
   afx_msg LRESULT OnMapInfo(WPARAM wParam, LPARAM lParam);

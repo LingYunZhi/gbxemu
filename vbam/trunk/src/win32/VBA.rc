@@ -1888,11 +1888,6 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "Detect now...",               40372
             END
-            POPUP "Screenshot &Format"
-            BEGIN
-                MENUITEM "&PNG",                        ID_OPTIONS_EMULATOR_PNGFORMAT
-                MENUITEM "&BMP",                        ID_OPTIONS_EMULATOR_BMPFORMAT
-            END
             MENUITEM SEPARATOR
             POPUP "UI &Language"
             BEGIN
@@ -2188,7 +2183,7 @@ BEGIN
     IDS_FILTER_GBAROM       "Game Boy Advance ROMs (*.GBA;*.AGB;*.BIN;*.ELF;*.MB;*.ZIP;*.7Z;*.Z;*.GZ)_*.GBA;*.AGB;*.BIN;*.ELF;*.MB;*.ZIP;*.7Z;*.Z;*.GZ__"
     IDS_FILTER_SGM          "VisualBoyAdvance Save Game_*.SGM__"
     IDS_FILTER_CHEAT_LIST   "VisualBoyAdvance Cheat List_*.CLT__"
-    IDS_FILTER_PNG          "PNG Image_*.PNG_BMP Image_*.BMP__"
+    IDS_FILTER_BMP          "BMP Image_*.BMP__"
     IDS_LOADED_CHEATS       "Loaded cheats"
     IDS_ERROR_DISP_COLOR    "Unsupported display setting for color depth: %d bits. \nWindows desktop must be in either 16-bit, 24-bit or 32-bit mode for this program to work in window mode."
     IDS_ADD_GSA_CODE        "Add GameSharkAdvance code"

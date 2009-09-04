@@ -189,10 +189,6 @@ protected:
 	afx_msg void OnOptionsEmulatorSavetypeFlash1m();
 	afx_msg void OnUpdateOptionsEmulatorSavetypeFlash1m(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorSavetypeDetectNow();
-	afx_msg void OnOptionsEmulatorPngformat();
-	afx_msg void OnUpdateOptionsEmulatorPngformat(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsEmulatorBmpformat();
-	afx_msg void OnUpdateOptionsEmulatorBmpformat(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundChannel1();
 	afx_msg void OnUpdateOptionsSoundChannel1(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundChannel2();

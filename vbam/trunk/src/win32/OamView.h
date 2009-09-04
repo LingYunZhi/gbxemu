@@ -34,7 +34,6 @@ class OamView : public ResizeDlg, IUpdateListener
   void updateScrollInfo();
   afx_msg LRESULT OnColInfo(WPARAM wParam, LPARAM lParam);
   afx_msg LRESULT OnMapInfo(WPARAM wParam, LPARAM lParam);
-  void savePNG(const char *name);
   void saveBMP(const char *name);
   void render();
   void setAttributes(u16 a0, u16 a1, u16 a2);

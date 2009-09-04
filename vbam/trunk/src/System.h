@@ -26,8 +26,6 @@ struct EmulatedSystem {
   bool (*emuReadMemState)(char *, int);
   // write memory state (rewind)
   bool (*emuWriteMemState)(char *, int);
-  // write PNG file
-  bool (*emuWritePNG)(const char *);
   // write BMP file
   bool (*emuWriteBMP)(const char *);
   // emulator update CPSR (ARM only)

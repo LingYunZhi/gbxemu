@@ -118,7 +118,6 @@ class VBA : public CWinApp
   int rewindCount;
   bool rewindSaveNeeded;
   int rewindTimer;
-  int captureFormat;
   bool tripleBuffering;
   unsigned short throttle;
   u32 autoFrameSkipLastTime;

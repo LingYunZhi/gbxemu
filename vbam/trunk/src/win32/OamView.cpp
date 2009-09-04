@@ -11,10 +11,6 @@
 #include "../NLS.h"
 #include "../Util.h"
 
-extern "C" {
-#include <png.h>
-}
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -362,105 +358,24 @@ void OamView::saveBMP(const char *name)
   fclose(fp);
 }
 
-
-
-void OamView::savePNG(const char *name)
-{
-  u8 writeBuffer[1024 * 3];
-
-  FILE *fp = fopen(name,"wb");
-
-  if(!fp) {
-    systemMessage(MSG_ERROR_CREATING_FILE, "Error creating file %s", name);
-    return;
-  }
-
-  png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
-                                                NULL,
-                                                NULL,
-                                                NULL);
-  if(!png_ptr) {
-    fclose(fp);
-    return;
-  }
-
-  png_infop info_ptr = png_create_info_struct(png_ptr);
-
-  if(!info_ptr) {
-    png_destroy_write_struct(&png_ptr,NULL);
-    fclose(fp);
-    return;
-  }
-
-  if(setjmp(png_ptr->jmpbuf)) {
-    png_destroy_write_struct(&png_ptr,NULL);
-    fclose(fp);
-    return;
-  }
-
-  png_init_io(png_ptr,fp);
-
-  png_set_IHDR(png_ptr,
-               info_ptr,
-               w,
-               h,
-               8,
-               PNG_COLOR_TYPE_RGB,
-               PNG_INTERLACE_NONE,
-               PNG_COMPRESSION_TYPE_DEFAULT,
-               PNG_FILTER_TYPE_DEFAULT);
-
-  png_write_info(png_ptr,info_ptr);
-
-  u8 *b = writeBuffer;
-
-  int sizeX = w;
-  int sizeY = h;
-
-  u8 *pixU8 = (u8 *)data;
-  for(int y = 0; y < sizeY; y++) {
-    for(int x = 0; x < sizeX; x++) {
-      int blue = *pixU8++;
-      int green = *pixU8++;
-      int red = *pixU8++;
-
-      *b++ = red;
-      *b++ = green;
-      *b++ = blue;
-    }
-    png_write_row(png_ptr,writeBuffer);
-
-    b = writeBuffer;
-  }
-
-  png_write_end(png_ptr, info_ptr);
-
-  png_destroy_write_struct(&png_ptr, &info_ptr);
-
-  fclose(fp);
-}
-
 void OamView::OnSave()
 {
   if(rom != NULL)
   {
     CString captureBuffer;
 
-    if(theApp.captureFormat == 0)
-      captureBuffer = "oam.png";
-    else
-      captureBuffer = "oam.bmp";
+    captureBuffer = "oam.bmp";
 
-    LPCTSTR exts[] = {".png", ".bmp" };
+    LPCTSTR exts[] = {".bmp"};
 
-    CString filter = theApp.winLoadFilter(IDS_FILTER_PNG);
+    CString filter = theApp.winLoadFilter(IDS_FILTER_BMP);
     CString title = winResLoadString(IDS_SELECT_CAPTURE_NAME);
 
     FileDlg dlg(this,
                 captureBuffer,
                 filter,
-                theApp.captureFormat ? 2 : 1,
-                theApp.captureFormat ? "BMP" : "PNG",
+                1,
+                "BMP",
                 exts,
                 "",
                 title,
@@ -471,10 +386,7 @@ void OamView::OnSave()
     }
     captureBuffer = dlg.GetPathName();
 
-    if(dlg.getFilterIndex() == 2)
-      saveBMP(captureBuffer);
-    else
-      savePNG(captureBuffer);
+    saveBMP(captureBuffer);
   }
 }
 

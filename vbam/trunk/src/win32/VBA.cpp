@@ -249,7 +249,6 @@ VBA::VBA()
   rewindCount = 0;
   rewindSaveNeeded = false;
   rewindTimer = 0;
-  captureFormat = 0;
   tripleBuffering = true;
   throttle = 0;
   autoFrameSkipLastTime = 0;
@@ -1447,8 +1446,6 @@ void VBA::loadSettings()
 
   pauseWhenInactive = regQueryDwordValue("pauseWhenInactive", 1) ?
     true : false;
-  captureFormat = regQueryDwordValue("captureFormat", 0);
-
   removeIntros = regQueryDwordValue("removeIntros", false) ? true : false;
 
   recentFreeze = regQueryDwordValue("recentFreeze", false) ? true : false;
@@ -2367,8 +2364,6 @@ void VBA::saveSettings()
   regSetDwordValue("showSpeed", showSpeed);
 
   regSetDwordValue("showSpeedTransparent", showSpeedTransparent);
-
-  regSetDwordValue("captureFormat", captureFormat);
 
   regSetDwordValue("removeIntros", removeIntros);
 

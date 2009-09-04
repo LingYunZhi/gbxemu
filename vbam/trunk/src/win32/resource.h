@@ -325,7 +325,7 @@
 #define IDC_ADD_CODE                    1095
 #define IDS_FILTER_CHEAT_LIST           1095
 #define IDC_TRANSLATION_BY              1096
-#define IDS_FILTER_PNG                  1096
+#define IDS_FILTER_BMP                  1096
 #define IDC_LANG_STRING                 1097
 #define IDS_LOADED_CHEATS               1097
 #define IDC_LANG_NAME                   1098

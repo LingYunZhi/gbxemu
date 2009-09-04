@@ -185,10 +185,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_SAVETYPE_FLASH1M, OnUpdateOptionsEmulatorSavetypeFlash1m)
   ON_COMMAND(ID_OPTIONS_EMULATOR_SAVETYPE_DETECTNOW, OnOptionsEmulatorSavetypeDetectNow)
 
-  ON_COMMAND(ID_OPTIONS_EMULATOR_PNGFORMAT, OnOptionsEmulatorPngformat)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_PNGFORMAT, OnUpdateOptionsEmulatorPngformat)
-  ON_COMMAND(ID_OPTIONS_EMULATOR_BMPFORMAT, OnOptionsEmulatorBmpformat)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_BMPFORMAT, OnUpdateOptionsEmulatorBmpformat)
   ON_COMMAND(ID_OPTIONS_SOUND_CHANNEL1, OnOptionsSoundChannel1)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUND_CHANNEL1, OnUpdateOptionsSoundChannel1)
   ON_COMMAND(ID_OPTIONS_SOUND_CHANNEL2, OnOptionsSoundChannel2)
@@ -1105,9 +1101,7 @@ void MainWnd::screenCapture(int captureNumber)
   if(captureDir.IsEmpty())
     captureDir = getDirFromFile(theApp.filename);
 
-  LPCTSTR ext = "png";
-  if(theApp.captureFormat != 0)
-    ext = "bmp";
+  LPCTSTR ext = "bmp";
 
   if(isDriveRoot(captureDir))
     buffer.Format("%s%s_%02d.%s",
@@ -1129,10 +1123,7 @@ void MainWnd::screenCapture(int captureNumber)
 	  return;
   }
 
-  if(theApp.captureFormat == 0)
-    theApp.emulator.emuWritePNG(buffer);
-  else
-    theApp.emulator.emuWriteBMP(buffer);
+  theApp.emulator.emuWriteBMP(buffer);
 
   CString msg = winResLoadString(IDS_SCREEN_CAPTURE);
   systemScreenMessage(msg);
