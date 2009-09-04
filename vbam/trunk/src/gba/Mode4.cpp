@@ -29,11 +29,7 @@ void mode4RenderLine()
   gfxDrawSprites(lineOBJ);
 
   u32 backdrop;
-  if(customBackdropColor == -1) {
-    backdrop = (READ16LE(&palette[0]) | 0x30000000);
-  } else {
-    backdrop = ((customBackdropColor & 0x7FFF) | 0x30000000);
-  }
+  backdrop = (READ16LE(&palette[0]) | 0x30000000);
 
   for(int x = 0; x < 240; x++) {
     u32 color = backdrop;
@@ -110,11 +106,7 @@ void mode4RenderLineNoWindow()
   gfxDrawSprites(lineOBJ);
 
   u32 backdrop;
-  if(customBackdropColor == -1) {
-    backdrop = (READ16LE(&palette[0]) | 0x30000000);
-  } else {
-    backdrop = ((customBackdropColor & 0x7FFF) | 0x30000000);
-  }
+  backdrop = (READ16LE(&palette[0]) | 0x30000000);
 
   for(int x = 0; x < 240; x++) {
     u32 color = backdrop;
@@ -255,11 +247,7 @@ void mode4RenderLineAll()
   gfxDrawOBJWin(lineOBJWin);
 
   u32 backdrop;
-  if(customBackdropColor == -1) {
-    backdrop = (READ16LE(&palette[0]) | 0x30000000);
-  } else {
-    backdrop = ((customBackdropColor & 0x7FFF) | 0x30000000);
-  }
+  backdrop = (READ16LE(&palette[0]) | 0x30000000);
 
   u8 inWin0Mask = WININ & 0xFF;
   u8 inWin1Mask = WININ >> 8;

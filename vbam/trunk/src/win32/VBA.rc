@@ -604,7 +604,6 @@ BEGIN
     LTEXT           "Value:",IDC_STATIC,7,216,38,8
     LTEXT           "Click on a color for more information",IDC_STATIC,7,7,302,8
     CONTROL         "Automatic update",IDC_AUTO_UPDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,229,71,10
-    PUSHBUTTON      "Change backdrop color...",IDC_CHANGE_BACKDROP,102,228,108,14
 END
 
 IDD_MEM_VIEWER DIALOG  0, 0, 380, 178
