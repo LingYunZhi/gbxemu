@@ -78,9 +78,6 @@ extern IDisplay *newDirect3DDisplay();
 extern Input *newDirectInput();
 
 extern SoundDriver *newDirectSound();
-#ifndef NO_OAL
-extern SoundDriver *newOpenAL();
-#endif
 #ifndef NO_XAUDIO2
 extern SoundDriver *newXAudio2_Output();
 #endif
@@ -234,10 +231,6 @@ VBA::VBA()
   changingVideoSize = false;
   renderMethod = DIRECT_3D;
   audioAPI = DIRECTSOUND;
-#ifndef NO_OAL
-  oalDevice = NULL;
-  oalBufferCount = 5;
-#endif
 #ifndef NO_XAUDIO2
   audioAPI = XAUDIO2;
   xa2Device = 0;
@@ -351,12 +344,6 @@ VBA::~VBA()
 
   shutdownDisplay();
 
-#ifndef NO_OAL
-  if( oalDevice ) {
-	  free( oalDevice );
-  }
-#endif
-  
   CoUninitialize();
 }
 
@@ -1033,11 +1020,6 @@ SoundDriver * systemSoundInit()
 	case DIRECTSOUND:
 		drv = newDirectSound();
 		break;
-#ifndef NO_OAL
-	case OPENAL_SOUND:
-		drv = newOpenAL();
-		break;
-#endif
 #ifndef NO_XAUDIO2
 	case XAUDIO2:
 		drv = newXAudio2_Output();
@@ -1241,9 +1223,6 @@ void VBA::loadSettings()
 
   audioAPI = (AUDIO_API)regQueryDwordValue( "audioAPI", XAUDIO2 );
   if( ( audioAPI != DIRECTSOUND )
-#ifndef NO_OAL
-	  && ( audioAPI != OPENAL_SOUND )
-#endif
 #ifndef NO_XAUDIO2
 	  && ( audioAPI != XAUDIO2 )
 #endif
@@ -1419,17 +1398,6 @@ void VBA::loadSettings()
   lanlink.active = regQueryDwordValue("LAN", 0) ? true : false;
 
   Sm60FPS::bSaveMoreCPU = regQueryDwordValue("saveMoreCPU", 0);
-
-#ifndef NO_OAL
-  buffer = regQueryStringValue( "oalDevice", "Generic Software" );
-  if( oalDevice ) {
-	  free( oalDevice );
-  }
-  oalDevice = (TCHAR*)malloc( ( buffer.GetLength() + 1 ) * sizeof( TCHAR ) );
-  _tcscpy( oalDevice, buffer.GetBuffer() );
-
-  oalBufferCount = regQueryDwordValue( "oalBufferCount", 5 );
-#endif
 
 #ifndef NO_XAUDIO2
   xa2Device = regQueryDwordValue( "xa2Device", 0 );
@@ -2211,11 +2179,6 @@ void VBA::saveSettings()
   regSetDwordValue("linkEnabled", linkenable);
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
-
-#ifndef NO_OAL
-  regSetStringValue( "oalDevice", oalDevice );
-  regSetDwordValue( "oalBufferCount", oalBufferCount );
-#endif
 
 #ifndef NO_XAUDIO2
   regSetDwordValue( "xa2Device", xa2Device );

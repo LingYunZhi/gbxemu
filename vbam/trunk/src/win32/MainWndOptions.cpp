@@ -13,7 +13,6 @@
 #include "Throttle.h"
 #include "WinResUtil.h"
 #include "SelectPlugin.h"
-#include "OALConfig.h"
 #include "XAudio2_Config.h"
 #include "BIOSDialog.h"
 #include "AudioCoreSettingsDlg.h"
@@ -1470,63 +1469,6 @@ void MainWnd::OnUpdateOutputapiXaudio2(CCmdUI *pCmdUI)
 {
 #ifndef NO_XAUDIO2
 	pCmdUI->SetCheck( ( theApp.audioAPI == XAUDIO2 ) ? 1 : 0 );
-	pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
-void MainWnd::OnOutputapiOpenal()
-{
-#ifndef NO_OAL
-	if( theApp.audioAPI != OPENAL_SOUND ) {
-		theApp.audioAPI = OPENAL_SOUND;
-		soundShutdown();
-		soundInit();
-	}
-#endif
-}
-
-void MainWnd::OnUpdateOutputapiOpenal(CCmdUI *pCmdUI)
-{
-#ifndef NO_OAL
-	pCmdUI->SetCheck( ( theApp.audioAPI == OPENAL_SOUND ) ? 1 : 0 );
-	pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
-void MainWnd::OnOutputapiOalconfiguration()
-{
-#ifndef NO_OAL
-	OALConfig dlg;
-
-	dlg.selectedDevice = theApp.oalDevice;
-	dlg.bufferCount = theApp.oalBufferCount;
-
-	if( dlg.DoModal() == IDOK ) {
-		soundShutdown();
-		// do this before changing any values OpenAL
-		// might need for successful cleanup
-
-		if( theApp.oalDevice ) {
-			free( theApp.oalDevice );
-			theApp.oalDevice = NULL;
-		}
-
-		theApp.oalDevice = (TCHAR*)malloc( (dlg.selectedDevice.GetLength() + 1) * sizeof( TCHAR ) );
-		_tcscpy( theApp.oalDevice, dlg.selectedDevice.GetBuffer() );
-		theApp.oalBufferCount = dlg.bufferCount;
-
-		soundInit();
-	}
-#endif
-}
-
-void MainWnd::OnUpdateOutputapiOalconfiguration(CCmdUI *pCmdUI)
-{
-#ifndef NO_OAL
 	pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
 #else
 	pCmdUI->Enable( FALSE );

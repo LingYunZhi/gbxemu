@@ -40,9 +40,6 @@ enum pixelFilterType
 
 enum AUDIO_API {
 	DIRECTSOUND = 0
-#ifndef NO_OAL
-	, OPENAL_SOUND = 1
-#endif
 #ifndef NO_XAUDIO2
 	, XAUDIO2 = 2
 #endif
@@ -115,10 +112,6 @@ class VBA : public CWinApp
   bool changingVideoSize;
   DISPLAY_TYPE renderMethod;
   AUDIO_API audioAPI;
-#ifndef NO_OAL
-  TCHAR *oalDevice;
-  int oalBufferCount;
-#endif
 #ifndef NO_XAUDIO2
   UINT32 xa2Device;
   UINT32 xa2BufferCount;

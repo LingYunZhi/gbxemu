@@ -613,14 +613,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\LoadOAL.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OpenAL.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\common\SoundDriver.h"
 				>
 			</File>
@@ -1582,30 +1574,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\MemoryViewerDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OALConfig.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\OALConfig.h"
 				>
 			</File>
 			<File

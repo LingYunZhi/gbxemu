@@ -101,7 +101,6 @@
 #define IDD_GAME_OVERRIDES              156
 #define IDD_SELECT                      159
 #define IDD_SELECT_PLUGIN               159
-#define IDD_OAL_CONFIG                  160
 #define IDD_BIOS                        161
 #define IDD_FULLSCREEN                  162
 #define IDD_XAUDIO2_CONFIG              163
@@ -523,9 +522,6 @@
 #define IDC_MIRRORING                   1266
 #define IDC_LY                          1267
 #define IDC_APPENDMODE                  1268
-#define IDC_DEVICE                      1269
-#define IDC_SLIDER_BUFFERCOUNT          1270
-#define IDC_BUFFERINFO                  1271
 #define IDC_GB_BIOS_PATH                1272
 #define IDC_GBA_BIOS_PATH               1273
 #define IDC_SKIP_BOOT_LOGO              1274
