@@ -32,8 +32,6 @@ bool speedHack = false;
 int cpuSaveType = 0;
 bool cheatsEnabled = true;
 bool mirroringEnable = false;
-bool skipSaveGameBattery = false;
-bool skipSaveGameCheats = false;
 
 // this is an optional hack to change the backdrop/background color:
 // -1: disabled

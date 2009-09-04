@@ -10,7 +10,6 @@
 #include "Joypad.h"
 #include "MaxScale.h"
 #include "Reg.h"
-#include "RewindInterval.h"
 #include "Throttle.h"
 #include "WinResUtil.h"
 #include "SelectPlugin.h"
@@ -594,16 +593,6 @@ void MainWnd::OnUpdateOptionsEmulatorSpeeduptoggle(CCmdUI* pCmdUI)
   pCmdUI->SetCheck(theApp.speedupToggle);
 }
 
-void MainWnd::OnOptionsEmulatorAutomaticallyApplyPatchFiles()
-{
-  theApp.autoPatch = !theApp.autoPatch;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorAutomaticallyipspatch(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.autoPatch);
-}
-
 void MainWnd::OnOptionsEmulatorAgbprint()
 {
   agbPrintEnable(!agbPrintIsEnabled());
@@ -623,31 +612,6 @@ void MainWnd::OnUpdateOptionsEmulatorRealtimeclock(CCmdUI* pCmdUI)
 {
   pCmdUI->SetCheck(theApp.winRtcEnable);
 }
-
-void MainWnd::OnOptionsEmulatorRewindinterval()
-{
-	RewindInterval dlg(theApp.rewindTimer/6);
-	int v = (int)dlg.DoModal();
-
-	if( v >= 0 ) {
-		theApp.rewindTimer = v*6; // convert to a multiple of 10 frames
-		regSetDwordValue("rewindTimer", v);
-		if(v == 0) {
-			if(theApp.rewindMemory) {
-				free(theApp.rewindMemory);
-				theApp.rewindMemory = NULL;
-			}
-			theApp.rewindCount = 0;
-			theApp.rewindCounter = 0;
-			theApp.rewindSaveNeeded = false;
-		} else {
-			if(theApp.rewindMemory == NULL) {
-				theApp.rewindMemory = (char *)malloc(8*REWIND_SIZE);
-			}
-		}
-	}
-}
-
 
 BOOL MainWnd::OnOptionsEmulatorShowSpeed(UINT nID)
 {

@@ -1055,18 +1055,6 @@ BEGIN
     CONTROL         "Automatic update",IDC_AUTO_UPDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,178,71,10
 END
 
-IDD_REWIND_INTERVAL DIALOG  0, 0, 186, 68
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Select rewind interval"
-FONT 8, "MS Sans Serif"
-BEGIN
-    EDITTEXT        IDC_INTERVAL,7,28,172,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",ID_OK,37,47,50,14
-    PUSHBUTTON      "Cancel",ID_CANCEL,99,47,50,14
-    LTEXT           "Enter rewind interval (0...600) seconds:",IDC_STATIC,7,7,172,8
-    LTEXT           "Enter 0 to disable rewind.",IDC_STATIC,7,17,172,8
-END
-
 IDD_IO_VIEWER DIALOG  0, 0, 269, 238
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "I/O Viewer"
@@ -1502,14 +1490,6 @@ BEGIN
         RIGHTMARGIN, 189
         TOPMARGIN, 7
         BOTTOMMARGIN, 227
-    END
-
-    IDD_REWIND_INTERVAL, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 61
     END
 
     IDD_IO_VIEWER, DIALOG
@@ -1968,9 +1948,6 @@ BEGIN
             MENUITEM "Start playing movie...",      ID_TOOLS_PLAY_STARTMOVIEPLAYING
             MENUITEM "Stop playing movie",          ID_TOOLS_PLAY_STOPMOVIEPLAYING
         END
-        MENUITEM SEPARATOR
-        MENUITEM "Rewind",                      ID_TOOLS_REWIND
-        MENUITEM "Rewind interval...",          ID_OPTIONS_EMULATOR_REWINDINTERVAL
         MENUITEM SEPARATOR
         MENUITEM "Customize...",                ID_TOOLS_CUSTOMIZE
     END

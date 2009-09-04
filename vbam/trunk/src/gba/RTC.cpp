@@ -196,13 +196,3 @@ void rtcReset()
   rtcClockData.bits = 0;
   rtcClockData.state = IDLE;
 }
-
-void rtcSaveGame(gzFile gzFile)
-{
-  utilGzWrite(gzFile, &rtcClockData, sizeof(rtcClockData));
-}
-
-void rtcReadGame(gzFile gzFile)
-{
-  utilGzRead(gzFile, &rtcClockData, sizeof(rtcClockData));
-}

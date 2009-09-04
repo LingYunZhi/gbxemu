@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="zlibd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -120,6 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="zlib.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

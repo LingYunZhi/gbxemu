@@ -582,205 +582,113 @@ void CPUUpdateRenderBuffers(bool force)
   }
 }
 
-static bool CPUWriteState(gzFile gzFile)
+static bool writeState( FILE *file )
 {
-  utilWriteInt(gzFile, SAVE_GAME_VERSION);
+    const int version = SAVE_GAME_VERSION;
+    fwrite( &version, sizeof(version), 1, file );
 
-  utilGzWrite(gzFile, &rom[0xa0], 16);
+    // game id string
+    fwrite( &rom[0xa0], 1, 16, file );
 
-  utilWriteInt(gzFile, useBios);
+    const int ub = useBios ? 1 : 0;
+    fwrite( &ub, sizeof(ub), 1, file );
 
-  utilGzWrite(gzFile, &reg[0], sizeof(reg));
+    // all cpu registers
+    fwrite( &reg[0], sizeof(reg), 1, file );
 
-  utilWriteData(gzFile, saveGameStruct);
-
-  // new to version 0.7.1
-  utilWriteInt(gzFile, stopState);
-  // new to version 0.8
-  utilWriteInt(gzFile, IRQTicks);
-
-  utilGzWrite(gzFile, internalRAM, 0x8000);
-  utilGzWrite(gzFile, paletteRAM, 0x400);
-  utilGzWrite(gzFile, workRAM, 0x40000);
-  utilGzWrite(gzFile, vram, 0x20000);
-  utilGzWrite(gzFile, oam, 0x400);
-  utilGzWrite(gzFile, pix, 4*241*162);
-  utilGzWrite(gzFile, ioMem, 0x400);
-
-  eepromSaveGame(gzFile);
-  flashSaveGame(gzFile);
-  soundSaveGame(gzFile);
-
-  cheatsSaveGame(gzFile);
-
-  // version 1.5
-  rtcSaveGame(gzFile);
-
-  return true;
-}
-
-bool CPUWriteState(const char *file)
-{
-  gzFile gzFile = utilGzOpen(file, "wb");
-
-  if(gzFile == NULL) {
-    systemMessage(MSG_ERROR_CREATING_FILE, N_("Error creating file %s"), file);
-    return false;
-  }
-
-  bool res = CPUWriteState(gzFile);
-
-  utilGzClose(gzFile);
-
-  return res;
-}
-
-bool CPUWriteMemState(char *memory, int available)
-{
-  gzFile gzFile = utilMemGzOpen(memory, available, "w");
-
-  if(gzFile == NULL) {
-    return false;
-  }
-
-  bool res = CPUWriteState(gzFile);
-
-  long pos = utilGzMemTell(gzFile)+8;
-
-  if(pos >= (available))
-    res = false;
-
-  utilGzClose(gzFile);
-
-  return res;
-}
-
-static bool CPUReadState(gzFile gzFile)
-{
-  int version = utilReadInt(gzFile);
-
-  if(version > SAVE_GAME_VERSION || version < SAVE_GAME_VERSION_1) {
-    systemMessage(MSG_UNSUPPORTED_VBA_SGM,
-                  N_("Unsupported VisualBoyAdvance save game version %d"),
-                  version);
-    return false;
-  }
-
-  u8 romname[17];
-
-  utilGzRead(gzFile, romname, 16);
-
-  if(memcmp(&rom[0xa0], romname, 16) != 0) {
-    romname[16]=0;
-    for(int i = 0; i < 16; i++)
-      if(romname[i] < 32)
-        romname[i] = 32;
-    systemMessage(MSG_CANNOT_LOAD_SGM, N_("Cannot load save game for %s"), romname);
-    return false;
-  }
-
-  bool ub = utilReadInt(gzFile) ? true : false;
-
-  if(ub != useBios) {
-    if(useBios)
-      systemMessage(MSG_SAVE_GAME_NOT_USING_BIOS,
-                    N_("Save game is not using the BIOS files"));
-    else
-      systemMessage(MSG_SAVE_GAME_USING_BIOS,
-                    N_("Save game is using the BIOS file"));
-    return false;
-  }
-
-  utilGzRead(gzFile, &reg[0], sizeof(reg));
-
-  utilReadData(gzFile, saveGameStruct);
-
-  if(version < SAVE_GAME_VERSION_3)
-    stopState = false;
-  else
-    stopState = utilReadInt(gzFile) ? true : false;
-
-  if(version < SAVE_GAME_VERSION_4)
-  {
-    IRQTicks = 0;
-    intState = false;
-  }
-  else
-  {
-    IRQTicks = utilReadInt(gzFile);
-    if (IRQTicks>0)
-      intState = true;
-    else
-    {
-      intState = false;
-      IRQTicks = 0;
+    // all io registers
+    variable_desc *data = &saveGameStruct[0];
+    while( data->address ) {
+        fwrite( data->address, data->size, 1, file );
+        data++;
     }
-  }
 
-  utilGzRead(gzFile, internalRAM, 0x8000);
-  utilGzRead(gzFile, paletteRAM, 0x400);
-  utilGzRead(gzFile, workRAM, 0x40000);
-  utilGzRead(gzFile, vram, 0x20000);
-  utilGzRead(gzFile, oam, 0x400);
-  if(version < SAVE_GAME_VERSION_6)
-    utilGzRead(gzFile, pix, 4*240*160);
-  else
-    utilGzRead(gzFile, pix, 4*241*162);
-  utilGzRead(gzFile, ioMem, 0x400);
+    const int stop = stopState ? 1 : 0;
+    fwrite( &stop, sizeof(stop), 1, file );
+    
+    fwrite( &IRQTicks, sizeof(IRQTicks), 1, file );
 
-  if(skipSaveGameBattery) {
-    // skip eeprom data
-    eepromReadGameSkip(gzFile, version);
-    // skip flash data
-    flashReadGameSkip(gzFile, version);
-  } else {
-    eepromReadGame(gzFile, version);
-    flashReadGame(gzFile, version);
-  }
-  soundReadGame(gzFile, version);
+    // memory areas
+    fwrite( internalRAM, 1, 0x8000, file );
+    fwrite( paletteRAM, 1, 0x400, file );
+    fwrite( workRAM, 1, 0x40000, file );
+    fwrite( vram, 1, 0x20000, file );
+    fwrite( oam, 1, 0x400, file );
+    fwrite( pix, 1, 4*241*162, file );
+    fwrite( ioMem, 1, 0x400, file );
+    
+    soundSaveGame( file );
+    
+    return true;
+}
 
-  if(version > SAVE_GAME_VERSION_1) {
-    if(skipSaveGameCheats) {
-      // skip cheats list data
-      cheatsReadGameSkip(gzFile, version);
+static bool readState( FILE *file )
+{
+    int version = -1;
+    fread( &version, sizeof(version), 1, file );
+
+    if( version != SAVE_GAME_VERSION ) {
+        systemMessage(
+            MSG_UNSUPPORTED_VBA_SGM,
+            N_("Unsupported VisualBoyAdvance save game version %d"),
+            version );
+        return false;
+    }
+    
+    u8 romname[16];
+    fread( &romname[0], 1, 16, file );
+    if( 0 != memcmp( &rom[0xa0], &romname[0], 16 ) ) {
+        systemMessage(MSG_CANNOT_LOAD_SGM, N_("Cannot load save game for %s"), romname);
+        return false;
+    }
+
+    int ub = -1;
+    fread( &ub, sizeof(ub), 1, file );
+
+    bool stateUseBios = ( ub == 1 );
+    
+    if( stateUseBios != useBios ) {
+        if( useBios )
+            systemMessage(
+            MSG_SAVE_GAME_NOT_USING_BIOS,
+            N_("Save game is not using the BIOS files") );
+        else
+            systemMessage(
+            MSG_SAVE_GAME_USING_BIOS,
+            N_("Save game is using the BIOS file") );
+        return false;
+    }
+
+    fread( &reg[0], sizeof(reg), 1, file );
+
+    variable_desc *data = &saveGameStruct[0];
+    while( data->address ) {
+        fread( data->address, data->size, 1, file );
+        data++;
+    }
+
+    int ss = -1;
+    fread( &ss, sizeof(ss), 1, file );
+    stopState = ( ss == 1 );
+
+    fread( &IRQTicks, sizeof(IRQTicks), 1, file );
+    if( IRQTicks > 0 ) {
+        intState = true;
     } else {
-      cheatsReadGame(gzFile, version);
+        intState = false;
+        IRQTicks = 0;
     }
-  }
-  if(version > SAVE_GAME_VERSION_6) {
-    rtcReadGame(gzFile);
-  }
 
-  if(version <= SAVE_GAME_VERSION_7) {
-    u32 temp;
-#define SWAP(a,b,c) \
-    temp = (a);\
-    (a) = (b)<<16|(c);\
-    (b) = (temp) >> 16;\
-    (c) = (temp) & 0xFFFF;
-
-    SWAP(dma0Source, DM0SAD_H, DM0SAD_L);
-    SWAP(dma0Dest,   DM0DAD_H, DM0DAD_L);
-    SWAP(dma1Source, DM1SAD_H, DM1SAD_L);
-    SWAP(dma1Dest,   DM1DAD_H, DM1DAD_L);
-    SWAP(dma2Source, DM2SAD_H, DM2SAD_L);
-    SWAP(dma2Dest,   DM2DAD_H, DM2DAD_L);
-    SWAP(dma3Source, DM3SAD_H, DM3SAD_L);
-    SWAP(dma3Dest,   DM3DAD_H, DM3DAD_L);
-  }
-
-  if(version <= SAVE_GAME_VERSION_8) {
-    timer0ClockReload = TIMER_TICKS[TM0CNT & 3];
-    timer1ClockReload = TIMER_TICKS[TM1CNT & 3];
-    timer2ClockReload = TIMER_TICKS[TM2CNT & 3];
-    timer3ClockReload = TIMER_TICKS[TM3CNT & 3];
-
-    timer0Ticks = ((0x10000 - TM0D) << timer0ClockReload) - timer0Ticks;
-    timer1Ticks = ((0x10000 - TM1D) << timer1ClockReload) - timer1Ticks;
-    timer2Ticks = ((0x10000 - TM2D) << timer2ClockReload) - timer2Ticks;
-    timer3Ticks = ((0x10000 - TM3D) << timer3ClockReload) - timer3Ticks;
-    interp_rate();
-  }
+    fread( internalRAM, 1, 0x8000, file );
+    fread( paletteRAM, 1, 0x400, file );
+    fread( workRAM, 1, 0x40000, file );
+    fread( vram, 1, 0x20000, file );
+    fread( oam, 1, 0x400, file );
+    fread( pix, 1, 4*241*162, file );
+    fread( ioMem, 1, 0x400, file );
+    
+    soundReadGame( file, version );
+    
 
   // set pointers!
   layerEnable = layerSettings & DISPCNT;
@@ -827,29 +735,33 @@ static bool CPUReadState(gzFile gzFile)
   return true;
 }
 
-bool CPUReadMemState(char *memory, int available)
+bool CPUWriteState( const char *file )
 {
-  gzFile gzFile = utilMemGzOpen(memory, available, "r");
+    FILE *f = fopen( file, "wb" );
 
-  bool res = CPUReadState(gzFile);
+    if( f == NULL ) {
+        systemMessage(MSG_ERROR_CREATING_FILE, N_("Error creating file %s"), f);
+        return false;
+    }
 
-  utilGzClose(gzFile);
+    const bool res = writeState( f );
 
-  return res;
+    fclose(f);
+
+    return res;
 }
 
-bool CPUReadState(const char * file)
+bool CPUReadState( const char *file )
 {
-  gzFile gzFile = utilGzOpen(file, "rb");
+    FILE *f = fopen( file, "rb" );
 
-  if(gzFile == NULL)
-    return false;
+    if( f == NULL ) return false;
 
-  bool res = CPUReadState(gzFile);
+    const bool res = readState( f );
 
-  utilGzClose(gzFile);
+    fclose( f );
 
-  return res;
+    return res;
 }
 
 bool CPUExportEepromFile(const char *fileName)
@@ -3961,10 +3873,6 @@ struct EmulatedSystem GBASystem = {
   CPUReadState,
   // emuWriteState
   CPUWriteState,
-  // emuReadMemState
-  CPUReadMemState,
-  // emuWriteMemState
-  CPUWriteMemState,
   // emuWriteBMP
   CPUWriteBMPFile,
   // emuUpdateCPSR
@@ -3972,9 +3880,5 @@ struct EmulatedSystem GBASystem = {
   // emuHasDebugger
   true,
   // emuCount
-#ifdef FINAL_VERSION
   250000
-#else
-  5000
-#endif
 };

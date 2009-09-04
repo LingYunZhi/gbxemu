@@ -196,10 +196,6 @@ void MainWnd::OnFileLoad()
   if(dlg.DoModal() == IDOK) {
     bool res = loadSaveGame(dlg.GetPathName());
 
-    theApp.rewindCount = 0;
-    theApp.rewindCounter = 0;
-    theApp.rewindSaveNeeded = false;
-
     if(res)
       systemScreenMessage(winResLoadString(IDS_LOADED_STATE));
   }
@@ -255,10 +251,6 @@ BOOL MainWnd::OnFileLoadSlot(UINT nID)
   systemScreenMessage(buffer);
 
   systemDrawScreen();
-
-  //theApp.rewindCount = 0;
-  //theApp.rewindCounter = 0;
-  //theApp.rewindSaveNeeded = false;
 
   return res;
 }
@@ -950,24 +942,4 @@ void MainWnd::OnFileLoadgameAutoloadmostrecent()
 void MainWnd::OnUpdateFileLoadgameAutoloadmostrecent(CCmdUI* pCmdUI)
 {
   pCmdUI->SetCheck(theApp.autoLoadMostRecent);
-}
-
-void MainWnd::OnLoadgameDonotchangebatterysave()
-{
-  skipSaveGameBattery = !skipSaveGameBattery;
-}
-
-void MainWnd::OnUpdateLoadgameDonotchangebatterysave(CCmdUI *pCmdUI)
-{
-  pCmdUI->SetCheck(skipSaveGameBattery);
-}
-
-void MainWnd::OnLoadgameDonotchangecheatlist()
-{
-  skipSaveGameCheats = !skipSaveGameCheats;
-}
-
-void MainWnd::OnUpdateLoadgameDonotchangecheatlist(CCmdUI *pCmdUI)
-{
-  pCmdUI->SetCheck(skipSaveGameCheats);
 }

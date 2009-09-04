@@ -96,7 +96,6 @@
 #define IDD_GB_MAP_VIEW                 147
 #define IDD_GB_PALETTE_VIEW             148
 #define IDD_MODE_CONFIRM                149
-#define IDD_REWIND_INTERVAL             150
 #define IDD_IO_VIEWER                   151
 #define IDD_MAX_SCALE                   154
 #define IDD_GAME_OVERRIDES              156
@@ -499,7 +498,6 @@
 #define IDC_BANK_0                      1245
 #define IDC_BANK_1                      1246
 #define IDC_TIMER                       1247
-#define IDC_INTERVAL                    1248
 #define IDC_BIT_0                       1250
 #define IDC_BIT_1                       1251
 #define IDC_PREDEFINED                  1251

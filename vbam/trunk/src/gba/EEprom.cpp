@@ -40,35 +40,6 @@ void eepromReset()
   eepromSize = 512;
 }
 
-void eepromSaveGame(gzFile gzFile)
-{
-  utilWriteData(gzFile, eepromSaveData);
-  utilWriteInt(gzFile, eepromSize);
-  utilGzWrite(gzFile, eepromData, 0x2000);
-}
-
-void eepromReadGame(gzFile gzFile, int version)
-{
-  utilReadData(gzFile, eepromSaveData);
-  if(version >= SAVE_GAME_VERSION_3) {
-    eepromSize = utilReadInt(gzFile);
-    utilGzRead(gzFile, eepromData, 0x2000);
-  } else {
-    // prior to 0.7.1, only 4K EEPROM was supported
-    eepromSize = 512;
-  }
-}
-
-void eepromReadGameSkip(gzFile gzFile, int version)
-{
-  // skip the eeprom data in a save game
-  utilReadDataSkip(gzFile, eepromSaveData);
-  if(version >= SAVE_GAME_VERSION_3) {
-    utilGzSeek(gzFile, sizeof(int), SEEK_CUR);
-    utilGzSeek(gzFile, 0x2000, SEEK_CUR);
-  }
-}
-
 int eepromRead(u32 /* address */)
 {
   switch(eepromMode) {

@@ -48,8 +48,6 @@ enum AUDIO_API {
 #endif
 };
 
-#define REWIND_SIZE 400000
-
 class AVIWrite;
 class WavWriter;
 
@@ -107,17 +105,9 @@ class VBA : public CWinApp
   bool autoSaveLoadCheatList;
   FILE *winout;
   bool removeIntros;
-  bool autoPatch;
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;
-  char *rewindMemory;
-  int rewindPos;
-  int rewindTopPos;
-  int rewindCounter;
-  int rewindCount;
-  bool rewindSaveNeeded;
-  int rewindTimer;
   bool tripleBuffering;
   unsigned short throttle;
   u32 autoFrameSkipLastTime;

@@ -7,7 +7,4 @@ void rtcEnable(bool);
 bool rtcIsEnabled();
 void rtcReset();
 
-void rtcReadGame(gzFile gzFile);
-void rtcSaveGame(gzFile gzFile);
-
 #endif // RTC_H

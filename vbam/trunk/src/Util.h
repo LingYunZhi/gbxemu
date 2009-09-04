@@ -15,6 +15,8 @@ typedef struct {
   int size;
 } variable_desc;
 
+void utilPutDword(u8 *p, u32 value);
+void utilPutWord(u8 *p, u16 value);
 bool utilWriteBMPFile(const char *, int, int, u8 *);
 void utilApplyIPS(const char *ips, u8 **rom, int *size);
 bool utilIsGBAImage(const char *);
@@ -24,21 +26,6 @@ void utilStripDoubleExtension(const char *, char *);
 IMAGE_TYPE utilFindType(const char *);
 u8 *utilLoad(const char *, bool (*)(const char*), u8 *, int &);
 
-void utilPutDword(u8 *, u32);
-void utilPutWord(u8 *, u16);
-void utilWriteData(gzFile, variable_desc *);
-void utilReadData(gzFile, variable_desc *);
-void utilReadDataSkip(gzFile, variable_desc *);
-int utilReadInt(gzFile);
-void utilWriteInt(gzFile, int);
-gzFile utilGzOpen(const char *file, const char *mode);
-gzFile utilMemGzOpen(char *memory, int available, const char *mode);
-int utilGzWrite(gzFile file, const voidp buffer, unsigned int len);
-int utilGzRead(gzFile file, voidp buffer, unsigned int len);
-int utilGzClose(gzFile file);
-z_off_t utilGzSeek(gzFile file, z_off_t offset, int whence);
-long utilGzMemTell(gzFile file);
-void utilGBAFindSave(const u8 *, const int);
 void utilUpdateSystemColorMaps();
 bool utilFileExists( const char *filename );
 

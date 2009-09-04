@@ -3,8 +3,6 @@
 
 #include "common/Types.h"
 
-#include <zlib.h>
-
 class SoundDriver;
 
 struct EmulatedSystem {
@@ -22,10 +20,6 @@ struct EmulatedSystem {
   bool (*emuReadState)(const char *);
   // save state
   bool (*emuWriteState)(const char *);
-  // load memory state (rewind)
-  bool (*emuReadMemState)(char *, int);
-  // write memory state (rewind)
-  bool (*emuWriteMemState)(char *, int);
   // write BMP file
   bool (*emuWriteBMP)(const char *);
   // emulator update CPSR (ARM only)

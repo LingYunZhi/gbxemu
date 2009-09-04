@@ -238,17 +238,9 @@ VBA::VBA()
   autoSaveLoadCheatList = true;
   winout = NULL;
   removeIntros = false;
-  autoPatch = true;
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
-  rewindMemory = NULL;
-  rewindPos = 0;
-  rewindTopPos = 0;
-  rewindCounter = 0;
-  rewindCount = 0;
-  rewindSaveNeeded = false;
-  rewindTimer = 0;
   tripleBuffering = true;
   throttle = 0;
   autoFrameSkipLastTime = 0;
@@ -375,9 +367,6 @@ VBA::~VBA()
     delete input;
 
   shutdownDisplay();
-
-  if(rewindMemory)
-    free(rewindMemory);
 
 #ifndef NO_OAL
   if( oalDevice ) {
@@ -1055,13 +1044,6 @@ void system10Frames(int rate)
 		}
 	}
 
-
-  if(theApp.rewindMemory) {
-    if(++theApp.rewindCounter >= (theApp.rewindTimer)) {
-      theApp.rewindSaveNeeded = true;
-      theApp.rewindCounter = 0;
-    }
-  }
   if(systemSaveUpdateCounter) {
     if(--systemSaveUpdateCounter <= SYSTEM_SAVE_NOT_UPDATED) {
       ((MainWnd *)theApp.m_pMainWnd)->writeBatteryFile();
@@ -1231,20 +1213,6 @@ BOOL VBA::OnIdle(LONG lCount)
     for(int i = 0; i < 2; i++) {
       emulator.emuMain(emulator.emuCount);
       if(lanlink.connected&&linkid&&lc.numtransfers==0) lc.CheckConn();
-
-      if(rewindSaveNeeded && rewindMemory && emulator.emuWriteMemState) {
-        rewindCount++;
-        if(rewindCount > 8)
-          rewindCount = 8;
-        if(emulator.emuWriteMemState(&rewindMemory[rewindPos*REWIND_SIZE],
-                                     REWIND_SIZE)) {
-          rewindPos = ++rewindPos & 7;
-          if(rewindCount == 8)
-            rewindTopPos = ++rewindTopPos & 7;
-        }
-      }
-
-      rewindSaveNeeded = false;
     }
 
     if(mouseCounter) {
@@ -1450,8 +1418,6 @@ void VBA::loadSettings()
 
   recentFreeze = regQueryDwordValue("recentFreeze", false) ? true : false;
 
-  autoPatch = regQueryDwordValue("autoPatch", 1) == 1 ? true : false;
-
   cpuDisableSfx = regQueryDwordValue("disableSfx", 0) ? true : false;
 
   winSaveType = regQueryDwordValue("saveType", 0);
@@ -1513,16 +1479,6 @@ void VBA::loadSettings()
 
   autoSaveLoadCheatList = ( 1 == regQueryDwordValue( "autoSaveCheatList", 1 ) ) ? true : false;
 
-  rewindTimer = regQueryDwordValue("rewindTimer", 0);
-
-  if(rewindTimer < 0 || rewindTimer > 600)
-    rewindTimer = 0;
-
-  rewindTimer *= 6; // convert to 10 frames multiple
-
-  if(rewindTimer != 0)
-    rewindMemory = (char *)malloc(8*REWIND_SIZE);
-
   for(int i = 0; i < 10; i++) {
     buffer.Format("recent%d", i);
     char *s = regQueryStringValue(buffer, NULL);
@@ -1536,10 +1492,6 @@ void VBA::loadSettings()
     joypadDefault = 0;
 
   autoLoadMostRecent = ( 1 == regQueryDwordValue("autoLoadMostRecent", 0) ) ? true : false;
-
-  skipSaveGameBattery = ( 1 == regQueryDwordValue("skipSaveGameBattery", 0) ) ? true : false;
-
-  skipSaveGameCheats = ( 1 == regQueryDwordValue("skipSaveGameCheats", 0) ) ? true : false;
 
   cheatsEnabled = regQueryDwordValue("cheatsEnabled", false) ? true : false;
 
@@ -2369,8 +2321,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("recentFreeze", recentFreeze);
 
-  regSetDwordValue("autoPatch", autoPatch ? 1 : 0);
-
   regSetDwordValue("disableSfx", cpuDisableSfx);
 
   regSetDwordValue("saveType", winSaveType);
@@ -2387,8 +2337,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("autoSaveCheatList", autoSaveLoadCheatList);
 
-  regSetDwordValue("rewindTimer", rewindTimer/6);
-
   CString buffer;
   for(int i = 0; i < 10; i++) {
     buffer.Format("recent%d", i);
@@ -2397,8 +2345,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("joypadDefault", joypadDefault);
   regSetDwordValue("autoLoadMostRecent", autoLoadMostRecent);
-  regSetDwordValue("skipSaveGameBattery", skipSaveGameBattery);
-  regSetDwordValue("skipSaveGameCheats", skipSaveGameCheats);
   regSetDwordValue("cheatsEnabled", cheatsEnabled);
   regSetDwordValue("maxScale", maxScale);
   regSetDwordValue("throttle", throttle);

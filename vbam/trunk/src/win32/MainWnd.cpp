@@ -21,7 +21,6 @@
 #include "../gba/Sound.h"
 #include "../Util.h"
 #include "../gba/GBALink.h"
-#include "../common/Patch.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -159,13 +158,10 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_PAUSEWHENINACTIVE, OnUpdateOptionsEmulatorPausewheninactive)
   ON_COMMAND(ID_OPTIONS_EMULATOR_SPEEDUPTOGGLE, OnOptionsEmulatorSpeeduptoggle)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_SPEEDUPTOGGLE, OnUpdateOptionsEmulatorSpeeduptoggle)
-  ON_COMMAND(ID_OPTIONS_EMULATOR_AUTOMATICALLYAPPLYPATCHFILES, OnOptionsEmulatorAutomaticallyApplyPatchFiles)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_AUTOMATICALLYAPPLYPATCHFILES, OnUpdateOptionsEmulatorAutomaticallyipspatch)
   ON_COMMAND(ID_OPTIONS_EMULATOR_AGBPRINT, OnOptionsEmulatorAgbprint)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_AGBPRINT, OnUpdateOptionsEmulatorAgbprint)
   ON_COMMAND(ID_OPTIONS_EMULATOR_REALTIMECLOCK, OnOptionsEmulatorRealtimeclock)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_REALTIMECLOCK, OnUpdateOptionsEmulatorRealtimeclock)
-  ON_COMMAND(ID_OPTIONS_EMULATOR_REWINDINTERVAL, OnOptionsEmulatorRewindinterval)
 
   ON_COMMAND(ID_OPTIONS_EMULATOR_SAVETYPE_AUTOMATIC, OnOptionsEmulatorSavetypeAutomatic)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_SAVETYPE_AUTOMATIC, OnUpdateOptionsEmulatorSavetypeAutomatic)
@@ -290,8 +286,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_PLAY_STARTMOVIEPLAYING, OnUpdateToolsPlayStartmovieplaying)
   ON_COMMAND(ID_TOOLS_PLAY_STOPMOVIEPLAYING, OnToolsPlayStopmovieplaying)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_PLAY_STOPMOVIEPLAYING, OnUpdateToolsPlayStopmovieplaying)
-  ON_COMMAND(ID_TOOLS_REWIND, OnToolsRewind)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_REWIND, OnUpdateToolsRewind)
   ON_COMMAND(ID_TOOLS_CUSTOMIZE, OnToolsCustomize)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_CUSTOMIZE, OnUpdateToolsCustomize)
   ON_COMMAND(ID_HELP_BUGREPORT, OnHelpBugreport)
@@ -387,12 +381,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_COMMAND(ID_PIXELFILTER_MULTI, &MainWnd::OnPixelfilterMultiThreading)
   ON_UPDATE_COMMAND_UI(ID_PIXELFILTER_MULTI, &MainWnd::OnUpdatePixelfilterMultiThreading)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_SELECT_PLUGIN, &MainWnd::OnUpdateOptionsSelectPlugin)
-
-  ON_COMMAND(ID_LOADGAME_DONOTCHANGEBATTERYSAVE, &MainWnd::OnLoadgameDonotchangebatterysave)
-  ON_UPDATE_COMMAND_UI(ID_LOADGAME_DONOTCHANGEBATTERYSAVE, &MainWnd::OnUpdateLoadgameDonotchangebatterysave)
-
-  ON_COMMAND(ID_LOADGAME_DONOTCHANGECHEATLIST, &MainWnd::OnLoadgameDonotchangecheatlist)
-  ON_UPDATE_COMMAND_UI(ID_LOADGAME_DONOTCHANGECHEATLIST, &MainWnd::OnUpdateLoadgameDonotchangecheatlist)
 
   ON_COMMAND(ID_OUTPUTAPI_XAUDIO2CONFIG, &MainWnd::OnOutputapiXaudio2config)
   ON_UPDATE_COMMAND_UI(ID_OUTPUTAPI_XAUDIO2CONFIG, &MainWnd::OnUpdateOutputapiXaudio2config)
@@ -531,13 +519,6 @@ bool MainWnd::FileRun()
     }
     */
 
-    if(theApp.autoPatch && !patchName.IsEmpty()) {
-      int size = 0x2000000;
-      applyPatch(patchName, &rom, &size);
-      if(size != 0x2000000) {
-        CPUReset();
-      }
-    }
   }
 
   if(theApp.soundInitialized) {
@@ -577,10 +558,6 @@ bool MainWnd::FileRun()
   theApp.frameskipadjust = 0;
   theApp.renderedFrames = 0;
   theApp.autoFrameSkipLastTime = systemGetClock();
-
-  theApp.rewindCount = 0;
-  theApp.rewindCounter = 0;
-  theApp.rewindSaveNeeded = false;
 
   toolsClearLog();
 

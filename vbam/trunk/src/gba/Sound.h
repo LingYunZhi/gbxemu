@@ -74,8 +74,8 @@ extern int SOUND_CLOCK_TICKS;   // Number of 16.8 MHz clocks between calls to so
 extern int soundTicks;          // Number of 16.8 MHz clocks until soundTick() will be called
 
 // Saves/loads emulator state
-void soundSaveGame( gzFile );
-void soundReadGame( gzFile, int version );
+void soundSaveGame( FILE *out );
+void soundReadGame( FILE *in, int version );
 
 class Multi_Buffer;
 

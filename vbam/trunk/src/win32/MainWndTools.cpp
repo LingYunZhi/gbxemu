@@ -573,21 +573,6 @@ void MainWnd::OnUpdateToolsPlayStopmovieplaying(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.moviePlaying);
 }
 
-void MainWnd::OnToolsRewind()
-{
-  if(emulating && theApp.emulator.emuReadMemState && theApp.rewindMemory && theApp.rewindCount) {
-    theApp.rewindPos = --theApp.rewindPos & 7;
-    theApp.emulator.emuReadMemState(&theApp.rewindMemory[REWIND_SIZE*theApp.rewindPos], REWIND_SIZE);
-    theApp.rewindCount--;
-    theApp.rewindCounter = 0;
-  }
-}
-
-void MainWnd::OnUpdateToolsRewind(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.rewindMemory != NULL && emulating && theApp.rewindCount);
-}
-
 void MainWnd::OnToolsCustomize()
 {
   AccelEditor dlg;

@@ -15,7 +15,6 @@
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../Util.h"
-#include "../common/memgzio.h"
 
 //Math
 #include <cmath>

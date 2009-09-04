@@ -54,7 +54,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;;..\..\..\dependencies\msvc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;MMX;ASM;_CRT_SECURE_NO_WARNINGS;HAS_FILE_EXTRACTOR"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;MMX;ASM;_CRT_SECURE_NO_WARNINGS;HAS_FILE_EXTRACTOR;NO_OGL"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -86,7 +86,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nafxcwd.lib libcmtd.lib zlibd.lib"
+				AdditionalDependencies="nafxcwd.lib libcmtd.lib"
 				OutputFile="$(OutDir)\VisualBoyAdvance-M.exe"
 				Version=""
 				LinkIncremental="2"
@@ -166,7 +166,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;;..\..\..\dependencies\msvc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;OEMRESOURCE;MMX;ASM;FINAL_VERSION;BKPT_SUPPORT;_CRT_SECURE_NO_DEPRECATE;HAS_FILE_EXTRACTOR"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;OEMRESOURCE;MMX;ASM;FINAL_VERSION;BKPT_SUPPORT;_CRT_SECURE_NO_DEPRECATE;HAS_FILE_EXTRACTOR;NO_OGL"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableEnhancedInstructionSet="0"
@@ -194,7 +194,7 @@
 				Name="VCLinkerTool"
 				RegisterOutput="false"
 				IgnoreImportLibrary="false"
-				AdditionalDependencies="nafxcw.lib libcmt.lib zlib.lib"
+				AdditionalDependencies="nafxcw.lib libcmt.lib"
 				OutputFile="$(OutDir)\VisualBoyAdvance-M.exe"
 				Version=""
 				LinkIncremental="0"
@@ -712,23 +712,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\common\memgzio.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\common\memgzio.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\NLS.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\common\Patch.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\common\Patch.h"
 				>
 			</File>
 			<File
@@ -1917,30 +1901,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\ResizeDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\RewindInterval.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\RewindInterval.h"
 				>
 			</File>
 			<File

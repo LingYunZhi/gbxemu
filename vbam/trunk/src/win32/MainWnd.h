@@ -165,13 +165,10 @@ protected:
 	afx_msg void OnUpdateOptionsEmulatorPausewheninactive(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorSpeeduptoggle();
 	afx_msg void OnUpdateOptionsEmulatorSpeeduptoggle(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsEmulatorAutomaticallyApplyPatchFiles();
-	afx_msg void OnUpdateOptionsEmulatorAutomaticallyipspatch(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorAgbprint();
 	afx_msg void OnUpdateOptionsEmulatorAgbprint(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorRealtimeclock();
 	afx_msg void OnUpdateOptionsEmulatorRealtimeclock(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsEmulatorRewindinterval();
 	afx_msg void OnOptionsEmulatorSavetypeAutomatic();
 	afx_msg void OnUpdateOptionsEmulatorSavetypeAutomatic(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorSavetypeEeprom();
@@ -294,8 +291,6 @@ protected:
 	afx_msg void OnUpdateToolsPlayStartmovieplaying(CCmdUI* pCmdUI);
 	afx_msg void OnToolsPlayStopmovieplaying();
 	afx_msg void OnUpdateToolsPlayStopmovieplaying(CCmdUI* pCmdUI);
-	afx_msg void OnToolsRewind();
-	afx_msg void OnUpdateToolsRewind(CCmdUI* pCmdUI);
 	afx_msg void OnToolsCustomize();
 	afx_msg void OnUpdateToolsCustomize(CCmdUI* pCmdUI);
 	afx_msg void OnHelpBugreport();
@@ -357,12 +352,7 @@ protected:
 	afx_msg void OnUpdatePixelfilterMultiThreading(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateOptionsSelectPlugin(CCmdUI *pCmdUI);
 
-  afx_msg void OnLoadgameDonotchangebatterysave();
-	afx_msg void OnUpdateLoadgameDonotchangebatterysave(CCmdUI *pCmdUI);
-  afx_msg void OnLoadgameDonotchangecheatlist();
-  afx_msg void OnUpdateLoadgameDonotchangecheatlist(CCmdUI *pCmdUI);
-
-  afx_msg void OnEnterSizeMove();
+    afx_msg void OnEnterSizeMove();
 
 	afx_msg void OnAudioCoreSettings();
 	afx_msg void OnUpdateAudioCoreSettings(CCmdUI *pCmdUI);

@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include "Sound.h"
 
@@ -727,82 +728,34 @@ static variable_desc gba_state [] =
 	{ NULL, 0 }
 };
 
-// Reads and discards count bytes from in
-static void skip_read( gzFile in, int count )
-{
-	char buf [512];
-
-	while ( count )
-	{
-		int n = sizeof buf;
-		if ( n > count )
-			n = count;
-
-		count -= n;
-		utilGzRead( in, buf, n );
-	}
-}
-
-void soundSaveGame( gzFile out )
+void soundSaveGame( FILE *out )
 {
 	gb_apu->save_state( &state.apu );
 
 	// Be sure areas for expansion get written as zero
 	memset( dummy_state, 0, sizeof dummy_state );
 
-	utilWriteData( out, gba_state );
+    variable_desc *data = &gba_state[0];
+    while( data->address ) {
+        fwrite( data->address, data->size, 1, out );
+        data++;
+    }
 }
 
-static void soundReadGameOld( gzFile in, int version )
+void soundReadGame( FILE *in, int version )
 {
-	// Read main data
-	utilReadData( in, old_gba_state );
-	skip_read( in, 6*735 + 2*735 );
+    // Prepare APU and default state
+    reset_apu();
+    gb_apu->save_state( &state.apu );
 
-	// Copy APU regs
-	static int const regs_to_copy [] = {
-		NR10, NR11, NR12, NR13, NR14,
-		      NR21, NR22, NR23, NR24,
-		NR30, NR31, NR32, NR33, NR34,
-		      NR41, NR42, NR43, NR44,
-		NR50, NR51, NR52, -1
-	};
+    variable_desc *data = &gba_state[0];
+    while( data->address ) {
+        fread( data->address, data->size, 1, in );
+        data++;
+    }
 
-	ioMem [NR52] |= 0x80; // old sound played even when this wasn't set (power on)
+    gb_apu->load_state( state.apu );
+    write_SGCNT0_H( READ16LE( &ioMem [SGCNT0_H] ) & 0x770F );
 
-	for ( int i = 0; regs_to_copy [i] >= 0; i++ )
-		state.apu.regs [gba_to_gb_sound( regs_to_copy [i] ) - 0xFF10] = ioMem [regs_to_copy [i]];
-
-	// Copy wave RAM to both banks
-	memcpy( &state.apu.regs [0x20], &ioMem [0x90], 0x10 );
-	memcpy( &state.apu.regs [0x30], &ioMem [0x90], 0x10 );
-
-	// Read both banks of wave RAM if available
-	if ( version >= SAVE_GAME_VERSION_3 )
-		utilReadData( in, old_gba_state2 );
-
-	// Restore PCM
-	pcm [0].dac = state.soundDSAValue;
-	pcm [1].dac = state.soundDSBValue;
-
-	(void) utilReadInt( in ); // ignore quality
-}
-
-#include <stdio.h>
-
-void soundReadGame( gzFile in, int version )
-{
-	// Prepare APU and default state
-	reset_apu();
-	gb_apu->save_state( &state.apu );
-
-	if ( version > SAVE_GAME_VERSION_9 )
-		utilReadData( in, gba_state );
-	else
-		soundReadGameOld( in, version );
-
-	gb_apu->load_state( state.apu );
-	write_SGCNT0_H( READ16LE( &ioMem [SGCNT0_H] ) & 0x770F );
-
-	apply_muting();
+    apply_muting();
 }
