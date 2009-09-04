@@ -285,7 +285,7 @@ void Disassemble::refresh()
   count = (r.bottom - r.top+1)/h;
 
   m_list.ResetContent();
-  if(!emulating && theApp.cartridgeType == 0)
+  if(!emulating && theApp.cartridgeType == IMAGE_GBA)
     return;
 
   char buffer[80];

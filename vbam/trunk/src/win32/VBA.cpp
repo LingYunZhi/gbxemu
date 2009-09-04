@@ -27,9 +27,6 @@
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
 #include "../Util.h"
-#include "../gb/gbGlobals.h"
-#include "../gb/gbPrinter.h"
-#include "../gb/gbSound.h"
 #include "../common/SoundDriver.h"
 
 #include "../version.h"
@@ -131,7 +128,6 @@ int systemFrameSkip = 0;
 int systemSpeed = 0;
 u32 systemColorMap32[0x10000];
 u16 systemColorMap16[0x10000];
-u16 systemGbPalette[24];
 int systemRedShift = 0;
 int systemBlueShift = 0;
 int systemGreenShift = 0;
@@ -243,7 +239,6 @@ VBA::VBA()
   winout = NULL;
   removeIntros = false;
   autoPatch = true;
-  winGbBorderOn = 0;
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
@@ -282,7 +277,6 @@ VBA::VBA()
   regEnabled = false;
  pauseWhenInactive = true;
   speedupToggle = false;
-  winGbPrinterEnabled = false;
   threadPriority = 2;
   disableMMX = false;
   languageOption = 0;
@@ -326,13 +320,6 @@ VBA::VBA()
   ZeroMemory(&emulator, sizeof(emulator));
 
   hAccel = NULL;
-
-  for(int i = 0; i < 24;) {
-    systemGbPalette[i++] = (0x1f) | (0x1f << 5) | (0x1f << 10);
-    systemGbPalette[i++] = (0x15) | (0x15 << 5) | (0x15 << 10);
-    systemGbPalette[i++] = (0x0c) | (0x0c << 5) | (0x0c << 10);
-    systemGbPalette[i++] = 0;
-  }
 }
 
 VBA::~VBA()
@@ -377,7 +364,7 @@ VBA::~VBA()
   soundPause();
   soundShutdown();
 
-  if(gbRom != NULL || rom != NULL) {
+  if(rom != NULL) {
     if(autoSaveLoadCheatList)
       ((MainWnd *)m_pMainWnd)->winSaveCheatListDefault();
     ((MainWnd *)m_pMainWnd)->writeBatteryFile();
@@ -1228,9 +1215,9 @@ bool systemPauseOnFrame()
 
 void systemGbBorderOn()
 {
-  if(emulating && theApp.cartridgeType == IMAGE_GB && gbBorderOn) {
-    theApp.updateWindowSize(theApp.videoOption);
-  }
+  //if(emulating && theApp.cartridgeType == IMAGE_GB && gbBorderOn) {
+    //theApp.updateWindowSize(theApp.videoOption);
+  //}
 }
 
 BOOL VBA::OnIdle(LONG lCount)
@@ -1331,10 +1318,6 @@ void VBA::loadSettings()
   if(frameSkip < 0 || frameSkip > 9)
     frameSkip = 0;
 
-  gbFrameSkip = regQueryDwordValue("gbFrameSkip", 0);
-  if(gbFrameSkip < 0 || gbFrameSkip > 9)
-    gbFrameSkip = 0;
-
   autoFrameSkip = regQueryDwordValue("autoFrameSkip", FALSE) ? TRUE : FALSE;
   
   vsync = regQueryDwordValue("vsync", false) ? true : false ;
@@ -1427,13 +1410,6 @@ void VBA::loadSettings()
 
   soundSetVolume( (float)(regQueryDwordValue("soundVolume", 100)) / 100.0f );
 
-	gb_effects_config.enabled = 1 == regQueryDwordValue( "gbSoundEffectsEnabled", 0 );
-	gb_effects_config.surround = 1 == regQueryDwordValue( "gbSoundEffectsSurround", 0 );
-	gb_effects_config.echo = (float)regQueryDwordValue( "gbSoundEffectsEcho", 20 ) / 100.0f;
-	gb_effects_config.stereo = (float)regQueryDwordValue( "gbSoundEffectsStereo", 15 ) / 100.0f;
-
-	gbSoundSetDeclicking( 1 == regQueryDwordValue( "gbSoundDeclicking", 1 ) );
-
 	soundInterpolation = 1 == regQueryDwordValue( "gbaSoundInterpolation", 1 );
 	soundFiltering = (float)regQueryDwordValue( "gbaSoundFiltering", 50 ) / 100.0f;
 
@@ -1468,13 +1444,6 @@ void VBA::loadSettings()
 
   showSpeedTransparent = regQueryDwordValue("showSpeedTransparent", TRUE) ?
     TRUE : FALSE;
-
-  winGbPrinterEnabled = regQueryDwordValue("gbPrinter", false) ? true : false;
-
-  if(winGbPrinterEnabled)
-    gbSerialFunction = gbPrinterSend;
-  else
-    gbSerialFunction = NULL;
 
   pauseWhenInactive = regQueryDwordValue("pauseWhenInactive", 1) ?
     true : false;
@@ -1539,13 +1508,6 @@ void VBA::loadSettings()
 	break;
   }
 
-  winGbBorderOn = regQueryDwordValue("borderOn", 0);
-  gbBorderAutomatic = regQueryDwordValue("borderAutomatic", 0);
-  gbEmulatorType = regQueryDwordValue("emulatorType", 1);
-  if(gbEmulatorType < 0 || gbEmulatorType > 5)
-    gbEmulatorType = 1;
-  gbColorOption = regQueryDwordValue("colorOption", 0);
-
   threadPriority = regQueryDwordValue("priority", 2);
 
   if(threadPriority < 0 || threadPriority >3)
@@ -1553,15 +1515,6 @@ void VBA::loadSettings()
   updatePriority();
 
   autoSaveLoadCheatList = ( 1 == regQueryDwordValue( "autoSaveCheatList", 1 ) ) ? true : false;
-
-  gbPaletteOption = regQueryDwordValue("gbPaletteOption", 0);
-  if(gbPaletteOption < 0)
-    gbPaletteOption = 0;
-  if(gbPaletteOption > 2)
-    gbPaletteOption = 2;
-
-  regQueryBinaryValue("gbPalette", (char *)systemGbPalette,
-                      24*sizeof(u16));
 
   rewindTimer = regQueryDwordValue("rewindTimer", 0);
 
@@ -1636,11 +1589,8 @@ void VBA::loadSettings()
 void VBA::updateFrameSkip()
 {
   switch(cartridgeType) {
-  case 0:
+  case IMAGE_GBA:
     systemFrameSkip = frameSkip;
-    break;
-  case 1:
-    systemFrameSkip = gbFrameSkip;
     break;
   }
 }
@@ -1765,22 +1715,6 @@ void VBA::updateWindowSize(int value)
 
   videoOption = value;
 
-  if(cartridgeType == IMAGE_GB) {
-    if(gbBorderOn) {
-      sizeX = 256;
-      sizeY = 224;
-      gbBorderLineSkip = 256;
-      gbBorderColumnSkip = 48;
-      gbBorderRowSkip = 40;
-    } else {
-      sizeX = 160;
-      sizeY = 144;
-      gbBorderLineSkip = 160;
-      gbBorderColumnSkip = 0;
-      gbBorderRowSkip = 0;
-    }
-  }
-
   surfaceSizeX = sizeX;
   surfaceSizeY = sizeY;
 
@@ -1898,15 +1832,6 @@ bool VBA::preInitialize()
 	case IMAGE_GBA:
 		sizeX = 240;
 		sizeY = 160;
-		break;
-	case IMAGE_GB:
-		if( gbBorderOn ) {
-			sizeX = 256;
-			sizeY = 224;
-		} else {
-			sizeX = 160;
-			sizeY = 144;
-		}
 		break;
 	}
 
@@ -2378,8 +2303,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("frameSkip", frameSkip);
 
-  regSetDwordValue("gbFrameSkip", gbFrameSkip);
-
   regSetDwordValue("autoFrameSkip", autoFrameSkip);
   regSetDwordValue("vsync", vsync);
   regSetDwordValue("synchronize", synchronize);
@@ -2419,13 +2342,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("soundVolume", (DWORD)(soundGetVolume() * 100.0f));
 
-	regSetDwordValue( "gbSoundEffectsEnabled", gb_effects_config.enabled ? 1 : 0 );
-	regSetDwordValue( "gbSoundEffectsSurround", gb_effects_config.surround ? 1 : 0 );
-	regSetDwordValue( "gbSoundEffectsEcho", (DWORD)( gb_effects_config.echo * 100.0f ) );
-	regSetDwordValue( "gbSoundEffectsStereo", (DWORD)( gb_effects_config.stereo * 100.0f ) );
-
-	regSetDwordValue( "gbSoundDeclicking", gbSoundGetDeclicking() ? 1 : 0 );
-
 	regSetDwordValue( "gbaSoundInterpolation", soundInterpolation ? 1 : 0 );
 	regSetDwordValue( "gbaSoundFiltering", (DWORD)( soundFiltering * 100.0f ) );
 
@@ -2452,8 +2368,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("showSpeedTransparent", showSpeedTransparent);
 
-  regSetDwordValue("gbPrinter", winGbPrinterEnabled);
-
   regSetDwordValue("captureFormat", captureFormat);
 
   regSetDwordValue("removeIntros", removeIntros);
@@ -2474,19 +2388,9 @@ void VBA::saveSettings()
 
   regSetDwordValue("rtcEnabled", winRtcEnable);
 
-  regSetDwordValue("borderOn", winGbBorderOn);
-  regSetDwordValue("borderAutomatic", gbBorderAutomatic);
-  regSetDwordValue("emulatorType", gbEmulatorType);
-  regSetDwordValue("colorOption", gbColorOption);
-
   regSetDwordValue("priority", threadPriority);
 
   regSetDwordValue("autoSaveCheatList", autoSaveLoadCheatList);
-
-  regSetDwordValue("gbPaletteOption", gbPaletteOption);
-
-  regSetBinaryValue("gbPalette", (char *)systemGbPalette,
-                    24*sizeof(u16));
 
   regSetDwordValue("rewindTimer", rewindTimer/6);
 

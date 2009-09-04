@@ -17,10 +17,6 @@
 #include "../gba/Globals.h"
 #include "../gba/Flash.h"
 #include "../gba/Globals.h"
-#include "../gb/GB.h"
-#include "../gb/gbSound.h"
-#include "../gb/gbCheats.h"
-#include "../gb/gbGlobals.h"
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
 #include "../Util.h"
@@ -422,7 +418,7 @@ void MainWnd::OnClose()
 bool MainWnd::FileRun()
 {
   // save battery file before we change the filename...
-  if(rom != NULL || gbRom != NULL) {
+  if(rom != NULL) {
     if(theApp.autoSaveLoadCheatList)
       winSaveCheatListDefault();
     writeBatteryFile();
@@ -450,7 +446,6 @@ bool MainWnd::FileRun()
   if( theApp.filename != oldFile ) {
 	  // clear cheat list when another game is loaded
 	  cheatsDeleteAll( false );
-	  gbCheatRemoveAll();
   }
 
   CString patchName;
@@ -483,38 +478,7 @@ bool MainWnd::FileRun()
   }
   systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
   theApp.cartridgeType = type;
-  if(type == IMAGE_GB) {
-    if(!gbLoadRom(theApp.szFile))
-      return false;
-
-    gbGetHardwareType();
-
-    // used for the handling of the gb Boot Rom
-    if (gbHardware & 5)
-    {
-      skipBios = theApp.skipBiosFile;
-	  gbCPUInit(theApp.biosFileNameGB, theApp.useBiosFileGB);
-    }
-
-
-
-    gbReset();
-    theApp.emulator = GBSystem;
-    gbBorderOn = theApp.winGbBorderOn;
-    theApp.romSize = gbRomSize;
-
-
-    if(theApp.autoPatch && !patchName.IsEmpty()) {
-      int size = gbRomSize;
-      applyPatch(patchName, &gbRom, &size);
-      if(size != gbRomSize) {
-        extern bool gbUpdateSizes();
-        gbUpdateSizes();
-        gbReset();
-        theApp.romSize = size;
-      }
-    }
-  } else {
+  if(type == IMAGE_GBA) {
     int size = CPULoadRom(theApp.szFile);
     if(!size)
       return false;
@@ -581,9 +545,7 @@ bool MainWnd::FileRun()
   }
 
   if(theApp.soundInitialized) {
-    if(theApp.cartridgeType == 1)
-      gbSoundReset();
-    else
+    if(theApp.cartridgeType == IMAGE_GBA)
       soundReset();
   } else {
 	  soundInit();
@@ -835,10 +797,8 @@ void MainWnd::winSaveCheatListDefault()
 
 void MainWnd::winSaveCheatList(const char *name)
 {
-  if(theApp.cartridgeType == 0)
+  if(theApp.cartridgeType == IMAGE_GBA)
     cheatsSaveCheatList(name);
-  else
-    gbCheatsSaveCheatList(name);
 }
 
 void MainWnd::winLoadCheatListDefault()
@@ -879,10 +839,8 @@ void MainWnd::winLoadCheatList(const char *name)
 {
   bool res = false;
 
-  if(theApp.cartridgeType == 0)
+  if(theApp.cartridgeType == IMAGE_GBA)
     res = cheatsLoadCheatList(name);
-  else
-    res = gbCheatsLoadCheatList(name);
 
   if(res)
     systemScreenMessage(winResLoadString(IDS_LOADED_CHEATS));

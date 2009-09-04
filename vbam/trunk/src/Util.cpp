@@ -444,7 +444,7 @@ IMAGE_TYPE utilFindType(const char *file)
 		file = buffer;
 	}
 
-	return utilIsGBAImage(file) ? IMAGE_GBA : IMAGE_GB;
+	return utilIsGBAImage(file) ? IMAGE_GBA : IMAGE_UNKNOWN;
 }
 
 static int utilGetSize(int size)

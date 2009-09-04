@@ -9,8 +9,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int gbRomSize;
-
 struct WinGBACompanyName {
   LPCTSTR code;
   LPCTSTR name;
@@ -477,16 +475,6 @@ BOOL RomInfoGB::OnInitDialog()
 
   sprintf(buffer, "%02x (%02x)", crc, rom[0x14d]);
   GetDlgItem(IDC_ROM_CRC)->SetWindowText(buffer);
-
-  u16 crc16 = 0;
-  for(i = 0; i < gbRomSize; i++) {
-    crc16 += rom[i];
-  }
-
-  crc16 -= rom[0x14e];
-  crc16 -= rom[0x14f];
-  sprintf(buffer, "%04x (%04x)", crc16, (rom[0x14e]<<8)|rom[0x14f]);
-  GetDlgItem(IDC_ROM_CHECKSUM)->SetWindowText(buffer);
 
   CenterWindow();
 

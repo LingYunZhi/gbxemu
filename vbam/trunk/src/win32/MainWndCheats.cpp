@@ -3,23 +3,18 @@
 
 #include "FileDlg.h"
 #include "GBACheats.h"
-#include "GBCheatsDlg.h"
 #include "Reg.h"
 #include "WinResUtil.h"
 
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
-#include "../gb/gbCheats.h"
 
 extern int emulating;
 
 void MainWnd::OnCheatsSearchforcheats()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     GBACheatSearch dlg;
-    dlg.DoModal();
-  } else {
-    GBCheatSearch dlg;
     dlg.DoModal();
   }
 }
@@ -31,11 +26,8 @@ void MainWnd::OnUpdateCheatsSearchforcheats(CCmdUI* pCmdUI)
 
 void MainWnd::OnCheatsCheatlist()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     GBACheatList dlg;
-    dlg.DoModal();
-  } else {
-    GBCheatList dlg;
     dlg.DoModal();
   }
 }

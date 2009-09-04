@@ -6,7 +6,7 @@
 enum IMAGE_TYPE {
   IMAGE_UNKNOWN = -1,
   IMAGE_GBA     = 0,
-  IMAGE_GB      = 1
+  //IMAGE_GB      = 1
 };
 
 // save game

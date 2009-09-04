@@ -108,7 +108,6 @@ class VBA : public CWinApp
   FILE *winout;
   bool removeIntros;
   bool autoPatch;
-  int winGbBorderOn;
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;
@@ -146,7 +145,6 @@ class VBA : public CWinApp
   bool dinputKeyFocus;
   bool pauseWhenInactive;
   bool speedupToggle;
-  bool winGbPrinterEnabled;
   int threadPriority;
   bool disableMMX;
   int languageOption;

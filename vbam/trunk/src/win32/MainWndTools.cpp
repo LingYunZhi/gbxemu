@@ -5,12 +5,6 @@
 #include "AVIWrite.h"
 #include "Disassemble.h"
 #include "FileDlg.h"
-#include "GBDisassemble.h"
-#include "GBMapView.h"
-#include "GBMemoryViewerDlg.h"
-#include "GBOamView.h"
-#include "GBPaletteView.h"
-#include "GBTileView.h"
 #include "GDBConnection.h"
 #include "IOViewer.h"
 #include "MapView.h"
@@ -42,13 +36,9 @@ extern void remoteSetSockets(SOCKET, SOCKET);
 
 void MainWnd::OnToolsDisassemble()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     Disassemble *dlg = new Disassemble();
     dlg->Create(IDD_DISASSEMBLE, this);
-    dlg->ShowWindow(SW_SHOW);
-  } else {
-    GBDisassemble *dlg = new GBDisassemble();
-    dlg->Create(IDD_GB_DISASSEMBLE, this);
     dlg->ShowWindow(SW_SHOW);
   }
 }
@@ -77,18 +67,14 @@ void MainWnd::OnToolsIoviewer()
 
 void MainWnd::OnUpdateToolsIoviewer(CCmdUI* pCmdUI)
 {
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X && theApp.cartridgeType == 0);
+  pCmdUI->Enable( (theApp.videoOption <= VIDEO_4X) && (theApp.cartridgeType == IMAGE_GBA));
 }
 
 void MainWnd::OnToolsMapview()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     MapView *dlg = new MapView;
     dlg->Create(IDD_MAP_VIEW, this);
-    dlg->ShowWindow(SW_SHOW);
-  } else {
-    GBMapView *dlg = new GBMapView;
-    dlg->Create(IDD_GB_MAP_VIEW, this);
     dlg->ShowWindow(SW_SHOW);
   }
 }
@@ -100,12 +86,8 @@ void MainWnd::OnUpdateToolsMapview(CCmdUI* pCmdUI)
 
 void MainWnd::OnToolsMemoryviewer()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     MemoryViewerDlg *dlg = new MemoryViewerDlg;
-    dlg->Create(IDD_MEM_VIEWER, this);
-    dlg->ShowWindow(SW_SHOW);
-  } else {
-    GBMemoryViewerDlg *dlg = new GBMemoryViewerDlg;
     dlg->Create(IDD_MEM_VIEWER, this);
     dlg->ShowWindow(SW_SHOW);
   }
@@ -118,13 +100,9 @@ void MainWnd::OnUpdateToolsMemoryviewer(CCmdUI* pCmdUI)
 
 void MainWnd::OnToolsOamviewer()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     OamView *dlg = new OamView;
     dlg->Create(IDD_OAM_VIEW, this);
-    dlg->ShowWindow(SW_SHOW);
-  } else {
-    GBOamView *dlg = new GBOamView;
-    dlg->Create(IDD_GB_OAM_VIEW, this);
     dlg->ShowWindow(SW_SHOW);
   }
 }
@@ -136,13 +114,9 @@ void MainWnd::OnUpdateToolsOamviewer(CCmdUI* pCmdUI)
 
 void MainWnd::OnToolsPaletteview()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     PaletteView *dlg = new PaletteView;
     dlg->Create(IDD_PALETTE_VIEW, this);
-    dlg->ShowWindow(SW_SHOW);
-  } else {
-    GBPaletteView *dlg = new GBPaletteView;
-    dlg->Create(IDD_GB_PALETTE_VIEW, this);
     dlg->ShowWindow(SW_SHOW);
   }
 }
@@ -154,13 +128,9 @@ void MainWnd::OnUpdateToolsPaletteview(CCmdUI* pCmdUI)
 
 void MainWnd::OnToolsTileviewer()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     TileView *dlg = new TileView;
     dlg->Create(IDD_TILE_VIEWER, this);
-    dlg->ShowWindow(SW_SHOW);
-  } else {
-    GBTileView *dlg = new GBTileView;
-    dlg->Create(IDD_GB_TILE_VIEWER, this);
     dlg->ShowWindow(SW_SHOW);
   }
 }
@@ -216,7 +186,7 @@ void MainWnd::OnToolsDebugLoadandwait()
 {
   if(fileOpenSelect(0)) {
     if(FileRun()) {
-      if(theApp.cartridgeType != 0) {
+      if(theApp.cartridgeType != IMAGE_GBA) {
         systemMessage(IDS_ERROR_NOT_GBA_IMAGE, "Error: not a GBA image");
         OnFileClose();
         return;

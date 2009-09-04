@@ -7,7 +7,6 @@
 #include "FileDlg.h"
 #include "GameOverrides.h"
 #include "LinkOptions.h"
-#include "GBColorDlg.h"
 #include "Joypad.h"
 #include "MaxScale.h"
 #include "Reg.h"
@@ -25,10 +24,6 @@
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../gba/Sound.h"
-#include "../gb/GB.h"
-#include "../gb/gbGlobals.h"
-#include "../gb/gbPrinter.h"
-#include "../gb/gbSound.h"
 #include "../gba/GBALink.h"
 
 #include "../version.h"
@@ -160,8 +155,6 @@ BOOL MainWnd::OnOptionsFrameskip(UINT nID)
   case ID_OPTIONS_VIDEO_FRAMESKIP_5:
     if(theApp.cartridgeType == IMAGE_GBA) {
       frameSkip = nID - ID_OPTIONS_VIDEO_FRAMESKIP_0;
-    } else {
-      gbFrameSkip = nID - ID_OPTIONS_VIDEO_FRAMESKIP_0;
     }
     if(emulating)
       theApp.updateFrameSkip();
@@ -174,8 +167,6 @@ BOOL MainWnd::OnOptionsFrameskip(UINT nID)
   case ID_OPTIONS_VIDEO_FRAMESKIP_9:
     if(theApp.cartridgeType == IMAGE_GBA) {
       frameSkip = 6 + nID - ID_OPTIONS_VIDEO_FRAMESKIP_6;
-    } else {
-      gbFrameSkip = 6 + nID - ID_OPTIONS_VIDEO_FRAMESKIP_6;
     }
     if(emulating)
       theApp.updateFrameSkip();
@@ -188,52 +179,52 @@ BOOL MainWnd::OnOptionsFrameskip(UINT nID)
 
 void MainWnd::OnUpdateOptionsVideoFrameskip0(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 0 : gbFrameSkip == 0);
+  pCmdUI->SetCheck(frameSkip == 0);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip1(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 1 : gbFrameSkip == 1);
+  pCmdUI->SetCheck(frameSkip == 1);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip2(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 2 : gbFrameSkip == 2);
+  pCmdUI->SetCheck(frameSkip == 2);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip3(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 3 : gbFrameSkip == 3);
+  pCmdUI->SetCheck(frameSkip == 3);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip4(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 4 : gbFrameSkip == 4);
+  pCmdUI->SetCheck(frameSkip == 4);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip5(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 5 : gbFrameSkip == 5);
+  pCmdUI->SetCheck(frameSkip == 5);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip6(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 6 : gbFrameSkip == 6);
+  pCmdUI->SetCheck(frameSkip == 6);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip7(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 7 : gbFrameSkip == 7);
+  pCmdUI->SetCheck(frameSkip == 7);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip8(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 8 : gbFrameSkip == 8);
+  pCmdUI->SetCheck(frameSkip == 8);
 }
 
 void MainWnd::OnUpdateOptionsVideoFrameskip9(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.cartridgeType == IMAGE_GBA ? frameSkip == 9 : gbFrameSkip == 9);
+  pCmdUI->SetCheck(frameSkip == 9);
 }
 
 
@@ -854,29 +845,29 @@ void MainWnd::OnAudioCoreSettings()
 {
 	AudioCoreSettingsDlg dlg;
 
-	dlg.m_enabled = gb_effects_config.enabled;
-	dlg.m_surround = gb_effects_config.surround;
-	dlg.m_echo = gb_effects_config.echo;
-	dlg.m_stereo = gb_effects_config.stereo;
+	//dlg.m_enabled = gb_effects_config.enabled;
+	//dlg.m_surround = gb_effects_config.surround;
+	//dlg.m_echo = gb_effects_config.echo;
+	//dlg.m_stereo = gb_effects_config.stereo;
 	dlg.m_volume = soundGetVolume();
-	dlg.m_declicking = gbSoundGetDeclicking();
+	//dlg.m_declicking = gbSoundGetDeclicking();
 	dlg.m_sound_interpolation = soundInterpolation;
 	dlg.m_sound_filtering = soundFiltering;
 	dlg.m_sample_rate = soundGetSampleRate();
 
 	if( IDOK == dlg.DoModal() ) {
-		gb_effects_config_t _new;
+		//gb_effects_config_t _new;
 
-		_new.enabled = dlg.m_enabled;
-		_new.surround = dlg.m_surround;
-		_new.echo = dlg.m_echo;
-		_new.stereo = dlg.m_stereo;
+		//_new.enabled = dlg.m_enabled;
+		//_new.surround = dlg.m_surround;
+		//_new.echo = dlg.m_echo;
+		//_new.stereo = dlg.m_stereo;
 
-		gbSoundConfigEffects( _new );
+		//gbSoundConfigEffects( _new );
 
 		soundSetVolume( dlg.m_volume );
 
-		gbSoundSetDeclicking( dlg.m_declicking );
+		//gbSoundSetDeclicking( dlg.m_declicking );
 
 		soundInterpolation = dlg.m_sound_interpolation;
 
@@ -884,8 +875,6 @@ void MainWnd::OnAudioCoreSettings()
 		
 		if( theApp.cartridgeType == IMAGE_GBA ) {
 			soundSetSampleRate( dlg.m_sample_rate );
-		} else if( theApp.cartridgeType == IMAGE_GB ) {
-			gbSoundSetSampleRate( dlg.m_sample_rate );
 		}
 	}
 }
@@ -975,7 +964,7 @@ void MainWnd::OnOptionsSoundDirectsounda()
 void MainWnd::OnUpdateOptionsSoundDirectsounda(CCmdUI* pCmdUI)
 {
   pCmdUI->SetCheck(soundGetEnable() & 256);
-  pCmdUI->Enable(theApp.cartridgeType == 0);
+  pCmdUI->Enable(theApp.cartridgeType == IMAGE_GBA);
 }
 
 void MainWnd::OnOptionsSoundDirectsoundb()
@@ -986,143 +975,100 @@ void MainWnd::OnOptionsSoundDirectsoundb()
 void MainWnd::OnUpdateOptionsSoundDirectsoundb(CCmdUI* pCmdUI)
 {
   pCmdUI->SetCheck(soundGetEnable() & 512);
-  pCmdUI->Enable(theApp.cartridgeType == 0);
+  pCmdUI->Enable(theApp.cartridgeType == IMAGE_GBA);
 }
 
 void MainWnd::OnOptionsGameboyBorder()
 {
-  theApp.winGbBorderOn = !theApp.winGbBorderOn;
-  gbBorderOn = theApp.winGbBorderOn;
-  if(emulating && theApp.cartridgeType == 1 && gbBorderOn) {
-    gbSgbRenderBorder();
-  }
-  theApp.updateWindowSize(theApp.videoOption);
 }
 
 void MainWnd::OnUpdateOptionsGameboyBorder(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.winGbBorderOn);
 }
 
 void MainWnd::OnOptionsGameboyPrinter()
 {
-  theApp.winGbPrinterEnabled = !theApp.winGbPrinterEnabled;
-  if(theApp.winGbPrinterEnabled)
-    gbSerialFunction = gbPrinterSend;
-  else
-    gbSerialFunction = NULL;
 }
 
 void MainWnd::OnUpdateOptionsGameboyPrinter(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbSerialFunction == gbPrinterSend);
 }
 
 void MainWnd::OnOptionsGameboyBorderAutomatic()
 {
-  gbBorderAutomatic = !gbBorderAutomatic;
-  if(emulating && theApp.cartridgeType == 1 && gbBorderOn) {
-    gbSgbRenderBorder();
-    theApp.updateWindowSize(theApp.videoOption);
-  }
 }
 
 void MainWnd::OnUpdateOptionsGameboyBorderAutomatic(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbBorderAutomatic);
 }
 
 void MainWnd::OnOptionsGameboyAutomatic()
 {
-  gbEmulatorType = 0;
 }
 
 void MainWnd::OnUpdateOptionsGameboyAutomatic(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbEmulatorType == 0);
 }
 
 void MainWnd::OnOptionsGameboyGba()
 {
-  gbEmulatorType = 4;
 }
 
 void MainWnd::OnUpdateOptionsGameboyGba(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbEmulatorType == 4);
 }
 
 void MainWnd::OnOptionsGameboyCgb()
 {
-  gbEmulatorType = 1;
 }
 
 void MainWnd::OnUpdateOptionsGameboyCgb(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbEmulatorType == 1);
 }
 
 void MainWnd::OnOptionsGameboySgb()
 {
-  gbEmulatorType = 2;
 }
 
 void MainWnd::OnUpdateOptionsGameboySgb(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbEmulatorType == 2);
 }
 
 void MainWnd::OnOptionsGameboySgb2()
 {
-  gbEmulatorType = 5;
 }
 
 void MainWnd::OnUpdateOptionsGameboySgb2(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbEmulatorType == 5);
 }
 
 void MainWnd::OnOptionsGameboyGb()
 {
-  gbEmulatorType = 3;
 }
 
 void MainWnd::OnUpdateOptionsGameboyGb(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbEmulatorType == 3);
 }
 
 void MainWnd::OnOptionsGameboyRealcolors()
 {
-  gbColorOption = 0;
 }
 
 void MainWnd::OnUpdateOptionsGameboyRealcolors(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbColorOption == 0);
 }
 
 void MainWnd::OnOptionsGameboyGameboycolors()
 {
-  gbColorOption = 1;
 }
 
 void MainWnd::OnUpdateOptionsGameboyGameboycolors(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(gbColorOption == 1);
 }
 
 
 void MainWnd::OnOptionsGameboyColors()
 {
-  GBColorDlg dlg;
-  if(dlg.DoModal()) {
-    gbPaletteOption = dlg.getWhich();
-    memcpy(systemGbPalette, dlg.getColors(), 24*sizeof(u16));
-    if(emulating && theApp.cartridgeType == 1) {
-      memcpy(gbPalette, &systemGbPalette[dlg.getWhich()*8], 8*sizeof(u16));
-    }
-  }
 }
 
 BOOL MainWnd::OnOptionsPriority(UINT nID)
@@ -1593,7 +1539,7 @@ void MainWnd::OnUpdateOptionsLinkRFU(CCmdUI* pCmdUI)
 
 void MainWnd::OnOptionsEmulatorGameoverrides()
 {
-  if(emulating && theApp.cartridgeType == 0) {
+  if(emulating && theApp.cartridgeType == IMAGE_GBA) {
     GameOverrides dlg(this);
     dlg.DoModal();
   }
@@ -1601,7 +1547,7 @@ void MainWnd::OnOptionsEmulatorGameoverrides()
 
 void MainWnd::OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI)
 {
-  pCmdUI->Enable(emulating && (theApp.cartridgeType == 0));
+  pCmdUI->Enable(emulating && (theApp.cartridgeType == IMAGE_GBA));
 }
 
 void MainWnd::OnOptionsSoundHardwareacceleration()

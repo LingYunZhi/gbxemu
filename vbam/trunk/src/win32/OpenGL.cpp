@@ -15,7 +15,6 @@
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../Util.h"
-#include "../gb/gbGlobals.h"
 #include "../common/memgzio.h"
 
 //Math
@@ -194,18 +193,6 @@ bool OpenGLDisplay::initialize()
 	case IMAGE_GBA:
 		theApp.sizeX = 240;
 		theApp.sizeY = 160;
-		break;
-	case IMAGE_GB:
-		if ( gbBorderOn )
-		{
-			theApp.sizeX = 256;
-			theApp.sizeY = 224;
-		}
-		else
-		{
-			theApp.sizeX = 160;
-			theApp.sizeY = 144;
-		}
 		break;
 	}
 

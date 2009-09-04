@@ -15,9 +15,6 @@
 #include "../gba/Globals.h"
 #include "../NLS.h"
 #include "../gba/Sound.h"
-#include "../gb/GB.h"
-#include "../gb/gbCheats.h"
-#include "../gb/gbGlobals.h"
 
 #include "../version.h"
 
@@ -140,7 +137,7 @@ void MainWnd::OnFileExit()
 void MainWnd::OnFileClose()
 {
   // save battery file before we change the filename...
-  if(rom != NULL || gbRom != NULL) {
+  if(rom != NULL) {
     if(theApp.autoSaveLoadCheatList)
       winSaveCheatListDefault();
     writeBatteryFile();
@@ -416,7 +413,7 @@ void MainWnd::OnUpdateFileImportBatteryfile(CCmdUI* pCmdUI)
 void MainWnd::OnFileImportGamesharkcodefile()
 {
   LPCTSTR exts[] = { "" };
-  CString filter = theApp.cartridgeType == 0 ? winLoadFilter(IDS_FILTER_SPC) : winLoadFilter(IDS_FILTER_GCF);
+  CString filter = winLoadFilter(IDS_FILTER_SPC);
   CString title = winResLoadString(IDS_SELECT_CODE_FILE);
 
   FileDlg dlg(this, "", filter, 0, "", exts, "", title, false);
@@ -434,11 +431,8 @@ void MainWnd::OnFileImportGamesharkcodefile()
 
   bool res = false;
   CString file = dlg.GetPathName();
-  if(theApp.cartridgeType == 1)
-    res = gbCheatReadGSCodeFile(file);
-  else {
+  if(theApp.cartridgeType == IMAGE_GBA)
     res = fileImportGSACodeFile(file);
-  }
 }
 
 void MainWnd::OnUpdateFileImportGamesharkcodefile(CCmdUI* pCmdUI)
@@ -449,7 +443,7 @@ void MainWnd::OnUpdateFileImportGamesharkcodefile(CCmdUI* pCmdUI)
 void MainWnd::OnFileImportGamesharksnapshot()
 {
   LPCTSTR exts[] = { ".gbs" };
-  CString filter = theApp.cartridgeType == 1 ? winLoadFilter(IDS_FILTER_GBS) : winLoadFilter(IDS_FILTER_SPS);
+  CString filter = winLoadFilter(IDS_FILTER_SPS);
   CString title = winResLoadString(IDS_SELECT_SNAPSHOT_FILE);
 
   FileDlg dlg(this, "", filter, 0, "", exts, "", title, false);
@@ -465,9 +459,7 @@ void MainWnd::OnFileImportGamesharksnapshot()
                 MB_OKCANCEL) == IDCANCEL)
     return;
 
-  if(theApp.cartridgeType == 1)
-    gbReadGSASnapshot(dlg.GetPathName());
-  else
+  if(theApp.cartridgeType == IMAGE_GBA)
     CPUReadGSASnapshot(dlg.GetPathName());
 }
 
@@ -523,9 +515,7 @@ void MainWnd::OnFileExportBatteryfile()
 
   bool result = false;
 
-  if(theApp.cartridgeType == 1) {
-    result = gbWriteBatteryFile(dlg.GetPathName(), false);
-  } else
+  if(theApp.cartridgeType == IMAGE_GBA)
     result = theApp.emulator.emuWriteBattery(dlg.GetPathName());
 
   if(!result)
@@ -582,7 +572,7 @@ void MainWnd::OnFileExportGamesharksnapshot()
 
 void MainWnd::OnUpdateFileExportGamesharksnapshot(CCmdUI* pCmdUI)
 {
-  pCmdUI->Enable(emulating && theApp.cartridgeType == 0);
+  pCmdUI->Enable(emulating && theApp.cartridgeType == IMAGE_GBA);
 }
 
 void MainWnd::OnFileScreencapture()
@@ -655,11 +645,8 @@ void MainWnd::OnUpdateFileScreencapture(CCmdUI* pCmdUI)
 
 void MainWnd::OnFileRominformation()
 {
-  if(theApp.cartridgeType == 0) {
+  if(theApp.cartridgeType == IMAGE_GBA) {
     RomInfoGBA dlg(rom);
-    dlg.DoModal();
-  } else {
-    RomInfoGB dlg(gbRom);
     dlg.DoModal();
   }
 }
