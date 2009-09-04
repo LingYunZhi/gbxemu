@@ -64,12 +64,7 @@ extern void Simple3x16(u8*,u32,u8*,u8*,u32,int,int);
 extern void Simple3x32(u8*,u32,u8*,u8*,u32,int,int);
 extern void Simple4x16(u8*,u32,u8*,u8*,u32,int,int);
 extern void Simple4x32(u8*,u32,u8*,u8*,u32,int,int);
-#ifndef WIN64
-extern void hq3x16(u8*,u32,u8*,u8*,u32,int,int);
-extern void hq4x16(u8*,u32,u8*,u8*,u32,int,int);
-extern void hq3x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void hq4x32(u8*,u32,u8*,u8*,u32,int,int);
-#endif
+
 
 extern void SmartIB(u8*,u32,int,int);
 extern void SmartIB32(u8*,u32,int,int);
@@ -123,7 +118,6 @@ static char THIS_FILE[] = __FILE__;
 int emulating = 0;
 bool debugger = false;
 int RGB_LOW_BITS_MASK = 0;
-bool b16to32Video = false;
 int systemFrameSkip = 0;
 int systemSpeed = 0;
 u32 systemColorMap32[0x10000];
@@ -146,9 +140,6 @@ void winOutput(const char *, u32);
 void (*dbgSignal)(int,int) = winSignal;
 void (*dbgOutput)(const char *, u32) = winOutput;
 
-#ifdef MMX
-extern "C" bool cpu_mmx;
-#endif
 
 namespace Sm60FPS
 {
@@ -268,7 +259,6 @@ VBA::VBA()
  pauseWhenInactive = true;
   speedupToggle = false;
   threadPriority = 2;
-  disableMMX = false;
   languageOption = 0;
   languageModule = NULL;
   languageName = "";
@@ -569,24 +559,6 @@ void VBA::updateIFB()
 
 void VBA::updateFilter()
 {
-	// BEGIN hacky ugly code
-
-	// HQ3X asm wants 16 bit input.  When we switch
-	// away from 16 bits we need to restore the driver values
-
-	// This hack is also necessary for Kega Fusion filter plugins
-
-	if ( b16to32Video )
-	{
-		b16to32Video = false;
-		systemColorDepth = realsystemColorDepth;
-		systemRedShift = realsystemRedShift;
-		systemGreenShift = realsystemGreenShift;
-		systemBlueShift = realsystemBlueShift;
-		utilUpdateSystemColorMaps();
-	}
-    // END hacky ugly code
-
     filterWidth = sizeX;
 	filterHeight = sizeY;
 	filterMagnification = 1;
@@ -674,16 +646,6 @@ void VBA::updateFilter()
 			filterFunction = Simple4x16;
 			filterMagnification = 4;
 			break;
-#ifndef WIN64
-		case FILTER_HQ3X:
-			filterFunction = hq3x16;
-			filterMagnification = 3;
-			break;
-		case FILTER_HQ4X:
-			filterFunction = hq4x16;
-			filterMagnification = 4;
-			break;
-#endif
 		}
 		}
 
@@ -700,7 +662,6 @@ void VBA::updateFilter()
 				if( rpiInit( pluginName ) ) {
 					filterFunction = rpiFilter;
 					filterMagnification = rpiScaleFactor();
-					b16to32Video=true;
 				} else {
 					filterType = FILTER_NONE;
 					updateFilter();
@@ -763,22 +724,7 @@ void VBA::updateFilter()
 				filterFunction = Simple4x32;
 				filterMagnification = 4;
 				break;
-#ifndef WIN64
-			case FILTER_HQ3X:
-				filterFunction = hq3x32;
-				filterMagnification = 3;
-#ifndef NO_ASM
-				b16to32Video=true;
-#endif
-				break;
-			case FILTER_HQ4X:
-				filterFunction = hq4x32;
-				filterMagnification = 4;
-#ifndef NO_ASM
-				b16to32Video=true;
-#endif
-				break;
-#endif
+
 			}
 		}
 	}
@@ -792,19 +738,6 @@ void VBA::updateFilter()
 
 	if( display )
 		display->changeRenderSize(rect.right, rect.bottom);
-
-	if (b16to32Video && systemColorDepth!=16)
-	{
-		realsystemColorDepth = systemColorDepth;
-		systemColorDepth = 16;
-		realsystemRedShift = systemRedShift;
-		systemRedShift = 11;
-		realsystemGreenShift = systemGreenShift;
-		systemGreenShift = 6;
-		realsystemBlueShift = systemBlueShift;
-		systemBlueShift = 0;
-		utilUpdateSystemColorMaps();
-	}
 
 #ifdef LOG_PERFORMANCE
 	memset( systemSpeedTable, 0x00, sizeof(systemSpeedTable) );
@@ -1400,8 +1333,6 @@ void VBA::loadSettings()
 
   filterMT = ( 1 == regQueryDwordValue("filterEnableMultiThreading", 0) );
 
-  disableMMX = regQueryDwordValue("disableMMX", false) ? true: false;
-
   disableStatusMessage = regQueryDwordValue("disableStatus", 0) ? true : false;
 
   showSpeed = regQueryDwordValue("showSpeed", 0);
@@ -1909,7 +1840,6 @@ bool VBA::updateRenderMethod(bool force)
 bool VBA::updateRenderMethod0(bool force)
 {
   bool initInput = false;
-  b16to32Video = false;
 
   if(display) {
     if(display->getType() != renderMethod || force) {
@@ -2008,47 +1938,6 @@ void VBA::updatePriority()
     SetThreadPriority(THREAD_PRIORITY_NORMAL);
   }
 }
-
-#ifdef MMX
-bool VBA::detectMMX()
-{
-  bool support = false;
-  char brand[12]; // not zero terminated
-
-  // check for Intel chip
-  __try {
-    __asm {
-      mov eax, 0;
-      cpuid;
-      mov [dword ptr brand+0], ebx;
-      mov [dword ptr brand+4], edx;
-      mov [dword ptr brand+8], ecx;
-    }
-  }
-  __except(EXCEPTION_EXECUTE_HANDLER) {
-    if(_exception_code() == STATUS_ILLEGAL_INSTRUCTION) {
-      return false;
-    }
-    return false;
-  }
-  // Check for Intel or AMD CPUs
-  if(strncmp(brand, "GenuineIntel", 12)) {
-    if(strncmp(brand, "AuthenticAMD", 12)) {
-      return false;
-    }
-  }
-
-  __asm {
-    mov eax, 1;
-    cpuid;
-    test edx, 00800000h;
-    jz NotFound;
-    mov [support], 1;
-  NotFound:
-  }
-  return support;
-}
-#endif
 
 void VBA::winSetLanguageOption(int option, bool force)
 {
@@ -2306,8 +2195,6 @@ void VBA::saveSettings()
   regSetDwordValue("filterEnableMultiThreading", filterMT ? 1 : 0);
 
   regSetDwordValue("LCDFilter", filterLCD);
-
-  regSetDwordValue("disableMMX", disableMMX);
 
   regSetDwordValue("disableStatus", disableStatusMessage);
 

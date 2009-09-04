@@ -2,30 +2,6 @@
 
 extern int RGB_LOW_BITS_MASK;
 
-extern "C"
-{
-
-#ifdef MMX
-  void _2xSaILine (u8 *srcPtr, u8 *deltaPtr, u32 srcPitch,
-                   u32 width, u8 *dstPtr, u32 dstPitch);
-  void _2xSaISuperEagleLine (u8 *srcPtr, u8 *deltaPtr,
-                             u32 srcPitch, u32 width,
-                             u8 *dstPtr, u32 dstPitch);
-  void _2xSaISuper2xSaILine (u8 *srcPtr, u8 *deltaPtr,
-                             u32 srcPitch, u32 width,
-                             u8 *dstPtr, u32 dstPitch);
-    void Init_2xSaIMMX (u32 BitFormat);
-  void BilinearMMX (u16 * A, u16 * B, u16 * C, u16 * D,
-                    u16 * dx, u16 * dy, u8 *dP);
-  void BilinearMMXGrid0 (u16 * A, u16 * B, u16 * C, u16 * D,
-                         u16 * dx, u16 * dy, u8 *dP);
-  void BilinearMMXGrid1 (u16 * A, u16 * B, u16 * C, u16 * D,
-                         u16 * dx, u16 * dy, u8 *dP);
-  void EndMMX ();
-
-  bool cpu_mmx = 1;
-#endif
-}
 static u32 colorMask = 0xF7DEF7DE;
 static u32 lowPixelMask = 0x08210821;
 static u32 qcolorMask = 0xE79CE79C;
@@ -73,10 +49,6 @@ int Init_2xSaI(u32 BitFormat)
     RGB_LOW_BITS_MASK = 0x010101;
   } else
     return 0;
-
-#ifdef MMX
-    Init_2xSaIMMX (BitFormat);
-#endif
 
   return 1;
 }
@@ -227,17 +199,6 @@ void Super2xSaI (u8 *srcPtr, u32 srcPitch,
   u8  *dP;
   u32 inc_bP;
   u32 Nextline = srcPitch >> 1;
-#ifdef MMX
-  if (cpu_mmx) {
-    for (; height; height--) {
-      _2xSaISuper2xSaILine (srcPtr, deltaPtr, srcPitch, width,
-                            dstPtr, dstPitch);
-      srcPtr += srcPitch;
-      dstPtr += dstPitch * 2;
-      deltaPtr += srcPitch;
-    }
-  } else
-#endif
     {
       inc_bP = 1;
 
@@ -495,17 +456,6 @@ void SuperEagle (u8 *srcPtr, u32 srcPitch, u8 *deltaPtr,
   u16 *xP;
   u32 inc_bP;
 
-#ifdef MMX
-  if (cpu_mmx) {
-    for (; height; height--) {
-      _2xSaISuperEagleLine (srcPtr, deltaPtr, srcPitch, width,
-                            dstPtr, dstPitch);
-      srcPtr += srcPitch;
-      dstPtr += dstPitch * 2;
-      deltaPtr += srcPitch;
-    }
-  } else
-#endif
   {
     inc_bP = 1;
 
@@ -769,16 +719,6 @@ void _2xSaI (u8 *srcPtr, u32 srcPitch, u8 *deltaPtr,
   u16 *bP;
   u32 inc_bP;
 
-#ifdef MMX
-  if (cpu_mmx) {
-    for (; height; height -= 1) {
-      _2xSaILine (srcPtr, deltaPtr, srcPitch, width, dstPtr, dstPitch);
-      srcPtr += srcPitch;
-      dstPtr += dstPitch * 2;
-      deltaPtr += srcPitch;
-    }
-  } else
-#endif
   {
     inc_bP = 1;
 

@@ -33,11 +33,8 @@
 
 #define __STDC_CONSTANT_MACROS
 
-#include <stdint.h>
-
-
-typedef uint16_t interp_uint16;
-typedef uint32_t interp_uint32;
+typedef u16 interp_uint16;
+typedef u32 interp_uint32;
 
 /***************************************************************************/
 /* Basic types */

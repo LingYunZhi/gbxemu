@@ -14,9 +14,6 @@
 		/>
 	</Platforms>
 	<ToolFiles>
-		<ToolFile
-			RelativePath=".\nasm.rules"
-		/>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
@@ -37,9 +34,6 @@
 				Name="VCCustomBuildTool"
 			/>
 			<Tool
-				Name="NASM"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -54,7 +48,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;;..\..\..\dependencies\msvc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;MMX;ASM;_CRT_SECURE_NO_WARNINGS;HAS_FILE_EXTRACTOR;NO_OGL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;ASM;_CRT_SECURE_NO_WARNINGS;HAS_FILE_EXTRACTOR;NO_OGL"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -145,9 +139,6 @@
 				Name="VCCustomBuildTool"
 			/>
 			<Tool
-				Name="NASM"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -166,7 +157,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;;..\..\..\dependencies\msvc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;OEMRESOURCE;MMX;ASM;FINAL_VERSION;BKPT_SUPPORT;_CRT_SECURE_NO_DEPRECATE;HAS_FILE_EXTRACTOR;NO_OGL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;OEMRESOURCE;ASM;FINAL_VERSION;BKPT_SUPPORT;_CRT_SECURE_NO_DEPRECATE;HAS_FILE_EXTRACTOR;NO_OGL"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableEnhancedInstructionSet="0"
@@ -498,28 +489,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\filters\2xSaImmx.asm"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="NASM"
-						PreprocessorDefinitions="__DJGPP__"
-						GenerateDebugInfo="true"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="NASM"
-						Optimization="1"
-						PreprocessorDefinitions="__DJGPP__"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\filters\admame.cpp"
 				>
 			</File>
@@ -552,7 +521,7 @@
 				>
 			</File>
 			<Filter
-				Name="HQ"
+				Name="hq2x"
 				>
 				<File
 					RelativePath="..\..\src\filters\hq2x.cpp"
@@ -570,118 +539,6 @@
 					RelativePath="..\..\src\filters\lq2x.h"
 					>
 				</File>
-				<Filter
-					Name="3x_4x_asm"
-					>
-					<File
-						RelativePath="..\..\src\filters\hq\asm\hq3x32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\filters\hq\asm\hq3x_16.asm"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-								GenerateDebugInfo="true"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\filters\hq\asm\hq3x_32.asm"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-								GenerateDebugInfo="true"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\filters\hq\asm\hq4x_16.asm"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-								GenerateDebugInfo="true"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\filters\hq\asm\hq4x_32.asm"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-								GenerateDebugInfo="true"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="NASM"
-								Optimization="1"
-								IncludePath="../../src/filters/hq/asm/"
-								DisableOrphanLabelsWarning="true"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\filters\hq\asm\macros.mac"
-						>
-					</File>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

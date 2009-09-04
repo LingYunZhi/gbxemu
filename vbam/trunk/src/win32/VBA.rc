@@ -1740,7 +1740,6 @@ BEGIN
             END
             MENUITEM SEPARATOR
             MENUITEM "Multi-Threading (D3D)",       ID_PIXELFILTER_MULTI
-            MENUITEM "Disable &MMX",                ID_OPTIONS_FILTER_DISABLEMMX
         END
         POPUP "&Audio"
         BEGIN

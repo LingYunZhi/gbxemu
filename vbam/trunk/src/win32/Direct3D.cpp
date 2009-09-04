@@ -38,11 +38,6 @@ static char THIS_FILE[] = __FILE__;
 extern void log(const char *,...);
 #endif
 
-#ifdef MMX
-extern "C" bool cpu_mmx;
-extern bool detectMMX();
-#endif
-
 struct PFTHREAD_DATA {
 	void (*filterFunction)(u8*,u32,u8*,u8*,u32,int,int);
 	u8 *sourcePointer;
@@ -282,14 +277,6 @@ bool Direct3DDisplay::initialize()
 	theApp.fsColorDepth = systemColorDepth;
 	utilUpdateSystemColorMaps();
 
-
-#ifdef MMX
-	if(!theApp.disableMMX) {
-		cpu_mmx = theApp.detectMMX();
-	} else {
-		cpu_mmx = 0;
-	}
-#endif
 
 
 	theApp.updateFilter();

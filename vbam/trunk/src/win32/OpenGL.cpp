@@ -36,11 +36,6 @@ extern int systemSpeed;
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#ifdef MMX
-extern "C" bool cpu_mmx;
-extern bool detectMMX();
-#endif
-
 
 class OpenGLDisplay : public IDisplay {
 private:
@@ -315,13 +310,6 @@ bool OpenGLDisplay::initialize()
 	initializeMatrices( theApp.surfaceSizeX, theApp.surfaceSizeY );
 
 	setVSync( theApp.vsync );
-
-#ifdef MMX
-	if(!theApp.disableMMX)
-		cpu_mmx = theApp.detectMMX();
-	else
-		cpu_mmx = 0;
-#endif
 
 	systemRedShift = 3;
 	systemGreenShift = 11;

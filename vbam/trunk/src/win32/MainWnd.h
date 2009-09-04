@@ -221,8 +221,6 @@ protected:
 	afx_msg void OnOptionsGameboyGameboycolors();
 	afx_msg void OnUpdateOptionsGameboyGameboycolors(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsGameboyColors();
-	afx_msg void OnOptionsFilterDisablemmx();
-	afx_msg void OnUpdateOptionsFilterDisablemmx(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsLanguageSystem();
 	afx_msg void OnUpdateOptionsLanguageSystem(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsLanguageEnglish();

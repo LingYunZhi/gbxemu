@@ -1227,22 +1227,6 @@ void MainWnd::OnUpdateOptionsFilterIFB(CCmdUI *pCmdUI)
   }
 }
 
-void MainWnd::OnOptionsFilterDisablemmx()
-{
-#ifdef MMX
-  theApp.disableMMX = !theApp.disableMMX;
-  if(!theApp.disableMMX)
-    cpu_mmx = theApp.detectMMX();
-  else
-    cpu_mmx = 0;
-#endif
-}
-
-void MainWnd::OnUpdateOptionsFilterDisablemmx(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.disableMMX);
-}
-
 void MainWnd::OnOptionsFilterLcdcolors()
 {
 // todo: depreciated

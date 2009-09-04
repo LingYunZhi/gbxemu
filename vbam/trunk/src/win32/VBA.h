@@ -134,7 +134,6 @@ class VBA : public CWinApp
   bool pauseWhenInactive;
   bool speedupToggle;
   int threadPriority;
-  bool disableMMX;
   int languageOption;
   CString languageName;
   HMODULE languageModule;
@@ -217,9 +216,6 @@ class VBA : public CWinApp
   bool initInput();
   HMODULE winLoadLanguage(const char *name);
   void winSetLanguageOption(int option, bool force);
-#ifdef MMX
-  bool detectMMX();
-#endif
   void updatePriority();
   void directXMessage(const char *msg);
   void shutdownDisplay();
@@ -239,7 +235,3 @@ class VBA : public CWinApp
 
     extern VBA theApp;
 	extern int emulating;
-
-#ifdef MMX
-    extern "C" bool cpu_mmx;
-#endif
