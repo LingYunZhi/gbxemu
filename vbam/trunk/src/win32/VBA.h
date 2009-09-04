@@ -104,7 +104,6 @@ class VBA : public CWinApp
   bool recentFreeze;
   bool autoSaveLoadCheatList;
   FILE *winout;
-  bool removeIntros;
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;

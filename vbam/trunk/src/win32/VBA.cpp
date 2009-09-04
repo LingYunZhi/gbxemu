@@ -237,7 +237,6 @@ VBA::VBA()
   recentFreeze = false;
   autoSaveLoadCheatList = true;
   winout = NULL;
-  removeIntros = false;
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
@@ -1414,7 +1413,6 @@ void VBA::loadSettings()
 
   pauseWhenInactive = regQueryDwordValue("pauseWhenInactive", 1) ?
     true : false;
-  removeIntros = regQueryDwordValue("removeIntros", false) ? true : false;
 
   recentFreeze = regQueryDwordValue("recentFreeze", false) ? true : false;
 
@@ -2316,8 +2314,6 @@ void VBA::saveSettings()
   regSetDwordValue("showSpeed", showSpeed);
 
   regSetDwordValue("showSpeedTransparent", showSpeedTransparent);
-
-  regSetDwordValue("removeIntros", removeIntros);
 
   regSetDwordValue("recentFreeze", recentFreeze);
 

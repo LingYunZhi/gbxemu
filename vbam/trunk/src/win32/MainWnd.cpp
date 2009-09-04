@@ -513,12 +513,6 @@ bool MainWnd::FileRun()
       doMirroring (i == 0 ? false : true);
 
     theApp.emulator = GBASystem;
-    /* disabled due to problems
-    if(theApp.removeIntros && rom != NULL) {
-      *((u32 *)rom)= 0xea00002e;
-    }
-    */
-
   }
 
   if(theApp.soundInitialized) {
