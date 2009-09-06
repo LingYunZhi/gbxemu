@@ -109,8 +109,6 @@ Performance:
 ==========
 Known Bugs
 ==========
-- Linking: Doesnt work quite right yet.
-
 - Audio core: assertation error occurs when disabling sound in GB mode
  - I think its best we mute sound instead, since some games rely on audio for timing.
    Plus, blargg's GB_Snd_Emu is extremely optimized stuff. (Mudlord)

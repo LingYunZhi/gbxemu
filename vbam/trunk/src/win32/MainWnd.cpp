@@ -20,7 +20,6 @@
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
 #include "../Util.h"
-#include "../gba/GBALink.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -296,13 +295,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
     ON_COMMAND(ID_OPTIONS_SELECT_PLUGIN, OnOptionsSelectPlugin)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_GAMEOVERRIDES, OnUpdateOptionsEmulatorGameoverrides)
 	ON_COMMAND(ID_HELP_GNUPUBLICLICENSE, OnHelpGnupubliclicense)
-	ON_COMMAND(ID_OPTIONS_LINK_OPTIONS, OnLinkOptions)
-	ON_COMMAND(ID_OPTIONS_LINK_LOG, OnOptionsLinkLog)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LINK_LOG, OnUpdateOptionsLinkLog)
-	ON_COMMAND(ID_OPTIONS_LINK_WIRELESSADAPTER, OnOptionsLinkRFU)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LINK_WIRELESSADAPTER, OnUpdateOptionsLinkRFU)
-	ON_COMMAND(ID_OPTIONS_LINK_ENABLE, OnOptionsLinkEnable)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LINK_ENABLE, OnUpdateOptionsLinkEnable)
 
 	//}}AFX_MSG_MAP
   ON_COMMAND_EX_RANGE(ID_FILE_MRU_FILE1, ID_FILE_MRU_FILE10, OnFileRecentFile)
@@ -849,7 +841,7 @@ void MainWnd::writeBatteryFile()
     filename.Format("%s\\%s.sav", saveDir, buffer);
 
   if(theApp.emulator.emuWriteBattery)
-    theApp.emulator.emuWriteBattery(MakeInstanceFilename((const char *)filename));
+    theApp.emulator.emuWriteBattery((const char *)filename);
 }
 
 
@@ -888,7 +880,7 @@ void MainWnd::readBatteryFile()
   bool res = false;
 
   if(theApp.emulator.emuReadBattery)
-    res = theApp.emulator.emuReadBattery(MakeInstanceFilename(filename));
+    res = theApp.emulator.emuReadBattery(filename);
 
   if(res)
     systemScreenMessage(winResLoadString(IDS_LOADED_BATTERY));

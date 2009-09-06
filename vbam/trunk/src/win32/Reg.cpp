@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "VBA.h"
-#include "..\gba\GBALink.h"
 
 static char buffer[2048];
 static HKEY vbKey = NULL;
@@ -31,7 +30,7 @@ void regInit(const char *path, bool force)
 
   // If vba.ini exists in executable's folder, use it. Else create/use one in %appdata% folder.
   regVbaPath = new CString();
-  regVbaPath->Format(MakeInstanceFilename("%s\\vba.ini"), path);
+  regVbaPath->Format("%s\\vba.ini", path);
   if( !force && !utilFileExists( regVbaPath->GetString() ) ) {
 	  TCHAR appdata[MAX_PATH+1];
 	  SHGetFolderPath( NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, appdata );

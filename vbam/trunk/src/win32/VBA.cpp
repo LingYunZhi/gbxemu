@@ -31,11 +31,6 @@
 
 #include "../version.h"
 
-/* Link
----------------------*/
-#include "../gba/GBALink.h"
-/* ---------------- */
-
 extern void Pixelate(u8*,u32,u8*,u8*,u32,int,int);
 extern void Pixelate32(u8*,u32,u8*,u8*,u32,int,int);
 extern void _2xSaI(u8*,u32,u8*,u8*,u32,int,int);
@@ -93,14 +88,6 @@ extern void InterframeCleanup();
 
 void winlog(const char *msg, ...);
 
-/* Link
----------------------*/
-extern int InitLink(void);
-extern void CloseLink(void);
-//extern int linkid;
-extern char inifile[];
-extern FILE *linklogfile;
-/* ------------------- */
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -356,14 +343,6 @@ VBA theApp;
 
 BOOL VBA::InitInstance()
 {
-#if _MSC_VER < 1400
-#ifdef _AFXDLL
-  Enable3dControls();      // Call this when using MFC in a shared DLL
-#else
-  Enable3dControlsStatic();  // Call this when linking to MFC statically
-#endif
-#endif
-
   SetRegistryKey(_T("VBA"));
 
   remoteSetProtocol(0);
@@ -371,12 +350,12 @@ BOOL VBA::InitInstance()
   systemVerbose = GetPrivateProfileInt("config",
                                        "verbose",
                                        0,
-                                       MakeInstanceFilename("VBA.ini"));
+                                       "VBA.ini");
 
   systemDebug = GetPrivateProfileInt("config",
                                      "debug",
                                      0,
-                                     MakeInstanceFilename("VBA.ini"));
+                                     "VBA.ini");
 
   wndClass = AfxRegisterWndClass(0, LoadCursor(IDC_ARROW), (HBRUSH)GetStockObject(BLACK_BRUSH), LoadIcon(IDI_MAINICON));
 
@@ -386,9 +365,6 @@ BOOL VBA::InitInstance()
   char *p = strrchr(winBuffer, '\\');
   if(p)
     *p = 0;
-
-  if(!InitLink())
-	return FALSE;;
 
   bool force = false;
 
@@ -427,10 +403,6 @@ BOOL VBA::InitInstance()
   }
 
   
-
-  if(!openLinkLog())
-    return FALSE;
-
   if(!initInput())
     return FALSE;
 
@@ -1120,7 +1092,6 @@ BOOL VBA::OnIdle(LONG lCount)
   } else if(emulating && active && !paused) {
     for(int i = 0; i < 2; i++) {
       emulator.emuMain(emulator.emuCount);
-      if(lanlink.connected&&linkid&&lc.numtransfers==0) lc.CheckConn();
     }
 
     if(mouseCounter) {
@@ -1385,17 +1356,6 @@ void VBA::loadSettings()
   maxScale = regQueryDwordValue("maxScale", 0);
 
   updateThrottle( (unsigned short)regQueryDwordValue( "throttle", 0 ) );
-
-  linktimeout = regQueryDwordValue("LinkTimeout", 1000);
-
-  linklog = regQueryDwordValue("Linklog", false) ? true : false;
-  if(linklog)
-	  openLinkLog();
-
-  adapter = regQueryDwordValue("RFU", false) ? true : false;
-  linkenable = regQueryDwordValue("linkEnabled", false) ? true : false;
-
-  lanlink.active = regQueryDwordValue("LAN", 0) ? true : false;
 
   Sm60FPS::bSaveMoreCPU = regQueryDwordValue("saveMoreCPU", 0);
 
@@ -2173,10 +2133,6 @@ void VBA::saveSettings()
   regSetDwordValue("throttle", throttle);
   regSetStringValue("pluginName", pluginName);
   regSetDwordValue("saveMoreCPU", Sm60FPS::bSaveMoreCPU);
-  regSetDwordValue("LinkTimeout", linktimeout);
-  regSetDwordValue("Linklog", linklog);
-  regSetDwordValue("RFU", adapter);
-  regSetDwordValue("linkEnabled", linkenable);
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
 

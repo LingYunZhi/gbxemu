@@ -30,15 +30,6 @@
 
 
 extern int emulating;
-#ifdef LINK_EMULATION
-extern int linktime;
-extern void StartLink(u16);
-extern void StartJOYLink(u16);
-extern void StartGPLink(u16);
-extern void LinkSSend(u16);
-extern void LinkUpdate(int);
-extern int linktime2;
-#endif
 int SWITicks = 0;
 int IRQTicks = 0;
 
@@ -2673,13 +2664,6 @@ void CPUUpdateRegister(u32 address, u16 value)
     cpuNextEvent = cpuTotalTicks;
     break;
   case 0x128:
-#ifdef LINK_EMULATION
-    if (linkenable)
-    {
-      StartLink(value);
-    }
-    else
-#endif
     {
       if(value & 0x80) {
         value &= 0xff7f;
@@ -2694,10 +2678,6 @@ void CPUUpdateRegister(u32 address, u16 value)
     }
     break;
   case 0x12a:
-#ifdef LINK_EMULATION
-    if(linkenable && lspeed)
-      LinkSSend(value);
-#endif
     {
       UPDATE_REG(0x134, value);
     }
@@ -2710,20 +2690,10 @@ void CPUUpdateRegister(u32 address, u16 value)
     UPDATE_REG(0x132, value & 0xC3FF);
     break;
   case 0x134:
-#ifdef LINK_EMULATION
-    if (linkenable)
-      StartGPLink(value);
-    else
-#endif
       UPDATE_REG(0x134, value);
 
     break;
   case 0x140:
-#ifdef LINK_EMULATION
-    if (linkenable)
-      StartJOYLink(value);
-    else
-#endif
       UPDATE_REG(0x140, value);
 
     break;
@@ -3312,10 +3282,6 @@ void CPULoop(int ticks)
   int timerOverflow = 0;
   // variable used by the CPU core
   cpuTotalTicks = 0;
-#ifdef LINK_EMULATION
-  if(linkenable)
-    cpuNextEvent = 1;
-#endif
   cpuBreakLoop = false;
   cpuNextEvent = CPUUpdateTicks();
   if(cpuNextEvent > ticks)
@@ -3770,10 +3736,6 @@ void CPULoop(int ticks)
 #endif
 
       ticks -= clockTicks;
-#ifdef LINK_EMULATION
-	  if (linkenable)
-		  LinkUpdate(clockTicks);
-#endif
       cpuNextEvent = CPUUpdateTicks();
 
       if(cpuDmaTicksToUpdate > 0) {
@@ -3787,10 +3749,6 @@ void CPULoop(int ticks)
         cpuDmaHack = true;
         goto updateLoop;
       }
-#ifdef LINK_EMULATION
-	  if(linkenable)
-  	       cpuNextEvent = 1;
-#endif
       if(IF && (IME & 1) && armIrqEnable) {
         int res = IF & IE;
         if(stopState)

@@ -308,13 +308,6 @@ protected:
 	afx_msg void OnUpdateOptionsFilterLcdcolors(CCmdUI *pCmdUI);
 	afx_msg void OnOptionsSoundHardwareacceleration();
 	afx_msg void OnUpdateOptionsSoundHardwareacceleration(CCmdUI *pCmdUI);
-	afx_msg void OnLinkOptions();
-	afx_msg void OnOptionsLinkLog() ;
-	afx_msg void OnUpdateOptionsLinkLog(CCmdUI* pCmdUI) ;
-	afx_msg void OnOptionsLinkRFU() ;
-	afx_msg void OnUpdateOptionsLinkRFU(CCmdUI* pCmdUI) ;
-	afx_msg void OnOptionsLinkEnable() ;
-	afx_msg void OnUpdateOptionsLinkEnable(CCmdUI* pCmdUI) ;
 
 	afx_msg void OnOutputapiDirectsound();
 	afx_msg void OnUpdateOutputapiDirectsound(CCmdUI *pCmdUI);
