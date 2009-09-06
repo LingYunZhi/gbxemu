@@ -132,8 +132,6 @@ protected:
 	afx_msg void OnUpdateOptionsVideoFullscreen(CCmdUI* pCmdUI);
 	afx_msg void OnMove(int x, int y);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnOptionsVideoDisablesfx();
-	afx_msg void OnUpdateOptionsVideoDisablesfx(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoFullscreenstretchtofit();
 	afx_msg void OnUpdateOptionsVideoFullscreenstretchtofit(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoTriplebuffering();

@@ -1221,8 +1221,6 @@ void VBA::loadSettings()
 
   recentFreeze = regQueryDwordValue("recentFreeze", false) ? true : false;
 
-  cpuDisableSfx = regQueryDwordValue("disableSfx", 0) ? true : false;
-
   winSaveType = regQueryDwordValue("saveType", 0);
   if(winSaveType < 0 || winSaveType > 5)
     winSaveType = 0;
@@ -2016,8 +2014,6 @@ void VBA::saveSettings()
   regSetDwordValue("showSpeedTransparent", showSpeedTransparent);
 
   regSetDwordValue("recentFreeze", recentFreeze);
-
-  regSetDwordValue("disableSfx", cpuDisableSfx);
 
   regSetDwordValue("saveType", winSaveType);
 

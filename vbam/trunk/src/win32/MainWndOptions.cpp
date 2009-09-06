@@ -295,18 +295,6 @@ void MainWnd::OnUpdateOptionsVideoFullscreen(CCmdUI* pCmdUI)
   pCmdUI->SetCheck(theApp.videoOption == VIDEO_OTHER);
 }
 
-void MainWnd::OnOptionsVideoDisablesfx()
-{
-  cpuDisableSfx = !cpuDisableSfx;
-  if(emulating && theApp.cartridgeType == IMAGE_GBA)
-    CPUUpdateRender();
-}
-
-void MainWnd::OnUpdateOptionsVideoDisablesfx(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(cpuDisableSfx);
-}
-
 
 void MainWnd::OnOptionsVideoFullscreenstretchtofit()
 {

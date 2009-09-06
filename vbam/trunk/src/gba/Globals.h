@@ -33,7 +33,6 @@ extern bool skipBios;
 extern int frameSkip;
 extern bool speedup;
 extern bool synchronize;
-extern bool cpuDisableSfx;
 extern bool cpuIsMultiBoot;
 extern bool parseDebug;
 extern int layerSettings;

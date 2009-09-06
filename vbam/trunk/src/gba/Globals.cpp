@@ -23,7 +23,6 @@ bool skipBios = false;
 int frameSkip = 1;
 bool speedup = false;
 bool synchronize = true;
-bool cpuDisableSfx = false;
 bool cpuIsMultiBoot = false;
 bool parseDebug = true;
 int layerSettings = 0xff00;

@@ -1318,8 +1318,7 @@ void CPUUpdateRender()
 {
   switch(DISPCNT & 7) {
   case 0:
-    if((!fxOn && !windowOn && !(layerEnable & 0x8000)) ||
-       cpuDisableSfx)
+    if(!fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode0RenderLine;
     else if(fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode0RenderLineNoWindow;
@@ -1327,8 +1326,7 @@ void CPUUpdateRender()
       renderLine = mode0RenderLineAll;
     break;
   case 1:
-    if((!fxOn && !windowOn && !(layerEnable & 0x8000)) ||
-       cpuDisableSfx)
+    if(!fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode1RenderLine;
     else if(fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode1RenderLineNoWindow;
@@ -1336,8 +1334,7 @@ void CPUUpdateRender()
       renderLine = mode1RenderLineAll;
     break;
   case 2:
-    if((!fxOn && !windowOn && !(layerEnable & 0x8000)) ||
-       cpuDisableSfx)
+    if(!fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode2RenderLine;
     else if(fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode2RenderLineNoWindow;
@@ -1345,8 +1342,7 @@ void CPUUpdateRender()
       renderLine = mode2RenderLineAll;
     break;
   case 3:
-    if((!fxOn && !windowOn && !(layerEnable & 0x8000)) ||
-       cpuDisableSfx)
+    if(!fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode3RenderLine;
     else if(fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode3RenderLineNoWindow;
@@ -1354,8 +1350,7 @@ void CPUUpdateRender()
       renderLine = mode3RenderLineAll;
     break;
   case 4:
-    if((!fxOn && !windowOn && !(layerEnable & 0x8000)) ||
-       cpuDisableSfx)
+    if(!fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode4RenderLine;
     else if(fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode4RenderLineNoWindow;
@@ -1363,8 +1358,7 @@ void CPUUpdateRender()
       renderLine = mode4RenderLineAll;
     break;
   case 5:
-    if((!fxOn && !windowOn && !(layerEnable & 0x8000)) ||
-       cpuDisableSfx)
+    if(!fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode5RenderLine;
     else if(fxOn && !windowOn && !(layerEnable & 0x8000))
       renderLine = mode5RenderLineNoWindow;
