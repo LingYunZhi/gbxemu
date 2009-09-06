@@ -191,7 +191,6 @@ VBA::VBA()
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
-  tripleBuffering = true;
   throttle = 0;
   autoFrameSkipLastTime = 0;
   autoFrameSkip = false;
@@ -1183,8 +1182,6 @@ void VBA::loadSettings()
 	soundInterpolation = 1 == regQueryDwordValue( "gbaSoundInterpolation", 1 );
 	soundFiltering = (float)regQueryDwordValue( "gbaSoundFiltering", 50 ) / 100.0f;
 
-  tripleBuffering = regQueryDwordValue("tripleBuffering", false) ? true : false;
-
   d3dFilter = regQueryDwordValue("d3dFilter", 1);
   if(d3dFilter < 0 || d3dFilter > 1)
     d3dFilter = 1;
@@ -1982,8 +1979,6 @@ void VBA::saveSettings()
 
   regSetDwordValue( "gbaSoundInterpolation", soundInterpolation ? 1 : 0 );
   regSetDwordValue( "gbaSoundFiltering", (DWORD)( soundFiltering * 100.0f ) );
-
-  regSetDwordValue("tripleBuffering", tripleBuffering);
 
   regSetDwordValue("d3dFilter", d3dFilter);
   regSetDwordValue("d3dMotionBlur", d3dMotionBlur ? 1 : 0);

@@ -130,7 +130,7 @@ void Direct3DDisplay::prepareDisplayMode()
 	} else {
 		dpp.BackBufferFormat = mode.Format;
 	}
-	dpp.BackBufferCount = theApp.tripleBuffering ? 2 : 1;
+	dpp.BackBufferCount = 1; // double buffering
 	dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	dpp.BackBufferWidth = !dpp.Windowed ? theApp.fsWidth : theApp.surfaceSizeX;
@@ -739,12 +739,6 @@ void Direct3DDisplay::setOption( const char *option, int value )
 	if( !_tcscmp( option, _T("vsync") ) ) {
 		// value of theApp.vsync has already been changed by the menu handler
 		// 'value' has the same value as theApp.vsync
-		resetDevice();
-	}
-
-	if( !_tcscmp( option, _T("tripleBuffering") ) ) {
-		// value of theApp.tripleBuffering has already been changed by the menu handler
-		// 'value' has the same value as theApp.tripleBuffering
 		resetDevice();
 	}
 

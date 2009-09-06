@@ -94,7 +94,6 @@ class VBA : public CWinApp
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;
-  bool tripleBuffering;
   unsigned short throttle;
   u32 autoFrameSkipLastTime;
   bool autoFrameSkip;

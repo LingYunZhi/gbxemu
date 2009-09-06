@@ -389,21 +389,6 @@ void MainWnd::OnUpdateVideoLayer(CCmdUI *pCmdUI)
 }
 
 
-void MainWnd::OnOptionsVideoTriplebuffering()
-{
-	theApp.tripleBuffering = !theApp.tripleBuffering;
-	if( theApp.display ) {
-		theApp.display->setOption( _T("tripleBuffering"), theApp.tripleBuffering );
-	}
-}
-
-
-void MainWnd::OnUpdateOptionsVideoTriplebuffering(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(theApp.tripleBuffering);
-}
-
-
 void MainWnd::OnOptionsVideoRenderoptionsD3dnofilter()
 {
 	theApp.d3dFilter = 0;

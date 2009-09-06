@@ -1286,7 +1286,6 @@ BEGIN
                 MENUITEM "Motion Blur",                 ID_RENDERAPI_D3DMOTIONBLUR
                 MENUITEM SEPARATOR
                 MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
-                MENUITEM "Triple Buffering",            ID_OPTIONS_VIDEO_TRIPLEBUFFERING
             END
             MENUITEM SEPARATOR
             MENUITEM "1x window size",              ID_OPTIONS_VIDEO_X1

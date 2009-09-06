@@ -134,8 +134,6 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnOptionsVideoFullscreenstretchtofit();
 	afx_msg void OnUpdateOptionsVideoFullscreenstretchtofit(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsVideoTriplebuffering();
-	afx_msg void OnUpdateOptionsVideoTriplebuffering(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoRenderoptionsD3dnofilter();
 	afx_msg void OnUpdateOptionsVideoRenderoptionsD3dnofilter(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoRenderoptionsD3dbilinear();
