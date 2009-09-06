@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#ifndef NO_XAUDIO2
 #include "VBA.h"
 
 #include "XAudio2_Config.h"
@@ -147,5 +146,3 @@ void XAudio2_Config::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
-
-#endif

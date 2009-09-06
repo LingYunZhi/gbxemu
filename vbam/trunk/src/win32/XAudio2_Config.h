@@ -1,5 +1,3 @@
-#ifndef NO_XAUDIO2
-
 #pragma once
 
 
@@ -33,5 +31,3 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 };
-
-#endif

@@ -1363,18 +1363,6 @@ void MainWnd::OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI)
   pCmdUI->Enable(emulating && (theApp.cartridgeType == IMAGE_GBA));
 }
 
-void MainWnd::OnOptionsSoundHardwareacceleration()
-{
-  theApp.dsoundDisableHardwareAcceleration = !theApp.dsoundDisableHardwareAcceleration;
-  soundShutdown();
-  soundInit();
-}
-
-void MainWnd::OnUpdateOptionsSoundHardwareacceleration(CCmdUI *pCmdUI)
-{
-  pCmdUI->SetCheck(!theApp.dsoundDisableHardwareAcceleration);
-}
-
 void MainWnd::OnOptionsSelectPlugin()
 {
   SelectPlugin dlg;
@@ -1386,46 +1374,8 @@ void MainWnd::OnOptionsSelectPlugin()
   }
 }
 
-
-void MainWnd::OnOutputapiDirectsound()
-{
-	if( theApp.audioAPI != DIRECTSOUND ) {
-		theApp.audioAPI = DIRECTSOUND;
-		soundShutdown();
-		soundInit();
-	}
-}
-
-void MainWnd::OnUpdateOutputapiDirectsound(CCmdUI *pCmdUI)
-{
-	pCmdUI->SetCheck( ( theApp.audioAPI == DIRECTSOUND ) ? 1 : 0 );
-	pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
-}
-
-void MainWnd::OnOutputapiXaudio2()
-{
-#ifndef NO_XAUDIO2
-	if( theApp.audioAPI != XAUDIO2 ) {
-		theApp.audioAPI = XAUDIO2;
-		soundShutdown();
-		soundInit();
-	}
-#endif
-}
-
-void MainWnd::OnUpdateOutputapiXaudio2(CCmdUI *pCmdUI)
-{
-#ifndef NO_XAUDIO2
-	pCmdUI->SetCheck( ( theApp.audioAPI == XAUDIO2 ) ? 1 : 0 );
-	pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
 void MainWnd::OnOutputapiXaudio2config()
 {
-#ifndef NO_XAUDIO2
 	XAudio2_Config dlg;
 
 	dlg.m_selected_device_index = theApp.xa2Device;
@@ -1441,16 +1391,11 @@ void MainWnd::OnOutputapiXaudio2config()
 
 		soundInit();
 	}
-#endif
 }
 
 void MainWnd::OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI)
 {
-#ifndef NO_XAUDIO2
-	pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
+    pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
 }
 
 void MainWnd::OnRenderapiD3dmotionblur()

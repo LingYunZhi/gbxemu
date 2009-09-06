@@ -39,14 +39,6 @@ DirectX Runtime Web-Updater:
 http://www.microsoft.com/downloads/details.aspx?FamilyID=2da43d38-db71-4c1b-bc6a-9b6652cd92a3&DisplayLang=en
 
 
-=================
-Optional Runtimes
-=================
-
-OpenAL Installer for Windows:
-http://connect.creativelabs.com/openal/Downloads/Forms/DispForm.aspx?ID=1&Source=http%3A%2F%2Fconnect.creativelabs.com%2Fopenal%2FDownloads%2FForms%2FAllItems.aspx&RootFolder=%2Fopenal%2FDownloads
-
-
 ==============
 To Do List
 ==============
@@ -59,9 +51,6 @@ Important:
 
 - Improve automatic 64k/128k flash save detection
  - Pokémon Emerald hangs with white screen when no save state exists and wrong flash size is selected
-
-- Remove 16 bit hack for filters
- - Not compatible to software motion blur (display corruption)
 
 - Add selection for compressed archives with more than one ROM in them
 
@@ -81,8 +70,6 @@ Less important:
 - Improve AVI recording (produces asynchronous files)
 
 - Enable audio stream compression for AVI files
-
-- Add stereo upmixing support to OpenAL
 
 - Verify BIOS files by checksum instead by file extension
 

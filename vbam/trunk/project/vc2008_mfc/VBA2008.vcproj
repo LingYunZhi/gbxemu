@@ -601,10 +601,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\DirectSound.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\Display.h"
 				>
 			</File>

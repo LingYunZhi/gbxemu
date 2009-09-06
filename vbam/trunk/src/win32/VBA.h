@@ -12,6 +12,8 @@
 #include "IUpdate.h"
 #include "../System.h"
 #include "../Util.h"
+#include "WavWriter.h"
+#include "AVIWrite.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // VBA:
@@ -37,16 +39,6 @@ enum pixelFilterType
 
 	FILTER_SIMPLE4X, FILTER_HQ4X
 };
-
-enum AUDIO_API {
-	DIRECTSOUND = 0
-#ifndef NO_XAUDIO2
-	, XAUDIO2 = 2
-#endif
-};
-
-class AVIWrite;
-class WavWriter;
 
 class VBA : public CWinApp
 {
@@ -111,12 +103,9 @@ class VBA : public CWinApp
   bool vsync;
   bool changingVideoSize;
   DISPLAY_TYPE renderMethod;
-  AUDIO_API audioAPI;
-#ifndef NO_XAUDIO2
   UINT32 xa2Device;
   UINT32 xa2BufferCount;
   bool xa2Upmixing;
-#endif
 #ifndef NO_D3D
   int d3dFilter;
   bool d3dMotionBlur;
@@ -138,7 +127,6 @@ class VBA : public CWinApp
   bool soundRecording;
   WavWriter *soundRecorder;
   CString soundRecordName;
-  bool dsoundDisableHardwareAcceleration;
   bool aviRecording;
   AVIWrite *aviRecorder;
   CString aviRecordName;

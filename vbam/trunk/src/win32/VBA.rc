@@ -1357,17 +1357,8 @@ BEGIN
         END
         POPUP "&Audio"
         BEGIN
-            POPUP "Output API"
-            BEGIN
-                MENUITEM "XAudio2",                     ID_OUTPUTAPI_XAUDIO2
-                MENUITEM "  Configuration...",          ID_OUTPUTAPI_XAUDIO2CONFIG
-                MENUITEM SEPARATOR
-                MENUITEM "DirectSound 8",               ID_OUTPUTAPI_DIRECTSOUND
-                MENUITEM SEPARATOR
-                MENUITEM "&Sync game to audio",         ID_OPTIONS_EMULATOR_SYNCHRONIZE
-            END
-            MENUITEM SEPARATOR
-            MENUITEM "Core Settings...",            ID_AUDIO_CORE_SETTINGS
+            MENUITEM "Configure XAudio2...",        ID_OUTPUTAPI_XAUDIO2CONFIG
+            MENUITEM "Emulation Settings...",       ID_AUDIO_CORE_SETTINGS
             MENUITEM SEPARATOR
             POPUP "Sound Channels"
             BEGIN
@@ -1378,6 +1369,8 @@ BEGIN
                 MENUITEM "Direct Sound &A",             ID_OPTIONS_SOUND_DIRECTSOUNDA, CHECKED
                 MENUITEM "Direct Sound &B",             ID_OPTIONS_SOUND_DIRECTSOUNDB, CHECKED
             END
+            MENUITEM SEPARATOR
+            MENUITEM "&Sync game to audio",         ID_OPTIONS_EMULATOR_SYNCHRONIZE
         END
         POPUP "&Input"
         BEGIN

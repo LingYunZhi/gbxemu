@@ -72,10 +72,7 @@ extern IDisplay *newDirect3DDisplay();
 
 extern Input *newDirectInput();
 
-extern SoundDriver *newDirectSound();
-#ifndef NO_XAUDIO2
 extern SoundDriver *newXAudio2_Output();
-#endif
 
 extern void remoteStubSignal(int, int);
 extern void remoteOutput(char *, u32);
@@ -217,13 +214,9 @@ VBA::VBA()
   vsync = false;
   changingVideoSize = false;
   renderMethod = DIRECT_3D;
-  audioAPI = DIRECTSOUND;
-#ifndef NO_XAUDIO2
-  audioAPI = XAUDIO2;
   xa2Device = 0;
   xa2BufferCount = 4;
   xa2Upmixing = false;
-#endif
 #ifndef NO_D3D
   d3dFilter = 0;
   d3dMotionBlur = false;
@@ -244,7 +237,6 @@ VBA::VBA()
   winPauseNextFrame = false;
   soundRecording = false;
   soundRecorder = NULL;
-  dsoundDisableHardwareAcceleration = true;
   aviRecording = false;
   aviRecorder = NULL;
   painting = false;
@@ -984,27 +976,16 @@ int systemGetSensorY()
 
 SoundDriver * systemSoundInit()
 {
-	SoundDriver * drv = 0;
-	soundShutdown();
+    SoundDriver * drv = 0;
+    soundShutdown();
+    drv = newXAudio2_Output();
+    
+    if( drv ) {
+        if (theApp.throttle)
+            drv->setThrottle( theApp.throttle );
+    }
 
-	switch( theApp.audioAPI )
-	{
-	case DIRECTSOUND:
-		drv = newDirectSound();
-		break;
-#ifndef NO_XAUDIO2
-	case XAUDIO2:
-		drv = newXAudio2_Output();
-		break;
-#endif
-	}
-
-	if( drv ) {
-		if (theApp.throttle)
-		drv->setThrottle( theApp.throttle );
-	}
-
-	return drv;
+    return drv;
 }
 
 
@@ -1192,19 +1173,6 @@ void VBA::loadSettings()
 
   renderMethod = (DISPLAY_TYPE)regQueryDwordValue("renderMethod", DIRECT_3D);
 
-  audioAPI = (AUDIO_API)regQueryDwordValue( "audioAPI", XAUDIO2 );
-  if( ( audioAPI != DIRECTSOUND )
-#ifndef NO_XAUDIO2
-	  && ( audioAPI != XAUDIO2 )
-#endif
-	  ) {
-#ifndef NO_XAUDIO2
-        audioAPI = XAUDIO2;
-#else
-        audioAPI = DIRECTSOUND;
-#endif
-  }
-
   windowPositionX = regQueryDwordValue("windowX", 0);
   if(windowPositionX < 0)
     windowPositionX = 0;
@@ -1359,11 +1327,9 @@ void VBA::loadSettings()
 
   Sm60FPS::bSaveMoreCPU = regQueryDwordValue("saveMoreCPU", 0);
 
-#ifndef NO_XAUDIO2
   xa2Device = regQueryDwordValue( "xa2Device", 0 );
   xa2BufferCount = regQueryDwordValue( "xa2BufferCount", 4 );
   xa2Upmixing = ( 1 == regQueryDwordValue( "xa2Upmixing", 0 ) );
-#endif
 
   if( ( maxCpuCores == 1 ) && filterMT ) {
 	  // multi-threading use useless for just one core
@@ -2055,7 +2021,6 @@ void VBA::saveSettings()
   regSetDwordValue("fsFrequency", fsFrequency);
 
   regSetDwordValue("renderMethod", renderMethod);
-  regSetDwordValue( "audioAPI", audioAPI );
 
   regSetDwordValue("windowX", windowPositionX);
   regSetDwordValue("windowY", windowPositionY);
@@ -2136,11 +2101,9 @@ void VBA::saveSettings()
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
 
-#ifndef NO_XAUDIO2
   regSetDwordValue( "xa2Device", xa2Device );
   regSetDwordValue( "xa2BufferCount", xa2BufferCount );
   regSetDwordValue( "xa2Upmixing", xa2Upmixing ? 1 : 0 );
-#endif
 }
 
 unsigned int VBA::detectCpuCores()

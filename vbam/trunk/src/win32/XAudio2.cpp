@@ -1,5 +1,3 @@
-#ifndef NO_XAUDIO2
-
 // MFC
 #include "stdafx.h"
 
@@ -379,6 +377,3 @@ SoundDriver *newXAudio2_Output()
 {
 	return new XAudio2_Output();
 }
-
-
-#endif // #ifndef NO_XAUDIO2

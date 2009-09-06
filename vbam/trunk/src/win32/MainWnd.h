@@ -306,19 +306,7 @@ protected:
 	afx_msg BOOL OnFileSaveSlot(UINT nID);
 	afx_msg void OnOptionsFilterLcdcolors();
 	afx_msg void OnUpdateOptionsFilterLcdcolors(CCmdUI *pCmdUI);
-	afx_msg void OnOptionsSoundHardwareacceleration();
-	afx_msg void OnUpdateOptionsSoundHardwareacceleration(CCmdUI *pCmdUI);
 
-	afx_msg void OnOutputapiDirectsound();
-	afx_msg void OnUpdateOutputapiDirectsound(CCmdUI *pCmdUI);
-
-	afx_msg void OnOutputapiOpenal();
-	afx_msg void OnUpdateOutputapiOpenal(CCmdUI *pCmdUI);
-	afx_msg void OnOutputapiOalconfiguration();
-	afx_msg void OnUpdateOutputapiOalconfiguration(CCmdUI *pCmdUI);
-
-	afx_msg void OnOutputapiXaudio2();
-	afx_msg void OnUpdateOutputapiXaudio2(CCmdUI *pCmdUI);
 	afx_msg void OnOutputapiXaudio2config();
 	afx_msg void OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI);
 

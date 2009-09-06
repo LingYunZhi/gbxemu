@@ -9,4 +9,3 @@ Known preprocessor switches:
 - BKPT_SUPPORT
 - RGB555: Use 16bit colors with 5bit green instead of 6bit green in hq3x/4x filters (C++ version)
 - NO_D3D: Exclude Direct3D code
-- NO_XAUDIO2: Exclude XAudio2 code (the XAudio2 interface is DirectSound's successor)
