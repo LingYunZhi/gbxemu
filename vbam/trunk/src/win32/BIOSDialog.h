@@ -19,15 +19,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-	CEdit m_editGB;
 	CEdit m_editGBA;
-	bool fileExists(CString& file);
-	afx_msg void OnBnClickedSelectGbBiosPath();
+	static bool fileExists(CString& file);
 	afx_msg void OnBnClickedSelectGbaBiosPath();
 public:
-	BOOL m_enableBIOS_GB;
 	BOOL m_enableBIOS_GBA;
 	BOOL m_skipLogo;
-	CString m_pathGB;
 	CString m_pathGBA;
 };

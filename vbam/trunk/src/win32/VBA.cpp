@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "VBA.h"
 
-#include <intrin.h>
-
 #include "AVIWrite.h"
 #include "LangSelect.h"
 #include "MainWnd.h"
@@ -183,10 +181,8 @@ VBA::VBA()
   cartridgeType = IMAGE_GBA;
   soundInitialized = false;
   useBiosFileGBA = false;
-  useBiosFileGB = false;
   skipBiosFile = false;
   biosFileNameGBA = _T("");
-  biosFileNameGB = _T("");
   active = true;
   paused = false;
   recentFreeze = false;
@@ -1168,20 +1164,12 @@ void VBA::loadSettings()
 
   useBiosFileGBA = ( regQueryDwordValue("useBiosGBA", 0) == 1 ) ? true : false;
 
-  useBiosFileGB = ( regQueryDwordValue("useBiosGB", 0) == 1 ) ? true : false;
-
   skipBiosFile = regQueryDwordValue("skipBios", 0) ? true : false;
 
   buffer = regQueryStringValue("biosFileGBA", "");
 
   if(!buffer.IsEmpty()) {
     biosFileNameGBA = buffer;
-  }
-
-  buffer = regQueryStringValue("biosFileGB", "");
-
-  if(!buffer.IsEmpty()) {
-    biosFileNameGB = buffer;
   }
 
   int res = regQueryDwordValue("soundEnable", 0x30f);
@@ -1977,17 +1965,14 @@ void VBA::saveSettings()
   regSetDwordValue("windowX", windowPositionX);
   regSetDwordValue("windowY", windowPositionY);
 
-  regSetDwordValue("useBiosGBA", useBiosFileGBA);
 
-  regSetDwordValue("useBiosGB", useBiosFileGB);
+  regSetDwordValue("useBiosGBA", useBiosFileGBA);
 
   regSetDwordValue("skipBios", skipBiosFile);
 
   if(!biosFileNameGBA.IsEmpty())
     regSetStringValue("biosFileGBA", biosFileNameGBA);
 
-  if(!biosFileNameGB.IsEmpty())
-    regSetStringValue("biosFileGB", biosFileNameGB);
 
   regSetDwordValue("soundEnable", soundGetEnable() & 0x30f);
 
@@ -1995,8 +1980,8 @@ void VBA::saveSettings()
 
   regSetDwordValue("soundVolume", (DWORD)(soundGetVolume() * 100.0f));
 
-	regSetDwordValue( "gbaSoundInterpolation", soundInterpolation ? 1 : 0 );
-	regSetDwordValue( "gbaSoundFiltering", (DWORD)( soundFiltering * 100.0f ) );
+  regSetDwordValue( "gbaSoundInterpolation", soundInterpolation ? 1 : 0 );
+  regSetDwordValue( "gbaSoundFiltering", (DWORD)( soundFiltering * 100.0f ) );
 
   regSetDwordValue("tripleBuffering", tripleBuffering);
 

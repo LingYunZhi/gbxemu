@@ -80,11 +80,11 @@ class VBA : public CWinApp
   IDisplay *display;
   IMAGE_TYPE cartridgeType;
   bool soundInitialized;
+
   bool useBiosFileGBA;
-  bool useBiosFileGB;
   bool skipBiosFile;
   CString biosFileNameGBA;
-  CString biosFileNameGB;
+
   bool active;
   bool paused;
   CString recentFiles[10];
