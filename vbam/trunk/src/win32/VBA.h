@@ -175,7 +175,6 @@ class VBA : public CWinApp
 
   CString szFile;
   CString filename;
-  CString dir;
 
   CString wndClass;
 

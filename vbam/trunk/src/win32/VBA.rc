@@ -204,34 +204,28 @@ BEGIN
     CTEXT           "blargg\nCostis\nchrono\nxKiv\nbgK\nOrig. VBA team",IDC_STATIC,103,77,60,49
 END
 
-IDD_DIRECTORIES DIALOGEX 0, 0, 222, 270
+IDD_DIRECTORIES DIALOGEX 0, 0, 222, 195
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Directories"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    GROUPBOX        "Game Boy Advance ROMs",IDC_STATIC,6,6,210,30
+    GROUPBOX        "ROMs",IDC_STATIC,6,6,210,30
     EDITTEXT        IDC_ROM_PATH,12,18,180,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_ROM_DIR,192,18,18,12
-    GROUPBOX        "Game Boy Color ROMs",IDC_STATIC,6,42,210,30
-    EDITTEXT        IDC_GBCROM_PATH,12,54,180,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_GBCROM_DIR,192,54,18,12
-    GROUPBOX        "Game Boy ROMs",IDC_STATIC,6,78,210,30
-    EDITTEXT        IDC_GBROM_PATH,12,90,180,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_GBROM_DIR,192,90,18,12
-    GROUPBOX        "Native Saves",IDC_STATIC,6,114,210,30
-    EDITTEXT        IDC_BATTERY_PATH,12,126,180,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_BATTERY_DIR,192,126,18,12
-    GROUPBOX        "Emulator Saves",IDC_STATIC,6,150,210,30
-    EDITTEXT        IDC_SAVE_PATH,12,162,180,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_SAVE_DIR,192,162,18,12
-    GROUPBOX        "Screenshots",IDC_STATIC,6,186,210,30
-    EDITTEXT        IDC_CAPTURE_PATH,12,198,180,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_CAPTURE_DIR,192,198,18,12
-    GROUPBOX        "Relative Paths",IDC_STATIC,6,222,102,42
+    GROUPBOX        "Native Cartridge Saves (*.sav)",IDC_STATIC,6,42,210,30
+    EDITTEXT        IDC_BATTERY_PATH,12,54,180,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BATTERY_DIR,192,54,18,12
+    GROUPBOX        "Saved System States",IDC_STATIC,6,78,210,30
+    EDITTEXT        IDC_SAVE_PATH,12,90,180,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SAVE_DIR,192,90,18,12
+    GROUPBOX        "Screenshots",IDC_STATIC,6,114,210,30
+    EDITTEXT        IDC_CAPTURE_PATH,12,126,180,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_CAPTURE_DIR,192,126,18,12
+    GROUPBOX        "Relative Paths",IDC_STATIC,6,150,102,42
     CONTROL         "Example:\n   .\\battery\n   ..\\screenshots\\vba",IDC_STATIC,
-                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,12,234,90,24
-    DEFPUSHBUTTON   "OK",IDOK,120,246,48,18
-    PUSHBUTTON      "Cancel",IDCANCEL,168,246,48,18
+                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,12,162,90,24
+    DEFPUSHBUTTON   "OK",IDOK,120,174,48,18
+    PUSHBUTTON      "Cancel",IDCANCEL,168,174,48,18
 END
 
 IDD_CONFIG DIALOGEX 0, 0, 448, 102
@@ -1210,7 +1204,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 215
         TOPMARGIN, 7
-        BOTTOMMARGIN, 263
+        BOTTOMMARGIN, 188
     END
 
     IDD_CONFIG, DIALOG
@@ -1569,10 +1563,8 @@ IDR_MENU MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "Open GBA...",                 ID_FILE_OPEN_GBA
-        MENUITEM "Open GBC...",                 ID_FILE_OPEN_GBC
-        MENUITEM "Open GB...",                  ID_FILE_OPEN_GB
-        MENUITEM "Close",                       ID_FILE_CLOSE
+        MENUITEM "Load ROM...",                 ID_FILE_OPEN_GBA
+        MENUITEM "Close ROM",                   ID_FILE_CLOSE
         MENUITEM SEPARATOR
         POPUP "Recent"
         BEGIN
@@ -1598,9 +1590,6 @@ BEGIN
             MENUITEM "Slot #8",                     ID_FILE_LOADGAME_SLOT8
             MENUITEM "Slot #9",                     ID_FILE_LOADGAME_SLOT9
             MENUITEM "Slot #10",                    ID_FILE_LOADGAME_SLOT10
-            MENUITEM SEPARATOR
-            MENUITEM "Do not change battery save",  ID_LOADGAME_DONOTCHANGEBATTERYSAVE
-            MENUITEM "Do not change cheat list",    ID_LOADGAME_DONOTCHANGECHEATLIST
         END
         POPUP "Save Game"
         BEGIN
@@ -2125,7 +2114,7 @@ BEGIN
     IDS_FAILED_TO_LOAD_LIBRARY "Failed to load library %s"
     IDS_FAILED_TO_GET_LOCINFO "Failed to get locale information"
     IDS_SELECT_CHEAT_LIST_NAME "Select cheat list name"
-    IDS_FILTER_GBAROM       "Game Boy Advance ROMs (*.GBA;*.AGB;*.BIN;*.ELF;*.MB;*.ZIP;*.7Z;*.Z;*.GZ)_*.GBA;*.AGB;*.BIN;*.ELF;*.MB;*.ZIP;*.7Z;*.Z;*.GZ__"
+    IDS_FILTER_GBAROM       "GBA ROMs (*.gba;*.7z;*.zip)|*.gba;*.7z;*.zip||"
     IDS_FILTER_SGM          "VisualBoyAdvance Save Game_*.SGM__"
     IDS_FILTER_CHEAT_LIST   "VisualBoyAdvance Cheat List_*.CLT__"
     IDS_FILTER_BMP          "BMP Image_*.BMP__"
@@ -2169,7 +2158,6 @@ BEGIN
     IDS_ADD_CBA_CODE        "Add CodeBreakerAdvance code"
     IDS_FILTER_WAV          "Wave file_*.WAV__"
     IDS_SELECT_WAV_NAME     "Select wave file name"
-    IDS_FILTER_GBROM        "Game Boy ROMs (*.GB;*.SGB;*.ZIP;*.7Z;*.Z;*.GZ)_*.GB;*.SGB;*.ZIP;*.7Z;*.Z;*.GZ__"
     IDS_FILTER_PAL          "Windows Palette (*.PAL)_*.PAL_PaintShop Palette (*.PAL)_*.PAL_Adobe Color Table (*.ACT)_*.ACT__"
     IDS_SELECT_PALETTE_NAME "Select palette name:"
     IDS_SEARCH_PRODUCED_NO_RESULTS "Search produced no results."
@@ -2216,7 +2204,6 @@ BEGIN
     IDS_AVI_CANNOT_CREATE_AUDIO "Cannot create audio stream in AVI file."
     IDS_AVI_CANNOT_WRITE_VIDEO "Cannot write video frame to AVI file."
     IDS_AVI_CANNOT_WRITE_AUDIO "Cannot write audio frame to AVI file."
-    IDS_FILTER_GBCROM       "Game Boy Color ROMs (*.GBC;*.CGB;*.ZIP;*.7Z;*.Z;*.GZ)_*.GBC;*.CGB;*.ZIP;*.7Z;*.Z;*.GZ__"
     IDS_COM_FAILURE         "The COM (Component Object Model) failed to initialize!"
     IDS_XAUDIO2_FAILURE     "The XAudio2 interface failed to initialize!"
     IDS_XAUDIO2_CANNOT_CREATE_MASTERINGVOICE 

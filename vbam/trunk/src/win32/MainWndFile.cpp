@@ -24,21 +24,7 @@ extern void InterframeCleanup();
 
 void MainWnd::OnFileOpenGBA()
 {
-	if( fileOpenSelect( 0 ) ) {
-		FileRun();
-	}
-}
-
-void MainWnd::OnFileOpenGBC()
-{
-	if( fileOpenSelect( 1 ) ) {
-		FileRun();
-	}
-}
-
-void MainWnd::OnFileOpenGB()
-{
-	if( fileOpenSelect( 2 ) ) {
+	if( fileOpenSelect() ) {
 		FileRun();
 	}
 }

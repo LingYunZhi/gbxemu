@@ -16,7 +16,7 @@ public:
 	bool FileRun();
 	void winMouseOn();
 	void screenCapture(int captureNumber);
-	bool fileOpenSelect( int system );
+	bool fileOpenSelect();
 	void updateSoundChannels(UINT nID);
 	bool fileImportGSACodeFile(CString& fileName);
 	bool writeSaveGame(const char *name);
@@ -65,8 +65,6 @@ protected:
 	afx_msg void OnHelpAbout();
 	afx_msg void OnHelpFaq();
 	afx_msg void OnFileOpenGBA();
-	afx_msg void OnFileOpenGBC();
-	afx_msg void OnFileOpenGB();
 	afx_msg void OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu);
 	afx_msg void OnFilePause();
 	afx_msg void OnUpdateFilePause(CCmdUI* pCmdUI);

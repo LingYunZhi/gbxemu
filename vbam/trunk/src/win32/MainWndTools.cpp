@@ -184,7 +184,7 @@ void MainWnd::OnUpdateToolsDebugGdb(CCmdUI* pCmdUI)
 
 void MainWnd::OnToolsDebugLoadandwait()
 {
-  if(fileOpenSelect(0)) {
+  if(fileOpenSelect()) {
     if(FileRun()) {
       if(theApp.cartridgeType != IMAGE_GBA) {
         systemMessage(IDS_ERROR_NOT_GBA_IMAGE, "Error: not a GBA image");

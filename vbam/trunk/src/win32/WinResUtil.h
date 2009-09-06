@@ -1,12 +1,4 @@
-extern HMENU winResLoadMenu(LPCTSTR menuName);
+#pragma once
 
-extern int winResDialogBox(LPCTSTR boxName,
-                           HWND parent,
-                           DLGPROC dlgProc);
-
-extern int winResDialogBox(LPCTSTR boxName,
-                           HWND parent,
-                           DLGPROC dlgProc,
-                           LPARAM lParam);
-
-extern CString winResLoadString(UINT id);
+HMENU winResLoadMenu(LPCTSTR menuName);
+CString winResLoadString(UINT id);

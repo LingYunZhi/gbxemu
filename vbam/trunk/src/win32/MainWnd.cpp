@@ -57,8 +57,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_COMMAND(ID_HELP_ABOUT, OnHelpAbout)
   ON_COMMAND(ID_HELP_FAQ, OnHelpFaq)
   ON_COMMAND(ID_FILE_OPEN_GBA, OnFileOpenGBA)
-  ON_COMMAND(ID_FILE_OPEN_GBC, OnFileOpenGBC)
-  ON_COMMAND(ID_FILE_OPEN_GB, OnFileOpenGB)
   ON_WM_INITMENUPOPUP()
   ON_COMMAND(ID_FILE_PAUSE, OnFilePause)
   ON_UPDATE_COMMAND_UI(ID_FILE_PAUSE, OnUpdateFilePause)
@@ -433,13 +431,6 @@ bool MainWnd::FileRun()
 	  }
   }
 
-
-  if(!theApp.dir.GetLength()) {
-    int index = theApp.filename.ReverseFind('\\');
-    if(index != -1) {
-      theApp.dir = theApp.filename.Left(index-1);
-    }
-  }
 
   IMAGE_TYPE type = utilFindType(theApp.szFile);
 
@@ -936,46 +927,12 @@ void MainWnd::OnSystemMinimize()
 }
 
 
-bool MainWnd::fileOpenSelect( int system )
+bool MainWnd::fileOpenSelect()
 {
-	theApp.dir = _T("");
-	CString initialDir;
-	int selectedFilter = 0;
-	LPCTSTR exts[] = { _T(""), _T(""), _T(""), _T("") };
-	CString filter;
-	CString title;
-
-	switch( system )
-	{
-	case 0:
-		// GBA
-		initialDir = regQueryStringValue( _T("romdir"), _T(".") );
-		selectedFilter = regQueryDwordValue( _T("selectedFilter"), 0);
-		if( (selectedFilter < 0) || (selectedFilter > 2) ) {
-			selectedFilter = 0;
-		}
-		filter = winLoadFilter( IDS_FILTER_GBAROM );
-		break;
-	case 1:
-		// GBC
-		initialDir = regQueryStringValue( _T("gbcromdir"), _T(".") );
-		// TODO: memorize selected filter for GBC as well
-		filter = winLoadFilter( IDS_FILTER_GBCROM );
-		break;
-	case 2:
-		// GB
-		initialDir = regQueryStringValue( _T("gbromdir"), _T(".") );
-		// TODO: memorize selected filter for GB as well
-		filter = winLoadFilter( IDS_FILTER_GBROM );
-		break;
-	}
-
-	title = winResLoadString( IDS_SELECT_ROM );
-
-	if( !initialDir.IsEmpty() ) {
-		theApp.dir = initialDir;
-	}
-
+	//CString initialDir = regQueryStringValue( _T("romdir"), _T(".") );
+	CString filter = winLoadFilter( IDS_FILTER_GBAROM );
+	CString title = winResLoadString( IDS_SELECT_ROM );
+/*
 	if( initialDir[0] == '.' ) {
 		// handle as relative path
 		char baseDir[MAX_PATH+1];
@@ -986,26 +943,23 @@ bool MainWnd::fileOpenSelect( int system )
 		strcat( baseDir, initialDir );
 		initialDir = baseDir;
 	}
-
+*/
 	theApp.szFile = _T("");
 
+    CFileDialog dlg( TRUE,
+                     NULL,
+                     NULL,
+                     OFN_FILEMUSTEXIST |
+                     OFN_HIDEREADONLY,
+                     filter,
+                     this );
 
-	FileDlg dlg( this, _T(""), filter, selectedFilter, _T(""), exts, theApp.dir, title, false);
+    if( IDOK == dlg.DoModal() ) {
+        theApp.szFile = dlg.GetPathName();
+        return true;
+    }
 
-	if( dlg.DoModal() == IDOK ) {
-		if( system == 0 ) {
-			regSetDwordValue( _T("selectedFilter"), dlg.m_ofn.nFilterIndex );
-		}
-		theApp.szFile = dlg.GetPathName();
-		theApp.dir = theApp.szFile.Left( dlg.m_ofn.nFileOffset );
-		if( (theApp.dir.GetLength() > 3) && (theApp.dir[theApp.dir.GetLength()-1] == _T('\\')) ) {
-			theApp.dir = theApp.dir.Left( theApp.dir.GetLength() - 1 );
-		}
-		SetCurrentDirectory( theApp.dir );
-		regSetStringValue( _T("lastDir"), theApp.dir );
-		return true;
-	}
-	return false;
+    return false;
 }
 
 
