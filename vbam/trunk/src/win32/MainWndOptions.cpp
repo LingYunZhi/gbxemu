@@ -401,24 +401,6 @@ void MainWnd::OnUpdateVideoLayer(CCmdUI *pCmdUI)
 }
 
 
-void MainWnd::OnOptionsVideoRendermethodDirect3d()
-{
-#ifndef NO_D3D
-  theApp.renderMethod = DIRECT_3D;
-  theApp.updateRenderMethod(false);
-  theApp.winAccelMgr.UpdateMenu(theApp.menu);
-#endif
-}
-
-void MainWnd::OnUpdateOptionsVideoRendermethodDirect3d(CCmdUI* pCmdUI)
-{
-#ifndef NO_D3D
-	pCmdUI->SetCheck(theApp.renderMethod == DIRECT_3D);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
-}
-
 void MainWnd::OnOptionsVideoTriplebuffering()
 {
 	theApp.tripleBuffering = !theApp.tripleBuffering;
@@ -436,42 +418,30 @@ void MainWnd::OnUpdateOptionsVideoTriplebuffering(CCmdUI* pCmdUI)
 
 void MainWnd::OnOptionsVideoRenderoptionsD3dnofilter()
 {
-#ifndef NO_D3D
 	theApp.d3dFilter = 0;
 	if( theApp.display ) {
 		theApp.display->setOption( _T("d3dFilter"), theApp.d3dFilter );
 	}
-#endif
 }
 
 void MainWnd::OnUpdateOptionsVideoRenderoptionsD3dnofilter(CCmdUI* pCmdUI)
 {
-#ifndef NO_D3D
 	pCmdUI->SetCheck(theApp.d3dFilter == 0);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
 }
 
 
 void MainWnd::OnOptionsVideoRenderoptionsD3dbilinear()
 {
-#ifndef NO_D3D
 	theApp.d3dFilter = 1;
 	if( theApp.display ) {
 		theApp.display->setOption( _T("d3dFilter"), theApp.d3dFilter );
 	}
-#endif
 }
 
 
 void MainWnd::OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI)
 {
-#ifndef NO_D3D
 	pCmdUI->SetCheck(theApp.d3dFilter == 1);
-#else
-	pCmdUI->Enable( FALSE );
-#endif
 }
 
 void MainWnd::OnOptionsEmulatorAssociate()
@@ -1047,12 +1017,6 @@ BOOL MainWnd::OnOptionsFilter(UINT nID)
 	case ID_OPTIONS_FILTER_SIMPLE4X:
 		theApp.filterType = FILTER_SIMPLE4X;
 		break;
-	case ID_OPTIONS_FILTER_HQ3X:
-		theApp.filterType = FILTER_HQ3X;
-		break;
-	case ID_OPTIONS_FILTER_HQ4X:
-		theApp.filterType = FILTER_HQ4X;
-		break;
 	default:
 		return FALSE;
 	}
@@ -1078,7 +1042,6 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
     pCmdUI->SetCheck(theApp.filterType == FILTER_SUPER2XSAI);
     break;
   case ID_OPTIONS_FILTER_PLUGIN:
-    pCmdUI->Enable( !theApp.filterMT );
     pCmdUI->SetCheck(theApp.filterType == FILTER_PLUGIN);
     break;
   case ID_OPTIONS_FILTER_SUPEREAGLE:
@@ -1114,18 +1077,11 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
   case ID_OPTIONS_FILTER_SIMPLE4X:
     pCmdUI->SetCheck(theApp.filterType == FILTER_SIMPLE4X);
     break;
-  case ID_OPTIONS_FILTER_HQ3X:
-    pCmdUI->SetCheck(theApp.filterType == FILTER_HQ3X);
-    break;
-  case ID_OPTIONS_FILTER_HQ4X:
-    pCmdUI->SetCheck(theApp.filterType == FILTER_HQ4X);
-    break;
   }
 }
 
 void MainWnd::OnUpdateOptionsSelectPlugin(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable( !theApp.filterMT );
 }
 
 BOOL MainWnd::OnOptionsFilterIFB(UINT nID)
@@ -1400,21 +1356,15 @@ void MainWnd::OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI)
 
 void MainWnd::OnRenderapiD3dmotionblur()
 {
-#ifndef NO_D3D
 	theApp.d3dMotionBlur = !theApp.d3dMotionBlur;
 	if( theApp.display ) {
 		theApp.display->setOption( _T("motionBlur"), theApp.d3dMotionBlur ? 1 : 0 );
 	}
-#endif
 }
 
 void MainWnd::OnUpdateRenderapiD3dmotionblur(CCmdUI *pCmdUI)
 {
-#ifndef NO_D3D
 	pCmdUI->SetCheck( theApp.d3dMotionBlur ? 1 : 0 );
-#else
-	pCmdUI->Enable( FALSE );
-#endif
 }
 
 void MainWnd::OnEmulatorBiosfiles()
@@ -1433,15 +1383,4 @@ void MainWnd::OnEmulatorBiosfiles()
 		theApp.biosFileNameGBA = dlg.m_pathGBA;
 		theApp.biosFileNameGB = dlg.m_pathGB;
 	}
-}
-
-void MainWnd::OnPixelfilterMultiThreading()
-{
-	theApp.filterMT = !theApp.filterMT;
-}
-
-void MainWnd::OnUpdatePixelfilterMultiThreading(CCmdUI *pCmdUI)
-{
-	pCmdUI->Enable( theApp.filterType != FILTER_PLUGIN );
-	pCmdUI->SetCheck( theApp.filterMT ? 1 : 0 );
 }

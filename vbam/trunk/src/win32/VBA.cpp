@@ -1,9 +1,3 @@
-#ifdef NO_D3D
-#ifdef NO_OGL
-#error NO_D3D and NO_OGL must not be defined at the same time.
-#endif
-#endif
-
 #include "stdafx.h"
 #include "VBA.h"
 
@@ -66,12 +60,8 @@ extern void SmartIB32(u8*,u32,int,int);
 extern void MotionBlurIB(u8*,u32,int,int);
 extern void MotionBlurIB32(u8*,u32,int,int);
 
-#ifndef NO_D3D
 extern IDisplay *newDirect3DDisplay();
-#endif
-
 extern Input *newDirectInput();
-
 extern SoundDriver *newXAudio2_Output();
 
 extern void remoteStubSignal(int, int);
@@ -161,7 +151,6 @@ VBA::VBA()
   }
 
   // ! keep in mind that many of the following values will be really initialized in loadSettings()
-  maxCpuCores = 1;
   windowPositionX = 0;
   windowPositionY = 0;
   filterFunction = NULL;
@@ -170,7 +159,6 @@ VBA::VBA()
   filterType = FILTER_NONE;
   filterWidth = 0;
   filterHeight = 0;
-  filterMT = false;
   fsAdapter = 0;
   fsWidth = 0;
   fsHeight = 0;
@@ -213,17 +201,17 @@ VBA::VBA()
   autoFrameSkip = false;
   vsync = false;
   changingVideoSize = false;
-  renderMethod = DIRECT_3D;
+
   xa2Device = 0;
   xa2BufferCount = 4;
   xa2Upmixing = false;
-#ifndef NO_D3D
+
   d3dFilter = 0;
   d3dMotionBlur = false;
-#endif
+
   iconic = false;
   regEnabled = false;
- pauseWhenInactive = true;
+  pauseWhenInactive = true;
   speedupToggle = false;
   threadPriority = 2;
   languageOption = 0;
@@ -1171,19 +1159,12 @@ void VBA::loadSettings()
       videoOption = 0;
   }
 
-  renderMethod = (DISPLAY_TYPE)regQueryDwordValue("renderMethod", DIRECT_3D);
-
   windowPositionX = regQueryDwordValue("windowX", 0);
   if(windowPositionX < 0)
     windowPositionX = 0;
   windowPositionY = regQueryDwordValue("windowY", 0);
   if(windowPositionY < 0)
     windowPositionY = 0;
-
-  maxCpuCores = regQueryDwordValue("maxCpuCores", 0);
-  if(maxCpuCores == 0) {
-	  maxCpuCores = detectCpuCores();
-  }
 
   useBiosFileGBA = ( regQueryDwordValue("useBiosGBA", 0) == 1 ) ? true : false;
 
@@ -1216,19 +1197,15 @@ void VBA::loadSettings()
 
   tripleBuffering = regQueryDwordValue("tripleBuffering", false) ? true : false;
 
-#ifndef NO_D3D
   d3dFilter = regQueryDwordValue("d3dFilter", 1);
   if(d3dFilter < 0 || d3dFilter > 1)
     d3dFilter = 1;
 
   d3dMotionBlur = ( regQueryDwordValue("d3dMotionBlur", 0) == 1 ) ? true : false;
-#endif
 
   filterType = regQueryDwordValue("filter", 0);
   if(filterType < 0 || filterType > 17)
     filterType = 0;
-
-  filterMT = ( 1 == regQueryDwordValue("filterEnableMultiThreading", 0) );
 
   disableStatusMessage = regQueryDwordValue("disableStatus", 0) ? true : false;
 
@@ -1330,11 +1307,6 @@ void VBA::loadSettings()
   xa2Device = regQueryDwordValue( "xa2Device", 0 );
   xa2BufferCount = regQueryDwordValue( "xa2BufferCount", 4 );
   xa2Upmixing = ( 1 == regQueryDwordValue( "xa2Upmixing", 0 ) );
-
-  if( ( maxCpuCores == 1 ) && filterMT ) {
-	  // multi-threading use useless for just one core
-	  filterMT = false;
-  }
 }
 
 void VBA::updateFrameSkip()
@@ -1502,9 +1474,7 @@ void VBA::updateWindowSize(int value)
         min = min > maxScale ? maxScale : min;
       surfaceSizeX = min * sizeX;
       surfaceSizeY = min * sizeY;
-      if((fullScreenStretch && (display != NULL &&
-                                (display->getType() != DIRECT_3D)))
-         || (display != NULL && display->getType() >= DIRECT_3D)) {
+      if(fullScreenStretch) {
         surfaceSizeX = fsWidth;
         surfaceSizeY = fsHeight;
       }
@@ -1700,9 +1670,8 @@ bool VBA::updateRenderMethod(bool force)
 
 	if( !updateRenderMethod0( force ) ) {
 		// fall back to safe configuration
-		renderMethod = DIRECT_3D;
 		fsAdapter = 0;
-		videoOption = VIDEO_1X;
+		videoOption = VIDEO_2X;
 		ret = updateRenderMethod( true );
 	}
 
@@ -1712,83 +1681,70 @@ bool VBA::updateRenderMethod(bool force)
 
 bool VBA::updateRenderMethod0(bool force)
 {
-  bool initInput = false;
+    bool initInput = false;
 
-  if(display) {
-    if(display->getType() != renderMethod || force) {
-	  toolsLoggingClose(); // close log dialog
-      initInput = true;
-      changingVideoSize = true;
-      shutdownDisplay();
-      if(input) {
-        delete input;
-        input = NULL;
-      }
-      CWnd *pWnd = m_pMainWnd;
+    if( display != NULL) {
+        if( force ) {
+            toolsLoggingClose(); // close log dialog
+            initInput = true;
+            changingVideoSize = true;
+            shutdownDisplay();
+            if(input) {
+                delete input;
+                input = NULL;
+            }
+            CWnd *pWnd = m_pMainWnd;
 
-      m_pMainWnd = NULL;
-      pWnd->DragAcceptFiles(FALSE);
-      pWnd->DestroyWindow();
-      delete pWnd;
+            m_pMainWnd = NULL;
+            pWnd->DragAcceptFiles(FALSE);
+            pWnd->DestroyWindow();
+            delete pWnd;
 
-      display = NULL;
-      regSetDwordValue("renderMethod", renderMethod);
-    }
-  }
-  if(display == NULL) {
-    switch(renderMethod) {
-#ifndef NO_D3D
-    case DIRECT_3D:
-		display = newDirect3DDisplay();
-		break;
-#endif
+            display = NULL;
+        }
+    } else {
+        display = newDirect3DDisplay();
     }
 
-	if( preInitialize() ) {
-		if( display->initialize() ) {
-			if( initInput ) {
-				if( !this->initInput() ) {
-					changingVideoSize = false;
-					AfxPostQuitMessage(0);
-					return false;
-				}
-				input->checkKeys();
-				updateMenuBar();
-				changingVideoSize = false;
-				updateWindowSize(videoOption);
+    if( preInitialize() ) {
+        if( display->initialize() ) {
+            if( initInput ) {
+                if( !this->initInput() ) {
+                    changingVideoSize = false;
+                    AfxPostQuitMessage(0);
+                    return false;
+                }
+                input->checkKeys();
+                updateMenuBar();
+                changingVideoSize = false;
+                updateWindowSize(videoOption);
 
-				m_pMainWnd->ShowWindow(SW_SHOW);
-				m_pMainWnd->UpdateWindow();
-				m_pMainWnd->SetFocus();
+                m_pMainWnd->ShowWindow(SW_SHOW);
+                m_pMainWnd->UpdateWindow();
+                m_pMainWnd->SetFocus();
 
-				return true;
-			} else {
-				changingVideoSize = false;
-				return true;
-			}
-		}
-	}
-	changingVideoSize = false;
-  }
-  return true;
+                return true;
+            } else {
+                changingVideoSize = false;
+                return true;
+            }
+        }
+    }
+    changingVideoSize = false;
+    
+    return true;
 }
 
 
 void VBA::shutdownDisplay()
 {
-  if(display != NULL) {
-    display->cleanup();
-    delete display;
-    display = NULL;
-  }
+    if(display != NULL) {
+        display->cleanup();
+        delete display;
+        display = NULL;
+    }
 }
 
-void VBA::directXMessage(const char *msg)
-{
-  systemMessage(IDS_DIRECTX_7_REQUIRED,
-                "DirectX 7.0 or greater is required to run.\nDownload at http://www.microsoft.com/directx.\n\nError found at: %s",
-                msg);
-}
 
 void VBA::updatePriority()
 {
@@ -2020,12 +1976,8 @@ void VBA::saveSettings()
   regSetDwordValue("fsColorDepth", fsColorDepth);
   regSetDwordValue("fsFrequency", fsFrequency);
 
-  regSetDwordValue("renderMethod", renderMethod);
-
   regSetDwordValue("windowX", windowPositionX);
   regSetDwordValue("windowY", windowPositionY);
-
-  regSetDwordValue("maxCpuCores", maxCpuCores);
 
   regSetDwordValue("useBiosGBA", useBiosFileGBA);
 
@@ -2050,14 +2002,10 @@ void VBA::saveSettings()
 
   regSetDwordValue("tripleBuffering", tripleBuffering);
 
-#ifndef NO_D3D
   regSetDwordValue("d3dFilter", d3dFilter);
   regSetDwordValue("d3dMotionBlur", d3dMotionBlur ? 1 : 0);
-#endif
 
   regSetDwordValue("filter", filterType);
-
-  regSetDwordValue("filterEnableMultiThreading", filterMT ? 1 : 0);
 
   regSetDwordValue("LCDFilter", filterLCD);
 
@@ -2104,15 +2052,6 @@ void VBA::saveSettings()
   regSetDwordValue( "xa2Device", xa2Device );
   regSetDwordValue( "xa2BufferCount", xa2BufferCount );
   regSetDwordValue( "xa2Upmixing", xa2Upmixing ? 1 : 0 );
-}
-
-unsigned int VBA::detectCpuCores()
-{
-	SYSTEM_INFO info;
-
-	GetSystemInfo( &info );
-
-	return info.dwNumberOfProcessors;
 }
 
 void winSignal(int, int)

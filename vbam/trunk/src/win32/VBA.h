@@ -46,7 +46,6 @@ class VBA : public CWinApp
   CMenu m_menu;
   HMENU menu;
   HMENU popup;
-  unsigned int maxCpuCores; // maximum number of CPU cores VBA should use, 0 means auto-detect
   int windowPositionX;
   int windowPositionY;
   void (*filterFunction)(u8*,u32,u8*,u8*,u32,int,int);
@@ -58,7 +57,6 @@ class VBA : public CWinApp
   int filterHeight;
   int filterMagnification;
   int filterLCD;
-  bool filterMT; // enable multi-threading for pixel filters
   int fsWidth;
   int fsHeight;
   int fsColorDepth;
@@ -102,14 +100,14 @@ class VBA : public CWinApp
   bool autoFrameSkip;
   bool vsync;
   bool changingVideoSize;
-  DISPLAY_TYPE renderMethod;
+
   UINT32 xa2Device;
   UINT32 xa2BufferCount;
   bool xa2Upmixing;
-#ifndef NO_D3D
+
   int d3dFilter;
   bool d3dMotionBlur;
-#endif
+
   bool iconic;
   bool dinputKeyFocus;
   bool pauseWhenInactive;
@@ -196,7 +194,6 @@ class VBA : public CWinApp
   HMODULE winLoadLanguage(const char *name);
   void winSetLanguageOption(int option, bool force);
   void updatePriority();
-  void directXMessage(const char *msg);
   void shutdownDisplay();
   bool preInitialize();
   bool updateRenderMethod0(bool force);
@@ -207,9 +204,6 @@ class VBA : public CWinApp
   void updateFrameSkip();
   void loadSettings();
   void addRecentFile(CString file);
-
-  private:
-  unsigned int detectCpuCores();
 };
 
     extern VBA theApp;
