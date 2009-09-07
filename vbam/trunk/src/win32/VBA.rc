@@ -1448,9 +1448,7 @@ BEGIN
         END
         POPUP "&Gameboy"
         BEGIN
-            MENUITEM "&Border",                     ID_OPTIONS_GAMEBOY_BORDER
             MENUITEM "&Printer",                    ID_OPTIONS_GAMEBOY_PRINTER
-            MENUITEM "Border Automatic",            ID_OPTIONS_GAMEBOY_BORDERAUTOMATIC
             MENUITEM SEPARATOR
             MENUITEM "&Automatic",                  ID_OPTIONS_GAMEBOY_AUTOMATIC
             MENUITEM "&GBA",                        ID_OPTIONS_GAMEBOY_GBA
