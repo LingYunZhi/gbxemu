@@ -1448,8 +1448,6 @@ BEGIN
         END
         POPUP "&Gameboy"
         BEGIN
-            MENUITEM "&Printer",                    ID_OPTIONS_GAMEBOY_PRINTER
-            MENUITEM SEPARATOR
             MENUITEM "&Automatic",                  ID_OPTIONS_GAMEBOY_AUTOMATIC
             MENUITEM "&GBA",                        ID_OPTIONS_GAMEBOY_GBA
             MENUITEM "&CGB/GBC",                    ID_OPTIONS_GAMEBOY_CGB
