@@ -1043,40 +1043,6 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
 }
 
 
-BOOL MainWnd::OnOptionsFilterIFB(UINT nID)
-{
-  switch(nID) {
-  case ID_OPTIONS_FILTER_INTERFRAMEBLENDING_NONE:
-    theApp.ifbType = 0;
-    break;
-  case ID_OPTIONS_FILTER_INTERFRAMEBLENDING_MOTIONBLUR:
-    theApp.ifbType = 1;
-    break;
-  case ID_OPTIONS_FILTER_INTERFRAMEBLENDING_SMART:
-    theApp.ifbType = 2;
-    break;
-  default:
-    return FALSE;
-  }
-  theApp.updateIFB();
-  return TRUE;
-}
-
-void MainWnd::OnUpdateOptionsFilterIFB(CCmdUI *pCmdUI)
-{
-  switch(pCmdUI->m_nID) {
-  case ID_OPTIONS_FILTER_INTERFRAMEBLENDING_NONE:
-    pCmdUI->SetCheck(theApp.ifbType == 0);
-    break;
-  case ID_OPTIONS_FILTER_INTERFRAMEBLENDING_MOTIONBLUR:
-    pCmdUI->SetCheck(theApp.ifbType == 1);
-    break;
-  case ID_OPTIONS_FILTER_INTERFRAMEBLENDING_SMART:
-    pCmdUI->SetCheck(theApp.ifbType == 2);
-    break;
-  }
-}
-
 void MainWnd::OnOptionsFilterLcdcolors()
 {
 // todo: depreciated

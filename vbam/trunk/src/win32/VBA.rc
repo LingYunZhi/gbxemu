@@ -1272,6 +1272,7 @@ BEGIN
             BEGIN
                 MENUITEM "Filter: Nearest",             ID_OPTIONS_VIDEO_RENDEROPTIONS_D3DNOFILTER
                 MENUITEM "Filter: Bilinear",            ID_OPTIONS_VIDEO_RENDEROPTIONS_D3DBILINEAR
+                MENUITEM SEPARATOR
                 MENUITEM "Motion Blur",                 ID_RENDERAPI_D3DMOTIONBLUR
                 MENUITEM SEPARATOR
                 MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
@@ -1291,7 +1292,6 @@ BEGIN
         END
         POPUP "&Pixel Filter"
         BEGIN
-            MENUITEM "&Disable Filters",            ID_OPTIONS_FILTER_NORMAL
             POPUP "&Magnification"
             BEGIN
                 POPUP "&2X"
@@ -1322,12 +1322,7 @@ BEGIN
                 END
             END
             MENUITEM SEPARATOR
-            POPUP "&Interframe Blending"
-            BEGIN
-                MENUITEM "&None",                       ID_OPTIONS_FILTER_INTERFRAMEBLENDING_NONE
-                MENUITEM "&Motion Blur",                ID_OPTIONS_FILTER_INTERFRAMEBLENDING_MOTIONBLUR
-                MENUITEM "&Smart",                      ID_OPTIONS_FILTER_INTERFRAMEBLENDING_SMART
-            END
+            MENUITEM "&Disable Filters",            ID_OPTIONS_FILTER_NORMAL
         END
         POPUP "&Audio"
         BEGIN

@@ -234,7 +234,6 @@ bool Direct3DDisplay::initialize()
 
 
 	theApp.updateFilter();
-	theApp.updateIFB();
 
 
 	// create device

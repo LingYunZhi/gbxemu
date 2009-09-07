@@ -50,8 +50,6 @@ class VBA : public CWinApp
   int windowPositionX;
   int windowPositionY;
   void (*filterFunction)(u8*,u32,u8*,u8*,u32,int,int);
-  void (*ifbFunction)(u8*,u32,int,int);
-  int ifbType;
   int filterType;
   int filterWidth;
   int filterHeight;
@@ -168,7 +166,6 @@ class VBA : public CWinApp
   ~VBA();
 
   void adjustDestRect();
-  void updateIFB();
   void updateFilter();
   void updateThrottle( unsigned short throttle );
   void updateMenuBar();

@@ -19,7 +19,6 @@
 #include "../version.h"
 
 extern void remoteCleanUp();
-extern void InterframeCleanup();
 
 
 void MainWnd::OnFileOpenGBA()
@@ -230,9 +229,6 @@ BOOL MainWnd::OnFileLoadSlot(UINT nID)
   buffer.Format(format, nID);
 
   bool res = loadSaveGame(filename);
-
-  if (theApp.paused)
-    InterframeCleanup();
 
   systemScreenMessage(buffer);
 

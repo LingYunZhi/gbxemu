@@ -52,11 +52,6 @@ extern void Simple4x16(u8*,u32,u8*,u8*,u32,int,int);
 extern void Simple4x32(u8*,u32,u8*,u8*,u32,int,int);
 
 
-extern void SmartIB(u8*,u32,int,int);
-extern void SmartIB32(u8*,u32,int,int);
-extern void MotionBlurIB(u8*,u32,int,int);
-extern void MotionBlurIB32(u8*,u32,int,int);
-
 extern IDisplay *newDirect3DDisplay();
 extern Input *newDirectInput();
 extern SoundDriver *newXAudio2_Output();
@@ -67,8 +62,6 @@ extern void remoteStubMain();
 extern void remoteSetProtocol(int);
 extern void remoteCleanUp();
 extern int remoteSocket;
-
-extern void InterframeCleanup();
 
 void winlog(const char *msg, ...);
 
@@ -147,8 +140,6 @@ VBA::VBA()
   windowPositionX = 0;
   windowPositionY = 0;
   filterFunction = NULL;
-  ifbFunction = NULL;
-  ifbType = 0;
   filterType = FILTER_NONE;
   filterWidth = 0;
   filterHeight = 0;
@@ -248,8 +239,6 @@ VBA::VBA()
 
 VBA::~VBA()
 {
-  InterframeCleanup();
-
   char winBuffer[2048];
 
   GetModuleFileName(NULL, winBuffer, 2048);
@@ -446,38 +435,6 @@ void VBA::adjustDestRect()
   }
 }
 
-
-void VBA::updateIFB()
-{
-  if(systemColorDepth == 16) {
-    switch(ifbType) {
-    case 0:
-    default:
-      ifbFunction = NULL;
-      break;
-    case 1:
-      ifbFunction = MotionBlurIB;
-      break;
-    case 2:
-      ifbFunction = SmartIB;
-      break;
-    }
-  } else if(systemColorDepth == 32) {
-    switch(ifbType) {
-    case 0:
-    default:
-      ifbFunction = NULL;
-      break;
-    case 1:
-      ifbFunction = MotionBlurIB32;
-      break;
-    case 2:
-      ifbFunction = SmartIB32;
-      break;
-    }
-  } else
-    ifbFunction = NULL;
-}
 
 void VBA::updateFilter()
 {
@@ -779,12 +736,6 @@ void systemDrawScreen()
 		  }
 		  delete [] bmp;
 	  }
-  }
-
-  if( theApp.ifbFunction ) {
-	  theApp.ifbFunction( pix + (theApp.filterWidth * (systemColorDepth>>3)) + 4,
-		  (theApp.filterWidth * (systemColorDepth>>3)) + 4,
-		  theApp.filterWidth, theApp.filterHeight );
   }
 
   if(!soundBufferLow)
@@ -1182,10 +1133,6 @@ void VBA::loadSettings()
   if(winSaveType < 0 || winSaveType > 5)
     winSaveType = 0;
 
-  ifbType = regQueryDwordValue("ifbType", 0);
-  if(ifbType < 0 || ifbType > 2)
-    ifbType = 0;
-
   winFlashSize = regQueryDwordValue("flashSize", 0x10000);
   if(winFlashSize != 0x10000 && winFlashSize != 0x20000)
     winFlashSize = 0x10000;
@@ -1485,7 +1432,6 @@ void VBA::updateWindowSize(int value)
 
   adjustDestRect();
 
-  updateIFB();
   updateFilter();
 
   if(display)
@@ -1968,8 +1914,6 @@ void VBA::saveSettings()
   regSetDwordValue("recentFreeze", recentFreeze);
 
   regSetDwordValue("saveType", winSaveType);
-
-  regSetDwordValue("ifbType", ifbType);
 
   regSetDwordValue("flashSize", winFlashSize);
 

@@ -47,8 +47,6 @@ protected:
 	afx_msg BOOL OnOptionsJoypadAutofire(UINT nID);
 	afx_msg void OnUpdateOptionsJoypadDefault(CCmdUI *pCmdUI);
 	afx_msg BOOL OnOptionsJoypadDefault(UINT nID);
-	afx_msg void OnUpdateOptionsFilterIFB(CCmdUI *pCmdUI);
-	afx_msg BOOL OnOptionsFilterIFB(UINT nID);
 	afx_msg void OnUpdateOptionsFilter(CCmdUI *pCmdUI);
 	afx_msg BOOL OnOptionsFilter(UINT nID);
 	afx_msg void OnUpdateOptionsPriority(CCmdUI *pCmdUI);
