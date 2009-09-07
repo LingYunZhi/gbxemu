@@ -799,14 +799,6 @@ void MainWnd::OnUpdateOptionsSoundDirectsoundb(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.cartridgeType == IMAGE_GBA);
 }
 
-void MainWnd::OnOptionsGameboyPrinter()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyPrinter(CCmdUI* pCmdUI)
-{
-}
-
 void MainWnd::OnOptionsGameboyAutomatic()
 {
 }

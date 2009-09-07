@@ -180,8 +180,6 @@ protected:
 	afx_msg void OnUpdateOptionsSoundDirectsounda(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundDirectsoundb();
 	afx_msg void OnUpdateOptionsSoundDirectsoundb(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyPrinter();
-	afx_msg void OnUpdateOptionsGameboyPrinter(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsGameboyAutomatic();
 	afx_msg void OnUpdateOptionsGameboyAutomatic(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsGameboyGba();
