@@ -1,7 +1,8 @@
-#include <memory.h>
 #include "GBA.h"
 #include "EEprom.h"
 #include "../Util.h"
+#include <memory.h>
+#include <stddef.h> // for NULL
 
 extern int cpuDmaCount;
 

@@ -15,19 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef __VBA_TYPES_H__
-#define __VBA_TYPES_H__
+#pragma once
 
-#include <stdint.h>
+typedef unsigned __int8   u8;
+typedef unsigned __int16 u16;
+typedef unsigned __int32 u32;
+typedef unsigned __int64 u64;
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
-
-typedef int8_t s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef int64_t s64;
-
-#endif // __VBA_TYPES_H__
+typedef   signed __int8   s8;
+typedef   signed __int16 s16;
+typedef   signed __int32 s32;
+typedef   signed __int64 s64;
