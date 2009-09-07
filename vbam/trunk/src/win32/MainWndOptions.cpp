@@ -11,7 +11,6 @@
 #include "Reg.h"
 #include "Throttle.h"
 #include "WinResUtil.h"
-#include "SelectPlugin.h"
 #include "XAudio2_Config.h"
 #include "BIOSDialog.h"
 #include "AudioCoreSettingsDlg.h"
@@ -944,13 +943,6 @@ BOOL MainWnd::OnOptionsFilter(UINT nID)
 	case ID_OPTIONS_FILTER_TVMODE:
 		theApp.filterType = FILTER_TVMODE;
 		break;
-	case ID_OPTIONS_FILTER_PLUGIN:
-		theApp.filterType = FILTER_PLUGIN;
-		if( strcmp( theApp.pluginName, "" ) == 0 ) {
-			// open select plugin dialog when none selected
-			OnOptionsSelectPlugin();
-		}
-		break;
 	case ID_OPTIONS_FILTER_2XSAI:
 		theApp.filterType = FILTER_2XSAI;
 		break;
@@ -1014,9 +1006,6 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
   case ID_OPTIONS_FILTER_SUPER2XSAI:
     pCmdUI->SetCheck(theApp.filterType == FILTER_SUPER2XSAI);
     break;
-  case ID_OPTIONS_FILTER_PLUGIN:
-    pCmdUI->SetCheck(theApp.filterType == FILTER_PLUGIN);
-    break;
   case ID_OPTIONS_FILTER_SUPEREAGLE:
     pCmdUI->SetCheck(theApp.filterType == FILTER_SUPEREAGLE);
     break;
@@ -1053,9 +1042,6 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
   }
 }
 
-void MainWnd::OnUpdateOptionsSelectPlugin(CCmdUI *pCmdUI)
-{
-}
 
 BOOL MainWnd::OnOptionsFilterIFB(UINT nID)
 {
@@ -1292,16 +1278,6 @@ void MainWnd::OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI)
   pCmdUI->Enable(emulating && (theApp.cartridgeType == IMAGE_GBA));
 }
 
-void MainWnd::OnOptionsSelectPlugin()
-{
-  SelectPlugin dlg;
-
-  if (dlg.DoModal() == IDOK)
-  {
-	theApp.filterType = FILTER_PLUGIN;
-	theApp.updateFilter();
-  }
-}
 
 void MainWnd::OnOutputapiXaudio2config()
 {

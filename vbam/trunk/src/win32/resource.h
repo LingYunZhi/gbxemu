@@ -92,7 +92,6 @@
 #define IDD_MAX_SCALE                   154
 #define IDD_GAME_OVERRIDES              156
 #define IDD_SELECT                      159
-#define IDD_SELECT_PLUGIN               159
 #define IDD_BIOS                        161
 #define IDD_FULLSCREEN                  162
 #define IDD_XAUDIO2_CONFIG              163
@@ -778,7 +777,6 @@
 #define ID_SKIN_SELECT                  40342
 #define ID_OPTIONS_FILTER_PLUGIN        40343
 #define ID_OPTIONS_SELECT_PLUGIN        40344
-#define IDC_COMBO_PLUGIN                40345
 #define ID_OUTPUTAPI_DIRECTSOUND        40346
 #define ID_OUTPUTAPI_OPENAL             40347
 #define ID_OUTPUTAPI_SOFTWAREMIXING     40348

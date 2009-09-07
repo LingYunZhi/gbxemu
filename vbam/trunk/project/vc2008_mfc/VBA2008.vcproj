@@ -505,14 +505,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\rpi.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\rpi.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\filters\scanline.cpp"
 				>
 			</File>
@@ -1694,30 +1686,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\RomInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\SelectPlugin.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\SelectPlugin.h"
 				>
 			</File>
 			<File

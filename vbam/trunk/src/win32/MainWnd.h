@@ -289,7 +289,6 @@ protected:
 	afx_msg void OnCheatsDisablecheats();
 	afx_msg void OnUpdateCheatsDisablecheats(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoFullscreenmaxscale();
-	afx_msg void OnOptionsSelectPlugin();
 	afx_msg void OnOptionsEmulatorGameoverrides();
 	afx_msg void OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI);
 	afx_msg void OnHelpGnupubliclicense();
@@ -311,7 +310,6 @@ protected:
 	afx_msg void OnWindowPosChanging(WINDOWPOS* lpwndpos);
 	afx_msg void OnEmulatorBiosfiles();
 	afx_msg void OnNcRButtonDown(UINT nHitTest, CPoint point);
-	afx_msg void OnUpdateOptionsSelectPlugin(CCmdUI *pCmdUI);
 
     afx_msg void OnEnterSizeMove();
 

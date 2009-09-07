@@ -9,7 +9,6 @@
 #include "WavWriter.h"
 #include "WinResUtil.h"
 #include "Logging.h"
-#include "rpi.h"
 
 #include "../System.h"
 #include "../gba/agbprint.h"
@@ -90,10 +89,6 @@ int systemRedShift = 0;
 int systemBlueShift = 0;
 int systemGreenShift = 0;
 int systemColorDepth = 16;
-int realsystemRedShift = 0;
-int realsystemBlueShift = 0;
-int realsystemGreenShift = 0;
-int realsystemColorDepth = 16;
 int systemVerbose = 0;
 int systemDebug = 0;
 int systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
@@ -253,7 +248,6 @@ VBA::VBA()
 
 VBA::~VBA()
 {
-  rpiCleanup();
   InterframeCleanup();
 
   char winBuffer[2048];
@@ -508,16 +502,6 @@ void VBA::updateFilter()
 			filterFunction = NULL;
 			filterMagnification = 1;
 			break;
-        case FILTER_PLUGIN:
-			if( rpiInit( pluginName ) ) {
-				filterFunction = rpiFilter;
-				filterMagnification = rpiScaleFactor();
-			} else {
-				filterType = FILTER_NONE;
-				updateFilter();
-				return;
-			}
-		    break;
 		case FILTER_TVMODE:
 			filterFunction = ScanlinesTV;
 			filterMagnification = 2;
@@ -585,16 +569,6 @@ void VBA::updateFilter()
 			case FILTER_NONE:
 				filterFunction = NULL;
 				filterMagnification = 1;
-				break;
-            case FILTER_PLUGIN:
-				if( rpiInit( pluginName ) ) {
-					filterFunction = rpiFilter;
-					filterMagnification = rpiScaleFactor();
-				} else {
-					filterType = FILTER_NONE;
-					updateFilter();
-					return;
-				}
 				break;
 			case FILTER_TVMODE:
 				filterFunction = ScanlinesTV32;
@@ -1135,8 +1109,6 @@ void VBA::loadSettings()
   fullScreenStretch = regQueryDwordValue("stretch", 0) ? true : false;
 
   videoOption = regQueryDwordValue("video", VIDEO_3X);
-
-  strcpy(pluginName, regQueryStringValue("pluginName", ""));
 
   if(videoOption < VIDEO_1X || videoOption > VIDEO_OTHER)
     videoOption = VIDEO_3X;
@@ -2020,7 +1992,6 @@ void VBA::saveSettings()
   regSetDwordValue("cheatsEnabled", cheatsEnabled);
   regSetDwordValue("maxScale", maxScale);
   regSetDwordValue("throttle", throttle);
-  regSetStringValue("pluginName", pluginName);
   regSetDwordValue("saveMoreCPU", Sm60FPS::bSaveMoreCPU);
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
