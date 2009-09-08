@@ -30,6 +30,7 @@ struct EmulatedSystem {
 };
 
 void log(const char *,...);
+extern int systemVerbose;
 
 extern void (*dbgOutput)(const char *s, u32 addr);
 extern void (*dbgSignal)(int sig,int number);
@@ -60,9 +61,8 @@ extern int systemRedShift;
 extern int systemGreenShift;
 extern int systemBlueShift;
 extern int systemColorDepth;
-extern int systemVerbose;
-extern int systemSaveUpdateCounter;
 extern int systemSpeed;
 
+extern int systemSaveUpdateCounter;
 #define SYSTEM_SAVE_UPDATED 30
 #define SYSTEM_SAVE_NOT_UPDATED 0

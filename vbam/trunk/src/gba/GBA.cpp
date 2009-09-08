@@ -3756,5 +3756,7 @@ struct EmulatedSystem GBASystem = {
   // emuHasDebugger
   true,
   // emuCount
-  250000
+  // how many cycles one frame takes
+  // visible+blanking pixels * 4 cylces per pixel
+  (240+68)*(160+68)*4
 };

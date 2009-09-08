@@ -809,9 +809,7 @@ bool systemCanChangeSoundQuality()
 BOOL VBA::OnIdle(LONG lCount)
 {
     if( emulating && active && !paused ) {
-        for( int i = 0; i < 2; i++ ) {
-            emulator.emuMain( emulator.emuCount );
-        }
+        emulator.emuMain( emulator.emuCount );
         
         if( mouseCounter ) {
             if( --mouseCounter == 0 ) {
