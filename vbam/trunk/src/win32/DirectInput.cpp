@@ -16,7 +16,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void directXMessage(const char *);
 extern void winlog(const char *msg,...);
 
 #define POV_UP    1

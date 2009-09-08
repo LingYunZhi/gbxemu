@@ -29,7 +29,6 @@
 void MainWnd::OnOptionsFrameskipThrottleNothrottle()
 {
 	theApp.updateThrottle( 0 ); // disable
-  theApp.autoFrameSkip = false;
 }
 
 void MainWnd::OnUpdateOptionsFrameskipThrottleNothrottle(CCmdUI* pCmdUI)
@@ -41,7 +40,6 @@ void MainWnd::OnUpdateOptionsFrameskipThrottleNothrottle(CCmdUI* pCmdUI)
 void MainWnd::OnOptionsFrameskipThrottle25()
 {
 	theApp.updateThrottle( 25 );
-  theApp.autoFrameSkip = false;
 }
 
 void MainWnd::OnUpdateOptionsFrameskipThrottle25(CCmdUI* pCmdUI)
@@ -53,7 +51,6 @@ void MainWnd::OnUpdateOptionsFrameskipThrottle25(CCmdUI* pCmdUI)
 void MainWnd::OnOptionsFrameskipThrottle50()
 {
 	theApp.updateThrottle( 50 );
-  theApp.autoFrameSkip = false;
 }
 
 void MainWnd::OnUpdateOptionsFrameskipThrottle50(CCmdUI* pCmdUI)
@@ -65,7 +62,6 @@ void MainWnd::OnUpdateOptionsFrameskipThrottle50(CCmdUI* pCmdUI)
 void MainWnd::OnOptionsFrameskipThrottle100()
 {
 	theApp.updateThrottle( 100 );
-  theApp.autoFrameSkip = false;
 }
 
 void MainWnd::OnUpdateOptionsFrameskipThrottle100(CCmdUI* pCmdUI)
@@ -77,7 +73,6 @@ void MainWnd::OnUpdateOptionsFrameskipThrottle100(CCmdUI* pCmdUI)
 void MainWnd::OnOptionsFrameskipThrottle150()
 {
 	theApp.updateThrottle( 150 );
-theApp.autoFrameSkip = false;
 }
 
 void MainWnd::OnUpdateOptionsFrameskipThrottle150(CCmdUI* pCmdUI)
@@ -89,7 +84,6 @@ void MainWnd::OnUpdateOptionsFrameskipThrottle150(CCmdUI* pCmdUI)
 void MainWnd::OnOptionsFrameskipThrottle200()
 {
 	theApp.updateThrottle( 200 );
-  theApp.autoFrameSkip = false;
 }
 
 void MainWnd::OnUpdateOptionsFrameskipThrottle200(CCmdUI* pCmdUI)
@@ -105,7 +99,6 @@ void MainWnd::OnOptionsFrameskipThrottleOther()
 
 	if( v ) {
 		theApp.updateThrottle( v );
-		theApp.autoFrameSkip = false;
 	}
 }
 
@@ -119,107 +112,6 @@ void MainWnd::OnUpdateOptionsFrameskipThrottleOther(CCmdUI* pCmdUI)
 		( theApp.throttle != 100 ) &&
 		( theApp.throttle != 150 ) &&
 		( theApp.throttle != 200 ) );
-}
-
-void MainWnd::OnOptionsFrameskipAutomatic() 
-{
-  theApp.autoFrameSkip = !theApp.autoFrameSkip;
-  if(!theApp.autoFrameSkip && emulating)
-	  theApp.updateFrameSkip();
-  else
-  {
-	  theApp.throttle = false;
-	  frameSkip = 0;
-	  systemFrameSkip = 0;
-  }
-}
-
-void MainWnd::OnUpdateOptionsFrameskipAutomatic(CCmdUI* pCmdUI) 
-{
-  pCmdUI->SetCheck(theApp.autoFrameSkip);  
-}
-
-BOOL MainWnd::OnOptionsFrameskip(UINT nID)
-{
-  switch(nID) {
-  case ID_OPTIONS_VIDEO_FRAMESKIP_0:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_1:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_2:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_3:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_4:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_5:
-    if(theApp.cartridgeType == IMAGE_GBA) {
-      frameSkip = nID - ID_OPTIONS_VIDEO_FRAMESKIP_0;
-    }
-    if(emulating)
-      theApp.updateFrameSkip();
-	theApp.updateThrottle( 0 );
-    return TRUE;
-    break;
-  case ID_OPTIONS_VIDEO_FRAMESKIP_6:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_7:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_8:
-  case ID_OPTIONS_VIDEO_FRAMESKIP_9:
-    if(theApp.cartridgeType == IMAGE_GBA) {
-      frameSkip = 6 + nID - ID_OPTIONS_VIDEO_FRAMESKIP_6;
-    }
-    if(emulating)
-      theApp.updateFrameSkip();
-	theApp.updateThrottle( 0 );
-    return TRUE;
-    break;
-  }
-  return FALSE;
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip0(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 0);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip1(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 1);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip2(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 2);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip3(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 3);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip4(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 4);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip5(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 5);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip6(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 6);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip7(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 7);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip8(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 8);
-}
-
-void MainWnd::OnUpdateOptionsVideoFrameskip9(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(frameSkip == 9);
 }
 
 

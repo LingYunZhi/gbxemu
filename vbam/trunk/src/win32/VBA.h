@@ -92,8 +92,6 @@ class VBA : public CWinApp
   bool winRtcEnable;
   int winSaveType;
   unsigned short throttle;
-  u32 autoFrameSkipLastTime;
-  bool autoFrameSkip;
   bool vsync;
   bool changingVideoSize;
 
@@ -137,7 +135,6 @@ class VBA : public CWinApp
   int sensorY;
   int mouseCounter;
   bool wasPaused;
-  int frameskipadjust;
   bool autoLoadMostRecent;
   int maxScale;
   int romSize;
@@ -196,7 +193,6 @@ class VBA : public CWinApp
   bool initDisplay();
   void updateWindowSize(int value);
   void updateVideoSize(UINT id);
-  void updateFrameSkip();
   void loadSettings();
   void addRecentFile(CString file);
 };

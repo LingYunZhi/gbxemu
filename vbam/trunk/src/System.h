@@ -55,9 +55,6 @@ extern void systemShowSpeed(int);
 extern void system10Frames(int);
 extern void systemFrame();
 
-extern void Sm60FPS_Init();
-extern bool Sm60FPS_CanSkipFrame();
-extern void Sm60FPS_Sleep();
 extern void DbgMsg(const char *msg, ...);
 extern void winlog(const char *,...);
 
@@ -71,7 +68,6 @@ extern int systemGreenShift;
 extern int systemBlueShift;
 extern int systemColorDepth;
 extern int systemVerbose;
-extern int systemFrameSkip;
 extern int systemSaveUpdateCounter;
 extern int systemSpeed;
 

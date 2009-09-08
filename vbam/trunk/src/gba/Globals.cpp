@@ -20,7 +20,6 @@ u32 stop = 0x08000568;
 int saveType = 0;
 bool useBios = false;
 bool skipBios = false;
-int frameSkip = 1;
 bool speedup = false;
 bool synchronize = true;
 bool cpuIsMultiBoot = false;

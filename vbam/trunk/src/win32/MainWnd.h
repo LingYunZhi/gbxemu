@@ -58,7 +58,6 @@ protected:
 	afx_msg BOOL OnVideoLayer(UINT nID);
 	afx_msg void OnVideoLayerReset();
 	afx_msg BOOL OnOptionVideoSize(UINT nID);
-	afx_msg BOOL OnOptionsFrameskip(UINT nID);
 	afx_msg void OnClose();
 	afx_msg void OnHelpAbout();
 	afx_msg void OnHelpFaq();
@@ -108,18 +107,6 @@ protected:
 	afx_msg void OnOptionsFrameskipThrottle150();
 	afx_msg void OnOptionsFrameskipThrottle200();
 	afx_msg void OnOptionsFrameskipThrottleOther();
-	afx_msg void OnOptionsFrameskipAutomatic();
-	afx_msg void OnUpdateOptionsFrameskipAutomatic(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip0(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip1(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip2(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip3(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip4(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip5(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip6(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip7(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip8(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateOptionsVideoFrameskip9(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoVsync();
 	afx_msg void OnUpdateOptionsVideoVsync(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateOptionsVideoX1(CCmdUI* pCmdUI);

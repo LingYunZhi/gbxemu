@@ -66,7 +66,6 @@ static char THIS_FILE[] = __FILE__;
 
 int emulating = 0;
 int RGB_LOW_BITS_MASK = 0;
-int systemFrameSkip = 0;
 int systemSpeed = 0;
 u32 systemColorMap32[0x10000];
 u16 systemColorMap16[0x10000];
@@ -83,38 +82,6 @@ void winOutput(const char *, u32);
 void (*dbgSignal)(int,int) = winSignal;
 void (*dbgOutput)(const char *, u32) = winOutput;
 
-
-namespace Sm60FPS
-{
-  float					K_fCpuSpeed = 100.0f; // was 98.0f before, but why?
-  float					K_fTargetFps = 60.0f * K_fCpuSpeed / 100;
-  float					K_fDT = 1000.0f / K_fTargetFps;
-
-  u32					dwTimeElapse;
-  u32					dwTime0;
-  u32					dwTime1;
-  u32					nFrameCnt;
-  float					fWantFPS;
-  float					fCurFPS;
-  bool					bLastSkip;
-  int					nCurSpeed;
-  int					bSaveMoreCPU;
-};
-
-#ifdef LOG_PERFORMANCE
-#ifndef PERFORMANCE_INTERVAL
-#define PERFORMANCE_INTERVAL 3600
-#endif
-int systemSpeedTable[PERFORMANCE_INTERVAL];
-unsigned int systemSpeedCounter;
-#endif
-
-void directXMessage(const char *msg)
-{
-  systemMessage(IDS_DIRECTX_7_REQUIRED,
-                "DirectX 7.0 or greater is required to run.\nDownload at http://www.microsoft.com/directx.\n\nError found at: %s",
-                msg);
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // VBA
@@ -169,8 +136,6 @@ VBA::VBA()
   winRtcEnable = false;
   winSaveType = 0;
   throttle = 0;
-  autoFrameSkipLastTime = 0;
-  autoFrameSkip = false;
   vsync = false;
   changingVideoSize = false;
 
@@ -212,7 +177,6 @@ VBA::VBA()
   sensorY = 2047;
   mouseCounter = 0;
   wasPaused = false;
-  frameskipadjust = 0;
   autoLoadMostRecent = false;
   maxScale = 0;
   romSize = 0;
@@ -576,26 +540,12 @@ void VBA::updateFilter()
 
 	if( display )
 		display->changeRenderSize(rect.right, rect.bottom);
-
-#ifdef LOG_PERFORMANCE
-	memset( systemSpeedTable, 0x00, sizeof(systemSpeedTable) );
-	systemSpeedCounter = 0;
-#endif
 }
 
 
 void VBA::updateThrottle( unsigned short throttle )
 {
 	this->throttle = throttle;
-
-	if( throttle ) {
-		Sm60FPS::K_fCpuSpeed = (float)throttle;
-		Sm60FPS::K_fTargetFps = 60.0f * Sm60FPS::K_fCpuSpeed / 100;
-		Sm60FPS::K_fDT = 1000.0f / Sm60FPS::K_fTargetFps;
-		autoFrameSkip = false;
-		frameSkip = 0;
-		systemFrameSkip = 0;
-	}
 
 	soundSetThrottle(throttle);
 }
@@ -686,9 +636,6 @@ void systemDrawScreen()
     }
   }
 
-  if (Sm60FPS_CanSkipFrame())
-	  return;
-
   if( theApp.aviRecording ) {
 	  if( theApp.painting ) {
 		  theApp.skipAudioFrames++;
@@ -720,7 +667,6 @@ void systemDrawScreen()
   if(!soundBufferLow)
   {
 	  theApp.display->render();
-      Sm60FPS_Sleep();
   }
   else
 	  soundBufferLow = false;
@@ -771,8 +717,7 @@ void systemShowSpeed(int speed)
     if(theApp.showSpeed == 1)
       buffer.Format(VBA_NAME_AND_SUBVERSION "-%3d%%", systemSpeed);
     else
-      buffer.Format(VBA_NAME_AND_SUBVERSION "-%3d%%(%d, %d fps)", systemSpeed,
-                    systemFrameSkip,
+      buffer.Format(VBA_NAME_AND_SUBVERSION "-%3d%%(%d fps)", systemSpeed,
                     theApp.showRenderedFrames);
 
     systemSetTitle(buffer);
@@ -785,54 +730,21 @@ void systemFrame()
 	if( theApp.movieRecording || theApp.moviePlaying ) {
 		theApp.movieFrame++;
 	}
-
-#ifdef LOG_PERFORMANCE
-	systemSpeedTable[systemSpeedCounter++ % PERFORMANCE_INTERVAL] = systemSpeed;
-#endif
 }
 
 
 void system10Frames(int rate)
 {
-
-	if( theApp.autoFrameSkip )
-	{
-		u32 time = systemGetClock();
-		u32 diff = time - theApp.autoFrameSkipLastTime;
-		theApp.autoFrameSkipLastTime = time;
-		if( diff ) {
-			// countermeasure against div/0 when debugging
-			Sm60FPS::nCurSpeed = (1000000/rate)/diff;
-		} else {
-			Sm60FPS::nCurSpeed = 100;
-		}
-	}
-
-  if(systemSaveUpdateCounter) {
-    if(--systemSaveUpdateCounter <= SYSTEM_SAVE_NOT_UPDATED) {
-      ((MainWnd *)theApp.m_pMainWnd)->writeBatteryFile();
-      systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
+    if(systemSaveUpdateCounter) {
+        if(--systemSaveUpdateCounter <= SYSTEM_SAVE_NOT_UPDATED) {
+            ((MainWnd *)theApp.m_pMainWnd)->writeBatteryFile();
+            systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
+        }
     }
-  }
 
-  theApp.wasPaused = false;
-
-//  Old autoframeskip crap... might be useful later. autoframeskip Ifdef above might be useless as well now
-//  theApp.autoFrameSkipLastTime = time;
-
-#ifdef LOG_PERFORMANCE
-  if( systemSpeedCounter >= PERFORMANCE_INTERVAL ) {
-	  // log performance every PERFORMANCE_INTERVAL frames
-	  float a = 0.0f;
-	  for( unsigned short i = 0 ; i < PERFORMANCE_INTERVAL ; i++ ) {
-		  a += (float)systemSpeedTable[i];
-	  }
-	  a /= (float)PERFORMANCE_INTERVAL;
-	  log( _T("Speed: %f\n"), a );
-	  systemSpeedCounter = 0;
-  }
-#endif
+    theApp.wasPaused = false;
 }
+
 
 void systemScreenMessage(const char *msg)
 {
@@ -1016,12 +928,6 @@ void VBA::loadSettings()
 
   winSetLanguageOption(languageOption, true);
 
-  frameSkip = regQueryDwordValue("frameSkip", 0);
-  if(frameSkip < 0 || frameSkip > 9)
-    frameSkip = 0;
-
-  autoFrameSkip = regQueryDwordValue("autoFrameSkip", FALSE) ? TRUE : FALSE;
-  
   vsync = regQueryDwordValue("vsync", false) ? true : false ;
   synchronize = regQueryDwordValue("synchronize", 1) ? true : false;
   fullScreenStretch = regQueryDwordValue("stretch", 0) ? true : false;
@@ -1171,21 +1077,11 @@ void VBA::loadSettings()
 
   updateThrottle( (unsigned short)regQueryDwordValue( "throttle", 0 ) );
 
-  Sm60FPS::bSaveMoreCPU = regQueryDwordValue("saveMoreCPU", 0);
-
   xa2Device = regQueryDwordValue( "xa2Device", 0 );
   xa2BufferCount = regQueryDwordValue( "xa2BufferCount", 4 );
   xa2Upmixing = ( 1 == regQueryDwordValue( "xa2Upmixing", 0 ) );
 }
 
-void VBA::updateFrameSkip()
-{
-  switch(cartridgeType) {
-  case IMAGE_GBA:
-    systemFrameSkip = frameSkip;
-    break;
-  }
-}
 
 void VBA::updateVideoSize(UINT id)
 {
@@ -1534,8 +1430,6 @@ bool VBA::updateRenderMethod(bool force)
 {
 	bool ret = true;
 
-	Sm60FPS_Init();
-
 	if( !updateRenderMethod0( force ) ) {
 		// fall back to safe configuration
 		fsAdapter = 0;
@@ -1829,9 +1723,6 @@ void VBA::saveSettings()
 
   regSetStringValue("languageName", languageName);
 
-  regSetDwordValue("frameSkip", frameSkip);
-
-  regSetDwordValue("autoFrameSkip", autoFrameSkip);
   regSetDwordValue("vsync", vsync);
   regSetDwordValue("synchronize", synchronize);
   regSetDwordValue("stretch", fullScreenStretch);
@@ -1901,7 +1792,6 @@ void VBA::saveSettings()
   regSetDwordValue("cheatsEnabled", cheatsEnabled);
   regSetDwordValue("maxScale", maxScale);
   regSetDwordValue("throttle", throttle);
-  regSetDwordValue("saveMoreCPU", Sm60FPS::bSaveMoreCPU);
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
 
@@ -1934,74 +1824,4 @@ void winOutput(const char *s, u32 addr)
     }
     toolsLog(str);
   }
-}
-
-
-void Sm60FPS_Init()
-{
-	Sm60FPS::dwTimeElapse = 0;
-	Sm60FPS::fWantFPS = 60.f;
-	Sm60FPS::fCurFPS = 0.f;
-	Sm60FPS::nFrameCnt = 0;
-	Sm60FPS::bLastSkip = false;
-	Sm60FPS::nCurSpeed = 100;
-}
-
-
-bool Sm60FPS_CanSkipFrame()
-{
-  if( theApp.autoFrameSkip ) {
-	  if( Sm60FPS::nFrameCnt == 0 ) {
-		  Sm60FPS::nFrameCnt = 0;
-		  Sm60FPS::dwTimeElapse = 0;
-		  Sm60FPS::dwTime0 = GetTickCount();
-	  } else {
-		  if( Sm60FPS::nFrameCnt >= 10 ) {
-			  Sm60FPS::nFrameCnt = 0;
-			  Sm60FPS::dwTimeElapse = 0;
-
-			  if( Sm60FPS::nCurSpeed > Sm60FPS::K_fCpuSpeed ) {
-				  Sm60FPS::fWantFPS += 1;
-				  if( Sm60FPS::fWantFPS > Sm60FPS::K_fTargetFps ){
-					  Sm60FPS::fWantFPS = Sm60FPS::K_fTargetFps;
-				  }
-			  } else {
-				  if( Sm60FPS::nCurSpeed < (Sm60FPS::K_fCpuSpeed - 5) ) {
-					  Sm60FPS::fWantFPS -= 1;
-					  if( Sm60FPS::fWantFPS < 30.f ) {
-						  Sm60FPS::fWantFPS = 30.f;
-					  }
-				  }
-			  }
-		  } else { // between frame 1-10
-			  Sm60FPS::dwTime1 = GetTickCount();
-			  Sm60FPS::dwTimeElapse += (Sm60FPS::dwTime1 - Sm60FPS::dwTime0);
-			  Sm60FPS::dwTime0 = Sm60FPS::dwTime1;
-			  if( !Sm60FPS::bLastSkip &&
-				  ( (Sm60FPS::fWantFPS < Sm60FPS::K_fTargetFps) || Sm60FPS::bSaveMoreCPU) ) {
-					  Sm60FPS::fCurFPS = (float)Sm60FPS::nFrameCnt * 1000 / Sm60FPS::dwTimeElapse;
-					  if( (Sm60FPS::fCurFPS < Sm60FPS::K_fTargetFps) || Sm60FPS::bSaveMoreCPU ) {
-						  Sm60FPS::bLastSkip = true;
-						  Sm60FPS::nFrameCnt++;
-						  return true;
-					  }
-			  }
-		  }
-	  }
-	  Sm60FPS::bLastSkip = false;
-	  Sm60FPS::nFrameCnt++;
-  }
-  return false;
-}
-
-
-void Sm60FPS_Sleep()
-{
-	if( theApp.autoFrameSkip ) {
-		u32 dwTimePass = Sm60FPS::dwTimeElapse + (GetTickCount() - Sm60FPS::dwTime0);
-		u32 dwTimeShould = (u32)(Sm60FPS::nFrameCnt * Sm60FPS::K_fDT);
-		if( dwTimeShould > dwTimePass ) {
-			Sleep(dwTimeShould - dwTimePass);
-		}
-	}
 }

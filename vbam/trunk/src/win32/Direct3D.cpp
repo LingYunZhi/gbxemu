@@ -403,7 +403,7 @@ void Direct3DDisplay::render()
 		if( theApp.showSpeed == 1 ) {
 			sprintf( buffer, "%3d%%", systemSpeed );
 		} else {
-			sprintf( buffer, "%3d%%(%d, %d fps)", systemSpeed, systemFrameSkip, theApp.showRenderedFrames );
+			sprintf( buffer, "%3d%%(%d fps)", systemSpeed, theApp.showRenderedFrames );
 		}
 
 		pFont->DrawText( NULL, buffer, -1, &r, DT_CENTER | DT_TOP, color );
