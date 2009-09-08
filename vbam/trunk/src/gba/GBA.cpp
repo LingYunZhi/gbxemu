@@ -1604,14 +1604,6 @@ void CPUSoftwareInterrupt(int comment)
     agbPrintFlush();
     return;
   }
-#ifdef SDL
-  if(comment == 0xf9) {
-    emulating = 0;
-    cpuNextEvent = cpuTotalTicks;
-    cpuBreakLoop = true;
-    return;
-  }
-#endif
   if(useBios) {
 #ifdef GBA_LOGGING
     if(systemVerbose & VERBOSE_SWI) {
@@ -3249,26 +3241,7 @@ void CPUInterrupt()
   biosProtected[3] = 0xe5;
 }
 
-#ifdef SDL
-void log(const char *defaultMsg, ...)
-{
-  char buffer[2048];
-  va_list valist;
-
-  va_start(valist, defaultMsg);
-  vsprintf(buffer, defaultMsg, valist);
-
-  if(out == NULL) {
-    out = fopen("trace.log","w");
-  }
-
-  fputs(buffer, out);
-
-  va_end(valist);
-}
-#else
 extern void winlog(const char *, ...);
-#endif
 
 void CPULoop(int ticks)
 {

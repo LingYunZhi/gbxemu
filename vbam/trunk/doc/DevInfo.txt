@@ -3,8 +3,6 @@ Developer Information File
 ==========================
 
 Known preprocessor switches:
-- SDL: Defined for the SDL version
 - GBA_LOGGING: Enables logging for the GBA core
 - FINAL_VERSION: Defined for release versions, disables additional GBA logging and completely disables GB logging. Increases the amount of CPU cycles being emulated in one go.
 - BKPT_SUPPORT
-- RGB555: Use 16bit colors with 5bit green instead of 6bit green in hq3x/4x filters (C++ version)

@@ -2748,55 +2748,12 @@ static u8 cheatsGetType(u32 address)
 
 void cheatsWriteMemory(u32 address, u32 value)
 {
-#ifdef BKPT_SUPPORT
-#ifdef SDL
-  if(cheatsNumber == 0) {
-    int type = cheatsGetType(address);
-    u32 oldValue = debuggerReadMemory(address);
-    if(type == 1 || (type == 2 && oldValue != value)) {
-      debuggerBreakOnWrite(address, oldValue, value, 2, type);
-      cpuNextEvent = 0;
-    }
-    debuggerWriteMemory(address, value);
-  }
-#endif
-#endif
 }
 
 void cheatsWriteHalfWord(u32 address, u16 value)
 {
-#ifdef BKPT_SUPPORT
-#ifdef SDL
-  if(cheatsNumber == 0) {
-    int type = cheatsGetType(address);
-    u16 oldValue = debuggerReadHalfWord(address);
-    if(type == 1 || (type == 2 && oldValue != value)) {
-      debuggerBreakOnWrite(address, oldValue, value, 1, type);
-      cpuNextEvent = 0;
-    }
-    debuggerWriteHalfWord(address, value);
-  }
-#endif
-#endif
 }
 
-#if defined BKPT_SUPPORT && defined SDL
-void cheatsWriteByte(u32 address, u8 value)
-#else
 void cheatsWriteByte(u32, u8)
-#endif
 {
-#ifdef BKPT_SUPPORT
-#ifdef SDL
-  if(cheatsNumber == 0) {
-    int type = cheatsGetType(address);
-    u8 oldValue = debuggerReadByte(address);
-    if(type == 1 || (type == 2 && oldValue != value)) {
-      debuggerBreakOnWrite(address, oldValue, value, 0, type);
-      cpuNextEvent = 0;
-    }
-    debuggerWriteByte(address, value);
-  }
-#endif
-#endif
 }
