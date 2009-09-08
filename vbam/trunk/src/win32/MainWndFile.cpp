@@ -3,7 +3,6 @@
 
 #include <shlwapi.h>
 
-#include "ExportGSASnapshot.h"
 #include "FileDlg.h"
 #include "GSACodeSelect.h"
 #include "RomInfo.h"
@@ -409,32 +408,6 @@ void MainWnd::OnUpdateFileImportGamesharkcodefile(CCmdUI* pCmdUI)
   pCmdUI->Enable(emulating);
 }
 
-void MainWnd::OnFileImportGamesharksnapshot()
-{
-  LPCTSTR exts[] = { ".gbs" };
-  CString filter = winLoadFilter(IDS_FILTER_SPS);
-  CString title = winResLoadString(IDS_SELECT_SNAPSHOT_FILE);
-
-  FileDlg dlg(this, "", filter, 0, "", exts, "", title, false);
-
-  if(dlg.DoModal() == IDCANCEL)
-    return;
-
-  CString str1 = winResLoadString(IDS_SAVE_WILL_BE_LOST);
-
-  if(MessageBox(str1,
-                NULL,
-                MB_OKCANCEL) == IDCANCEL)
-    return;
-
-  if(theApp.cartridgeType == IMAGE_GBA)
-    CPUReadGSASnapshot(dlg.GetPathName());
-}
-
-void MainWnd::OnUpdateFileImportGamesharksnapshot(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(emulating);
-}
 
 void MainWnd::OnFileExportBatteryfile()
 {
@@ -496,52 +469,6 @@ void MainWnd::OnUpdateFileExportBatteryfile(CCmdUI* pCmdUI)
   pCmdUI->Enable(emulating);
 }
 
-void MainWnd::OnFileExportGamesharksnapshot()
-{
-  if(eepromInUse) {
-    systemMessage(IDS_EEPROM_NOT_SUPPORTED, "EEPROM saves cannot be exported");
-    return;
-  }
-
-  CString name;
-
-  int index = theApp.filename.ReverseFind('\\');
-
-  if(index != -1)
-    name = theApp.filename.Right(theApp.filename.GetLength()-index-1);
-  else
-    name = theApp.filename;
-
-  LPCTSTR exts[] = {".sps" };
-
-  CString filter = winLoadFilter(IDS_FILTER_SPS);
-  CString title = winResLoadString(IDS_SELECT_SNAPSHOT_FILE);
-
-  FileDlg dlg(this,
-              name,
-              filter,
-              1,
-              "SPS",
-              exts,
-              "",
-              title,
-              true);
-
-  if(dlg.DoModal() == IDCANCEL)
-    return;
-
-  char buffer[16];
-  strncpy(buffer, (const char *)&rom[0xa0], 12);
-  buffer[12] = 0;
-
-  ExportGSASnapshot dlg2(dlg.GetPathName(), buffer, this);
-  dlg2.DoModal();
-}
-
-void MainWnd::OnUpdateFileExportGamesharksnapshot(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(emulating && theApp.cartridgeType == IMAGE_GBA);
-}
 
 void MainWnd::OnFileScreencapture()
 {

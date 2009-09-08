@@ -81,12 +81,8 @@ protected:
 	afx_msg void OnUpdateFileImportBatteryfile(CCmdUI* pCmdUI);
 	afx_msg void OnFileImportGamesharkcodefile();
 	afx_msg void OnUpdateFileImportGamesharkcodefile(CCmdUI* pCmdUI);
-	afx_msg void OnFileImportGamesharksnapshot();
-	afx_msg void OnUpdateFileImportGamesharksnapshot(CCmdUI* pCmdUI);
 	afx_msg void OnFileExportBatteryfile();
 	afx_msg void OnUpdateFileExportBatteryfile(CCmdUI* pCmdUI);
-	afx_msg void OnFileExportGamesharksnapshot();
-	afx_msg void OnUpdateFileExportGamesharksnapshot(CCmdUI* pCmdUI);
 	afx_msg void OnFileScreencapture();
 	afx_msg void OnUpdateFileScreencapture(CCmdUI* pCmdUI);
 	afx_msg void OnFileRominformation();

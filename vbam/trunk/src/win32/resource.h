@@ -80,7 +80,6 @@
 #define IDD_TILE_VIEWER                 132
 #define IDD_DISASSEMBLE                 134
 #define IDD_LOGGING                     137
-#define IDD_EXPORT_SPS                  138
 #define IDD_ADDR_SIZE                   139
 #define IDD_MODES                       140
 #define IDD_MODE_CONFIRM                149
@@ -437,12 +436,10 @@
 #define IDC_XY                          1231
 #define IDC_VERBOSE_DMA3                1232
 #define IDC_VERBOSE_UNDEFINED           1233
-#define IDC_TITLE                       1234
 #define IDC_VERBOSE_AGBPRINT            1234
 #define IDC_CURRENT_ADDRESS             1235
 #define IDC_VERBOSE_AGBPRINT2           1235
 #define IDC_VERBOSE_SOUNDOUTPUT         1235
-#define IDC_NOTES                       1236
 #define IDC_CURRENT_ADDRESS_LABEL       1236
 #define IDC_LOAD                        1238
 #define IDC_SIZE_CONTROL                1240
