@@ -54,7 +54,6 @@ extern bool systemCanChangeSoundQuality();
 extern void systemShowSpeed(int);
 extern void system10Frames(int);
 extern void systemFrame();
-extern void systemGbBorderOn();
 
 extern void Sm60FPS_Init();
 extern bool Sm60FPS_CanSkipFrame();
@@ -71,7 +70,6 @@ extern int systemRedShift;
 extern int systemGreenShift;
 extern int systemBlueShift;
 extern int systemColorDepth;
-extern int systemDebug;
 extern int systemVerbose;
 extern int systemFrameSkip;
 extern int systemSaveUpdateCounter;

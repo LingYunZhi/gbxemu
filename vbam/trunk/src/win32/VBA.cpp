@@ -56,13 +56,6 @@ extern IDisplay *newDirect3DDisplay();
 extern Input *newDirectInput();
 extern SoundDriver *newXAudio2_Output();
 
-extern void remoteStubSignal(int, int);
-extern void remoteOutput(char *, u32);
-extern void remoteStubMain();
-extern void remoteSetProtocol(int);
-extern void remoteCleanUp();
-extern int remoteSocket;
-
 void winlog(const char *msg, ...);
 
 #ifdef _DEBUG
@@ -72,7 +65,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 int emulating = 0;
-bool debugger = false;
 int RGB_LOW_BITS_MASK = 0;
 int systemFrameSkip = 0;
 int systemSpeed = 0;
@@ -83,7 +75,6 @@ int systemBlueShift = 0;
 int systemGreenShift = 0;
 int systemColorDepth = 16;
 int systemVerbose = 0;
-int systemDebug = 0;
 int systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 bool soundBufferLow = 0;
 void winSignal(int,int);
@@ -302,18 +293,6 @@ VBA theApp;
 BOOL VBA::InitInstance()
 {
   SetRegistryKey(_T("VBA"));
-
-  remoteSetProtocol(0);
-
-  systemVerbose = GetPrivateProfileInt("config",
-                                       "verbose",
-                                       0,
-                                       "VBA.ini");
-
-  systemDebug = GetPrivateProfileInt("config",
-                                     "debug",
-                                     0,
-                                     "VBA.ini");
 
   wndClass = AfxRegisterWndClass(0, LoadCursor(IDC_ARROW), (HBRUSH)GetStockObject(BLACK_BRUSH), LoadIcon(IDI_MAINICON));
 
@@ -963,37 +942,25 @@ bool systemPauseOnFrame()
   return false;
 }
 
-void systemGbBorderOn()
-{
-  //if(emulating && theApp.cartridgeType == IMAGE_GB && gbBorderOn) {
-    //theApp.updateWindowSize(theApp.videoOption);
-  //}
-}
 
 BOOL VBA::OnIdle(LONG lCount)
 {
-  if(emulating && debugger) {
-    MSG msg;
-    remoteStubMain();
-    if(debugger)
-      return TRUE; // continue loop
-    return !::PeekMessage(&msg, NULL, NULL, NULL, PM_NOREMOVE);
-  } else if(emulating && active && !paused) {
-    for(int i = 0; i < 2; i++) {
-      emulator.emuMain(emulator.emuCount);
+    if( emulating && active && !paused ) {
+        for( int i = 0; i < 2; i++ ) {
+            emulator.emuMain( emulator.emuCount );
+        }
+        
+        if( mouseCounter ) {
+            if( --mouseCounter == 0 ) {
+                SetCursor( NULL );
+            }
+        }
+        return TRUE;
     }
-
-    if(mouseCounter) {
-      if(--mouseCounter == 0) {
-        SetCursor(NULL);
-      }
-    }
-    return TRUE;
-  }
-  return FALSE;
-
-  //  return CWinApp::OnIdle(lCount);
+    
+    return FALSE;
 }
+
 
 void VBA::addRecentFile(CString file)
 {

@@ -27,8 +27,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void remoteCleanUp();
-extern int gbHardware;
 
 /////////////////////////////////////////////////////////////////////////////
 // MainWnd
@@ -221,14 +219,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_TILEVIEWER, OnUpdateToolsTileviewer)
   ON_COMMAND(ID_DEBUG_NEXTFRAME, OnDebugNextframe)
   ON_UPDATE_COMMAND_UI(ID_CHEATS_AUTOMATICSAVELOADCHEATS, OnUpdateCheatsAutomaticsaveloadcheats)
-  ON_COMMAND(ID_TOOLS_DEBUG_GDB, OnToolsDebugGdb)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_DEBUG_GDB, OnUpdateToolsDebugGdb)
-  ON_COMMAND(ID_TOOLS_DEBUG_LOADANDWAIT, OnToolsDebugLoadandwait)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_DEBUG_LOADANDWAIT, OnUpdateToolsDebugLoadandwait)
-  ON_COMMAND(ID_TOOLS_DEBUG_BREAK, OnToolsDebugBreak)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_DEBUG_BREAK, OnUpdateToolsDebugBreak)
-  ON_COMMAND(ID_TOOLS_DEBUG_DISCONNECT, OnToolsDebugDisconnect)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_DEBUG_DISCONNECT, OnUpdateToolsDebugDisconnect)
   ON_COMMAND(ID_OPTIONS_SOUND_STARTRECORDING, OnOptionsSoundStartrecording)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUND_STARTRECORDING, OnUpdateOptionsSoundStartrecording)
   ON_COMMAND(ID_OPTIONS_SOUND_STOPRECORDING, OnOptionsSoundStoprecording)
@@ -337,7 +327,6 @@ bool MainWnd::FileRun()
     writeBatteryFile();
     cheatSearchCleanup(&cheatSearchData);
     theApp.emulator.emuCleanUp();
-    remoteCleanUp();
     emulating = false;
 #ifdef APU_LOGGER_H
     end_apu_log();

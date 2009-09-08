@@ -440,10 +440,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\gba\remote.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\gba\RTC.cpp"
 					>
 				</File>
@@ -1094,30 +1090,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\GBACheats.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\GDBConnection.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\GDBConnection.h"
 				>
 			</File>
 			<File

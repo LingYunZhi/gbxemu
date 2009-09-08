@@ -5,7 +5,6 @@
 #include "AVIWrite.h"
 #include "Disassemble.h"
 #include "FileDlg.h"
-#include "GDBConnection.h"
 #include "IOViewer.h"
 #include "MapView.h"
 #include "MemoryViewerDlg.h"
@@ -27,12 +26,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern bool debugger;
-extern int emulating;
-extern SOCKET remoteSocket;
-
-extern void remoteCleanUp();
-extern void remoteSetSockets(SOCKET, SOCKET);
 
 void MainWnd::OnToolsDisassemble()
 {
@@ -147,96 +140,6 @@ void MainWnd::OnDebugNextframe()
   theApp.winPauseNextFrame = true;
 }
 
-void MainWnd::OnToolsDebugGdb()
-{
-  GDBPortDlg dlg;
-
-  if(dlg.DoModal()) {
-    GDBWaitingDlg wait(dlg.getSocket(), dlg.getPort());
-    if(wait.DoModal()) {
-      remoteSetSockets(wait.getListenSocket(), wait.getSocket());
-      debugger = true;
-      emulating = 1;
-      theApp.cartridgeType = IMAGE_GBA;
-      theApp.filename = "\\gnu_stub";
-      rom = (u8 *)malloc(0x2000000);
-      workRAM = (u8 *)calloc(1, 0x40000);
-      bios = (u8 *)calloc(1,0x4000);
-      internalRAM = (u8 *)calloc(1,0x8000);
-      paletteRAM = (u8 *)calloc(1,0x400);
-      vram = (u8 *)calloc(1, 0x20000);
-      oam = (u8 *)calloc(1, 0x400);
-      pix = (u8 *)calloc(1, 4 * 241 * 162);
-      ioMem = (u8 *)calloc(1, 0x400);
-
-      theApp.emulator = GBASystem;
-
-      CPUInit(theApp.biosFileNameGBA, theApp.useBiosFileGBA);
-      CPUReset();
-    }
-  }
-}
-
-void MainWnd::OnUpdateToolsDebugGdb(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X && remoteSocket == -1);
-}
-
-void MainWnd::OnToolsDebugLoadandwait()
-{
-  if(fileOpenSelect()) {
-    if(FileRun()) {
-      if(theApp.cartridgeType != IMAGE_GBA) {
-        systemMessage(IDS_ERROR_NOT_GBA_IMAGE, "Error: not a GBA image");
-        OnFileClose();
-        return;
-      }
-      GDBPortDlg dlg;
-
-      if(dlg.DoModal()) {
-        GDBWaitingDlg wait(dlg.getSocket(), dlg.getPort());
-        if(wait.DoModal()) {
-          remoteSetSockets(wait.getListenSocket(), wait.getSocket());
-          debugger = true;
-          emulating = 1;
-        }
-      }
-    }
-  }
-}
-
-void MainWnd::OnUpdateToolsDebugLoadandwait(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X && remoteSocket == -1);
-}
-
-void MainWnd::OnToolsDebugBreak()
-{
-  if(armState) {
-    armNextPC -= 4;
-    reg[15].I -= 4;
-  } else {
-    armNextPC -= 2;
-    reg[15].I -= 2;
-  }
-  debugger = true;
-}
-
-void MainWnd::OnUpdateToolsDebugBreak(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X && remoteSocket != -1);
-}
-
-void MainWnd::OnToolsDebugDisconnect()
-{
-  remoteCleanUp();
-  debugger = false;
-}
-
-void MainWnd::OnUpdateToolsDebugDisconnect(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X && remoteSocket != -1);
-}
 
 void MainWnd::OnOptionsSoundStartrecording()
 {

@@ -18,8 +18,6 @@
 
 #include "../version.h"
 
-extern void remoteCleanUp();
-
 
 void MainWnd::OnFileOpenGBA()
 {
@@ -128,7 +126,6 @@ void MainWnd::OnFileClose()
     writeBatteryFile();
     soundPause();
     theApp.emulator.emuCleanUp();
-    remoteCleanUp();
   }
   emulating = 0;
   RedrawWindow(NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);

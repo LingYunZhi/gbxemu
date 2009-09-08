@@ -1469,13 +1469,6 @@ BEGIN
         MENUITEM "Tile Viewer...",              ID_TOOLS_TILEVIEWER
         MENUITEM SEPARATOR
         MENUITEM "&Next frame",                 ID_DEBUG_NEXTFRAME
-        POPUP "GDB"
-        BEGIN
-            MENUITEM "Wait for connection...",      ID_TOOLS_DEBUG_GDB
-            MENUITEM "Load and wait...",            ID_TOOLS_DEBUG_LOADANDWAIT
-            MENUITEM "Break into GDB",              ID_TOOLS_DEBUG_BREAK
-            MENUITEM "Disconnect",                  ID_TOOLS_DEBUG_DISCONNECT
-        END
         MENUITEM SEPARATOR
         POPUP "Record"
         BEGIN
