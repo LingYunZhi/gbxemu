@@ -110,8 +110,6 @@ void (*renderLine)() = mode0RenderLine;
 bool fxOn = false;
 bool windowOn = false;
 int frameCount = 0;
-char buffer[1024];
-FILE *out = NULL;
 u32 lastTime = 0;
 int count = 0;
 
