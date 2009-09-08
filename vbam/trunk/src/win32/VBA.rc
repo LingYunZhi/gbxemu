@@ -1160,7 +1160,6 @@ BEGIN
             MENUITEM "&Gameshark Snapshot...",      ID_FILE_EXPORT_GAMESHARKSNAPSHOT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Screen Capture...",           ID_FILE_SCREENCAPTURE
         MENUITEM "ROM Information...",          ID_FILE_ROMINFORMATION
         MENUITEM "Toggle Fullscreen",           ID_FILE_TOGGLEMENU
         MENUITEM SEPARATOR
@@ -1316,8 +1315,6 @@ BEGIN
                 MENUITEM "&English",                    ID_OPTIONS_LANGUAGE_ENGLISH
                 MENUITEM "&Other...",                   ID_OPTIONS_LANGUAGE_OTHER
             END
-            MENUITEM SEPARATOR
-            MENUITEM "Turbo mode",                  ID_OPTIONS_EMULATOR_SPEEDUPTOGGLE
         END
     END
     POPUP "&Cheats"
@@ -1333,6 +1330,17 @@ BEGIN
     END
     POPUP "&Tools"
     BEGIN
+        POPUP "Record"
+        BEGIN
+            MENUITEM "Create screenshot...",        ID_FILE_SCREENCAPTURE
+            MENUITEM SEPARATOR
+            MENUITEM "Start AVI recording...",      ID_TOOLS_RECORD_STARTAVIRECORDING
+            MENUITEM "Stop AVI recording",          ID_TOOLS_RECORD_STOPAVIRECORDING
+            MENUITEM SEPARATOR
+            MENUITEM "Start sound recording...",    ID_OPTIONS_SOUND_STARTRECORDING
+            MENUITEM "Stop sound recording",        ID_OPTIONS_SOUND_STOPRECORDING
+        END
+        MENUITEM SEPARATOR
         MENUITEM "Disassemble...",              ID_TOOLS_DISASSEMBLE
         MENUITEM "Logging...",                  ID_TOOLS_LOGGING
         MENUITEM "&IO Viewer...",               ID_TOOLS_IOVIEWER
@@ -1341,21 +1349,6 @@ BEGIN
         MENUITEM "OAM Viewer...",               ID_TOOLS_OAMVIEWER
         MENUITEM "&Palette Viewer...",          ID_TOOLS_PALETTEVIEW
         MENUITEM "Tile Viewer...",              ID_TOOLS_TILEVIEWER
-        MENUITEM SEPARATOR
-        POPUP "Record"
-        BEGIN
-            MENUITEM "Start sound recording...",    ID_OPTIONS_SOUND_STARTRECORDING
-            MENUITEM "Stop sound recording",        ID_OPTIONS_SOUND_STOPRECORDING
-            MENUITEM "Start AVI recording...",      ID_TOOLS_RECORD_STARTAVIRECORDING
-            MENUITEM "Stop AVI recording",          ID_TOOLS_RECORD_STOPAVIRECORDING
-            MENUITEM "Start movie recording...",    ID_TOOLS_RECORD_STARTMOVIERECORDING
-            MENUITEM "Stop movie recording",        ID_TOOLS_RECORD_STOPMOVIERECORDING
-        END
-        POPUP "Play"
-        BEGIN
-            MENUITEM "Start playing movie...",      ID_TOOLS_PLAY_STARTMOVIEPLAYING
-            MENUITEM "Stop playing movie",          ID_TOOLS_PLAY_STOPMOVIEPLAYING
-        END
         MENUITEM SEPARATOR
         MENUITEM "Customize...",                ID_TOOLS_CUSTOMIZE
     END

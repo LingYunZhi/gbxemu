@@ -145,7 +145,6 @@ VBA::VBA()
   iconic = false;
   regEnabled = false;
   pauseWhenInactive = true;
-  speedupToggle = false;
   threadPriority = 2;
   languageOption = 0;
   languageModule = NULL;
@@ -161,13 +160,6 @@ VBA::VBA()
   aviRecorder = NULL;
   painting = false;
   skipAudioFrames = 0;
-  movieRecording = false;
-  moviePlaying = false;
-  movieFrame = 0;
-  moviePlayFrame = 0;
-  movieFile = NULL;
-  movieLastJoypad = 0;
-  movieNextJoypad = 0;
   sensorX = 2047;
   sensorY = 2047;
   mouseCounter = 0;
@@ -199,29 +191,6 @@ VBA::~VBA()
   regInit(winBuffer);
 
   saveSettings();
-
-  if(moviePlaying) {
-    if(movieFile != NULL) {
-      fclose(movieFile);
-      movieFile = NULL;
-    }
-    moviePlaying = false;
-    movieLastJoypad = 0;
-  }
-
-  if(movieRecording) {
-    if(movieFile != NULL) {
-      // record the last joypad change so that the correct time can be
-      // recorded
-      fwrite(&movieFrame, 1, sizeof(int), movieFile);
-      fwrite(&movieLastJoypad, 1, sizeof(u32), movieFile);
-      fclose(movieFile);
-      movieFile = NULL;
-    }
-    movieRecording = false;
-    moviePlaying = false;
-    movieLastJoypad = 0;
-  }
 
   soundPause();
   soundShutdown();
@@ -693,9 +662,6 @@ void systemShowSpeed(int speed)
 
 void systemFrame()
 {
-	if( theApp.movieRecording || theApp.moviePlaying ) {
-		theApp.movieFrame++;
-	}
 }
 
 
@@ -1629,6 +1595,7 @@ void VBA::winRemoveUpdateListener(IUpdateListener *l)
   }
 }
 
+
 CString VBA::winLoadFilter(UINT id)
 {
   CString res = winResLoadString(id);
@@ -1637,32 +1604,6 @@ CString VBA::winLoadFilter(UINT id)
   return res;
 }
 
-void VBA::movieReadNext()
-{
-  if(movieFile) {
-    bool movieEnd = false;
-
-    if(fread(&moviePlayFrame, 1, sizeof(int), movieFile) == sizeof(int)) {
-      if(fread(&movieNextJoypad, 1, sizeof(u32), movieFile) == sizeof(int)) {
-        // make sure we don't have spurious entries on the movie that can
-        // cause us to play it forever
-        if(moviePlayFrame <= movieFrame)
-          movieEnd = true;
-      } else
-        movieEnd = true;
-    } else
-      movieEnd = true;
-    if(movieEnd) {
-      CString string = winResLoadString(IDS_END_OF_MOVIE);
-      systemScreenMessage(string);
-      moviePlaying = false;
-      fclose(movieFile);
-      movieFile = NULL;
-      return;
-    }
-  } else
-    moviePlaying = false;
-}
 
 void VBA::saveSettings()
 {

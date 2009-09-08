@@ -118,8 +118,6 @@ protected:
 	afx_msg void OnUpdateOptionsEmulatorSynchronize(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorPausewheninactive();
 	afx_msg void OnUpdateOptionsEmulatorPausewheninactive(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsEmulatorSpeeduptoggle();
-	afx_msg void OnUpdateOptionsEmulatorSpeeduptoggle(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorAgbprint();
 	afx_msg void OnUpdateOptionsEmulatorAgbprint(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorRealtimeclock();
@@ -204,14 +202,6 @@ protected:
 	afx_msg void OnToolsRecordStopavirecording();
 	afx_msg void OnUpdateToolsRecordStopavirecording(CCmdUI* pCmdUI);
 	afx_msg void OnPaint();
-	afx_msg void OnToolsRecordStartmovierecording();
-	afx_msg void OnUpdateToolsRecordStartmovierecording(CCmdUI* pCmdUI);
-	afx_msg void OnToolsRecordStopmovierecording();
-	afx_msg void OnUpdateToolsRecordStopmovierecording(CCmdUI* pCmdUI);
-	afx_msg void OnToolsPlayStartmovieplaying();
-	afx_msg void OnUpdateToolsPlayStartmovieplaying(CCmdUI* pCmdUI);
-	afx_msg void OnToolsPlayStopmovieplaying();
-	afx_msg void OnUpdateToolsPlayStopmovieplaying(CCmdUI* pCmdUI);
 	afx_msg void OnToolsCustomize();
 	afx_msg void OnUpdateToolsCustomize(CCmdUI* pCmdUI);
 	afx_msg void OnHelpBugreport();

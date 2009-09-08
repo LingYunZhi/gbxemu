@@ -103,7 +103,6 @@ class VBA : public CWinApp
   bool iconic;
   bool dinputKeyFocus;
   bool pauseWhenInactive;
-  bool speedupToggle;
   int threadPriority;
   int languageOption;
   CString languageName;
@@ -121,13 +120,6 @@ class VBA : public CWinApp
   CString aviRecordName;
   bool painting;
   unsigned int skipAudioFrames;
-  bool movieRecording;
-  bool moviePlaying;
-  int movieFrame;
-  int moviePlayFrame;
-  FILE *movieFile;
-  u32 movieLastJoypad;
-  u32 movieNextJoypad;
   int sensorX;
   int sensorY;
   int mouseCounter;
@@ -177,7 +169,6 @@ class VBA : public CWinApp
 
  public:
   void saveSettings();
-  void movieReadNext();
   bool initInput();
   HMODULE winLoadLanguage(const char *name);
   void winSetLanguageOption(int option, bool force);

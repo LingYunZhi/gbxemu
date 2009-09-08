@@ -261,15 +261,6 @@ void MainWnd::OnUpdateOptionsEmulatorPausewheninactive(CCmdUI* pCmdUI)
   pCmdUI->SetCheck(theApp.pauseWhenInactive);
 }
 
-void MainWnd::OnOptionsEmulatorSpeeduptoggle()
-{
-  theApp.speedupToggle = !theApp.speedupToggle;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSpeeduptoggle(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.speedupToggle);
-}
 
 void MainWnd::OnOptionsEmulatorAgbprint()
 {

@@ -719,7 +719,10 @@ u32 DirectInput::readDevice(int which)
     res |= 256;
   if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_L)]))
     res |= 512;
-
+  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_SPEED)]))
+    res |= 1024;
+  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_CAPTURE)]))
+    res |= 2048;
   if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_GS)]))
     res |= 4096;
 
@@ -736,27 +739,6 @@ u32 DirectInput::readDevice(int which)
   if((res & 192) == 192)
     res &= ~128;
 
-  if(theApp.movieRecording) {
-    if(i == theApp.joypadDefault) {
-      if(res != theApp.movieLastJoypad) {
-        fwrite(&theApp.movieFrame, 1, sizeof(theApp.movieFrame), theApp.movieFile);
-        fwrite(&res, 1, sizeof(res), theApp.movieFile);
-        theApp.movieLastJoypad = res;
-      }
-    }
-  }
-  if(theApp.moviePlaying) {
-    if(theApp.movieFrame == theApp.moviePlayFrame) {
-      theApp.movieLastJoypad = theApp.movieNextJoypad;
-      theApp.movieReadNext();
-    }
-    res = theApp.movieLastJoypad;
-  }
-  // we don't record speed up or screen capture buttons
-  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_SPEED)]) || theApp.speedupToggle)
-    res |= 1024;
-  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_CAPTURE)]))
-    res |= 2048;
 
   return res;
 }
