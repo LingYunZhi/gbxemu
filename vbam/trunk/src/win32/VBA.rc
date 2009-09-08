@@ -1270,7 +1270,6 @@ BEGIN
                 MENUITEM "&R",                          ID_OPTIONS_JOYPAD_AUTOFIRE_R
             END
         END
-        MENUITEM "&Speed",                      65535
         POPUP "&Emulator"
         BEGIN
             MENUITEM "&Associate...",               ID_OPTIONS_EMULATOR_ASSOCIATE
@@ -1342,8 +1341,6 @@ BEGIN
         MENUITEM "OAM Viewer...",               ID_TOOLS_OAMVIEWER
         MENUITEM "&Palette Viewer...",          ID_TOOLS_PALETTEVIEW
         MENUITEM "Tile Viewer...",              ID_TOOLS_TILEVIEWER
-        MENUITEM SEPARATOR
-        MENUITEM "&Next frame",                 ID_DEBUG_NEXTFRAME
         MENUITEM SEPARATOR
         POPUP "Record"
         BEGIN

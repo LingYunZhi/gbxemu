@@ -113,7 +113,6 @@ class VBA : public CWinApp
   int joypadDefault;
   int autoFire;
   bool autoFireToggle;
-  bool winPauseNextFrame;
   bool soundRecording;
   WavWriter *soundRecorder;
   CString soundRecordName;

@@ -155,7 +155,6 @@ VBA::VBA()
   joypadDefault = 0;
   autoFire = 0;
   autoFireToggle = false;
-  winPauseNextFrame = false;
   soundRecording = false;
   soundRecorder = NULL;
   aviRecording = false;
@@ -804,16 +803,6 @@ void systemOnWriteDataToSoundBuffer(const u16 * finalWave, int length)
 bool systemCanChangeSoundQuality()
 {
   return true;
-}
-
-bool systemPauseOnFrame()
-{
-  if(theApp.winPauseNextFrame) {
-    theApp.paused = true;
-    theApp.winPauseNextFrame = false;
-    return true;
-  }
-  return false;
 }
 
 

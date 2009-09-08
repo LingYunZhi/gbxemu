@@ -140,7 +140,6 @@ struct {
   { "ToolsOAMViewer", ID_TOOLS_OAMVIEWER },
   { "ToolsPaletteViewer", ID_TOOLS_PALETTEVIEW },
   { "ToolsTileViewer", ID_TOOLS_TILEVIEWER },
-  { "ToolsNextFrame", ID_DEBUG_NEXTFRAME },
   { "ToolsRecordSoundStartRecording", ID_OPTIONS_SOUND_STARTRECORDING },
   { "ToolsRecordSoundStopRecording", ID_OPTIONS_SOUND_STOPRECORDING },
   { "ToolsRecordAVIStartRecording", ID_TOOLS_RECORD_STARTAVIRECORDING },

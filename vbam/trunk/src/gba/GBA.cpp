@@ -3397,8 +3397,6 @@ void CPULoop(int ticks)
               }
               CPUCheckDMA(1, 0x0f);
               systemDrawScreen();
-              if(systemPauseOnFrame())
-                ticks = 0;
             }
 
             UPDATE_REG(0x04, DISPSTAT);

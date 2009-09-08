@@ -194,7 +194,6 @@ protected:
 	afx_msg void OnUpdateToolsPaletteview(CCmdUI* pCmdUI);
 	afx_msg void OnToolsTileviewer();
 	afx_msg void OnUpdateToolsTileviewer(CCmdUI* pCmdUI);
-	afx_msg void OnDebugNextframe();
 	afx_msg void OnUpdateCheatsAutomaticsaveloadcheats(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundStartrecording();
 	afx_msg void OnUpdateOptionsSoundStartrecording(CCmdUI* pCmdUI);

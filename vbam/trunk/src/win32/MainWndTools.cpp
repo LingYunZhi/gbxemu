@@ -133,13 +133,6 @@ void MainWnd::OnUpdateToolsTileviewer(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }
 
-void MainWnd::OnDebugNextframe()
-{
-  if(theApp.paused)
-    theApp.paused = false;
-  theApp.winPauseNextFrame = true;
-}
-
 
 void MainWnd::OnOptionsSoundStartrecording()
 {
