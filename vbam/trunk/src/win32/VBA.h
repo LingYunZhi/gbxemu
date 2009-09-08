@@ -91,7 +91,6 @@ class VBA : public CWinApp
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;
-  unsigned short throttle;
   bool vsync;
   bool changingVideoSize;
 
@@ -163,7 +162,6 @@ class VBA : public CWinApp
 
   void adjustDestRect();
   void updateFilter();
-  void updateThrottle( unsigned short throttle );
   void updateMenuBar();
   void winAddUpdateListener(IUpdateListener *l);
   void winRemoveUpdateListener(IUpdateListener *l);

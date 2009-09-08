@@ -672,17 +672,6 @@ BEGIN
     LTEXT           "Size:",IDC_STATIC,7,29,65,8
 END
 
-IDD_THROTTLE DIALOGEX 0, 0, 126, 60
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Throttle"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    EDITTEXT        IDC_THROTTLE,6,18,114,12,ES_CENTER | ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",ID_OK,6,36,54,18
-    PUSHBUTTON      "Cancel",ID_CANCEL,66,36,54,18
-    CTEXT           "Enter desired throttle (5%...1000%):",IDC_STATIC,6,6,114,8
-END
-
 IDD_IO_VIEWER DIALOG  0, 0, 269, 238
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "I/O Viewer"
@@ -1012,14 +1001,6 @@ BEGIN
         BOTTOMMARGIN, 60
     END
 
-    IDD_THROTTLE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 119
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 53
-    END
-
     IDD_IO_VIEWER, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -1289,36 +1270,7 @@ BEGIN
                 MENUITEM "&R",                          ID_OPTIONS_JOYPAD_AUTOFIRE_R
             END
         END
-        POPUP "&Speed"
-        BEGIN
-            POPUP "&Throttle"
-            BEGIN
-                MENUITEM "No throttle",                 ID_OPTIONS_FRAMESKIP_THROTTLE_NOTHROTTLE
-                MENUITEM "25%",                         ID_OPTIONS_FRAMESKIP_THROTTLE_25
-                MENUITEM "50%",                         ID_OPTIONS_FRAMESKIP_THROTTLE_50
-                MENUITEM "100%",                        ID_OPTIONS_FRAMESKIP_THROTTLE_100
-                MENUITEM "150%",                        ID_OPTIONS_FRAMESKIP_THROTTLE_150
-                MENUITEM "200%",                        ID_OPTIONS_FRAMESKIP_THROTTLE_200
-                MENUITEM "&Other...",                   ID_OPTIONS_FRAMESKIP_THROTTLE_OTHER
-            END
-            POPUP "&Frame Skip"
-            BEGIN
-                MENUITEM "&Automatic",                  ID_OPTIONS_FRAMESKIP_AUTOMATIC
-                MENUITEM SEPARATOR
-                MENUITEM "&No frame skip",              ID_OPTIONS_VIDEO_FRAMESKIP_0
-                MENUITEM "&1 frame",                    ID_OPTIONS_VIDEO_FRAMESKIP_1
-                MENUITEM "&2 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_2
-                MENUITEM "&3 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_3
-                MENUITEM "&4 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_4
-                MENUITEM "&5 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_5
-                MENUITEM "&6 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_6
-                MENUITEM "&7 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_7
-                MENUITEM "&8 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_8
-                MENUITEM "&9 frames",                   ID_OPTIONS_VIDEO_FRAMESKIP_9
-            END
-            MENUITEM SEPARATOR
-            MENUITEM "Turbo mode",                  ID_OPTIONS_EMULATOR_SPEEDUPTOGGLE
-        END
+        MENUITEM "&Speed",                      65535
         POPUP "&Emulator"
         BEGIN
             MENUITEM "&Associate...",               ID_OPTIONS_EMULATOR_ASSOCIATE
@@ -1365,6 +1317,8 @@ BEGIN
                 MENUITEM "&English",                    ID_OPTIONS_LANGUAGE_ENGLISH
                 MENUITEM "&Other...",                   ID_OPTIONS_LANGUAGE_OTHER
             END
+            MENUITEM SEPARATOR
+            MENUITEM "Turbo mode",                  ID_OPTIONS_EMULATOR_SPEEDUPTOGGLE
         END
     END
     POPUP "&Cheats"

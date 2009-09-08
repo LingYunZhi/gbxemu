@@ -83,7 +83,6 @@
 #define IDD_EXPORT_SPS                  138
 #define IDD_ADDR_SIZE                   139
 #define IDD_MODES                       140
-#define IDD_THROTTLE                    143
 #define IDD_MODE_CONFIRM                149
 #define IDD_IO_VIEWER                   151
 #define IDD_MAX_SCALE                   154
@@ -449,7 +448,6 @@
 #define IDC_SIZE_CONTROL                1240
 #define IDC_MODES                       1240
 #define IDC_DRIVERS                     1241
-#define IDC_THROTTLE                    1242
 #define IDC_TIMER                       1247
 #define IDC_BIT_0                       1250
 #define IDC_BIT_1                       1251

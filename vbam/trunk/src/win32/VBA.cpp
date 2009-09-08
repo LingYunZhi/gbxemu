@@ -135,7 +135,6 @@ VBA::VBA()
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
-  throttle = 0;
   vsync = false;
   changingVideoSize = false;
 
@@ -543,14 +542,6 @@ void VBA::updateFilter()
 }
 
 
-void VBA::updateThrottle( unsigned short throttle )
-{
-	this->throttle = throttle;
-
-	soundSetThrottle(throttle);
-}
-
-
 void VBA::updateMenuBar()
 {
   if(menu != NULL) {
@@ -778,11 +769,6 @@ SoundDriver * systemSoundInit()
     SoundDriver * drv = 0;
     soundShutdown();
     drv = newXAudio2_Output();
-    
-    if( drv ) {
-        if (theApp.throttle)
-            drv->setThrottle( theApp.throttle );
-    }
 
     return drv;
 }
@@ -1074,8 +1060,6 @@ void VBA::loadSettings()
   cheatsEnabled = regQueryDwordValue("cheatsEnabled", false) ? true : false;
 
   maxScale = regQueryDwordValue("maxScale", 0);
-
-  updateThrottle( (unsigned short)regQueryDwordValue( "throttle", 0 ) );
 
   xa2Device = regQueryDwordValue( "xa2Device", 0 );
   xa2BufferCount = regQueryDwordValue( "xa2BufferCount", 4 );
@@ -1791,7 +1775,6 @@ void VBA::saveSettings()
   regSetDwordValue("autoLoadMostRecent", autoLoadMostRecent);
   regSetDwordValue("cheatsEnabled", cheatsEnabled);
   regSetDwordValue("maxScale", maxScale);
-  regSetDwordValue("throttle", throttle);
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
 

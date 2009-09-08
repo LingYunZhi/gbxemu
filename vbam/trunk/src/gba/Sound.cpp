@@ -544,6 +544,7 @@ bool soundInit()
 	return true;
 }
 
+// throttle value in percent
 void soundSetThrottle(unsigned short throttle)
 {
 	if(!soundDriver)

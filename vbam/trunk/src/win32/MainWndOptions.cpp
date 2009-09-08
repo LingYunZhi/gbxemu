@@ -9,7 +9,6 @@
 #include "Joypad.h"
 #include "MaxScale.h"
 #include "Reg.h"
-#include "Throttle.h"
 #include "WinResUtil.h"
 #include "XAudio2_Config.h"
 #include "BIOSDialog.h"
@@ -26,95 +25,6 @@
 #include <tchar.h>
 
 
-void MainWnd::OnOptionsFrameskipThrottleNothrottle()
-{
-	theApp.updateThrottle( 0 ); // disable
-}
-
-void MainWnd::OnUpdateOptionsFrameskipThrottleNothrottle(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck( theApp.throttle == 0 );
-}
-
-
-void MainWnd::OnOptionsFrameskipThrottle25()
-{
-	theApp.updateThrottle( 25 );
-}
-
-void MainWnd::OnUpdateOptionsFrameskipThrottle25(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck( theApp.throttle == 25 );
-}
-
-
-void MainWnd::OnOptionsFrameskipThrottle50()
-{
-	theApp.updateThrottle( 50 );
-}
-
-void MainWnd::OnUpdateOptionsFrameskipThrottle50(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck( theApp.throttle == 50 );
-}
-
-
-void MainWnd::OnOptionsFrameskipThrottle100()
-{
-	theApp.updateThrottle( 100 );
-}
-
-void MainWnd::OnUpdateOptionsFrameskipThrottle100(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck( theApp.throttle == 100 );
-}
-
-
-void MainWnd::OnOptionsFrameskipThrottle150()
-{
-	theApp.updateThrottle( 150 );
-}
-
-void MainWnd::OnUpdateOptionsFrameskipThrottle150(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck( theApp.throttle == 150 );
-}
-
-
-void MainWnd::OnOptionsFrameskipThrottle200()
-{
-	theApp.updateThrottle( 200 );
-}
-
-void MainWnd::OnUpdateOptionsFrameskipThrottle200(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck( theApp.throttle == 200 );
-}
-
-
-void MainWnd::OnOptionsFrameskipThrottleOther()
-{
-	Throttle dlg;
-	unsigned short v = (unsigned short)dlg.DoModal();
-
-	if( v ) {
-		theApp.updateThrottle( v );
-	}
-}
-
-
-void MainWnd::OnUpdateOptionsFrameskipThrottleOther(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(
-		( theApp.throttle != 0 ) &&
-		( theApp.throttle != 25 ) &&
-		( theApp.throttle != 50 ) &&
-		( theApp.throttle != 100 ) &&
-		( theApp.throttle != 150 ) &&
-		( theApp.throttle != 200 ) );
-}
-
-
 void MainWnd::OnOptionsVideoVsync()
 {
 	theApp.vsync = !theApp.vsync;
@@ -128,6 +38,7 @@ void MainWnd::OnUpdateOptionsVideoVsync(CCmdUI* pCmdUI)
 {
   pCmdUI->SetCheck(theApp.vsync);
 }
+
 
 void MainWnd::OnUpdateOptionsVideoX1(CCmdUI* pCmdUI)
 {
@@ -333,8 +244,6 @@ void MainWnd::OnUpdateOptionsEmulatorDisablestatusmessages(CCmdUI* pCmdUI)
 void MainWnd::OnOptionsEmulatorSynchronize()
 {
   synchronize = !synchronize;
-  if (synchronize)
-	  theApp.throttle = false;
 }
 
 void MainWnd::OnUpdateOptionsEmulatorSynchronize(CCmdUI* pCmdUI)

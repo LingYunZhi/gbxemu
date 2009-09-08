@@ -301,7 +301,7 @@ void XAudio2_Output::write(u16 * finalWave, int length)
 			break;
 		} else {
 			// the maximum number of buffers is currently queued
-			if( synchronize && !speedup && !theApp.throttle ) {
+			if( synchronize && !speedup ) {
 				// wait for one buffer to finish playing
 				WaitForSingleObject( notify.hBufferEndEvent, INFINITE );
 			} else {
