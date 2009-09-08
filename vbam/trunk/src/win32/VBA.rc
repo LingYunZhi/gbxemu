@@ -1172,7 +1172,7 @@ BEGIN
             MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
             MENUITEM "&Sync game to audio",         ID_OPTIONS_EMULATOR_SYNCHRONIZE
         END
-        POPUP "&Pixel Filter"
+        POPUP "&Pixel Filters"
         BEGIN
             POPUP "&Magnification"
             BEGIN
@@ -1180,17 +1180,14 @@ BEGIN
                 BEGIN
                     MENUITEM "&Simple 2x",                  ID_OPTIONS_FILTER16BIT_SIMPLE2X
                     MENUITEM SEPARATOR
-                    MENUITEM "&Pixelate",                   ID_OPTIONS_FILTER16BIT_PIXELATEEXPERIMENTAL
                     MENUITEM "&TV Mode",                    ID_OPTIONS_FILTER_TVMODE
                     MENUITEM "Scan&lines",                  ID_OPTIONS_FILTER_SCANLINES
-                    MENUITEM SEPARATOR
-                    MENUITEM "&Bilinear",                   ID_OPTIONS_FILTER_BILINEAR
-                    MENUITEM "B&ilinear Plus",              ID_OPTIONS_FILTER_BILINEARPLUS
-                    MENUITEM SEPARATOR
                     MENUITEM "AdvanceMAME Scale2x",         ID_OPTIONS_FILTER16BIT_ADVANCEMAMESCALE2X
+                    MENUITEM SEPARATOR
                     MENUITEM "&2xSaI",                      ID_OPTIONS_FILTER_2XSAI
                     MENUITEM "S&uper 2xSaI",                ID_OPTIONS_FILTER_SUPER2XSAI
                     MENUITEM "Super &Eagle",                ID_OPTIONS_FILTER_SUPEREAGLE
+                    MENUITEM SEPARATOR
                     MENUITEM "&LQ2x",                       ID_OPTIONS_FILTER_LQ2X
                     MENUITEM "&HQ2x",                       ID_OPTIONS_FILTER_HQ2X
                 END
@@ -1204,7 +1201,7 @@ BEGIN
                 END
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Disable Filters",            ID_OPTIONS_FILTER_NORMAL
+            MENUITEM "&Disabled",                   ID_OPTIONS_FILTER_NORMAL
         END
         POPUP "&Video"
         BEGIN

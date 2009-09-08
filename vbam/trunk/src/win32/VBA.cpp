@@ -22,8 +22,6 @@
 
 #include "../version.h"
 
-extern void Pixelate(u8*,u32,u8*,u8*,u32,int,int);
-extern void Pixelate32(u8*,u32,u8*,u8*,u32,int,int);
 extern void _2xSaI(u8*,u32,u8*,u8*,u32,int,int);
 extern void _2xSaI32(u8*,u32,u8*,u8*,u32,int,int);
 extern void Super2xSaI(u8*,u32,u8*,u8*,u32,int,int);
@@ -32,10 +30,6 @@ extern void SuperEagle(u8*,u32,u8*,u8*,u32,int,int);
 extern void SuperEagle32(u8*,u32,u8*,u8*,u32,int,int);
 extern void AdMame2x(u8*,u32,u8*,u8*,u32,int,int);
 extern void AdMame2x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void Bilinear(u8*,u32,u8*,u8*,u32,int,int);
-extern void Bilinear32(u8*,u32,u8*,u8*,u32,int,int);
-extern void BilinearPlus(u8*,u32,u8*,u8*,u32,int,int);
-extern void BilinearPlus32(u8*,u32,u8*,u8*,u32,int,int);
 extern void Scanlines(u8*,u32,u8*,u8*,u32,int,int);
 extern void Scanlines32(u8*,u32,u8*,u8*,u32,int,int);
 extern void ScanlinesTV(u8*,u32,u8*,u8*,u32,int,int);
@@ -382,24 +376,12 @@ void VBA::updateFilter()
 			filterFunction = SuperEagle;
 			filterMagnification = 2;
 			break;
-		case FILTER_PIXELATE:
-			filterFunction = Pixelate;
-			filterMagnification = 2;
-			break;
 		case FILTER_MAMESCALE2X:
 			filterFunction = AdMame2x;
 			filterMagnification = 2;
 			break;
 		case FILTER_SIMPLE2X:
 			filterFunction = Simple2x16;
-			filterMagnification = 2;
-			break;
-		case FILTER_BILINEAR:
-			filterFunction = Bilinear;
-			filterMagnification = 2;
-			break;
-		case FILTER_BILINEARPLUS:
-			filterFunction = BilinearPlus;
 			filterMagnification = 2;
 			break;
 		case FILTER_SCANLINES:
@@ -450,24 +432,12 @@ void VBA::updateFilter()
 				filterFunction = SuperEagle32;
 				filterMagnification = 2;
 				break;
-			case FILTER_PIXELATE:
-				filterFunction = Pixelate32;
-				filterMagnification = 2;
-				break;
 			case FILTER_MAMESCALE2X:
 				filterFunction = AdMame2x32;
 				filterMagnification = 2;
 				break;
 			case FILTER_SIMPLE2X:
 				filterFunction = Simple2x32;
-				filterMagnification = 2;
-				break;
-			case FILTER_BILINEAR:
-				filterFunction = Bilinear32;
-				filterMagnification = 2;
-				break;
-			case FILTER_BILINEARPLUS:
-				filterFunction = BilinearPlus32;
 				filterMagnification = 2;
 				break;
 			case FILTER_SCANLINES:

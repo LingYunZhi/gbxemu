@@ -638,20 +638,11 @@ BOOL MainWnd::OnOptionsFilter(UINT nID)
 	case ID_OPTIONS_FILTER_SUPEREAGLE:
 		theApp.filterType = FILTER_SUPEREAGLE;
 		break;
-	case ID_OPTIONS_FILTER16BIT_PIXELATEEXPERIMENTAL:
-		theApp.filterType = FILTER_PIXELATE;
-		break;
 	case ID_OPTIONS_FILTER16BIT_ADVANCEMAMESCALE2X:
 		theApp.filterType = FILTER_MAMESCALE2X;
 		break;
 	case ID_OPTIONS_FILTER16BIT_SIMPLE2X:
 		theApp.filterType = FILTER_SIMPLE2X;
-		break;
-	case ID_OPTIONS_FILTER_BILINEAR:
-		theApp.filterType = FILTER_BILINEAR;
-		break;
-	case ID_OPTIONS_FILTER_BILINEARPLUS:
-		theApp.filterType = FILTER_BILINEARPLUS;
 		break;
 	case ID_OPTIONS_FILTER_SCANLINES:
 		theApp.filterType = FILTER_SCANLINES;
@@ -695,20 +686,11 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
   case ID_OPTIONS_FILTER_SUPEREAGLE:
     pCmdUI->SetCheck(theApp.filterType == FILTER_SUPEREAGLE);
     break;
-  case ID_OPTIONS_FILTER16BIT_PIXELATEEXPERIMENTAL:
-    pCmdUI->SetCheck(theApp.filterType == FILTER_PIXELATE);
-    break;
   case ID_OPTIONS_FILTER16BIT_ADVANCEMAMESCALE2X:
     pCmdUI->SetCheck(theApp.filterType == FILTER_MAMESCALE2X);
     break;
   case ID_OPTIONS_FILTER16BIT_SIMPLE2X:
     pCmdUI->SetCheck(theApp.filterType == FILTER_SIMPLE2X);
-    break;
-  case ID_OPTIONS_FILTER_BILINEAR:
-    pCmdUI->SetCheck(theApp.filterType == FILTER_BILINEAR);
-    break;
-  case ID_OPTIONS_FILTER_BILINEARPLUS:
-    pCmdUI->SetCheck(theApp.filterType == FILTER_BILINEARPLUS);
     break;
   case ID_OPTIONS_FILTER_SCANLINES:
     pCmdUI->SetCheck(theApp.filterType == FILTER_SCANLINES);

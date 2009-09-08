@@ -489,14 +489,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\filters\bilinear.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\filters\pixel.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\filters\scanline.cpp"
 				>
 			</File>
