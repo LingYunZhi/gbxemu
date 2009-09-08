@@ -357,10 +357,9 @@ void MainWnd::OnFileImportBatteryfile()
     return;
 
   CString str1 = winResLoadString(IDS_SAVE_WILL_BE_LOST);
-  CString str2 = winResLoadString(IDS_CONFIRM_ACTION);
 
   if(MessageBox(str1,
-                str2,
+                NULL,
                 MB_OKCANCEL) == IDCANCEL)
     return;
 
@@ -393,10 +392,9 @@ void MainWnd::OnFileImportGamesharkcodefile()
     return;
 
   CString str1 = winResLoadString(IDS_CODES_WILL_BE_LOST);
-  CString str2 = winResLoadString(IDS_CONFIRM_ACTION);
 
   if(MessageBox(str1,
-                str2,
+                NULL,
                 MB_OKCANCEL) == IDCANCEL)
     return;
 
@@ -423,10 +421,9 @@ void MainWnd::OnFileImportGamesharksnapshot()
     return;
 
   CString str1 = winResLoadString(IDS_SAVE_WILL_BE_LOST);
-  CString str2 = winResLoadString(IDS_CONFIRM_ACTION);
 
   if(MessageBox(str1,
-                str2,
+                NULL,
                 MB_OKCANCEL) == IDCANCEL)
     return;
 
