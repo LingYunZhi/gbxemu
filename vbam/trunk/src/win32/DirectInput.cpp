@@ -16,8 +16,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void winlog(const char *msg,...);
-
 #define POV_UP    1
 #define POV_DOWN  2
 #define POV_RIGHT 4

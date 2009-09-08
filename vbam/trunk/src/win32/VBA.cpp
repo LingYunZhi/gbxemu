@@ -56,8 +56,6 @@ extern IDisplay *newDirect3DDisplay();
 extern Input *newDirectInput();
 extern SoundDriver *newXAudio2_Output();
 
-void winlog(const char *msg, ...);
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -131,7 +129,6 @@ VBA::VBA()
   paused = false;
   recentFreeze = false;
   autoSaveLoadCheatList = true;
-  winout = NULL;
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
@@ -568,22 +565,6 @@ void VBA::updateMenuBar()
       m_pMainWnd->SetMenu(&m_menu);
 }
 
-void winlog(const char *msg, ...)
-{
-  CString buffer;
-  va_list valist;
-
-  va_start(valist, msg);
-  buffer.FormatV(msg, valist);
-
-  if(theApp.winout == NULL) {
-    theApp.winout = fopen("vba-trace.log","w");
-  }
-
-  fputs(buffer, theApp.winout);
-
-  va_end(valist);
-}
 
 void log(const char *msg, ...)
 {
@@ -691,13 +672,6 @@ void systemMessage(int number, const char *defaultMsg, ...)
   va_end(valist);
 }
 
-void systemSetTitle(const char *title)
-{
-  if(theApp.m_pMainWnd != NULL) {
-    AfxGetApp()->m_pMainWnd->SetWindowText(title);
-  }
-}
-
 void systemShowSpeed(int speed)
 {
   systemSpeed = speed;
@@ -710,8 +684,10 @@ void systemShowSpeed(int speed)
     else
       buffer.Format(VBA_NAME_AND_SUBVERSION "-%3d%%(%d fps)", systemSpeed,
                     theApp.showRenderedFrames);
-
-    systemSetTitle(buffer);
+    
+    if( theApp.m_pMainWnd != NULL ) {
+        AfxGetApp()->m_pMainWnd->SetWindowText( buffer );
+    }
   }
 }
 
@@ -1399,7 +1375,7 @@ bool VBA::preInitialize()
 		);
 
 	if( !((HWND)*pWnd) ) {
-		winlog( "Error creating Window %08x\n", GetLastError() );
+		// error creating window
 		return false;
 	}
 	pWnd->DragAcceptFiles( TRUE );

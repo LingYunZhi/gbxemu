@@ -87,7 +87,6 @@ class VBA : public CWinApp
   CString recentFiles[10];
   bool recentFreeze;
   bool autoSaveLoadCheatList;
-  FILE *winout;
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;

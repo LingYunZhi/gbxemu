@@ -3241,8 +3241,6 @@ void CPUInterrupt()
   biosProtected[3] = 0xe5;
 }
 
-extern void winlog(const char *, ...);
-
 void CPULoop(int ticks)
 {
   int clockTicks;

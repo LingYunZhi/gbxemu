@@ -129,7 +129,7 @@ void MainWnd::OnFileClose()
   }
   emulating = 0;
   RedrawWindow(NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);
-  systemSetTitle(VBA_NAME_AND_SUBVERSION);
+  SetWindowText( VBA_NAME_AND_SUBVERSION );
 }
 
 void MainWnd::OnUpdateFileClose(CCmdUI* pCmdUI)
