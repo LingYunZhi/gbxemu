@@ -31,7 +31,7 @@ extern int saveType;
 extern bool useBios;
 extern bool skipBios;
 extern bool speedup;
-extern bool synchronize;
+extern bool syncToAudio;
 extern bool cpuIsMultiBoot;
 extern bool parseDebug;
 extern int layerSettings;

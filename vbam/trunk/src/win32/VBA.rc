@@ -1167,29 +1167,10 @@ BEGIN
     END
     POPUP "&Options"
     BEGIN
-        POPUP "&Video"
+        POPUP "Timing"
         BEGIN
-            POPUP "Render API"
-            BEGIN
-                MENUITEM "Filter: Nearest",             ID_OPTIONS_VIDEO_RENDEROPTIONS_D3DNOFILTER
-                MENUITEM "Filter: Bilinear",            ID_OPTIONS_VIDEO_RENDEROPTIONS_D3DBILINEAR
-                MENUITEM SEPARATOR
-                MENUITEM "Motion Blur",                 ID_RENDERAPI_D3DMOTIONBLUR
-                MENUITEM SEPARATOR
-                MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
-            END
-            MENUITEM SEPARATOR
-            MENUITEM "1x window size",              ID_OPTIONS_VIDEO_X1
-            MENUITEM "2x window size",              ID_OPTIONS_VIDEO_X2
-            MENUITEM "3x window size",              ID_OPTIONS_VIDEO_X3
-            MENUITEM "4x window size",              ID_OPTIONS_VIDEO_X4
-            MENUITEM SEPARATOR
-            MENUITEM "Select fullscreen mode...",   ID_OPTIONS_VIDEO_FULLSCREEN
-            MENUITEM SEPARATOR
-            MENUITEM "Ignore aspect ratio",         ID_OPTIONS_VIDEO_FULLSCREENSTRETCHTOFIT
-            MENUITEM "Maximum magnification...",    ID_OPTIONS_VIDEO_FULLSCREENMAXSCALE
-            MENUITEM SEPARATOR
-            MENUITEM "Disable status messages",     ID_OPTIONS_EMULATOR_DISABLESTATUSMESSAGES
+            MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
+            MENUITEM "&Sync game to audio",         ID_OPTIONS_EMULATOR_SYNCHRONIZE
         END
         POPUP "&Pixel Filter"
         BEGIN
@@ -1225,6 +1206,26 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Disable Filters",            ID_OPTIONS_FILTER_NORMAL
         END
+        POPUP "&Video"
+        BEGIN
+            POPUP "GPU accelerated"
+            BEGIN
+                MENUITEM "Bilinear filtering",          ID_OPTIONS_VIDEO_RENDEROPTIONS_D3DBILINEAR
+                MENUITEM "Motion Blur",                 ID_RENDERAPI_D3DMOTIONBLUR
+            END
+            MENUITEM SEPARATOR
+            MENUITEM "1x window size",              ID_OPTIONS_VIDEO_X1
+            MENUITEM "2x window size",              ID_OPTIONS_VIDEO_X2
+            MENUITEM "3x window size",              ID_OPTIONS_VIDEO_X3
+            MENUITEM "4x window size",              ID_OPTIONS_VIDEO_X4
+            MENUITEM SEPARATOR
+            MENUITEM "Select fullscreen mode...",   ID_OPTIONS_VIDEO_FULLSCREEN
+            MENUITEM SEPARATOR
+            MENUITEM "Ignore aspect ratio",         ID_OPTIONS_VIDEO_FULLSCREENSTRETCHTOFIT
+            MENUITEM "Maximum magnification...",    ID_OPTIONS_VIDEO_FULLSCREENMAXSCALE
+            MENUITEM SEPARATOR
+            MENUITEM "Disable status messages",     ID_OPTIONS_EMULATOR_DISABLESTATUSMESSAGES
+        END
         POPUP "&Audio"
         BEGIN
             MENUITEM "Configure XAudio2...",        ID_OUTPUTAPI_XAUDIO2CONFIG
@@ -1240,7 +1241,6 @@ BEGIN
                 MENUITEM "Direct Sound &B",             ID_OPTIONS_SOUND_DIRECTSOUNDB, CHECKED
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Sync game to audio",         ID_OPTIONS_EMULATOR_SYNCHRONIZE
         END
         POPUP "&Input"
         BEGIN
@@ -1273,7 +1273,7 @@ BEGIN
         BEGIN
             MENUITEM "&Associate...",               ID_OPTIONS_EMULATOR_ASSOCIATE
             MENUITEM "&Directories...",             ID_OPTIONS_EMULATOR_DIRECTORIES
-            MENUITEM "BIOS Files...",               ID_EMULATOR_BIOSFILES
+            MENUITEM "BIOS...",                     ID_EMULATOR_BIOSFILES
             POPUP "&Priority"
             BEGIN
                 MENUITEM "&Highest",                    ID_OPTIONS_PRIORITY_HIGHEST

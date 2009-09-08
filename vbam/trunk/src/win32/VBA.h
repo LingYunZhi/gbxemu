@@ -90,15 +90,15 @@ class VBA : public CWinApp
   int winFlashSize;
   bool winRtcEnable;
   int winSaveType;
-  bool vsync;
+  bool syncToVideo;
   bool changingVideoSize;
 
   UINT32 xa2Device;
   UINT32 xa2BufferCount;
   bool xa2Upmixing;
 
-  int d3dFilter;
-  bool d3dMotionBlur;
+  bool gpuBilinear;
+  bool gpuMotionBlur;
 
   bool iconic;
   bool dinputKeyFocus;

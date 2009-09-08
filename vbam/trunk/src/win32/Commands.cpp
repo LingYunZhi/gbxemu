@@ -65,7 +65,6 @@ struct {
   { "FileToggleFullscreen", ID_FILE_TOGGLEMENU },
   { "FileClose", ID_FILE_CLOSE },
   { "FileExit", ID_FILE_EXIT },
-  { "OptionsVideoVsync", ID_OPTIONS_VIDEO_VSYNC },
   { "OptionsVideoX1", ID_OPTIONS_VIDEO_X1 },
   { "OptionsVideoX2", ID_OPTIONS_VIDEO_X2 },
   { "OptionsVideoX3", ID_OPTIONS_VIDEO_X3 },

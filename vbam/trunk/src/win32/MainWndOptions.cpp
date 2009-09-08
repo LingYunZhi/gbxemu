@@ -27,16 +27,16 @@
 
 void MainWnd::OnOptionsVideoVsync()
 {
-	theApp.vsync = !theApp.vsync;
+	theApp.syncToVideo = !theApp.syncToVideo;
 	if( theApp.display ) {
-		theApp.display->setOption( _T("vsync"), theApp.vsync );
+		theApp.display->setOption( _T("syncToVideo"), theApp.syncToVideo );
 	}
 }
 
 
 void MainWnd::OnUpdateOptionsVideoVsync(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(theApp.vsync);
+  pCmdUI->SetCheck(theApp.syncToVideo);
 }
 
 
@@ -191,32 +191,19 @@ void MainWnd::OnUpdateVideoLayer(CCmdUI *pCmdUI)
 }
 
 
-void MainWnd::OnOptionsVideoRenderoptionsD3dnofilter()
-{
-	theApp.d3dFilter = 0;
-	if( theApp.display ) {
-		theApp.display->setOption( _T("d3dFilter"), theApp.d3dFilter );
-	}
-}
-
-void MainWnd::OnUpdateOptionsVideoRenderoptionsD3dnofilter(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(theApp.d3dFilter == 0);
-}
-
-
 void MainWnd::OnOptionsVideoRenderoptionsD3dbilinear()
 {
-	theApp.d3dFilter = 1;
+    theApp.gpuBilinear = !theApp.gpuBilinear;
+
 	if( theApp.display ) {
-		theApp.display->setOption( _T("d3dFilter"), theApp.d3dFilter );
+        theApp.display->setOption( _T("gpuBilinear"), theApp.gpuBilinear ? 1 : 0 );
 	}
 }
 
 
 void MainWnd::OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(theApp.d3dFilter == 1);
+    pCmdUI->SetCheck( theApp.gpuBilinear ? 1 : 0 );
 }
 
 void MainWnd::OnOptionsEmulatorAssociate()
@@ -243,12 +230,12 @@ void MainWnd::OnUpdateOptionsEmulatorDisablestatusmessages(CCmdUI* pCmdUI)
 
 void MainWnd::OnOptionsEmulatorSynchronize()
 {
-  synchronize = !synchronize;
+  syncToAudio = !syncToAudio;
 }
 
 void MainWnd::OnUpdateOptionsEmulatorSynchronize(CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck(synchronize);
+  pCmdUI->SetCheck(syncToAudio);
 }
 
 void MainWnd::OnOptionsEmulatorPausewheninactive()
@@ -958,15 +945,15 @@ void MainWnd::OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI)
 
 void MainWnd::OnRenderapiD3dmotionblur()
 {
-	theApp.d3dMotionBlur = !theApp.d3dMotionBlur;
+	theApp.gpuMotionBlur = !theApp.gpuMotionBlur;
 	if( theApp.display ) {
-		theApp.display->setOption( _T("motionBlur"), theApp.d3dMotionBlur ? 1 : 0 );
+		theApp.display->setOption( _T("gpuMotionBlur"), theApp.gpuMotionBlur ? 1 : 0 );
 	}
 }
 
 void MainWnd::OnUpdateRenderapiD3dmotionblur(CCmdUI *pCmdUI)
 {
-	pCmdUI->SetCheck( theApp.d3dMotionBlur ? 1 : 0 );
+	pCmdUI->SetCheck( theApp.gpuMotionBlur ? 1 : 0 );
 }
 
 void MainWnd::OnEmulatorBiosfiles()

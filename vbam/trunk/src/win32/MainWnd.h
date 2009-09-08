@@ -105,10 +105,6 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnOptionsVideoFullscreenstretchtofit();
 	afx_msg void OnUpdateOptionsVideoFullscreenstretchtofit(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsVideoRenderoptionsD3dnofilter();
-	afx_msg void OnUpdateOptionsVideoRenderoptionsD3dnofilter(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsVideoRenderoptionsD3dbilinear();
-	afx_msg void OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg void OnOptionsEmulatorAssociate();
 	afx_msg void OnOptionsEmulatorDirectories();
@@ -228,6 +224,8 @@ protected:
 	afx_msg void OnOutputapiXaudio2config();
 	afx_msg void OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI);
 
+	afx_msg void OnOptionsVideoRenderoptionsD3dbilinear();
+	afx_msg void OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI);
 	afx_msg void OnRenderapiD3dmotionblur();
 	afx_msg void OnUpdateRenderapiD3dmotionblur(CCmdUI *pCmdUI);
 

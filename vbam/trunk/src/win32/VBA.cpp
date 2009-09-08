@@ -132,15 +132,15 @@ VBA::VBA()
   winFlashSize = 0x20000;
   winRtcEnable = false;
   winSaveType = 0;
-  vsync = false;
+  syncToVideo = false;
   changingVideoSize = false;
 
   xa2Device = 0;
   xa2BufferCount = 4;
   xa2Upmixing = false;
 
-  d3dFilter = 0;
-  d3dMotionBlur = false;
+  gpuBilinear = false;
+  gpuMotionBlur = false;
 
   iconic = false;
   regEnabled = false;
@@ -843,8 +843,8 @@ void VBA::loadSettings()
 
   winSetLanguageOption(languageOption, true);
 
-  vsync = regQueryDwordValue("vsync", false) ? true : false ;
-  synchronize = regQueryDwordValue("synchronize", 1) ? true : false;
+  syncToVideo = regQueryDwordValue("syncToVideo", false) ? true : false ;
+  syncToAudio = regQueryDwordValue("syncToAudio", 1) ? true : false;
   fullScreenStretch = regQueryDwordValue("stretch", 0) ? true : false;
 
   videoOption = regQueryDwordValue("video", VIDEO_3X);
@@ -893,11 +893,8 @@ void VBA::loadSettings()
 	soundInterpolation = 1 == regQueryDwordValue( "gbaSoundInterpolation", 1 );
 	soundFiltering = (float)regQueryDwordValue( "gbaSoundFiltering", 50 ) / 100.0f;
 
-  d3dFilter = regQueryDwordValue("d3dFilter", 1);
-  if(d3dFilter < 0 || d3dFilter > 1)
-    d3dFilter = 1;
-
-  d3dMotionBlur = ( regQueryDwordValue("d3dMotionBlur", 0) == 1 ) ? true : false;
+  gpuBilinear   = ( 1 == regQueryDwordValue("gpuBilinear", 0) )   ? true : false ;
+  gpuMotionBlur = ( 1 == regQueryDwordValue("gpuMotionBlur", 0) ) ? true : false;
 
   filterType = regQueryDwordValue("filter", 0);
   if(filterType < 0 || filterType > 17)
@@ -1611,8 +1608,8 @@ void VBA::saveSettings()
 
   regSetStringValue("languageName", languageName);
 
-  regSetDwordValue("vsync", vsync);
-  regSetDwordValue("synchronize", synchronize);
+  regSetDwordValue("syncToVideo", syncToVideo);
+  regSetDwordValue("syncToAudio", syncToAudio);
   regSetDwordValue("stretch", fullScreenStretch);
 
   regSetDwordValue("video", videoOption);
@@ -1644,8 +1641,8 @@ void VBA::saveSettings()
   regSetDwordValue( "gbaSoundInterpolation", soundInterpolation ? 1 : 0 );
   regSetDwordValue( "gbaSoundFiltering", (DWORD)( soundFiltering * 100.0f ) );
 
-  regSetDwordValue("d3dFilter", d3dFilter);
-  regSetDwordValue("d3dMotionBlur", d3dMotionBlur ? 1 : 0);
+  regSetDwordValue("gpuBilinear", gpuBilinear ? 1 : 0);
+  regSetDwordValue("gpuMotionBlur", gpuMotionBlur ? 1 : 0);
 
   regSetDwordValue("filter", filterType);
 

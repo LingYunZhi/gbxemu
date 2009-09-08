@@ -138,7 +138,7 @@ void Direct3DDisplay::prepareDisplayMode()
 	dpp.hDeviceWindow = theApp.m_pMainWnd->GetSafeHwnd();
 	dpp.FullScreen_RefreshRateInHz = ( dpp.Windowed == TRUE ) ? 0 : theApp.fsFrequency;
 	dpp.Flags = 0;
-	dpp.PresentationInterval = theApp.vsync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+	dpp.PresentationInterval = theApp.syncToVideo ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 	// D3DPRESENT_INTERVAL_ONE means VSync ON
 
 
@@ -257,8 +257,8 @@ bool Direct3DDisplay::initialize()
 	// width and height will be set from a prior call to changeRenderSize() before initialize()
 	createTexture( width, height );
 	calculateDestRect();
-	setOption( _T("d3dFilter"), theApp.d3dFilter );
-	setOption( _T("motionBlur"), theApp.d3dMotionBlur );
+    setOption( _T("gpuBilinear"), theApp.gpuBilinear ? 1 : 0 );
+    setOption( _T("gpuMotionBlur"), theApp.gpuMotionBlur ? 1 : 0 );
 
 
     initialized = true;
@@ -362,7 +362,7 @@ void Direct3DDisplay::render()
 	}
 
 
-	if( !theApp.d3dMotionBlur ) {
+	if( !theApp.gpuMotionBlur ) {
 		// draw the current frame to the screen
 		pDevice->SetTexture( 0, emulatedImage[ mbCurrentTexture ] );
 		pDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
@@ -588,7 +588,7 @@ void Direct3DDisplay::createTexture( unsigned int textureWidth, unsigned int tex
 		}
 	}
 
-	if( !emulatedImage[1] && theApp.d3dMotionBlur ) {
+	if( !emulatedImage[1] && theApp.gpuMotionBlur ) {
 		HRESULT hr = pDevice->CreateTexture(
 			textureSize, textureSize,
 			1,
@@ -698,7 +698,7 @@ void Direct3DDisplay::calculateDestRect()
 	Vertices[3].tx = textureX;
 	Vertices[3].ty = 0.0f;
 
-	if( theApp.d3dMotionBlur ) {
+	if( theApp.gpuMotionBlur ) {
 		// configure semi-transparent triangles
 		D3DCOLOR semiTrans = D3DCOLOR_ARGB( 0x7F, 0xFF, 0xFF, 0xFF );
 		transpVertices[0].x = Vertices[0].x;
@@ -735,13 +735,13 @@ void Direct3DDisplay::calculateDestRect()
 
 void Direct3DDisplay::setOption( const char *option, int value )
 {
-	if( !_tcscmp( option, _T("vsync") ) ) {
-		// value of theApp.vsync has already been changed by the menu handler
-		// 'value' has the same value as theApp.vsync
+	if( !_tcscmp( option, _T("syncToVideo") ) ) {
+		// value of theApp.syncToVideo has already been changed by the menu handler
+		// 'value' has the same value as theApp.syncToVideo
 		resetDevice();
 	}
 
-	if( !_tcscmp( option, _T("d3dFilter") ) ) {
+	if( !_tcscmp( option, _T("gpuBilinear") ) ) {
 		switch( value )
 		{
 		case 0: //point
@@ -763,7 +763,7 @@ void Direct3DDisplay::setOption( const char *option, int value )
 		calculateDestRect();
 	}
 
-	if( !_tcscmp( option, _T("motionBlur") ) ) {
+	if( !_tcscmp( option, _T("gpuMotionBlur") ) ) {
 		switch( value )
 		{
 		case 0:
@@ -809,8 +809,8 @@ bool Direct3DDisplay::resetDevice()
 		pFont->OnResetDevice();
 	}
 	createTexture( 0, 0 );
-	setOption( _T("d3dFilter"), theApp.d3dFilter );
-	setOption( _T("motionBlur"), theApp.d3dMotionBlur );
+    setOption( _T("gpuBilinear"), theApp.gpuBilinear ? 1 : 0 );
+    setOption( _T("gpuMotionBlur"), theApp.gpuMotionBlur ? 1 : 0 );
 	failed = false;
 	return true;
 }
