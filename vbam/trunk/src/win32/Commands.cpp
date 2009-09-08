@@ -121,7 +121,6 @@ struct {
   { "OptionsSoundChannel4", ID_OPTIONS_SOUND_CHANNEL4 },
   { "OptionsSoundDirectSoundA", ID_OPTIONS_SOUND_DIRECTSOUNDA },
   { "OptionsSoundDirectSoundB", ID_OPTIONS_SOUND_DIRECTSOUNDB },
-  { "OptionsGameboyColors", ID_OPTIONS_GAMEBOY_COLORS },
   { "OptionsFilterNormal", ID_OPTIONS_FILTER_NORMAL },
   { "OptionsFilterTVMode", ID_OPTIONS_FILTER_TVMODE },
   { "OptionsFilter2xSaI", ID_OPTIONS_FILTER_2XSAI },

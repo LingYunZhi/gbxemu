@@ -1903,8 +1903,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("filter", filterType);
 
-  regSetDwordValue("LCDFilter", filterLCD);
-
   regSetDwordValue("disableStatus", disableStatusMessage);
 
   regSetDwordValue("showSpeed", showSpeed);

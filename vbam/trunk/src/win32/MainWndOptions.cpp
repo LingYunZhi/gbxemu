@@ -799,75 +799,6 @@ void MainWnd::OnUpdateOptionsSoundDirectsoundb(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.cartridgeType == IMAGE_GBA);
 }
 
-void MainWnd::OnOptionsGameboyAutomatic()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyAutomatic(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboyGba()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyGba(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboyCgb()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyCgb(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboySgb()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboySgb(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboySgb2()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboySgb2(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboyGb()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyGb(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboyRealcolors()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyRealcolors(CCmdUI* pCmdUI)
-{
-}
-
-void MainWnd::OnOptionsGameboyGameboycolors()
-{
-}
-
-void MainWnd::OnUpdateOptionsGameboyGameboycolors(CCmdUI* pCmdUI)
-{
-}
-
-
-void MainWnd::OnOptionsGameboyColors()
-{
-}
-
 BOOL MainWnd::OnOptionsPriority(UINT nID)
 {
   switch(nID) {
@@ -1018,18 +949,6 @@ void MainWnd::OnUpdateOptionsFilter(CCmdUI *pCmdUI)
   }
 }
 
-
-void MainWnd::OnOptionsFilterLcdcolors()
-{
-// todo: depreciated
-  theApp.filterLCD = !theApp.filterLCD;
-  utilUpdateSystemColorMaps();
-}
-
-void MainWnd::OnUpdateOptionsFilterLcdcolors(CCmdUI *pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.filterLCD);
-}
 
 void MainWnd::OnOptionsLanguageSystem()
 {

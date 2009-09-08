@@ -54,7 +54,6 @@ class VBA : public CWinApp
   int filterWidth;
   int filterHeight;
   int filterMagnification;
-  int filterLCD;
   int fsWidth;
   int fsHeight;
   int fsColorDepth;

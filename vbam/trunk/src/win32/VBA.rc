@@ -1398,7 +1398,6 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Turbo mode",                  ID_OPTIONS_EMULATOR_SPEEDUPTOGGLE
         END
-        MENUITEM SEPARATOR
         POPUP "&Emulator"
         BEGIN
             MENUITEM "&Associate...",               ID_OPTIONS_EMULATOR_ASSOCIATE
@@ -1445,21 +1444,6 @@ BEGIN
                 MENUITEM "&English",                    ID_OPTIONS_LANGUAGE_ENGLISH
                 MENUITEM "&Other...",                   ID_OPTIONS_LANGUAGE_OTHER
             END
-        END
-        POPUP "&Gameboy"
-        BEGIN
-            MENUITEM "&Automatic",                  ID_OPTIONS_GAMEBOY_AUTOMATIC
-            MENUITEM "&GBA",                        ID_OPTIONS_GAMEBOY_GBA
-            MENUITEM "&CGB/GBC",                    ID_OPTIONS_GAMEBOY_CGB
-            MENUITEM "&SGB",                        ID_OPTIONS_GAMEBOY_SGB
-            MENUITEM "SGB&2",                       ID_OPTIONS_GAMEBOY_SGB2
-            MENUITEM "G&B",                         ID_OPTIONS_GAMEBOY_GB
-            MENUITEM SEPARATOR
-            MENUITEM "&Real Colors",                ID_OPTIONS_GAMEBOY_REALCOLORS
-            MENUITEM "G&ameboy Colors",             ID_OPTIONS_GAMEBOY_GAMEBOYCOLORS
-            MENUITEM "LCD colors",                  ID_OPTIONS_FILTER_LCDCOLORS
-            MENUITEM SEPARATOR
-            MENUITEM "&Colors...",                  ID_OPTIONS_GAMEBOY_COLORS
         END
     END
     POPUP "&Cheats"

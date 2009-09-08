@@ -180,23 +180,6 @@ protected:
 	afx_msg void OnUpdateOptionsSoundDirectsounda(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundDirectsoundb();
 	afx_msg void OnUpdateOptionsSoundDirectsoundb(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyAutomatic();
-	afx_msg void OnUpdateOptionsGameboyAutomatic(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyGba();
-	afx_msg void OnUpdateOptionsGameboyGba(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyCgb();
-	afx_msg void OnUpdateOptionsGameboyCgb(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboySgb();
-	afx_msg void OnUpdateOptionsGameboySgb(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboySgb2();
-	afx_msg void OnUpdateOptionsGameboySgb2(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyGb();
-	afx_msg void OnUpdateOptionsGameboyGb(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyRealcolors();
-	afx_msg void OnUpdateOptionsGameboyRealcolors(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyGameboycolors();
-	afx_msg void OnUpdateOptionsGameboyGameboycolors(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsGameboyColors();
 	afx_msg void OnOptionsLanguageSystem();
 	afx_msg void OnUpdateOptionsLanguageSystem(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsLanguageEnglish();
@@ -287,8 +270,6 @@ protected:
 	afx_msg BOOL OnFileRecentFile(UINT nID);
 	afx_msg BOOL OnFileLoadSlot(UINT nID);
 	afx_msg BOOL OnFileSaveSlot(UINT nID);
-	afx_msg void OnOptionsFilterLcdcolors();
-	afx_msg void OnUpdateOptionsFilterLcdcolors(CCmdUI *pCmdUI);
 
 	afx_msg void OnOutputapiXaudio2config();
 	afx_msg void OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI);
