@@ -37,9 +37,13 @@ u8 *internalRAM = 0;
 u8 *workRAM = 0;
 u8 *paletteRAM = 0;
 u8 *vram = 0;
-u8 *pix = 0;
 u8 *oam = 0;
 u8 *ioMem = 0;
+
+// pixels ready for displaying to user
+// uses GBA 16 bit color format: 0bbbbbgggggrrrrr (mask: 0x7FFF)
+u16 *pix = 0;
+const unsigned int pix_size = 2 * 240 * 160;
 
 u16 DISPCNT  = 0x0080;
 u16 DISPSTAT = 0x0000;

@@ -26,7 +26,6 @@
 #include <D3dx9core.h> // required for font rendering
 #include <Dxerr.h>     // contains debug functions
 
-extern int Init_2xSaI(u32); // initializes all pixel filters
 extern int systemSpeed;
 
 #ifdef _DEBUG
@@ -38,13 +37,25 @@ extern void log(const char *,...);
 
 
 class Direct3DDisplay : public IDisplay {
+public:
+	Direct3DDisplay();
+	~Direct3DDisplay();
+
+	bool initialize( int w, int h );
+	void cleanup();
+	void clear();
+	void render();
+
+	bool changeRenderSize( int w, int h );
+	void resize( int w, int h );
+	void setOption( const char *option, int value );
+	bool selectFullScreenMode( VIDEO_MODE &mode );
+
 private:
 	bool                  initialized;
 	LPDIRECT3D9           pD3D;
 	LPDIRECT3DDEVICE9     pDevice;
-	D3DDISPLAYMODE		  mode;
 	D3DPRESENT_PARAMETERS dpp;
-	D3DFORMAT             screenFormat;
 	LPDIRECT3DTEXTURE9    tempImage;
 	LPDIRECT3DTEXTURE9    emulatedImage[2];
 	unsigned char         mbCurrentTexture; // current texture for motion blur
@@ -55,6 +66,7 @@ private:
 	bool                  failed;
 	ID3DXFont             *pFont;
 	bool                  rectangleFillsScreen;
+    u16                   *colConvTable; // helps at swapping red & blue values
 
 	struct VERTEX {
 		FLOAT x, y, z, rhw; // screen coordinates
@@ -72,26 +84,15 @@ private:
 
 	void createFont();
 	void destroyFont();
-	bool clearTexture( LPDIRECT3DTEXTURE9 texture, size_t textureHeight );
+
 	void createTexture( unsigned int textureWidth, unsigned int textureHeight );
 	void destroyTexture();
-	void calculateDestRect();
+    // fill texture completely with black
+    bool clearTexture( LPDIRECT3DTEXTURE9 texture );
+
+    void calculateDestRect();
 	bool resetDevice();
 	void prepareDisplayMode();
-
-public:
-	Direct3DDisplay();
-	virtual ~Direct3DDisplay();
-
-	virtual bool initialize();
-	virtual void cleanup();
-	virtual void clear();
-	virtual void render();
-
-	virtual bool changeRenderSize( int w, int h );
-	virtual void resize( int w, int h );
-	virtual void setOption( const char *option, int value );
-	virtual bool selectFullScreenMode( VIDEO_MODE &mode );
 };
 
 
@@ -100,7 +101,6 @@ Direct3DDisplay::Direct3DDisplay()
 	initialized = false;
 	pD3D = NULL;
 	pDevice = NULL;
-	screenFormat = D3DFMT_X8R8G8B8;
 	width = 0;
 	height = 0;
 	textureSize = 0;
@@ -112,12 +112,16 @@ Direct3DDisplay::Direct3DDisplay()
 	mbCurrentTexture = 0;
 	mbTextureEmpty = true;
 	rectangleFillsScreen = false;
+
+    colConvTable = new u16[0x8000]; // 64 KB
 }
 
 
 Direct3DDisplay::~Direct3DDisplay()
 {
 	cleanup();
+
+    delete [] colConvTable;
 }
 
 void Direct3DDisplay::prepareDisplayMode()
@@ -125,11 +129,7 @@ void Direct3DDisplay::prepareDisplayMode()
 	// Change display mode
 	memset(&dpp, 0, sizeof(dpp));
 	dpp.Windowed = !( theApp.videoOption >= VIDEO_320x240 );
-	if( !dpp.Windowed ) {
-		dpp.BackBufferFormat = (theApp.fsColorDepth == 32) ? D3DFMT_X8R8G8B8 : D3DFMT_R5G6B5;
-	} else {
-		dpp.BackBufferFormat = mode.Format;
-	}
+    dpp.BackBufferFormat = (theApp.fsColorDepth == 32) ? D3DFMT_X8R8G8B8 : D3DFMT_R5G6B5;
 	dpp.BackBufferCount = 1; // double buffering
 	dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -178,11 +178,13 @@ void Direct3DDisplay::cleanup()
 }
 
 
-bool Direct3DDisplay::initialize()
+bool Direct3DDisplay::initialize( int w, int h )
 {
 #ifdef _DEBUG
-	TRACE( _T("Initializing Direct3D renderer {\n") );
+	TRACE( _T("Initializing Direct3D v9 renderer {\n") );
 #endif
+    width = w;
+    height = h;
 
 	// load Direct3D v9
 	pD3D = Direct3DCreate9( D3D_SDK_VERSION );
@@ -191,49 +193,6 @@ bool Direct3DDisplay::initialize()
 		DXTRACE_ERR_MSGBOX( _T("Error creating Direct3D object"), 0 );
 		return false;
 	}
-
-	pD3D->GetAdapterDisplayMode(theApp.fsAdapter, &mode);
-	screenFormat = mode.Format;
-
-	switch(mode.Format) {
-  case D3DFMT_A2R10G10B10:
-	  systemColorDepth = 32;
-	  systemRedShift = 25;
-	  systemGreenShift = 15;
-	  systemBlueShift = 5;
-	  Init_2xSaI(32); // TODO: verify
-	  break;
-  case D3DFMT_X8R8G8B8:
-	  systemColorDepth = 32;
-	  systemRedShift = 19;
-	  systemGreenShift = 11;
-	  systemBlueShift = 3;
-	  Init_2xSaI(32);
-	  break;
-  case D3DFMT_R5G6B5:
-	  systemColorDepth = 16;
-	  systemRedShift = 11;
-	  systemGreenShift = 6;
-	  systemBlueShift = 0;
-	  Init_2xSaI(565);
-	  break;
-  case D3DFMT_X1R5G5B5:
-	  systemColorDepth = 16;
-	  systemRedShift = 10;
-	  systemGreenShift = 5;
-	  systemBlueShift = 0;
-	  Init_2xSaI(555);
-	  break;
-  default:
-	  DXTRACE_ERR_MSGBOX( _T("Unsupport D3D format"), 0 );
-	  return false;
-	}
-	theApp.fsColorDepth = systemColorDepth;
-	utilUpdateSystemColorMaps();
-
-
-
-	theApp.updateFilter();
 
 
 	// create device
@@ -254,11 +213,17 @@ bool Direct3DDisplay::initialize()
 	}
 
 	createFont();
-	// width and height will be set from a prior call to changeRenderSize() before initialize()
 	createTexture( width, height );
 	calculateDestRect();
     setOption( _T("gpuBilinear"), theApp.gpuBilinear ? 1 : 0 );
     setOption( _T("gpuMotionBlur"), theApp.gpuMotionBlur ? 1 : 0 );
+
+
+    // create color conversion table
+    for( u16 i = 0; i < 0x8000; i++ ) {
+        // bgr <-> rgb
+        colConvTable[i] = ((i & 0x1f) << 10) | (i & 0x3e0) | (i >> 10);
+    }
 
 
     initialized = true;
@@ -320,46 +285,24 @@ void Direct3DDisplay::render()
 	if( FAILED( hr = tempImage->LockRect( 0, &lr, &target, 0 ) ) ) {
 		DXTRACE_ERR_MSGBOX( _T("Can not lock texture"), hr );
 		return;
-	} else {
-		u32 pitch = theApp.sizeX * ( systemColorDepth >> 3 ) + 4;
-
-		if( theApp.filterFunction ) {
-            theApp.filterFunction( pix + pitch,
-                                   pitch,
-                                   (u8*)theApp.delta,
-                                   (u8*)lr.pBits,
-                                   lr.Pitch,
-                                   theApp.sizeX,
-                                   theApp.sizeY );
-		} else {
-			// pixel filter disabled
-			switch( systemColorDepth )
-			{
-			case 32:
-				cpyImg32(
-					(unsigned char *)lr.pBits,
-					lr.Pitch,
-					pix + pitch,
-					pitch,
-					theApp.sizeX,
-					theApp.sizeY
-					);
-				break;
-			case 16:
-				cpyImg16(
-					(unsigned char *)lr.pBits,
-					lr.Pitch,
-					pix + pitch,
-					pitch,
-					theApp.sizeX,
-					theApp.sizeY
-					);
-				break;
-			}
-		}
-		tempImage->UnlockRect( 0 );
-		pDevice->UpdateTexture( tempImage, emulatedImage[ mbCurrentTexture ] );
 	}
+
+    // Direct3D only supports xrgb, but GBA uses xbgr, so we have to flip the color's while we are at it
+    unsigned int y = theApp.sizeY;
+    unsigned int x;
+    u16 *dest = (u16 *)lr.pBits;
+    u16 *src  = pix;
+    const unsigned int destLineBlank = (lr.Pitch / 2) - theApp.sizeX;
+    while( y-- ) {
+        x = theApp.sizeX;
+        while( x-- ) {
+            *(dest++) = colConvTable[*(src++)];
+        }
+        dest += destLineBlank;
+    }
+    
+    tempImage->UnlockRect( 0 );
+    pDevice->UpdateTexture( tempImage, emulatedImage[ mbCurrentTexture ] );
 
 
 	if( !theApp.gpuMotionBlur ) {
@@ -514,8 +457,7 @@ void Direct3DDisplay::destroyFont()
 }
 
 
-// fill texture completely with black
-bool Direct3DDisplay::clearTexture( LPDIRECT3DTEXTURE9 texture, size_t textureHeight )
+bool Direct3DDisplay::clearTexture( LPDIRECT3DTEXTURE9 texture )
 {
 	D3DLOCKED_RECT lr;
 	HRESULT hr;
@@ -524,9 +466,22 @@ bool Direct3DDisplay::clearTexture( LPDIRECT3DTEXTURE9 texture, size_t textureHe
 		DXTRACE_ERR_MSGBOX( _T("Can not lock texture"), hr );
 		return false;
 	} else {
-		memset( lr.pBits, 0x00, lr.Pitch * textureHeight );
-		texture->UnlockRect( 0 );
-		return true;
+        const int width = textureSize;
+        const int height = textureSize;
+
+        const int size_data = width * 2;
+        const int size_stride = lr.Pitch - size_data;
+
+        u8 *dest = (u8 *)lr.pBits;
+
+        for( int y = 0; y < height; y++ ) {
+            memset( dest, 0x00, size_data );
+            dest += size_stride;
+        }
+
+        texture->UnlockRect( 0 );
+
+        return true;
 	}
 }
 
@@ -556,7 +511,7 @@ void Direct3DDisplay::createTexture( unsigned int textureWidth, unsigned int tex
 			textureSize, textureSize,
 			1, // 1 level, no mipmaps
 			0, // dynamic textures can be locked
-			dpp.BackBufferFormat,
+			D3DFMT_X1R5G5B5, // almost like GBA palette, only red & blue has to be swapped
 			D3DPOOL_SYSTEMMEM,
 			&tempImage,
 			NULL );
@@ -568,7 +523,7 @@ void Direct3DDisplay::createTexture( unsigned int textureWidth, unsigned int tex
 
 		// initialize whole texture with black since we might see
 		// the initial noise when using bilinear texture filtering
-		clearTexture( tempImage, textureSize );
+		clearTexture( tempImage );
 	}
 
 

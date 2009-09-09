@@ -26,18 +26,6 @@ enum VIDEO_SIZE{
   VIDEO_OTHER
 };
 
-enum pixelFilterType
-{
-	FILTER_NONE,
-
-	FILTER_SIMPLE2X, FILTER_SIMPLE3X, FILTER_SIMPLE4X,
-
-    FILTER_TVMODE, FILTER_SCANLINES, FILTER_MAMESCALE2X,
-
-    FILTER_2XSAI, FILTER_SUPER2XSAI, FILTER_SUPEREAGLE,
-    
-    FILTER_LQ2X, FILTER_HQ2X	
-};
 
 class VBA : public CWinApp
 {
@@ -47,19 +35,17 @@ class VBA : public CWinApp
   HMENU popup;
   int windowPositionX;
   int windowPositionY;
-  void (*filterFunction)(u8*,u32,u8*,u8*,u32,int,int);
-  int filterType;
-  int filterWidth;
-  int filterHeight;
-  int filterMagnification;
+
   int fsWidth;
   int fsHeight;
   int fsColorDepth;
   int fsFrequency;
   int fsAdapter;
   bool fsForceChange;
+
   int sizeX;
   int sizeY;
+
   int surfaceSizeX;
   int surfaceSizeY;
   int videoOption;
@@ -71,7 +57,6 @@ class VBA : public CWinApp
   bool screenMessage;
   CString screenMessageBuffer;
   DWORD screenMessageTime;
-  u8 *delta[257*244*4];
   IDisplay *display;
   IMAGE_TYPE cartridgeType;
   bool soundInitialized;
@@ -149,7 +134,6 @@ class VBA : public CWinApp
   ~VBA();
 
   void adjustDestRect();
-  void updateFilter();
   void updateMenuBar();
   void winAddUpdateListener(IUpdateListener *l);
   void winRemoveUpdateListener(IUpdateListener *l);

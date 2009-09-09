@@ -248,7 +248,7 @@ void MainWnd::OnToolsRecordStartavirecording()
 	ret = theApp.aviRecorder->CreateVideoStream(
 		theApp.sizeX,
 		theApp.sizeY,
-		( systemColorDepth == 32 ) ? 24 : 16,
+		16,
 		60,
 		this->GetSafeHwnd()
 		);

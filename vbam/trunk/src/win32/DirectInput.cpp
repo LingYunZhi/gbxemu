@@ -719,12 +719,6 @@ u32 DirectInput::readDevice(int which)
     res |= 256;
   if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_L)]))
     res |= 512;
-  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_SPEED)]))
-    res |= 1024;
-  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_CAPTURE)]))
-    res |= 2048;
-  if(checkKey(theApp.input->joypaddata[JOYPAD(i,KEY_BUTTON_GS)]))
-    res |= 4096;
 
   if(theApp.autoFire) {
     res &= (~theApp.autoFire);

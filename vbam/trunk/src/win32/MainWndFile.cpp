@@ -472,59 +472,62 @@ void MainWnd::OnUpdateFileExportBatteryfile(CCmdUI* pCmdUI)
 
 void MainWnd::OnFileScreencapture()
 {
-  CString name;
-  CString filename;
+  CString buffer;
 
-  int index = theApp.filename.ReverseFind('\\');
-
-  if(index != -1)
-    name = theApp.filename.Right(theApp.filename.GetLength()-index-1);
-  else
-    name = theApp.filename;
-
-  CString capdir = regQueryStringValue("captureDir", "");
-  if( capdir[0] == '.' ) {
+  CString captureDir = regQueryStringValue("captureDir", "");
+  if( captureDir[0] == '.' ) {
 	  // handle as relative path
 	  char baseDir[MAX_PATH+1];
 	  GetModuleFileName( NULL, baseDir, MAX_PATH );
 	  baseDir[MAX_PATH] = '\0'; // for security reasons
 	  PathRemoveFileSpec( baseDir ); // removes the trailing file name and backslash
 	  strcat( baseDir, "\\" );
-	  strcat( baseDir, capdir );
-	  capdir = baseDir;
+	  strcat( baseDir, captureDir );
+	  captureDir = baseDir;
 	}
 
-  if(capdir.IsEmpty())
-    capdir = getDirFromFile(theApp.filename);
+  int index = theApp.filename.ReverseFind('\\');
 
-  CString ext = "bmp";
-
-  if(isDriveRoot(capdir))
-    filename.Format("%s%s.%s", capdir, name, ext);
+  CString name;
+  if(index != -1)
+    name = theApp.filename.Right(theApp.filename.GetLength()-index-1);
   else
-    filename.Format("%s\\%s.%s", capdir, name, ext);
+    name = theApp.filename;
 
-  LPCTSTR exts[] = {".bmp"};
+  if(captureDir.IsEmpty())
+    captureDir = getDirFromFile(theApp.filename);
 
-  CString filter = winLoadFilter(IDS_FILTER_BMP);
-  CString title = winResLoadString(IDS_SELECT_CAPTURE_NAME);
+  LPCTSTR ext = "bmp";
 
-  FileDlg dlg(this,
-              filename,
-              filter,
-              1,
-              "BMP",
-              exts,
-              capdir,
-              title,
-              true);
+  int captureNumber = 1;
 
-  if(dlg.DoModal() == IDCANCEL)
-    return;
+  // search for the first unused screenshot
+  while( true ) {
+      if(isDriveRoot(captureDir))
+          buffer.Format("%s%s_%02d.%s",
+          captureDir,
+          name,
+          captureNumber,
+          ext);
+      else
+          buffer.Format("%s\\%s_%02d.%s",
+          captureDir,
+          name,
+          captureNumber,
+          ext);
 
-  theApp.emulator.emuWriteBMP(dlg.GetPathName());
+      if( fileExists( buffer ) ) {
+          captureNumber++;
+          continue;
+      } else {
+          break;
+      }
+  }
 
-  systemScreenMessage(winResLoadString(IDS_SCREEN_CAPTURE));
+  utilWriteBMPFile( buffer, theApp.sizeX, theApp.sizeY, pix );
+
+  CString msg = winResLoadString(IDS_SCREEN_CAPTURE);
+  systemScreenMessage(msg);
 }
 
 void MainWnd::OnUpdateFileScreencapture(CCmdUI* pCmdUI)

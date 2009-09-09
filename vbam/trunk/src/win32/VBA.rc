@@ -1147,37 +1147,6 @@ BEGIN
             MENUITEM "VSync",                       ID_OPTIONS_VIDEO_VSYNC
             MENUITEM "&Sync game to audio",         ID_OPTIONS_EMULATOR_SYNCHRONIZE
         END
-        POPUP "&Pixel Filters"
-        BEGIN
-            POPUP "&Magnification"
-            BEGIN
-                POPUP "&2X"
-                BEGIN
-                    MENUITEM "&Simple 2x",                  ID_OPTIONS_FILTER16BIT_SIMPLE2X
-                    MENUITEM SEPARATOR
-                    MENUITEM "&TV Mode",                    ID_OPTIONS_FILTER_TVMODE
-                    MENUITEM "Scan&lines",                  ID_OPTIONS_FILTER_SCANLINES
-                    MENUITEM "AdvanceMAME Scale2x",         ID_OPTIONS_FILTER16BIT_ADVANCEMAMESCALE2X
-                    MENUITEM SEPARATOR
-                    MENUITEM "&2xSaI",                      ID_OPTIONS_FILTER_2XSAI
-                    MENUITEM "S&uper 2xSaI",                ID_OPTIONS_FILTER_SUPER2XSAI
-                    MENUITEM "Super &Eagle",                ID_OPTIONS_FILTER_SUPEREAGLE
-                    MENUITEM SEPARATOR
-                    MENUITEM "&LQ2x",                       ID_OPTIONS_FILTER_LQ2X
-                    MENUITEM "&HQ2x",                       ID_OPTIONS_FILTER_HQ2X
-                END
-                POPUP "&3X"
-                BEGIN
-                    MENUITEM "&Simple 3x",                  ID_OPTIONS_FILTER_SIMPLE3X
-                END
-                POPUP "&4X"
-                BEGIN
-                    MENUITEM "&Simple 4x",                  ID_OPTIONS_FILTER_SIMPLE4X
-                END
-            END
-            MENUITEM SEPARATOR
-            MENUITEM "&Disabled",                   ID_OPTIONS_FILTER_NORMAL
-        END
         POPUP "&Video"
         BEGIN
             POPUP "GPU accelerated"

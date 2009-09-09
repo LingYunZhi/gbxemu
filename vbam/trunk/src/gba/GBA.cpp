@@ -113,10 +113,6 @@ int frameCount = 0;
 u32 lastTime = 0;
 int count = 0;
 
-int capture = 0;
-int capturePrevious = 0;
-int captureNumber = 0;
-
 const int TIMER_TICKS[4] = {
   0,
   6,
@@ -603,7 +599,7 @@ static bool writeState( FILE *file )
     fwrite( workRAM, 1, 0x40000, file );
     fwrite( vram, 1, 0x20000, file );
     fwrite( oam, 1, 0x400, file );
-    fwrite( pix, 1, 4*241*162, file );
+    fwrite( pix, 1, pix_size, file );
     fwrite( ioMem, 1, 0x400, file );
     
     soundSaveGame( file );
@@ -673,7 +669,7 @@ static bool readState( FILE *file )
     fread( workRAM, 1, 0x40000, file );
     fread( vram, 1, 0x20000, file );
     fread( oam, 1, 0x400, file );
-    fread( pix, 1, 4*241*162, file );
+    fread( pix, 1, pix_size, file );
     fread( ioMem, 1, 0x400, file );
     
     soundReadGame( file, version );
@@ -907,10 +903,6 @@ bool CPUReadBatteryFile(const char *fileName)
   return true;
 }
 
-bool CPUWriteBMPFile(const char *fileName)
-{
-  return utilWriteBMPFile(fileName, 240, 160, pix);
-}
 
 bool CPUIsZipFile(const char * file)
 {
@@ -1148,7 +1140,7 @@ int CPULoadRom(const char *szFile)
     CPUCleanUp();
     return 0;
   }
-  pix = (u8 *)calloc(1, 4 * 241 * 162);
+  pix = (u16 *)calloc(1, pix_size);
   if(pix == NULL) {
     systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
                   "PIX");
@@ -2812,7 +2804,7 @@ void CPUReset()
   // clean palette
   memset(paletteRAM, 0, 0x400);
   // clean picture
-  memset(pix, 0, 4*160*240);
+  memset(pix, 0, pix_size);
   // clean vram
   memset(vram, 0, 0x20000);
   // clean io memory
@@ -3254,13 +3246,6 @@ void CPULoop(int ticks)
               if((cheatsEnabled) && (mastercode==0))
                 remainingTicks += cheatsCheckKeys(P1^0x3FF, ext);
               speedup = (ext & 1) ? true : false;
-              capture = (ext & 2) ? true : false;
-
-              if(capture && !capturePrevious) {
-                captureNumber++;
-                systemScreenCapture(captureNumber);
-              }
-              capturePrevious = capture;
 
               DISPSTAT |= 1;
               DISPSTAT &= 0xFFFD;
@@ -3277,106 +3262,15 @@ void CPULoop(int ticks)
             CPUCompareVCOUNT();
 
           } else {
-              (*renderLine)();
-              switch(systemColorDepth) {
-                case 16:
-                {
-                  u16 *dest = (u16 *)pix + 242 * (VCOUNT+1);
-                  for(int x = 0; x < 240;) {
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
+            (*renderLine)();
 
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                    *dest++ = systemColorMap16[lineMix[x++]&0xFFFF];
-                  }
-                  // for filters that read past the screen
-                  *dest++ = 0;
-                }
-                break;
-                case 24:
-                {
-                  u8 *dest = (u8 *)pix + 240 * VCOUNT * 3;
-                  for(int x = 0; x < 240;) {
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                    *((u32 *)dest) = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    dest += 3;
-                  }
-                }
-                break;
-                case 32:
-                {
-                  u32 *dest = (u32 *)pix + 241 * (VCOUNT+1);
-                  for(int x = 0; x < 240; ) {
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                    *dest++ = systemColorMap32[lineMix[x++] & 0xFFFF];
-                  }
-                }
-                break;
-              }
+            // transfer pixels to output:
+            u16 *dest = &pix[VCOUNT * 240]; // start at current line
+            for( u8 x = 0; x < 240; x++ ) {
+              *(dest++) = lineMix[x] & 0x7FFF;
+            }
             
+
             // entering H-Blank
             DISPSTAT |= 2;
             UPDATE_REG(0x04, DISPSTAT);
@@ -3623,8 +3517,6 @@ struct EmulatedSystem GBASystem = {
   CPUReadState,
   // emuWriteState
   CPUWriteState,
-  // emuWriteBMP
-  CPUWriteBMPFile,
   // emuUpdateCPSR
   CPUUpdateCPSR,
   // emuHasDebugger

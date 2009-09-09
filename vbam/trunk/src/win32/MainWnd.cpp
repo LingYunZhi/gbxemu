@@ -228,18 +228,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_EMULATOR_SHOWSPEED_NONE, ID_OPTIONS_EMULATOR_SHOWSPEED_TRANSPARENT, OnUpdateOptionsEmulatorShowSpeed)
   ON_COMMAND_EX_RANGE(ID_OPTIONS_PRIORITY_HIGHEST, ID_OPTIONS_PRIORITY_BELOWNORMAL, OnOptionsPriority)
   ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_PRIORITY_HIGHEST, ID_OPTIONS_PRIORITY_BELOWNORMAL, OnUpdateOptionsPriority)
-  ON_COMMAND_EX_RANGE(ID_OPTIONS_FILTER_NORMAL, ID_OPTIONS_FILTER_TVMODE, OnOptionsFilter)
-  ON_COMMAND_EX_RANGE(ID_OPTIONS_FILTER16BIT_ADVANCEMAMESCALE2X, ID_OPTIONS_FILTER16BIT_SIMPLE2X, OnOptionsFilter)
-  ON_COMMAND_EX_RANGE(ID_OPTIONS_FILTER_SCANLINES, ID_OPTIONS_FILTER_SCANLINES, OnOptionsFilter)
-  ON_COMMAND_EX_RANGE(ID_OPTIONS_FILTER_HQ2X, ID_OPTIONS_FILTER_LQ2X, OnOptionsFilter)
-  ON_COMMAND_EX(ID_OPTIONS_FILTER_SIMPLE3X, OnOptionsFilter)
-  ON_COMMAND_EX(ID_OPTIONS_FILTER_SIMPLE4X, OnOptionsFilter)
-  ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_FILTER_NORMAL, ID_OPTIONS_FILTER_TVMODE, OnUpdateOptionsFilter)
-  ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_FILTER16BIT_ADVANCEMAMESCALE2X, ID_OPTIONS_FILTER16BIT_SIMPLE2X, OnUpdateOptionsFilter)
-  ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_FILTER_SCANLINES, ID_OPTIONS_FILTER_SCANLINES, OnUpdateOptionsFilter)
-  ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_FILTER_HQ2X, ID_OPTIONS_FILTER_LQ2X, OnUpdateOptionsFilter)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_FILTER_SIMPLE3X, OnUpdateOptionsFilter)
-  ON_UPDATE_COMMAND_UI(ID_OPTIONS_FILTER_SIMPLE4X, OnUpdateOptionsFilter)
   ON_COMMAND_EX_RANGE(ID_OPTIONS_JOYPAD_DEFAULTJOYPAD_1, ID_OPTIONS_JOYPAD_DEFAULTJOYPAD_4, OnOptionsJoypadDefault)
   ON_UPDATE_COMMAND_UI_RANGE(ID_OPTIONS_JOYPAD_DEFAULTJOYPAD_1, ID_OPTIONS_JOYPAD_DEFAULTJOYPAD_4, OnUpdateOptionsJoypadDefault)
   ON_COMMAND_EX_RANGE(ID_OPTIONS_JOYPAD_AUTOFIRE_A, ID_OPTIONS_JOYPAD_AUTOFIRE_R, OnOptionsJoypadAutofire)
@@ -866,60 +854,6 @@ BOOL MainWnd::PreTranslateMessage(MSG* pMsg)
   return FALSE;
 }
 
-void MainWnd::screenCapture(int captureNumber)
-{
-  CString buffer;
-
-  CString captureDir = regQueryStringValue("captureDir", "");
-  if( captureDir[0] == '.' ) {
-	  // handle as relative path
-	  char baseDir[MAX_PATH+1];
-	  GetModuleFileName( NULL, baseDir, MAX_PATH );
-	  baseDir[MAX_PATH] = '\0'; // for security reasons
-	  PathRemoveFileSpec( baseDir ); // removes the trailing file name and backslash
-	  strcat( baseDir, "\\" );
-	  strcat( baseDir, captureDir );
-	  captureDir = baseDir;
-	}
-
-  int index = theApp.filename.ReverseFind('\\');
-
-  CString name;
-  if(index != -1)
-    name = theApp.filename.Right(theApp.filename.GetLength()-index-1);
-  else
-    name = theApp.filename;
-
-  if(captureDir.IsEmpty())
-    captureDir = getDirFromFile(theApp.filename);
-
-  LPCTSTR ext = "bmp";
-
-  if(isDriveRoot(captureDir))
-    buffer.Format("%s%s_%02d.%s",
-                  captureDir,
-                  name,
-                  captureNumber,
-                  ext);
-  else
-    buffer.Format("%s\\%s_%02d.%s",
-                  captureDir,
-                  name,
-                  captureNumber,
-                  ext);
-
-  if( fileExists( buffer ) ) {
-	  // screenshot file already exists
-	  screenCapture(++captureNumber);
-	  // this will recursively use the first non-existent screenshot number
-	  return;
-  }
-
-  theApp.emulator.emuWriteBMP(buffer);
-
-  CString msg = winResLoadString(IDS_SCREEN_CAPTURE);
-  systemScreenMessage(msg);
-}
 
 void MainWnd::winMouseOn()
 {
@@ -964,8 +898,6 @@ void MainWnd::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
       }
       theApp.active = a;
     }
-
-    memset(theApp.delta,255,sizeof(theApp.delta));
   }
 
   if(theApp.paused && emulating)

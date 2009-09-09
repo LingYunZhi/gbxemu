@@ -1,5 +1,4 @@
-#ifndef GBA_H
-#define GBA_H
+#pragma once
 
 #include "../System.h"
 
@@ -135,5 +134,3 @@ extern struct EmulatedSystem GBASystem;
 #include "Globals.h"
 #include "EEprom.h"
 #include "Flash.h"
-
-#endif // GBA_H

@@ -22,29 +22,6 @@
 
 #include "../version.h"
 
-extern void _2xSaI(u8*,u32,u8*,u8*,u32,int,int);
-extern void _2xSaI32(u8*,u32,u8*,u8*,u32,int,int);
-extern void Super2xSaI(u8*,u32,u8*,u8*,u32,int,int);
-extern void Super2xSaI32(u8*,u32,u8*,u8*,u32,int,int);
-extern void SuperEagle(u8*,u32,u8*,u8*,u32,int,int);
-extern void SuperEagle32(u8*,u32,u8*,u8*,u32,int,int);
-extern void AdMame2x(u8*,u32,u8*,u8*,u32,int,int);
-extern void AdMame2x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void Scanlines(u8*,u32,u8*,u8*,u32,int,int);
-extern void Scanlines32(u8*,u32,u8*,u8*,u32,int,int);
-extern void ScanlinesTV(u8*,u32,u8*,u8*,u32,int,int);
-extern void ScanlinesTV32(u8*,u32,u8*,u8*,u32,int,int);
-extern void hq2x(u8*,u32,u8*,u8*,u32,int,int);
-extern void hq2x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void lq2x(u8*,u32,u8*,u8*,u32,int,int);
-extern void lq2x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void Simple2x16(u8*,u32,u8*,u8*,u32,int,int);
-extern void Simple2x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void Simple3x16(u8*,u32,u8*,u8*,u32,int,int);
-extern void Simple3x32(u8*,u32,u8*,u8*,u32,int,int);
-extern void Simple4x16(u8*,u32,u8*,u8*,u32,int,int);
-extern void Simple4x32(u8*,u32,u8*,u8*,u32,int,int);
-
 
 extern IDisplay *newDirect3DDisplay();
 extern Input *newDirectInput();
@@ -59,12 +36,7 @@ static char THIS_FILE[] = __FILE__;
 int emulating = 0;
 int RGB_LOW_BITS_MASK = 0;
 int systemSpeed = 0;
-u32 systemColorMap32[0x10000];
-u16 systemColorMap16[0x10000];
-int systemRedShift = 0;
-int systemBlueShift = 0;
-int systemGreenShift = 0;
-int systemColorDepth = 16;
+
 int systemVerbose = 0;
 int systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 bool soundBufferLow = 0;
@@ -81,18 +53,15 @@ void (*dbgOutput)(const char *, u32) = winOutput;
 VBA::VBA()
 {
   // COINIT_MULTITHREADED is not supported by SHBrowseForFolder with BIF_USENEWUI
-  // OpenAL also causes trouble when COINIT_MULTITHREADED is used
   if( S_OK != CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ) ) {
 	  systemMessage( IDS_COM_FAILURE, NULL );
   }
 
   // ! keep in mind that many of the following values will be really initialized in loadSettings()
+
   windowPositionX = 0;
   windowPositionY = 0;
-  filterFunction = NULL;
-  filterType = FILTER_NONE;
-  filterWidth = 0;
-  filterHeight = 0;
+
   fsAdapter = 0;
   fsWidth = 0;
   fsHeight = 0;
@@ -337,146 +306,6 @@ void VBA::adjustDestRect()
 }
 
 
-void VBA::updateFilter()
-{
-    filterWidth = sizeX;
-	filterHeight = sizeY;
-	filterMagnification = 1;
-
-
-	if ( videoOption == VIDEO_1X || videoOption == VIDEO_320x240 )
-	{
-		filterFunction = NULL;
-		filterMagnification = 1;
-	}
-	else
-	{
-		if ( systemColorDepth == 16 )
-		{
-		switch(filterType)
-		{
-		default:
-		case FILTER_NONE:
-			filterFunction = NULL;
-			filterMagnification = 1;
-			break;
-		case FILTER_TVMODE:
-			filterFunction = ScanlinesTV;
-			filterMagnification = 2;
-			break;
-		case FILTER_2XSAI:
-			filterFunction = _2xSaI;
-			filterMagnification = 2;
-			break;
-		case FILTER_SUPER2XSAI:
-			filterFunction = Super2xSaI;
-			filterMagnification = 2;
-			break;
-		case FILTER_SUPEREAGLE:
-			filterFunction = SuperEagle;
-			filterMagnification = 2;
-			break;
-		case FILTER_MAMESCALE2X:
-			filterFunction = AdMame2x;
-			filterMagnification = 2;
-			break;
-		case FILTER_SIMPLE2X:
-			filterFunction = Simple2x16;
-			filterMagnification = 2;
-			break;
-		case FILTER_SCANLINES:
-			filterFunction = Scanlines;
-			filterMagnification = 2;
-			break;
-		case FILTER_HQ2X:
-			filterFunction = hq2x;
-			filterMagnification = 2;
-			break;
-		case FILTER_LQ2X:
-			filterFunction = lq2x;
-			filterMagnification = 2;
-			break;
-		case FILTER_SIMPLE3X:
-			filterFunction = Simple3x16;
-			filterMagnification = 3;
-			break;
-		case FILTER_SIMPLE4X:
-			filterFunction = Simple4x16;
-			filterMagnification = 4;
-			break;
-		}
-		}
-
-		if ( systemColorDepth == 32 )
-		{
-			switch(filterType)
-			{
-			default:
-			case FILTER_NONE:
-				filterFunction = NULL;
-				filterMagnification = 1;
-				break;
-			case FILTER_TVMODE:
-				filterFunction = ScanlinesTV32;
-				filterMagnification = 2;
-				break;
-			case FILTER_2XSAI:
-				filterFunction = _2xSaI32;
-				filterMagnification = 2;
-				break;
-			case FILTER_SUPER2XSAI:
-				filterFunction = Super2xSaI32;
-				filterMagnification = 2;
-				break;
-			case FILTER_SUPEREAGLE:
-				filterFunction = SuperEagle32;
-				filterMagnification = 2;
-				break;
-			case FILTER_MAMESCALE2X:
-				filterFunction = AdMame2x32;
-				filterMagnification = 2;
-				break;
-			case FILTER_SIMPLE2X:
-				filterFunction = Simple2x32;
-				filterMagnification = 2;
-				break;
-			case FILTER_SCANLINES:
-				filterFunction = Scanlines32;
-				filterMagnification = 2;
-				break;
-			case FILTER_HQ2X:
-				filterFunction = hq2x32;
-				filterMagnification = 2;
-				break;
-			case FILTER_LQ2X:
-				filterFunction = lq2x32;
-				filterMagnification = 2;
-				break;
-			case FILTER_SIMPLE3X:
-				filterFunction = Simple3x32;
-				filterMagnification = 3;
-				break;
-			case FILTER_SIMPLE4X:
-				filterFunction = Simple4x32;
-				filterMagnification = 4;
-				break;
-
-			}
-		}
-	}
-
-	rect.right = sizeX * filterMagnification;
-	rect.bottom = sizeY * filterMagnification;
-
-
-	if( filterType != FILTER_NONE )
-		memset(delta, 0xFF, sizeof(delta));
-
-	if( display )
-		display->changeRenderSize(rect.right, rect.bottom);
-}
-
-
 void VBA::updateMenuBar()
 {
   if(menu != NULL) {
@@ -545,7 +374,7 @@ void systemDrawScreen()
       up->update();
     }
   }
-
+/*
   if( theApp.aviRecording ) {
 	  if( theApp.painting ) {
 		  theApp.skipAudioFrames++;
@@ -573,7 +402,7 @@ void systemDrawScreen()
 		  delete [] bmp;
 	  }
   }
-
+*/
   if(!soundBufferLow)
   {
 	  theApp.display->render();
@@ -583,11 +412,6 @@ void systemDrawScreen()
 
 }
 
-void systemScreenCapture(int captureNumber)
-{
-  if(theApp.m_pMainWnd)
-    ((MainWnd *)theApp.m_pMainWnd)->screenCapture(captureNumber);
-}
 
 u32 systemGetClock()
 {
@@ -865,10 +689,6 @@ void VBA::loadSettings()
 
   gpuBilinear   = ( 1 == regQueryDwordValue("gpuBilinear", 0) )   ? true : false ;
   gpuMotionBlur = ( 1 == regQueryDwordValue("gpuMotionBlur", 0) ) ? true : false;
-
-  filterType = regQueryDwordValue("filter", 0);
-  if(filterType < 0 || filterType > 17)
-    filterType = 0;
 
   disableStatusMessage = regQueryDwordValue("disableStatus", 0) ? true : false;
 
@@ -1175,8 +995,6 @@ void VBA::updateWindowSize(int value)
 
   adjustDestRect();
 
-  updateFilter();
-
   if(display)
     display->resize(theApp.dest.right-theApp.dest.left, theApp.dest.bottom-theApp.dest.top);
 
@@ -1349,7 +1167,7 @@ bool VBA::updateRenderMethod0(bool force)
     }
 
     if( preInitialize() ) {
-        if( display->initialize() ) {
+        if( display->initialize( sizeX, sizeY ) ) {
             if( initInput ) {
                 if( !this->initInput() ) {
                     changingVideoSize = false;
@@ -1613,8 +1431,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("gpuBilinear", gpuBilinear ? 1 : 0);
   regSetDwordValue("gpuMotionBlur", gpuMotionBlur ? 1 : 0);
-
-  regSetDwordValue("filter", filterType);
 
   regSetDwordValue("disableStatus", disableStatusMessage);
 

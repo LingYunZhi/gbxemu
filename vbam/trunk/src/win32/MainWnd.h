@@ -15,7 +15,6 @@ public:
 
 	bool FileRun();
 	void winMouseOn();
-	void screenCapture(int captureNumber);
 	bool fileOpenSelect();
 	void updateSoundChannels(UINT nID);
 	bool fileImportGSACodeFile(CString& fileName);
@@ -47,8 +46,6 @@ protected:
 	afx_msg BOOL OnOptionsJoypadAutofire(UINT nID);
 	afx_msg void OnUpdateOptionsJoypadDefault(CCmdUI *pCmdUI);
 	afx_msg BOOL OnOptionsJoypadDefault(UINT nID);
-	afx_msg void OnUpdateOptionsFilter(CCmdUI *pCmdUI);
-	afx_msg BOOL OnOptionsFilter(UINT nID);
 	afx_msg void OnUpdateOptionsPriority(CCmdUI *pCmdUI);
 	afx_msg BOOL OnOptionsPriority(UINT nID);
 	afx_msg void OnUpdateOptionsEmulatorShowSpeed(CCmdUI *pCmdUI);

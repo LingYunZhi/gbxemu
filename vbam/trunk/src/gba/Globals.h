@@ -46,9 +46,11 @@ extern u8 *internalRAM;
 extern u8 *workRAM;
 extern u8 *paletteRAM;
 extern u8 *vram;
-extern u8 *pix;
 extern u8 *oam;
 extern u8 *ioMem;
+
+extern u16 *pix;
+extern const unsigned int pix_size;
 
 extern u16 DISPCNT;
 extern u16 DISPSTAT;

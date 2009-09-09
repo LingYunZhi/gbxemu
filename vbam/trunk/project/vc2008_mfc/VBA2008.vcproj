@@ -470,54 +470,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Pixel Filter"
-			>
-			<File
-				RelativePath="..\..\src\filters\2xSaI.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						WholeProgramOptimization="true"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\filters\admame.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\filters\scanline.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\filters\simpleFilter.cpp"
-				>
-			</File>
-			<Filter
-				Name="hq2x"
-				>
-				<File
-					RelativePath="..\..\src\filters\hq2x.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\filters\hq2x.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\filters\interp.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\filters\lq2x.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Functionality"
 			>
 			<File

@@ -19,8 +19,6 @@ struct EmulatedSystem {
   bool (*emuReadState)(const char *);
   // save state
   bool (*emuWriteState)(const char *);
-  // write BMP file
-  bool (*emuWriteBMP)(const char *);
   // emulator update CPSR (ARM only)
   void (*emuUpdateCPSR)();
   // emulator has debugger
@@ -35,7 +33,6 @@ extern int systemVerbose;
 extern void (*dbgOutput)(const char *s, u32 addr);
 extern void (*dbgSignal)(int sig,int number);
 
-void systemScreenCapture(int);
 void systemDrawScreen();
 // updates the joystick data
 bool systemReadJoypads();
@@ -54,13 +51,6 @@ bool systemCanChangeSoundQuality();
 void systemShowSpeed(int);
 void system10Frames(int);
 void systemFrame();
-
-extern u16 systemColorMap16[0x10000];
-extern u32 systemColorMap32[0x10000];
-extern int systemRedShift;
-extern int systemGreenShift;
-extern int systemBlueShift;
-extern int systemColorDepth;
 
 extern int systemSpeed;
 
