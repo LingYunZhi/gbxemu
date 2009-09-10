@@ -388,51 +388,6 @@ void MainWnd::OnUpdateOptionsEmulatorSavetypeFlash1m(CCmdUI* pCmdUI)
   pCmdUI->SetCheck(flashSize == 0x20000);
 }
 
-void MainWnd::OnOptionsEmulatorSavetypeDetectNow()
-{
-    if( theApp.cartridgeType != IMAGE_GBA ) return;
-    const int address_max = theApp.romSize - 10;
-    char temp[11]; temp[10] = '\0';
-    CString answer( _T( "This cartridge has probably no backup media." ) );
-
-    const u32 EEPR = 'E' | ( 'E' << 8 ) | ( 'P' << 16 ) | ( 'R' << 24 );
-    const u32 SRAM = 'S' | ( 'R' << 8 ) | ( 'A' << 16 ) | ( 'M' << 24 );
-    const u32 FLAS = 'F' | ( 'L' << 8 ) | ( 'A' << 16 ) | ( 'S' << 24 );
-
-    for( int address = 0; address < address_max; address += 4 ) {
-        const u32 check = *((u32*)&rom[address]);
-
-        if( EEPR == check ) {
-            memcpy( temp, &rom[address], 10 );
-            if( 0 == strncmp( temp, "EEPROM_V", 8 ) ) {
-                answer = _T( "This cartridge uses EEPROM." );
-                break;
-            }
-        }
-
-        if( SRAM == check ) {
-            memcpy( temp, &rom[address], 10 );
-            if( ( 0 == strncmp( temp, "SRAM_V", 6 ) ) || ( 0 == strncmp( temp, "SRAM_F_V", 8 ) ) ) {
-                answer = _T( "This cartridge uses SRAM." );
-                break;
-            }
-        }
-
-        if( FLAS == check ) {
-            memcpy( temp, &rom[address], 10 );
-            if( ( 0 == strncmp( temp, "FLASH_V", 7 ) ) || ( 0 == strncmp( temp, "FLASH512_V", 10 ) ) ) {
-                answer = _T( "This cartridge uses FLASH (64 KiB)." );
-                break;
-            }
-            if( 0 == strncmp( temp, "FLASH1M_V", 9 ) ) {
-                answer = _T( "This cartridge uses FLASH (128 KiB)." );
-                break;
-            }
-        }
-    }
-
-    MessageBox( answer );
-}
 
 void MainWnd::OnAudioCoreSettings()
 {

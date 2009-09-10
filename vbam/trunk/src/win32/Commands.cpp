@@ -88,7 +88,6 @@ struct {
   { "OptionsEmulatorSaveEEPROMSensor", ID_OPTIONS_EMULATOR_SAVETYPE_EEPROMSENSOR },
   { "OptionsEmulatorSaveFlash64K", ID_OPTIONS_EMULATOR_SAVETYPE_FLASH512K },
   { "OptionsEmulatorSaveFlash128K", ID_OPTIONS_EMULATOR_SAVETYPE_FLASH1M },
-  { "OptionsEmulatorSaveDetectNow", ID_OPTIONS_EMULATOR_SAVETYPE_DETECTNOW },
   { "OptionsEmulatorAGBPrint", ID_OPTIONS_EMULATOR_AGBPRINT },
   { "OptionsEmulatorRTC", ID_OPTIONS_EMULATOR_REALTIMECLOCK },
   { "OptionsSoundChannel1", ID_OPTIONS_SOUND_CHANNEL1 },
