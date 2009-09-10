@@ -252,15 +252,6 @@ void MainWnd::OnUpdateOptionsEmulatorAgbprint(CCmdUI* pCmdUI)
   pCmdUI->SetCheck(agbPrintIsEnabled());
 }
 
-void MainWnd::OnOptionsEmulatorRealtimeclock()
-{
-  theApp.winRtcEnable = !theApp.winRtcEnable;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorRealtimeclock(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winRtcEnable);
-}
 
 BOOL MainWnd::OnOptionsEmulatorShowSpeed(UINT nID)
 {
@@ -300,92 +291,6 @@ void MainWnd::OnUpdateOptionsEmulatorShowSpeed(CCmdUI *pCmdUI)
     pCmdUI->SetCheck(theApp.showSpeedTransparent);
     break;
   }
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeAutomatic()
-{
-  theApp.winSaveType = 0;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeAutomatic(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winSaveType == 0);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeEeprom()
-{
-  theApp.winSaveType = 1;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeEeprom(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winSaveType == 1);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeSram()
-{
-  theApp.winSaveType = 2;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeSram(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winSaveType == 2);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeFlash()
-{
-  theApp.winSaveType = 3;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeFlash(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winSaveType == 3);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeEepromsensor()
-{
-  theApp.winSaveType = 4;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeEepromsensor(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winSaveType == 4);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeNone()
-{
-  theApp.winSaveType = 5;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeNone(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(theApp.winSaveType == 5);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeFlash512k()
-{
-  flashSetSize(0x10000);
-  theApp.winFlashSize = 0x10000;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeFlash512k(CCmdUI* pCmdUI)
-{
-  // changed theApp.winFlashSize to flashSize to reflect the actual
-  // flashsize value used by the emu (it can change upon battery loading)
-  pCmdUI->SetCheck(flashSize == 0x10000);
-}
-
-void MainWnd::OnOptionsEmulatorSavetypeFlash1m()
-{
-  flashSetSize(0x20000);
-  theApp.winFlashSize = 0x20000;
-}
-
-void MainWnd::OnUpdateOptionsEmulatorSavetypeFlash1m(CCmdUI* pCmdUI)
-{
-  // changed theApp.winFlashSize to flashSize to reflect the actual
-  // flashsize value used by the emu (it can change upon battery loading)
-  pCmdUI->SetCheck(flashSize == 0x20000);
 }
 
 

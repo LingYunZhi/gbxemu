@@ -70,9 +70,6 @@ class VBA : public CWinApp
   CString recentFiles[10];
   bool recentFreeze;
   bool autoSaveLoadCheatList;
-  int winFlashSize;
-  bool winRtcEnable;
-  int winSaveType;
   bool syncToVideo;
   bool changingVideoSize;
 

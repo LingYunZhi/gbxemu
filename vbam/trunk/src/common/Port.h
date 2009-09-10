@@ -1,5 +1,4 @@
-#ifndef PORT_H
-#define PORT_H
+#pragma once
 
 // swaps a 16-bit value
 static inline u16 swap16(u16 v)
@@ -21,5 +20,3 @@ static inline u32 swap32(u32 v)
   *((u16 *)x) = (v)
 #define WRITE32LE(x,v) \
   *((u32 *)x) = (v)
-
-#endif // PORT_H

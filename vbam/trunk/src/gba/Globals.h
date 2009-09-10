@@ -36,7 +36,6 @@ extern bool parseDebug;
 extern int layerSettings;
 extern int layerEnable;
 extern bool speedHack;
-extern int cpuSaveType;
 extern bool cheatsEnabled;
 extern bool mirroringEnable;
 

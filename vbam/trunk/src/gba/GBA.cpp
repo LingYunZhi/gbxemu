@@ -2954,6 +2954,69 @@ void CPUReset()
       BIOS_RegisterRamReset(0xfe);
   }
 
+  // auto-detect save type & real time clock
+  const int address_max = romSize - 10;
+  
+  const u32 EEPR = 'E' | ( 'E' << 8 ) | ( 'P' << 16 ) | ( 'R' << 24 );
+  const u32 SRAM = 'S' | ( 'R' << 8 ) | ( 'A' << 16 ) | ( 'M' << 24 );
+  const u32 FLAS = 'F' | ( 'L' << 8 ) | ( 'A' << 16 ) | ( 'S' << 24 );
+  const u32 SIIR = 'S' | ( 'I' << 8 ) | ( 'I' << 16 ) | ( 'R' << 24 );
+
+  u8 cpuSaveType = 5; // NONE
+  int flashSizeFound = 0;
+  bool saveTypeFound = false;
+  bool rtcFound = false;
+  
+  for( int address = 0; address < address_max; address += 4 ) {
+      if( saveTypeFound && rtcFound ) break; // stop searching if everything was detected
+
+      const u32 check = READ32LE(&rom[address]);
+
+      if( !saveTypeFound ) {
+          if( EEPR == check ) {
+              if( 0 == strncmp( (const char *)&rom[address], "EEPROM_V", 8 ) ) {
+                  cpuSaveType = 1;
+                  saveTypeFound = true;
+              }
+          }
+
+          if( SRAM == check ) {
+              if( ( 0 == strncmp( (const char *)&rom[address], "SRAM_V", 6 ) ) ||
+                  ( 0 == strncmp( (const char *)&rom[address], "SRAM_F_V", 8 ) ) ) {
+                      cpuSaveType = 2;
+                      saveTypeFound = true;
+              }
+          }
+
+          if( FLAS == check ) {
+              if( ( 0 == strncmp( (const char *)&rom[address], "FLASH_V", 7 ) ) ||
+                  ( 0 == strncmp( (const char *)&rom[address], "FLASH512_V", 10 ) ) ) {
+                      cpuSaveType = 3;
+                      flashSizeFound = 0x10000; // 64 KB
+                      saveTypeFound = true;
+              } else if( 0 == strncmp( (const char *)&rom[address], "FLASH1M_V", 9 ) ) {
+                  cpuSaveType = 3;
+                  flashSizeFound = 0x20000; // 128 KB
+                  saveTypeFound = true;
+              }
+          }
+      }
+
+      if( !rtcFound ) {
+          if( SIIR == check ) {
+              if( 0 == strncmp( (const char *)&rom[address], "SIIRTC_V", 8 ) ) {
+                  rtcFound = true;
+              }
+          }
+      }
+  } // end save type detect
+
+
+  // set up real time clock
+  rtcEnable( rtcFound );
+
+
+  // set up save type
   switch(cpuSaveType) {
   case 0: // automatic
     cpuSramEnabled = true;
@@ -2985,6 +3048,7 @@ void CPUReset()
     cpuEEPROMSensorEnabled = false;
     cpuSaveGameFunc = flashDelayedWrite; // to insure we detect the write
     saveType = gbaSaveType = 2;
+    flashSetSize( flashSizeFound );
     break;
   case 4: // EEPROM+Sensor
     cpuSramEnabled = false;

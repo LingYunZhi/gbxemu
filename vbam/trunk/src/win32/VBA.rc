@@ -1192,7 +1192,6 @@ BEGIN
             MENUITEM "Auto-apply IPS/UPS/PPF",      ID_OPTIONS_EMULATOR_AUTOMATICALLYAPPLYPATCHFILES
             MENUITEM "Pause when inactive",         ID_OPTIONS_EMULATOR_PAUSEWHENINACTIVE
             MENUITEM "AGB Print",                   ID_OPTIONS_EMULATOR_AGBPRINT
-            MENUITEM "Real Time Clock",             ID_OPTIONS_EMULATOR_REALTIMECLOCK
             POPUP "Show speed"
             BEGIN
                 MENUITEM "None",                        ID_OPTIONS_EMULATOR_SHOWSPEED_NONE
@@ -1200,18 +1199,6 @@ BEGIN
                 MENUITEM "Detailed",                    ID_OPTIONS_EMULATOR_SHOWSPEED_DETAILED
                 MENUITEM SEPARATOR
                 MENUITEM "Transparent",                 ID_OPTIONS_EMULATOR_SHOWSPEED_TRANSPARENT
-            END
-            POPUP "Save Type"
-            BEGIN
-                MENUITEM "&Automatic",                  ID_OPTIONS_EMULATOR_SAVETYPE_AUTOMATIC
-                MENUITEM "EEPROM",                      ID_OPTIONS_EMULATOR_SAVETYPE_EEPROM
-                MENUITEM "SRAM",                        ID_OPTIONS_EMULATOR_SAVETYPE_SRAM
-                MENUITEM "Flash",                       ID_OPTIONS_EMULATOR_SAVETYPE_FLASH
-                MENUITEM "EEPROM+Sensor",               ID_OPTIONS_EMULATOR_SAVETYPE_EEPROMSENSOR
-                MENUITEM "None",                        ID_OPTIONS_EMULATOR_SAVETYPE_NONE
-                MENUITEM SEPARATOR
-                MENUITEM "Flash 64 KB",                 ID_OPTIONS_EMULATOR_SAVETYPE_FLASH512K
-                MENUITEM "Flash 128 KB",                ID_OPTIONS_EMULATOR_SAVETYPE_FLASH1M
             END
             MENUITEM SEPARATOR
             POPUP "UI &Language"

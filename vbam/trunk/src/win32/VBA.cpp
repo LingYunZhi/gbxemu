@@ -92,9 +92,6 @@ VBA::VBA()
   paused = false;
   recentFreeze = false;
   autoSaveLoadCheatList = true;
-  winFlashSize = 0x20000;
-  winRtcEnable = false;
-  winSaveType = 0;
   syncToVideo = false;
   changingVideoSize = false;
 
@@ -704,19 +701,7 @@ void VBA::loadSettings()
 
   recentFreeze = regQueryDwordValue("recentFreeze", false) ? true : false;
 
-  winSaveType = regQueryDwordValue("saveType", 0);
-  if(winSaveType < 0 || winSaveType > 5)
-    winSaveType = 0;
-
-  winFlashSize = regQueryDwordValue("flashSize", 0x10000);
-  if(winFlashSize != 0x10000 && winFlashSize != 0x20000)
-    winFlashSize = 0x10000;
-  flashSize = winFlashSize;
-
   agbPrintEnable(regQueryDwordValue("agbPrint", 0) ? true : false);
-
-  winRtcEnable = regQueryDwordValue("rtcEnabled", 0) ? true : false;
-  rtcEnable(winRtcEnable);
 
   switch(videoOption) {
   case VIDEO_320x240:
@@ -1440,13 +1425,7 @@ void VBA::saveSettings()
 
   regSetDwordValue("recentFreeze", recentFreeze);
 
-  regSetDwordValue("saveType", winSaveType);
-
-  regSetDwordValue("flashSize", winFlashSize);
-
   regSetDwordValue("agbPrint", agbPrintIsEnabled());
-
-  regSetDwordValue("rtcEnabled", winRtcEnable);
 
   regSetDwordValue("priority", threadPriority);
 

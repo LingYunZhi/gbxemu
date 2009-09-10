@@ -27,7 +27,6 @@ bool parseDebug = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 bool speedHack = false;
-int cpuSaveType = 0;
 bool cheatsEnabled = true;
 bool mirroringEnable = false;
 

@@ -71,10 +71,6 @@ void flashSetSize(int size)
     flashDeviceID = 0x13; //0x09;
     flashManufacturerID = 0x62; //0xc2;
   }
-  // Added to make 64k saves compatible with 128k ones
-  // (allow wrongfuly set 64k saves to work for Pokemon games)
-  if ((size == 0x20000) && (flashSize == 0x10000))
-    memcpy((u8 *)(flashSaveMemory+0x10000), (u8 *)(flashSaveMemory), 0x10000);
   flashSize = size;
 }
 
