@@ -2,7 +2,6 @@
 #include "VBA.h"
 #include "MainWnd.h"
 
-#include "Associate.h"
 #include "Directories.h"
 #include "FileDlg.h"
 #include "Joypad.h"
@@ -205,11 +204,6 @@ void MainWnd::OnUpdateOptionsVideoRenderoptionsD3dbilinear(CCmdUI* pCmdUI)
     pCmdUI->SetCheck( theApp.gpuBilinear ? 1 : 0 );
 }
 
-void MainWnd::OnOptionsEmulatorAssociate()
-{
-  Associate dlg;
-  dlg.DoModal();
-}
 
 void MainWnd::OnOptionsEmulatorDirectories()
 {

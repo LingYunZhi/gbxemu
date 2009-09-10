@@ -96,7 +96,6 @@ protected:
 	afx_msg void OnOptionsVideoFullscreenstretchtofit();
 	afx_msg void OnUpdateOptionsVideoFullscreenstretchtofit(CCmdUI* pCmdUI);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnOptionsEmulatorAssociate();
 	afx_msg void OnOptionsEmulatorDirectories();
 	afx_msg void OnOptionsEmulatorDisablestatusmessages();
 	afx_msg void OnUpdateOptionsEmulatorDisablestatusmessages(CCmdUI* pCmdUI);

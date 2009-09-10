@@ -1,5 +1,4 @@
-#ifndef VBA_REG_H
-#define VBA_REG_H
+#pragma once
 
 extern bool regEnabled;
 
@@ -12,7 +11,3 @@ void regSetBinaryValue(const char *key, char *value, int count);
 void regDeleteValue(char *key);
 void regInit(const char *, bool force = false);
 void regShutdown();
-bool regCreateFileType( const char *ext, const char *type );
-bool regAssociateType( const char *type, const char *desc, const char *application, const char *icon = NULL );
-void regExportSettingsToINI();
-#endif // VBA_REG_H

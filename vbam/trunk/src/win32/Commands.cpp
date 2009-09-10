@@ -76,7 +76,6 @@ struct {
   { "OptionsVideoLayersWIN1", ID_OPTIONS_VIDEO_LAYERS_WIN1 },
   { "OptionsVideoLayersOBJWIN", ID_OPTIONS_VIDEO_LAYERS_OBJWIN },
   { "OptionsVideoLayersReset", ID_OPTIONS_VIDEO_LAYERS_RESET },
-  { "OptionsEmulatorAssociate", ID_OPTIONS_EMULATOR_ASSOCIATE },
   { "OptionsEmulatorDirectories", ID_OPTIONS_EMULATOR_DIRECTORIES },
   { "OptionsEmulatorShowSpeedNone", ID_OPTIONS_EMULATOR_SHOWSPEED_NONE },
   { "OptionsEmulatorShowSpeedPercentage", ID_OPTIONS_EMULATOR_SHOWSPEED_PERCENTAGE },

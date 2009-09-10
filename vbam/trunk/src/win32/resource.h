@@ -5,7 +5,6 @@
 #define IDS_UNSUPPORTED_VBA_SGM         1
 #define IDS_CANNOT_LOAD_SGM             2
 #define IDS_SAVE_GAME_NOT_USING_BIOS    3
-#define IDC_DEFAULTS                    3
 #define IDS_SAVE_GAME_USING_BIOS        4
 #define IDS_UNSUPPORTED_SAVE_TYPE       5
 #define IDS_CANNOT_OPEN_FILE            6
@@ -85,7 +84,6 @@
 #define IDD_MODE_CONFIRM                149
 #define IDD_IO_VIEWER                   151
 #define IDD_MAX_SCALE                   154
-#define IDD_GAME_OVERRIDES              156
 #define IDD_SELECT                      159
 #define IDD_BIOS                        161
 #define IDD_FULLSCREEN                  162
@@ -451,15 +449,10 @@
 #define IDC_BIT_2                       1252
 #define IDC_BIT_3                       1253
 #define IDC_BIT_4                       1254
-#define IDC_NAME                        1254
 #define IDC_BIT_5                       1255
-#define IDC_RTC                         1255
 #define IDC_BIT_6                       1256
-#define IDC_SAVE_TYPE                   1256
 #define IDC_BIT_7                       1257
-#define IDC_FLASH_SIZE                  1257
 #define IDC_BIT_8                       1258
-#define IDC_COMMENT                     1258
 #define IDC_BIT_9                       1259
 #define IDC_BIT_10                      1260
 #define IDC_BIT_11                      1261
@@ -467,7 +460,6 @@
 #define IDC_BIT_13                      1263
 #define IDC_BIT_14                      1264
 #define IDC_BIT_15                      1265
-#define IDC_MIRRORING                   1266
 #define IDC_APPENDMODE                  1268
 #define IDC_GB_BIOS_PATH                1272
 #define IDC_GBA_BIOS_PATH               1273
