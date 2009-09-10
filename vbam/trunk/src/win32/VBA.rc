@@ -1150,7 +1150,6 @@ BEGIN
                 MENUITEM "Direct Sound &A",             ID_OPTIONS_SOUND_DIRECTSOUNDA, CHECKED
                 MENUITEM "Direct Sound &B",             ID_OPTIONS_SOUND_DIRECTSOUNDB, CHECKED
             END
-            MENUITEM SEPARATOR
         END
         POPUP "&Input"
         BEGIN
