@@ -17,7 +17,6 @@ public:
 	void winMouseOn();
 	bool fileOpenSelect();
 	void updateSoundChannels(UINT nID);
-	bool fileImportGSACodeFile(CString& fileName);
 	bool writeSaveGame(const char *name);
 	bool loadSaveGame(const char *name);
 	CString winLoadFilter(UINT id);
@@ -76,8 +75,6 @@ protected:
 	afx_msg void OnUpdateFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnFileImportBatteryfile();
 	afx_msg void OnUpdateFileImportBatteryfile(CCmdUI* pCmdUI);
-	afx_msg void OnFileImportGamesharkcodefile();
-	afx_msg void OnUpdateFileImportGamesharkcodefile(CCmdUI* pCmdUI);
 	afx_msg void OnFileExportBatteryfile();
 	afx_msg void OnUpdateFileExportBatteryfile(CCmdUI* pCmdUI);
 	afx_msg void OnFileScreencapture();

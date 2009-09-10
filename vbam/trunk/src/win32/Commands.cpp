@@ -56,7 +56,6 @@ struct {
   { "FilePause", ID_FILE_PAUSE },
   { "FileReset", ID_FILE_RESET },
   { "FileImportBatteryFile", ID_FILE_IMPORT_BATTERYFILE },
-  { "FileImportGamesharkCodeFile", ID_FILE_IMPORT_GAMESHARKCODEFILE },
   { "FileExportBatteryFile", ID_FILE_EXPORT_BATTERYFILE },
   { "FileScreenCapture", ID_FILE_SCREENCAPTURE },
   { "FileRomInformation", ID_FILE_ROMINFORMATION },

@@ -2063,69 +2063,6 @@ void cheatsAddGSACode(const char *code, const char *desc, bool v3)
   }
 }
 
-bool cheatsImportGSACodeFile(const char *name, int game, bool v3)
-{
-  FILE *f = fopen(name, "rb");
-  if(!f)
-    return false;
-
-  int games = 0;
-  int len = 0;
-  fseek(f, 0x1e, SEEK_CUR);
-  fread(&games, 1, 4, f);
-  bool found = false;
-  int g = 0;
-  while(games > 0) {
-    if(g == game) {
-      found = true;
-      break;
-    }
-    fread(&len, 1, 4, f);
-    fseek(f,len,SEEK_CUR);
-    int codes = 0;
-    fread(&codes, 1, 4, f);
-    while(codes > 0) {
-      fread(&len, 1, 4, f);
-      fseek(f, len, SEEK_CUR);
-      fseek(f, 8, SEEK_CUR);
-      fread(&len, 1, 4, f);
-      fseek(f, len*12, SEEK_CUR);
-      codes--;
-    }
-    games--;
-    g++;
-  }
-  if(found) {
-    char desc[256];
-    char code[17];
-    fread(&len, 1, 4, f);
-    fseek(f, len, SEEK_CUR);
-    int codes = 0;
-    fread(&codes, 1, 4, f);
-    while(codes > 0) {
-      fread(&len, 1, 4, f);
-      fread(desc, 1, len, f);
-      desc[len] =0;
-      desc[31] = 0;
-      fread(&len, 1, 4, f);
-      fseek(f, len, SEEK_CUR);
-      fseek(f, 4, SEEK_CUR);
-      fread(&len, 1, 4, f);
-      while(len) {
-        fseek(f, 4, SEEK_CUR);
-        fread(code, 1, 8, f);
-        fseek(f, 4, SEEK_CUR);
-        fread(&code[8], 1, 8, f);
-        code[16] = 0;
-        cheatsAddGSACode(code, desc, v3);
-        len -= 2;
-      }
-      codes--;
-    }
-  }
-  fclose(f);
-  return false;
-}
 
 void cheatsCBAReverseArray(u8 *array, u8 *dest)
 {

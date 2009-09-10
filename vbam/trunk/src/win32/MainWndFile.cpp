@@ -379,35 +379,6 @@ void MainWnd::OnUpdateFileImportBatteryfile(CCmdUI* pCmdUI)
   pCmdUI->Enable(emulating);
 }
 
-void MainWnd::OnFileImportGamesharkcodefile()
-{
-  LPCTSTR exts[] = { "" };
-  CString filter = winLoadFilter(IDS_FILTER_SPC);
-  CString title = winResLoadString(IDS_SELECT_CODE_FILE);
-
-  FileDlg dlg(this, "", filter, 0, "", exts, "", title, false);
-
-  if(dlg.DoModal() == IDCANCEL)
-    return;
-
-  CString str1 = winResLoadString(IDS_CODES_WILL_BE_LOST);
-
-  if(MessageBox(str1,
-                NULL,
-                MB_OKCANCEL) == IDCANCEL)
-    return;
-
-  bool res = false;
-  CString file = dlg.GetPathName();
-  if(theApp.cartridgeType == IMAGE_GBA)
-    res = fileImportGSACodeFile(file);
-}
-
-void MainWnd::OnUpdateFileImportGamesharkcodefile(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(emulating);
-}
-
 
 void MainWnd::OnFileExportBatteryfile()
 {
@@ -567,56 +538,6 @@ void MainWnd::OnUpdateFileTogglemenu(CCmdUI* pCmdUI)
 	//pCmdUI->Enable(theApp.videoOption > VIDEO_4X);
 }
 
-bool MainWnd::fileImportGSACodeFile(CString& fileName)
-{
-  FILE *f = fopen(fileName, "rb");
-
-  if(f == NULL) {
-    systemMessage(MSG_CANNOT_OPEN_FILE, "Cannot open file %s", fileName);
-    return false;
-  }
-
-  u32 len;
-  fread(&len, 1, 4, f);
-  if(len != 14) {
-    fclose(f);
-    systemMessage(MSG_UNSUPPORTED_CODE_FILE, "Unsupported code file %s",
-                  fileName);
-    return false;
-  }
-  char buffer[16];
-  fread(buffer, 1, 14, f);
-  buffer[14] = 0;
-  if(memcmp(buffer, "SharkPortCODES", 14)) {
-    fclose(f);
-    systemMessage(MSG_UNSUPPORTED_CODE_FILE, "Unsupported code file %s",
-                  fileName);
-    return false;
-  }
-  fseek(f, 0x1e, SEEK_SET);
-  fread(&len, 1, 4, f);
-  INT_PTR game = 0;
-  if(len > 1) {
-    GSACodeSelect dlg(f);
-    game = dlg.DoModal();
-  }
-  fclose(f);
-
-  bool v3 = false;
-
-  int index = fileName.ReverseFind('.');
-
-  if(index != -1) {
-    if(fileName.Right(3).CompareNoCase("XPC") == 0)
-      v3 = true;
-  }
-
-  if(game != -1) {
-    return cheatsImportGSACodeFile(fileName, (int)game, v3);
-  }
-
-  return true;
-}
 
 void MainWnd::OnFileSavegameOldestslot()
 {

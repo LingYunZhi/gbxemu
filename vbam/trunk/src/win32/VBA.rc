@@ -1128,7 +1128,6 @@ BEGIN
         POPUP "Import"
         BEGIN
             MENUITEM "&Battery file...",            ID_FILE_IMPORT_BATTERYFILE
-            MENUITEM "Gameshark &code file...",     ID_FILE_IMPORT_GAMESHARKCODEFILE
         END
         POPUP "Export"
         BEGIN
@@ -1532,10 +1531,7 @@ STRINGTABLE
 BEGIN
     IDS_FILTER_GBS          "Gameboy Snapshot_*.GBS__"
     IDS_FILTER_GCF          "Gameshark Code File_*.GCF__"
-    IDS_SELECT_CODE_FILE    "Select code file"
     IDS_SAVE_WILL_BE_LOST   "Importing a snapshot file will erase any saved games. Do you want to continue?"
-    IDS_CODES_WILL_BE_LOST  "Importing a code file will erase any entered codes. Do you want to continue?"
-    IDS_FILTER_SPC          "Gameshark Code File_*.SPC;*.XPC__"
     IDS_ADD_CBA_CODE        "Add CodeBreakerAdvance code"
     IDS_FILTER_WAV          "Wave file_*.WAV__"
     IDS_SELECT_WAV_NAME     "Select wave file name"
