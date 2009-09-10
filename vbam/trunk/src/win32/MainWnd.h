@@ -204,8 +204,6 @@ protected:
 	afx_msg void OnCheatsDisablecheats();
 	afx_msg void OnUpdateCheatsDisablecheats(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoFullscreenmaxscale();
-	afx_msg void OnOptionsEmulatorGameoverrides();
-	afx_msg void OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI);
 	afx_msg void OnHelpGnupubliclicense();
 	afx_msg BOOL OnFileRecentFile(UINT nID);
 	afx_msg BOOL OnFileLoadSlot(UINT nID);

@@ -1225,7 +1225,6 @@ BEGIN
             MENUITEM "Pause when inactive",         ID_OPTIONS_EMULATOR_PAUSEWHENINACTIVE
             MENUITEM "AGB Print",                   ID_OPTIONS_EMULATOR_AGBPRINT
             MENUITEM "Real Time Clock",             ID_OPTIONS_EMULATOR_REALTIMECLOCK
-            MENUITEM "&Game Overrides...",          ID_OPTIONS_EMULATOR_GAMEOVERRIDES
             POPUP "Show speed"
             BEGIN
                 MENUITEM "None",                        ID_OPTIONS_EMULATOR_SHOWSPEED_NONE

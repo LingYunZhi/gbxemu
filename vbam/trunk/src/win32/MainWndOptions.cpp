@@ -5,7 +5,6 @@
 #include "Associate.h"
 #include "Directories.h"
 #include "FileDlg.h"
-#include "GameOverrides.h"
 #include "Joypad.h"
 #include "MaxScale.h"
 #include "Reg.h"
@@ -794,19 +793,6 @@ void MainWnd::OnOptionsVideoFullscreenmaxscale()
   if( theApp.display ) {
 	  theApp.display->setOption( _T("maxScale"), theApp.maxScale );
   }
-}
-
-void MainWnd::OnOptionsEmulatorGameoverrides()
-{
-  if(emulating && theApp.cartridgeType == IMAGE_GBA) {
-    GameOverrides dlg(this);
-    dlg.DoModal();
-  }
-}
-
-void MainWnd::OnUpdateOptionsEmulatorGameoverrides(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(emulating && (theApp.cartridgeType == IMAGE_GBA));
 }
 
 

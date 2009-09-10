@@ -1128,22 +1128,6 @@ int CPULoadRom(const char *szFile)
   return romSize;
 }
 
-void doMirroring (bool b)
-{
-  u32 mirroredRomSize = (((romSize)>>20) & 0x3F)<<20;
-  u32 mirroredRomAddress = romSize;
-  if ((mirroredRomSize <=0x800000) && (b))
-  {
-    mirroredRomAddress = mirroredRomSize;
-    if (mirroredRomSize==0)
-        mirroredRomSize=0x100000;
-    while (mirroredRomAddress<0x01000000)
-    {
-      memcpy ((u16 *)(rom+mirroredRomAddress), (u16 *)(rom), mirroredRomSize);
-      mirroredRomAddress+=mirroredRomSize;
-    }
-  }
-}
 
 void CPUUpdateRender()
 {

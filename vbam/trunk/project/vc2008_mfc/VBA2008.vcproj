@@ -969,26 +969,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\GameOverrides.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\GBACheats.cpp"
 				>
 				<FileConfiguration

@@ -207,8 +207,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
 	ON_COMMAND(ID_CHEATS_DISABLECHEATS, OnCheatsDisablecheats)
 	ON_UPDATE_COMMAND_UI(ID_CHEATS_DISABLECHEATS, OnUpdateCheatsDisablecheats)
 	ON_COMMAND(ID_OPTIONS_VIDEO_FULLSCREENMAXSCALE, OnOptionsVideoFullscreenmaxscale)
-	ON_COMMAND(ID_OPTIONS_EMULATOR_GAMEOVERRIDES, OnOptionsEmulatorGameoverrides)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_EMULATOR_GAMEOVERRIDES, OnUpdateOptionsEmulatorGameoverrides)
 	ON_COMMAND(ID_HELP_GNUPUBLICLICENSE, OnHelpGnupubliclicense)
 
 	//}}AFX_MSG_MAP
@@ -320,45 +318,6 @@ bool MainWnd::FileRun()
     flashSetSize(theApp.winFlashSize);
     rtcEnable(theApp.winRtcEnable);
     cpuSaveType = theApp.winSaveType;
-
-    GetModuleFileName(NULL, tempName, 2048);
-
-    char *p = strrchr(tempName, '\\');
-    if(p)
-      *p = 0;
-
-    char buffer[5];
-    strncpy(buffer, (const char *)&rom[0xac], 4);
-    buffer[4] = 0;
-
-    strcat(tempName, "\\vba-over.ini");
-
-    UINT i = GetPrivateProfileInt(buffer,
-					                "rtcEnabled",
-                                  -1,
-                                  tempName);
-    if(i != (UINT)-1)
-      rtcEnable(i == 0 ? false : true);
-
-    i = GetPrivateProfileInt(buffer,
-                             "flashSize",
-                             -1,
-                             tempName);
-    if(i != (UINT)-1 && (i == 0x10000 || i == 0x20000))
-      flashSetSize((int)i);
-
-    i = GetPrivateProfileInt(buffer,
-                             "saveType",
-                             -1,
-                             tempName);
-    if(i != (UINT)-1 && (i <= 5))
-      cpuSaveType = (int)i;
-    i = GetPrivateProfileInt(buffer,
-                             "mirroringEnabled",
-                             -1,
-                             tempName);
-    if(i != (UINT)-1)
-      doMirroring (i == 0 ? false : true);
 
     theApp.emulator = GBASystem;
   }
