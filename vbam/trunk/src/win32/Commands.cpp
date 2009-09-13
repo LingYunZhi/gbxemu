@@ -81,7 +81,6 @@ struct {
   { "OptionsEmulatorShowSpeedPercentage", ID_OPTIONS_EMULATOR_SHOWSPEED_PERCENTAGE },
   { "OptionsEmulatorShowSpeedDetailed", ID_OPTIONS_EMULATOR_SHOWSPEED_DETAILED },
   { "OptionsEmulatorShowSpeedTransparent", ID_OPTIONS_EMULATOR_SHOWSPEED_TRANSPARENT },
-  { "OptionsEmulatorAGBPrint", ID_OPTIONS_EMULATOR_AGBPRINT },
   { "OptionsSoundChannel1", ID_OPTIONS_SOUND_CHANNEL1 },
   { "OptionsSoundChannel2", ID_OPTIONS_SOUND_CHANNEL2 },
   { "OptionsSoundChannel3", ID_OPTIONS_SOUND_CHANNEL3 },

@@ -16,7 +16,6 @@
 #include "../NLS.h"
 #include "../Util.h"
 #include "../System.h"
-#include "agbprint.h"
 
 
 static int clockTicks;

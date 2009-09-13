@@ -1051,7 +1051,6 @@ BEGIN
             END
             MENUITEM "Auto-apply IPS/UPS/PPF",      ID_OPTIONS_EMULATOR_AUTOMATICALLYAPPLYPATCHFILES
             MENUITEM "Pause when inactive",         ID_OPTIONS_EMULATOR_PAUSEWHENINACTIVE
-            MENUITEM "AGB Print",                   ID_OPTIONS_EMULATOR_AGBPRINT
             POPUP "Show speed"
             BEGIN
                 MENUITEM "None",                        ID_OPTIONS_EMULATOR_SHOWSPEED_NONE

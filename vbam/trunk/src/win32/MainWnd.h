@@ -99,8 +99,6 @@ protected:
 	afx_msg void OnUpdateOptionsEmulatorSynchronize(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsEmulatorPausewheninactive();
 	afx_msg void OnUpdateOptionsEmulatorPausewheninactive(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsEmulatorAgbprint();
-	afx_msg void OnUpdateOptionsEmulatorAgbprint(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundChannel1();
 	afx_msg void OnUpdateOptionsSoundChannel1(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundChannel2();

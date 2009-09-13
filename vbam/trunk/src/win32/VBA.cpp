@@ -11,7 +11,6 @@
 #include "Logging.h"
 
 #include "../System.h"
-#include "../gba/agbprint.h"
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../gba/RTC.h"
@@ -690,8 +689,6 @@ void VBA::loadSettings()
     true : false;
 
   recentFreeze = regQueryDwordValue("recentFreeze", false) ? true : false;
-
-  agbPrintEnable(regQueryDwordValue("agbPrint", 0) ? true : false);
 
   switch(videoOption) {
   case VIDEO_320x240:
@@ -1410,8 +1407,6 @@ void VBA::saveSettings()
   regSetDwordValue("showSpeedTransparent", showSpeedTransparent);
 
   regSetDwordValue("recentFreeze", recentFreeze);
-
-  regSetDwordValue("agbPrint", agbPrintIsEnabled());
 
   regSetDwordValue("priority", threadPriority);
 

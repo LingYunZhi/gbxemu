@@ -332,14 +332,6 @@
 				Name="GBA"
 				>
 				<File
-					RelativePath="..\..\src\gba\agbprint.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\gba\agbprint.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\gba\bios.cpp"
 					>
 				</File>

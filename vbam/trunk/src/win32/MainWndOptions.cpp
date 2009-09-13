@@ -13,7 +13,6 @@
 #include "AudioCoreSettingsDlg.h"
 
 #include "../System.h"
-#include "../gba/agbprint.h"
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../gba/Sound.h"
@@ -239,17 +238,6 @@ void MainWnd::OnOptionsEmulatorPausewheninactive()
 void MainWnd::OnUpdateOptionsEmulatorPausewheninactive(CCmdUI* pCmdUI)
 {
   pCmdUI->SetCheck(theApp.pauseWhenInactive);
-}
-
-
-void MainWnd::OnOptionsEmulatorAgbprint()
-{
-  agbPrintEnable(!agbPrintIsEnabled());
-}
-
-void MainWnd::OnUpdateOptionsEmulatorAgbprint(CCmdUI* pCmdUI)
-{
-  pCmdUI->SetCheck(agbPrintIsEnabled());
 }
 
 
