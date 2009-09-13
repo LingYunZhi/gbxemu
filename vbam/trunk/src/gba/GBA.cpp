@@ -2449,7 +2449,6 @@ void CPUUpdateRegister(u32 address, u16 value)
     {
       memoryWait[0x0e] = memoryWaitSeq[0x0e] = gamepakRamWaitState[value & 3];
 
-      if(!speedHack) {
         memoryWait[0x08] = memoryWait[0x09] = gamepakWaitState[(value >> 2) & 3];
         memoryWaitSeq[0x08] = memoryWaitSeq[0x09] =
           gamepakWaitState0[(value >> 4) & 1];
@@ -2461,16 +2460,6 @@ void CPUUpdateRegister(u32 address, u16 value)
         memoryWait[0x0c] = memoryWait[0x0d] = gamepakWaitState[(value >> 8) & 3];
         memoryWaitSeq[0x0c] = memoryWaitSeq[0x0d] =
           gamepakWaitState2[(value >> 10) & 1];
-      } else {
-        memoryWait[0x08] = memoryWait[0x09] = 3;
-        memoryWaitSeq[0x08] = memoryWaitSeq[0x09] = 1;
-
-        memoryWait[0x0a] = memoryWait[0x0b] = 3;
-        memoryWaitSeq[0x0a] = memoryWaitSeq[0x0b] = 1;
-
-        memoryWait[0x0c] = memoryWait[0x0d] = 3;
-        memoryWaitSeq[0x0c] = memoryWaitSeq[0x0d] = 1;
-      }
 
       for(int i = 8; i < 15; i++) {
         memoryWait32[i] = memoryWait[i] + memoryWaitSeq[i] + 1;

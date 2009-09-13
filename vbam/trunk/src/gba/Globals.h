@@ -35,7 +35,6 @@ extern bool cpuIsMultiBoot;
 extern bool parseDebug;
 extern int layerSettings;
 extern int layerEnable;
-extern bool speedHack;
 extern bool mirroringEnable;
 
 extern u8 *bios;

@@ -21,7 +21,6 @@ bool cpuIsMultiBoot = false;
 bool parseDebug = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
-bool speedHack = false;
 bool mirroringEnable = false;
 
 u8 *bios = 0;
