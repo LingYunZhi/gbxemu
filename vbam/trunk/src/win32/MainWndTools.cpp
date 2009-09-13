@@ -3,7 +3,6 @@
 
 #include "AccelEditor.h"
 #include "AVIWrite.h"
-#include "Disassemble.h"
 #include "FileDlg.h"
 #include "IOViewer.h"
 #include "MapView.h"
@@ -26,20 +25,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-void MainWnd::OnToolsDisassemble()
-{
-  if(theApp.cartridgeType == IMAGE_GBA) {
-    Disassemble *dlg = new Disassemble();
-    dlg->Create(IDD_DISASSEMBLE, this);
-    dlg->ShowWindow(SW_SHOW);
-  }
-}
-
-void MainWnd::OnUpdateToolsDisassemble(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
 
 void MainWnd::OnToolsLogging()
 {

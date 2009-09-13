@@ -1082,7 +1082,6 @@ BEGIN
             MENUITEM "Stop sound recording",        ID_OPTIONS_SOUND_STOPRECORDING
         END
         MENUITEM SEPARATOR
-        MENUITEM "Disassemble...",              ID_TOOLS_DISASSEMBLE
         MENUITEM "Logging...",                  ID_TOOLS_LOGGING
         MENUITEM "&IO Viewer...",               ID_TOOLS_IOVIEWER
         MENUITEM "&Map Viewer...",              ID_TOOLS_MAPVIEW

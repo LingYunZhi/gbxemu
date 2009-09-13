@@ -461,14 +461,6 @@
 			Name="Functionality"
 			>
 			<File
-				RelativePath="..\..\src\gba\armdis.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gba\armdis.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\NLS.h"
 				>
 			</File>
@@ -842,30 +834,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\win32\Directories.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\Disassemble.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\Disassemble.h"
 				>
 			</File>
 			<File
