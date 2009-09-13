@@ -97,7 +97,6 @@ VBA::VBA()
   iconic = false;
   regEnabled = false;
   pauseWhenInactive = true;
-  threadPriority = 2;
   languageOption = 0;
   languageModule = NULL;
   languageName = "";
@@ -723,12 +722,6 @@ void VBA::loadSettings()
 	break;
   }
 
-  threadPriority = regQueryDwordValue("priority", 2);
-
-  if(threadPriority < 0 || threadPriority >3)
-    threadPriority = 2;
-  updatePriority();
-
   for(int i = 0; i < 10; i++) {
     buffer.Format("recent%d", i);
     char *s = regQueryStringValue(buffer, NULL);
@@ -1174,23 +1167,6 @@ void VBA::shutdownDisplay()
 }
 
 
-void VBA::updatePriority()
-{
-  switch(threadPriority) {
-  case 0:
-    SetThreadPriority(THREAD_PRIORITY_HIGHEST);
-    break;
-  case 1:
-    SetThreadPriority(THREAD_PRIORITY_ABOVE_NORMAL);
-    break;
-  case 3:
-    SetThreadPriority(THREAD_PRIORITY_BELOW_NORMAL);
-    break;
-  default:
-    SetThreadPriority(THREAD_PRIORITY_NORMAL);
-  }
-}
-
 void VBA::winSetLanguageOption(int option, bool force)
 {
   if(((option == languageOption) && option != 2) && !force)
@@ -1407,8 +1383,6 @@ void VBA::saveSettings()
   regSetDwordValue("showSpeedTransparent", showSpeedTransparent);
 
   regSetDwordValue("recentFreeze", recentFreeze);
-
-  regSetDwordValue("priority", threadPriority);
 
   CString buffer;
   for(int i = 0; i < 10; i++) {

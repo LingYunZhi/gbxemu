@@ -82,7 +82,6 @@ class VBA : public CWinApp
   bool iconic;
   bool dinputKeyFocus;
   bool pauseWhenInactive;
-  int threadPriority;
   int languageOption;
   CString languageName;
   HMODULE languageModule;
@@ -150,7 +149,6 @@ class VBA : public CWinApp
   bool initInput();
   HMODULE winLoadLanguage(const char *name);
   void winSetLanguageOption(int option, bool force);
-  void updatePriority();
   void shutdownDisplay();
   bool preInitialize();
   bool updateRenderMethod0(bool force);

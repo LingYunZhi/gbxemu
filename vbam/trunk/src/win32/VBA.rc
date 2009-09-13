@@ -1042,13 +1042,6 @@ BEGIN
         BEGIN
             MENUITEM "&Directories...",             ID_OPTIONS_EMULATOR_DIRECTORIES
             MENUITEM "BIOS...",                     ID_EMULATOR_BIOSFILES
-            POPUP "&Priority"
-            BEGIN
-                MENUITEM "&Highest",                    ID_OPTIONS_PRIORITY_HIGHEST
-                MENUITEM "&Above Normal",               ID_OPTIONS_PRIORITY_ABOVENORMAL
-                MENUITEM "&Normal",                     ID_OPTIONS_PRIORITY_NORMAL
-                MENUITEM "&Below Normal",               ID_OPTIONS_PRIORITY_BELOWNORMAL
-            END
             MENUITEM "Pause when inactive",         ID_OPTIONS_EMULATOR_PAUSEWHENINACTIVE
             POPUP "Show speed"
             BEGIN

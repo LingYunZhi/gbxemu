@@ -41,8 +41,6 @@ protected:
 	afx_msg BOOL OnOptionsJoypadAutofire(UINT nID);
 	afx_msg void OnUpdateOptionsJoypadDefault(CCmdUI *pCmdUI);
 	afx_msg BOOL OnOptionsJoypadDefault(UINT nID);
-	afx_msg void OnUpdateOptionsPriority(CCmdUI *pCmdUI);
-	afx_msg BOOL OnOptionsPriority(UINT nID);
 	afx_msg void OnUpdateOptionsEmulatorShowSpeed(CCmdUI *pCmdUI);
 	afx_msg BOOL OnOptionsEmulatorShowSpeed(UINT nID);
 	afx_msg void OnSystemMinimize();
