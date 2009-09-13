@@ -4,7 +4,6 @@
 #include <shlwapi.h>
 
 #include "FileDlg.h"
-#include "GSACodeSelect.h"
 #include "RomInfo.h"
 #include "Reg.h"
 #include "WinResUtil.h"

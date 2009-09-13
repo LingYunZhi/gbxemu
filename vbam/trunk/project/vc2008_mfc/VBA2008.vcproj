@@ -356,14 +356,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\gba\elf.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\gba\elf.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\gba\Flash.cpp"
 					>
 				</File>
