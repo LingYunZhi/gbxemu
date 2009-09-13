@@ -20,14 +20,10 @@ public:
 	bool writeSaveGame(const char *name);
 	bool loadSaveGame(const char *name);
 	CString winLoadFilter(UINT id);
-	void winLoadCheatList(const char *name);
-	void winLoadCheatListDefault();
 	void readBatteryFile();
 	void writeBatteryFile();
 	bool isDriveRoot(CString& file);
 	CString getDirFromFile(CString& file);
-	void winSaveCheatList(const char *name);
-	void winSaveCheatListDefault();
 
 private:
 	bool fileExists( LPCTSTR lpFileName );
@@ -133,15 +129,6 @@ protected:
 	afx_msg void OnUpdateOptionsJoypadConfigure4(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsJoypadMotionconfigure();
 	afx_msg void OnUpdateOptionsJoypadMotionconfigure(CCmdUI* pCmdUI);
-	afx_msg void OnCheatsSearchforcheats();
-	afx_msg void OnUpdateCheatsSearchforcheats(CCmdUI* pCmdUI);
-	afx_msg void OnCheatsCheatlist();
-	afx_msg void OnUpdateCheatsCheatlist(CCmdUI* pCmdUI);
-	afx_msg void OnCheatsAutomaticsaveloadcheats();
-	afx_msg void OnCheatsLoadcheatlist();
-	afx_msg void OnUpdateCheatsLoadcheatlist(CCmdUI* pCmdUI);
-	afx_msg void OnCheatsSavecheatlist();
-	afx_msg void OnUpdateCheatsSavecheatlist(CCmdUI* pCmdUI);
 	afx_msg void OnToolsDisassemble();
 	afx_msg void OnUpdateToolsDisassemble(CCmdUI* pCmdUI);
 	afx_msg void OnToolsLogging();
@@ -158,7 +145,6 @@ protected:
 	afx_msg void OnUpdateToolsPaletteview(CCmdUI* pCmdUI);
 	afx_msg void OnToolsTileviewer();
 	afx_msg void OnUpdateToolsTileviewer(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateCheatsAutomaticsaveloadcheats(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundStartrecording();
 	afx_msg void OnUpdateOptionsSoundStartrecording(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundStoprecording();
@@ -181,8 +167,6 @@ protected:
 	afx_msg void OnUpdateFileLoadgameMostrecent(CCmdUI* pCmdUI);
 	afx_msg void OnFileLoadgameAutoloadmostrecent();
 	afx_msg void OnUpdateFileLoadgameAutoloadmostrecent(CCmdUI* pCmdUI);
-	afx_msg void OnCheatsDisablecheats();
-	afx_msg void OnUpdateCheatsDisablecheats(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsVideoFullscreenmaxscale();
 	afx_msg void OnHelpGnupubliclicense();
 	afx_msg BOOL OnFileRecentFile(UINT nID);

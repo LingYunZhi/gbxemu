@@ -120,8 +120,6 @@ void MainWnd::OnFileClose()
 {
   // save battery file before we change the filename...
   if(rom != NULL) {
-    if(theApp.autoSaveLoadCheatList)
-      winSaveCheatListDefault();
     writeBatteryFile();
     soundPause();
     theApp.emulator.emuCleanUp();

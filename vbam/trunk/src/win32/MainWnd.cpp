@@ -12,7 +12,6 @@
 
 #include "../System.h"
 #include "../AutoBuild.h"
-#include "../gba/cheatSearch.h"
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../gba/Flash.h"
@@ -135,15 +134,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_JOYPAD_CONFIGURE_4, OnUpdateOptionsJoypadConfigure4)
   ON_COMMAND(ID_OPTIONS_JOYPAD_MOTIONCONFIGURE, OnOptionsJoypadMotionconfigure)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_JOYPAD_MOTIONCONFIGURE, OnUpdateOptionsJoypadMotionconfigure)
-  ON_COMMAND(ID_CHEATS_SEARCHFORCHEATS, OnCheatsSearchforcheats)
-  ON_UPDATE_COMMAND_UI(ID_CHEATS_SEARCHFORCHEATS, OnUpdateCheatsSearchforcheats)
-  ON_COMMAND(ID_CHEATS_CHEATLIST, OnCheatsCheatlist)
-  ON_UPDATE_COMMAND_UI(ID_CHEATS_CHEATLIST, OnUpdateCheatsCheatlist)
-  ON_COMMAND(ID_CHEATS_AUTOMATICSAVELOADCHEATS, OnCheatsAutomaticsaveloadcheats)
-  ON_COMMAND(ID_CHEATS_LOADCHEATLIST, OnCheatsLoadcheatlist)
-  ON_UPDATE_COMMAND_UI(ID_CHEATS_LOADCHEATLIST, OnUpdateCheatsLoadcheatlist)
-  ON_COMMAND(ID_CHEATS_SAVECHEATLIST, OnCheatsSavecheatlist)
-  ON_UPDATE_COMMAND_UI(ID_CHEATS_SAVECHEATLIST, OnUpdateCheatsSavecheatlist)
   ON_COMMAND(ID_TOOLS_DISASSEMBLE, OnToolsDisassemble)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_DISASSEMBLE, OnUpdateToolsDisassemble)
   ON_COMMAND(ID_TOOLS_LOGGING, OnToolsLogging)
@@ -160,7 +150,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_PALETTEVIEW, OnUpdateToolsPaletteview)
   ON_COMMAND(ID_TOOLS_TILEVIEWER, OnToolsTileviewer)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_TILEVIEWER, OnUpdateToolsTileviewer)
-  ON_UPDATE_COMMAND_UI(ID_CHEATS_AUTOMATICSAVELOADCHEATS, OnUpdateCheatsAutomaticsaveloadcheats)
   ON_COMMAND(ID_OPTIONS_SOUND_STARTRECORDING, OnOptionsSoundStartrecording)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUND_STARTRECORDING, OnUpdateOptionsSoundStartrecording)
   ON_COMMAND(ID_OPTIONS_SOUND_STOPRECORDING, OnOptionsSoundStoprecording)
@@ -183,8 +172,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_FILE_LOADGAME_MOSTRECENT, OnUpdateFileLoadgameMostrecent)
 	ON_COMMAND(ID_FILE_LOADGAME_AUTOLOADMOSTRECENT, OnFileLoadgameAutoloadmostrecent)
 	ON_UPDATE_COMMAND_UI(ID_FILE_LOADGAME_AUTOLOADMOSTRECENT, OnUpdateFileLoadgameAutoloadmostrecent)
-	ON_COMMAND(ID_CHEATS_DISABLECHEATS, OnCheatsDisablecheats)
-	ON_UPDATE_COMMAND_UI(ID_CHEATS_DISABLECHEATS, OnUpdateCheatsDisablecheats)
 	ON_COMMAND(ID_OPTIONS_VIDEO_FULLSCREENMAXSCALE, OnOptionsVideoFullscreenmaxscale)
 	ON_COMMAND(ID_HELP_GNUPUBLICLICENSE, OnHelpGnupubliclicense)
 
@@ -236,10 +223,7 @@ bool MainWnd::FileRun()
 {
   // save battery file before we change the filename...
   if(rom != NULL) {
-    if(theApp.autoSaveLoadCheatList)
-      winSaveCheatListDefault();
     writeBatteryFile();
-    cheatSearchCleanup(&cheatSearchData);
     theApp.emulator.emuCleanUp();
     emulating = false;
 #ifdef APU_LOGGER_H
@@ -258,11 +242,6 @@ bool MainWnd::FileRun()
   int index = theApp.filename.ReverseFind('.');
   if(index != -1)
     theApp.filename = theApp.filename.Left(index);
-
-  if( theApp.filename != oldFile ) {
-	  // clear cheat list when another game is loaded
-	  cheatsDeleteAll( false );
-  }
 
   CString patchName;
   patchName.Format("%s.ips", theApp.filename);
@@ -314,9 +293,6 @@ bool MainWnd::FileRun()
   CPUReset();
 
   readBatteryFile();
-
-  if(theApp.autoSaveLoadCheatList)
-    winLoadCheatListDefault();
 
   theApp.addRecentFile(theApp.szFile);
 
@@ -502,91 +478,6 @@ void MainWnd::OnSize(UINT nType, int cx, int cy)
       }
     }
   }
-}
-
-void MainWnd::winSaveCheatListDefault()
-{
-  CString name;
-  CString filename;
-
-  int index = theApp.filename.ReverseFind('\\');
-
-  if(index != -1)
-    name = theApp.filename.Right(theApp.filename.GetLength()-index-1);
-  else
-    name = theApp.filename;
-  CString dir = regQueryStringValue("saveDir", NULL);
-  if( dir[0] == '.' ) {
-	  // handle as relative path
-	  char baseDir[MAX_PATH+1];
-	  GetModuleFileName( NULL, baseDir, MAX_PATH );
-	  baseDir[MAX_PATH] = '\0'; // for security reasons
-	  PathRemoveFileSpec( baseDir ); // removes the trailing file name and backslash
-	  strcat( baseDir, "\\" );
-	  strcat( baseDir, dir );
-	  dir = baseDir;
-	}
-
-  if(!dir.GetLength())
-    dir = getDirFromFile(filename);
-
-  if(isDriveRoot(dir))
-    filename.Format("%s%s.clt", dir, name);
-  else
-    filename.Format("%s\\%s.clt", dir, name);
-
-  winSaveCheatList(filename);
-}
-
-void MainWnd::winSaveCheatList(const char *name)
-{
-  if(theApp.cartridgeType == IMAGE_GBA)
-    cheatsSaveCheatList(name);
-}
-
-void MainWnd::winLoadCheatListDefault()
-{
-  CString name;
-  CString filename;
-
-  int index = theApp.filename.ReverseFind('\\');
-
-  if(index != -1)
-    name = theApp.filename.Right(theApp.filename.GetLength()-index-1);
-  else
-    name = theApp.filename;
-  CString dir = regQueryStringValue("saveDir", NULL);
-  if( dir[0] == '.' ) {
-	  // handle as relative path
-	  char baseDir[MAX_PATH+1];
-	  GetModuleFileName( NULL, baseDir, MAX_PATH );
-	  baseDir[MAX_PATH] = '\0'; // for security reasons
-	  PathRemoveFileSpec( baseDir ); // removes the trailing file name and backslash
-	  strcat( baseDir, "\\" );
-	  strcat( baseDir, dir );
-	  dir = baseDir;
-	}
-
-  if(!dir.GetLength())
-    dir = getDirFromFile(filename);
-
-  if(isDriveRoot(dir))
-    filename.Format("%s%s.clt", dir, name);
-  else
-    filename.Format("%s\\%s.clt", dir, name);
-
-  winLoadCheatList(filename);
-}
-
-void MainWnd::winLoadCheatList(const char *name)
-{
-  bool res = false;
-
-  if(theApp.cartridgeType == IMAGE_GBA)
-    res = cheatsLoadCheatList(name);
-
-  if(res)
-    systemScreenMessage(winResLoadString(IDS_LOADED_CHEATS));
 }
 
 CString MainWnd::getDirFromFile(CString& file)

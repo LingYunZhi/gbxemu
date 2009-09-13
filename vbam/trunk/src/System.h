@@ -30,9 +30,6 @@ struct EmulatedSystem {
 void log(const char *,...);
 extern int systemVerbose;
 
-extern void (*dbgOutput)(const char *s, u32 addr);
-extern void (*dbgSignal)(int sig,int number);
-
 void systemDrawScreen();
 // updates the joystick data
 bool systemReadJoypads();

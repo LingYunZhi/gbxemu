@@ -13,7 +13,6 @@
 #include "Sound.h"
 #include "Sram.h"
 #include "bios.h"
-#include "Cheats.h"
 #include "../NLS.h"
 #include "elf.h"
 #include "../Util.h"
@@ -58,15 +57,6 @@ u32 cpuPrefetch[2];
 
 int cpuTotalTicks = 0;
 
-
-#ifdef BKPT_SUPPORT
-u8 freezeWorkRAM[0x40000];
-u8 freezeInternalRAM[0x8000];
-u8 freezeVRAM[0x18000];
-u8 freezePRAM[0x400];
-u8 freezeOAM[0x400];
-bool debugger_last;
-#endif
 
 int lcdTicks = (useBios && !skipBios) ? 1008 : 208;
 u8 timerOnOffDelay = 0;
@@ -1391,12 +1381,6 @@ void CPUSoftwareInterrupt(int comment)
 {
   static bool disableMessage = false;
   if(armState) comment >>= 16;
-#ifdef BKPT_SUPPORT
-  if(comment == 0xff) {
-    dbgOutput(NULL, reg[0].I);
-    return;
-  }
-#endif
   if(comment == 0xfa) {
     agbPrintFlush();
     return;
@@ -3237,9 +3221,6 @@ void CPULoop(int ticks)
               }
 
               u32 ext = (joy >> 10);
-              // If no (m) code is enabled, apply the cheats at each LCDline
-              if((cheatsEnabled) && (mastercode==0))
-                remainingTicks += cheatsCheckKeys(P1^0x3FF, ext);
               speedup = (ext & 1) ? true : false;
 
               DISPSTAT |= 1;

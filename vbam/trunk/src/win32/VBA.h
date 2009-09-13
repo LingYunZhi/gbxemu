@@ -69,7 +69,6 @@ class VBA : public CWinApp
   bool paused;
   CString recentFiles[10];
   bool recentFreeze;
-  bool autoSaveLoadCheatList;
   bool syncToVideo;
   bool changingVideoSize;
 

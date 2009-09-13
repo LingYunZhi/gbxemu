@@ -12,7 +12,6 @@
 
 #include "../System.h"
 #include "../gba/agbprint.h"
-#include "../gba/cheatSearch.h"
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
 #include "../gba/RTC.h"
@@ -40,11 +39,6 @@ int systemSpeed = 0;
 int systemVerbose = 0;
 int systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 bool soundBufferLow = 0;
-void winSignal(int,int);
-void winOutput(const char *, u32);
-
-void (*dbgSignal)(int,int) = winSignal;
-void (*dbgOutput)(const char *, u32) = winOutput;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -91,7 +85,6 @@ VBA::VBA()
   active = true;
   paused = false;
   recentFreeze = false;
-  autoSaveLoadCheatList = true;
   syncToVideo = false;
   changingVideoSize = false;
 
@@ -156,10 +149,7 @@ VBA::~VBA()
   soundShutdown();
 
   if(rom != NULL) {
-    if(autoSaveLoadCheatList)
-      ((MainWnd *)m_pMainWnd)->winSaveCheatListDefault();
     ((MainWnd *)m_pMainWnd)->writeBatteryFile();
-    cheatSearchCleanup(&cheatSearchData);
     emulator.emuCleanUp();
   }
 
@@ -742,8 +732,6 @@ void VBA::loadSettings()
     threadPriority = 2;
   updatePriority();
 
-  autoSaveLoadCheatList = ( 1 == regQueryDwordValue( "autoSaveCheatList", 1 ) ) ? true : false;
-
   for(int i = 0; i < 10; i++) {
     buffer.Format("recent%d", i);
     char *s = regQueryStringValue(buffer, NULL);
@@ -757,8 +745,6 @@ void VBA::loadSettings()
     joypadDefault = 0;
 
   autoLoadMostRecent = ( 1 == regQueryDwordValue("autoLoadMostRecent", 0) ) ? true : false;
-
-  cheatsEnabled = regQueryDwordValue("cheatsEnabled", false) ? true : false;
 
   maxScale = regQueryDwordValue("maxScale", 0);
 
@@ -1429,8 +1415,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("priority", threadPriority);
 
-  regSetDwordValue("autoSaveCheatList", autoSaveLoadCheatList);
-
   CString buffer;
   for(int i = 0; i < 10; i++) {
     buffer.Format("recent%d", i);
@@ -1439,7 +1423,6 @@ void VBA::saveSettings()
 
   regSetDwordValue("joypadDefault", joypadDefault);
   regSetDwordValue("autoLoadMostRecent", autoLoadMostRecent);
-  regSetDwordValue("cheatsEnabled", cheatsEnabled);
   regSetDwordValue("maxScale", maxScale);
   regSetDwordValue("lastFullscreen", lastFullscreen);
   regSetDwordValue("pauseWhenInactive", pauseWhenInactive);
@@ -1447,30 +1430,4 @@ void VBA::saveSettings()
   regSetDwordValue( "xa2Device", xa2Device );
   regSetDwordValue( "xa2BufferCount", xa2BufferCount );
   regSetDwordValue( "xa2Upmixing", xa2Upmixing ? 1 : 0 );
-}
-
-void winSignal(int, int)
-{
-}
-
-#define CPUReadByteQuick(addr) \
-  map[(addr)>>24].address[(addr) & map[(addr)>>24].mask]
-
-void winOutput(const char *s, u32 addr)
-{
-  if(s) {
-    toolsLog(s);
-  } else {
-    CString str;
-    char c;
-
-    c = CPUReadByteQuick(addr);
-    addr++;
-    while(c) {
-      str += c;
-      c = CPUReadByteQuick(addr);
-      addr++;
-    }
-    toolsLog(str);
-  }
 }

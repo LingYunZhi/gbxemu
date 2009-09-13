@@ -1,10 +1,5 @@
 #include "GBA.h"
 
-#ifdef BKPT_SUPPORT
-int  oldreg[18];
-char oldbuffer[10];
-#endif
-
 reg_pair reg[45];
 memoryMap map[256];
 bool ioReadable[0x400];
@@ -27,7 +22,6 @@ bool parseDebug = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 bool speedHack = false;
-bool cheatsEnabled = true;
 bool mirroringEnable = false;
 
 u8 *bios = 0;

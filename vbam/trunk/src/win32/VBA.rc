@@ -191,83 +191,6 @@ BEGIN
     PUSHBUTTON      "Clear all",IDC_CLEAR_ALL,306,60,36,12
 END
 
-IDD_CHEATS DIALOG  0, 0, 276, 253
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Search for cheats"
-FONT 8, "MS Sans Serif"
-BEGIN
-    CONTROL         "",IDC_CHEAT_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_TABSTOP,3,5,265,111
-    CONTROL         "Ol&d value",IDC_OLD_VALUE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,11,129,46,10
-    CONTROL         "Specifi&c value",IDC_SPECIFIC_VALUE,"Button",BS_AUTORADIOBUTTON,11,141,61,10
-    CONTROL         "&8 bits",IDC_SIZE_8,"Button",BS_AUTORADIOBUTTON | WS_GROUP,11,167,33,10
-    CONTROL         "&16 bits",IDC_SIZE_16,"Button",BS_AUTORADIOBUTTON,11,179,37,10
-    CONTROL         "&32 bits",IDC_SIZE_32,"Button",BS_AUTORADIOBUTTON,11,191,37,10
-    CONTROL         "&Equal",IDC_EQ,"Button",BS_AUTORADIOBUTTON | WS_GROUP,100,128,34,10
-    CONTROL         "&Not equal",IDC_NE,"Button",BS_AUTORADIOBUTTON,100,140,47,10
-    CONTROL         "&Less than",IDC_LT,"Button",BS_AUTORADIOBUTTON,100,152,47,10
-    CONTROL         "Le&ss or equal",IDC_LE,"Button",BS_AUTORADIOBUTTON,100,164,58,10
-    CONTROL         "&Greather than",IDC_GT,"Button",BS_AUTORADIOBUTTON,100,176,59,10
-    CONTROL         "G&reater or equal",IDC_GE,"Button",BS_AUTORADIOBUTTON,100,188,67,10
-    CONTROL         "S&igned",IDC_SIGNED,"Button",BS_AUTORADIOBUTTON | WS_GROUP,202,130,38,10
-    CONTROL         "&Unsigned",IDC_UNSIGNED,"Button",BS_AUTORADIOBUTTON,202,142,46,10
-    CONTROL         "&Hexadecimal",IDC_HEXADECIMAL,"Button",BS_AUTORADIOBUTTON,202,154,57,10
-    CONTROL         "U&pdate values",IDC_UPDATE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,192,192,62,10
-    EDITTEXT        IDC_VALUE,95,211,172,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Start",IDC_START,15,237,50,14,WS_GROUP
-    PUSHBUTTON      "S&earch",IDC_SEARCH,80,236,50,14
-    PUSHBUTTON      "&Add cheat",IDC_ADD_CHEAT,145,236,50,14
-    DEFPUSHBUTTON   "OK",ID_OK,210,236,50,14
-    GROUPBOX        "&Search type",IDC_STATIC,3,118,84,36
-    GROUPBOX        "&Data size",IDC_STATIC,3,158,84,44
-    GROUPBOX        "Compare type",IDC_STATIC,95,118,92,84
-    GROUPBOX        "Signed/Unsigned",IDC_STATIC,192,118,76,50
-    LTEXT           "Enter &value:",IDC_STATIC,3,214,69,8
-END
-
-IDD_ADD_CHEAT DIALOG  0, 0, 186, 137
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Add cheat"
-FONT 8, "MS Sans Serif"
-BEGIN
-    EDITTEXT        IDC_ADDRESS,60,6,123,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_VALUE,60,24,123,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DESC,60,42,123,14,ES_AUTOHSCROLL
-    CONTROL         "8-bit",IDC_SIZE_8,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,11,70,29,10
-    CONTROL         "16-bit",IDC_SIZE_16,"Button",BS_AUTORADIOBUTTON,62,70,33,10
-    CONTROL         "32-bit",IDC_SIZE_32,"Button",BS_AUTORADIOBUTTON,117,70,33,10
-    CONTROL         "&Signed",IDC_SIGNED,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,11,97,38,10
-    CONTROL         "&Unsigned",IDC_UNSIGNED,"Button",BS_AUTORADIOBUTTON,62,98,46,10
-    CONTROL         "&Hexadecimal",IDC_HEXADECIMAL,"Button",BS_AUTORADIOBUTTON,117,98,57,10
-    DEFPUSHBUTTON   "&OK",ID_OK,36,116,50,14,WS_GROUP
-    PUSHBUTTON      "&Cancel",ID_CANCEL,99,116,50,14
-    LTEXT           "&Value:",IDC_STATIC,3,27,54,8
-    GROUPBOX        "Number format",IDC_STATIC,3,88,180,24
-    LTEXT           "&Address:",IDC_STATIC,3,9,54,8
-    GROUPBOX        "Size",IDC_STATIC,3,60,180,24
-    LTEXT           "&Description:",IDC_STATIC,3,45,55,8
-END
-
-IDD_CHEAT_LIST DIALOG  0, 0, 280, 250
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Cheat list"
-FONT 8, "MS Sans Serif"
-BEGIN
-    CONTROL         "Restore &previous values",IDC_RESTORE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,183,92,10
-    PUSHBUTTON      "&Code...",IDC_ADD_CODE,9,208,64,14,WS_GROUP
-    PUSHBUTTON      "C&heat...",IDC_ADD_CHEAT,75,208,64,14
-    PUSHBUTTON      "&Gameshark...",IDC_ADD_GAMESHARK,141,208,64,14
-    PUSHBUTTON      "CodeBreaker...",IDC_ADD_CODEBREAKER,206,208,64,14
-    PUSHBUTTON      "&Remove",IDC_REMOVE,9,230,64,14
-    PUSHBUTTON      "Remove A&ll",IDC_REMOVE_ALL,75,230,64,14
-    PUSHBUTTON      "&Enable/Dis.",IDC_ENABLE,141,230,64,14
-    DEFPUSHBUTTON   "&OK",ID_OK,206,230,64,14,WS_GROUP
-    CONTROL         "",IDC_CHEAT_LIST,"SysListView32",LVS_REPORT | WS_BORDER | WS_GROUP | WS_TABSTOP,5,15,269,156
-    LTEXT           "Status legend:",IDC_STATIC,6,3,46,8
-    LTEXT           "E: Enabled",IDC_STATIC,188,3,36,8
-    LTEXT           "D: Disabled",IDC_STATIC,234,3,38,8
-    GROUPBOX        "Add",IDC_STATIC,5,199,268,27
-END
-
 IDD_ASSOCIATIONS DIALOG  0, 0, 116, 95
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Associations"
@@ -310,19 +233,6 @@ BEGIN
     LTEXT           "",IDC_ROM_MAKER_NAME,80,52,133,8,SS_NOPREFIX
 END
 
-IDD_ADD_CHEAT_DLG DIALOG  0, 0, 182, 107
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Title"
-FONT 8, "MS Sans Serif"
-BEGIN
-    EDITTEXT        IDC_DESC,60,7,120,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_CODE,60,23,120,58,ES_MULTILINE | ES_UPPERCASE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN
-    DEFPUSHBUTTON   "OK",ID_OK,33,86,50,14
-    PUSHBUTTON      "Cancel",ID_CANCEL,99,86,50,14
-    LTEXT           "&Description:",IDC_STATIC,3,10,54,8
-    LTEXT           "&Code:",IDC_STATIC,3,29,54,8
-END
-
 IDD_MOTION_CONFIG DIALOGEX 0, 0, 234, 107
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Motion Sensor"
@@ -353,16 +263,6 @@ BEGIN
     LTEXT           "Current system language is:",IDC_STATIC,6,9,123,8
     LTEXT           "Enter language name (3 letter):",IDC_STATIC,6,30,127,8
     LTEXT           "",IDC_LANG_NAME,140,9,40,8,SS_NOPREFIX
-END
-
-IDD_CODE_SELECT DIALOG  0, 0, 316, 235
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Select codes to import"
-FONT 8, "MS Sans Serif"
-BEGIN
-    DEFPUSHBUTTON   "OK",ID_OK,91,214,50,14
-    PUSHBUTTON      "Cancel",ID_CANCEL,174,214,50,14
-    LISTBOX         IDC_GAME_LIST,7,7,302,205,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
 END
 
 IDD_MAP_VIEW DIALOG  0, 0, 322, 238
@@ -812,30 +712,6 @@ BEGIN
         BOTTOMMARGIN, 95
     END
 
-    IDD_CHEATS, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 269
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 246
-    END
-
-    IDD_ADD_CHEAT, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 130
-    END
-
-    IDD_CHEAT_LIST, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 273
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 243
-    END
-
     IDD_ASSOCIATIONS, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -852,14 +728,6 @@ BEGIN
         BOTTOMMARGIN, 135
     END
 
-    IDD_ADD_CHEAT_DLG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 175
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 100
-    END
-
     IDD_MOTION_CONFIG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -874,14 +742,6 @@ BEGIN
         RIGHTMARGIN, 179
         TOPMARGIN, 7
         BOTTOMMARGIN, 61
-    END
-
-    IDD_CODE_SELECT, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 309
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 228
     END
 
     IDD_MAP_VIEW, DIALOG
@@ -1209,17 +1069,6 @@ BEGIN
             END
         END
     END
-    POPUP "&Cheats"
-    BEGIN
-        MENUITEM "Create...",                   ID_CHEATS_SEARCHFORCHEATS
-        MENUITEM "List...",                     ID_CHEATS_CHEATLIST
-        MENUITEM SEPARATOR
-        MENUITEM "Save cheat list to...",       ID_CHEATS_SAVECHEATLIST
-        MENUITEM "Load cheat list from...",     ID_CHEATS_LOADCHEATLIST
-        MENUITEM "Save/Load automatically",     ID_CHEATS_AUTOMATICSAVELOADCHEATS
-        MENUITEM SEPARATOR
-        MENUITEM "Disabled",                    ID_CHEATS_DISABLECHEATS
-    END
     POPUP "&Tools"
     BEGIN
         POPUP "Record"
@@ -1448,10 +1297,8 @@ BEGIN
     IDS_NONE                "None"
     IDS_FAILED_TO_LOAD_LIBRARY "Failed to load library %s"
     IDS_FAILED_TO_GET_LOCINFO "Failed to get locale information"
-    IDS_SELECT_CHEAT_LIST_NAME "Select cheat list name"
     IDS_FILTER_GBAROM       "GBA ROMs (*.gba;*.7z;*.zip)|*.gba;*.7z;*.zip||"
     IDS_FILTER_SGM          "VisualBoyAdvance Save Game_*.SGM__"
-    IDS_FILTER_CHEAT_LIST   "VisualBoyAdvance Cheat List_*.CLT__"
     IDS_FILTER_BMP          "BMP Image_*.BMP__"
     IDS_LOADED_CHEATS       "Loaded cheats"
     IDS_ERROR_DISP_COLOR    "Unsupported display setting for color depth: %d bits. \nWindows desktop must be in either 16-bit, 24-bit or 32-bit mode for this program to work in window mode."
@@ -1537,8 +1384,6 @@ BEGIN
                             "XAudio2: Creating source voice failed!"
     IDS_XAUDIO2_CANNOT_ENUMERATE_DEVICES 
                             "XAudio2: Enumerating devices failed!"
-    IDS_CHEATS_DISABLED     "Cheats disabled"
-    IDS_CHEATS_ENABLED      "Cheats enabled"
 END
 
 #endif    // English (U.S.) resources

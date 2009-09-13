@@ -48,7 +48,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;BKPT_SUPPORT;GBA_LOGGING;HAS_FILE_EXTRACTOR;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;DEV_VERSION;GBA_LOGGING;HAS_FILE_EXTRACTOR;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -157,7 +157,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;..\..\..\dependencies\File_Extractor-0.4.3\fex&quot;"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;FINAL_VERSION;BKPT_SUPPORT;HAS_FILE_EXTRACTOR;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;GBA_LOGGING;FINAL_VERSION;HAS_FILE_EXTRACTOR;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableEnhancedInstructionSet="0"
@@ -262,10 +262,6 @@
 			</File>
 			<File
 				RelativePath="..\..\doc\License.txt"
-				>
-			</File>
-			<File
-				RelativePath="..\..\doc\ReadMe.MFC.txt"
 				>
 			</File>
 		</Filter>
@@ -478,22 +474,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\gba\armdis.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gba\Cheats.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gba\Cheats.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gba\CheatSearch.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gba\CheatSearch.h"
 				>
 			</File>
 			<File
@@ -945,54 +925,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\GBACheats.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\GBACheats.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\GSACodeSelect.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\GSACodeSelect.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\Hyperlink.cpp"
 				>
 				<FileConfiguration
@@ -1167,26 +1099,6 @@
 			<File
 				RelativePath="..\..\src\win32\MainWnd.h"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\MainWndCheats.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\win32\MainWndFile.cpp"

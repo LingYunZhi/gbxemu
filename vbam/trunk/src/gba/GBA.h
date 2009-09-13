@@ -50,9 +50,7 @@ typedef union {
 #endif
 } reg_pair;
 
-#ifndef NO_GBA_MAP
 extern memoryMap map[256];
-#endif
 
 extern reg_pair reg[45];
 extern u8 biosProtected[4];
@@ -66,16 +64,6 @@ extern bool armState;
 extern int armMode;
 extern void (*cpuSaveGameFunc)(u32,u8);
 
-#ifdef BKPT_SUPPORT
-extern u8 freezeWorkRAM[0x40000];
-extern u8 freezeInternalRAM[0x8000];
-extern u8 freezeVRAM[0x18000];
-extern u8 freezeOAM[0x400];
-extern u8 freezePRAM[0x400];
-extern bool debugger_last;
-extern int  oldreg[18];
-extern char oldbuffer[10];
-#endif
 
 extern bool CPUWriteBatteryFile(const char *);
 extern bool CPUReadBatteryFile(const char *);
@@ -124,7 +112,6 @@ extern struct EmulatedSystem GBASystem;
 #define R14_FIQ  43
 #define SPSR_FIQ 44
 
-#include "Cheats.h"
 #include "Globals.h"
 #include "EEprom.h"
 #include "Flash.h"
