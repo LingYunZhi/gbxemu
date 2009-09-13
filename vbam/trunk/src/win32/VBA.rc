@@ -1049,7 +1049,6 @@ BEGIN
                 MENUITEM "&Normal",                     ID_OPTIONS_PRIORITY_NORMAL
                 MENUITEM "&Below Normal",               ID_OPTIONS_PRIORITY_BELOWNORMAL
             END
-            MENUITEM "Auto-apply IPS/UPS/PPF",      ID_OPTIONS_EMULATOR_AUTOMATICALLYAPPLYPATCHFILES
             MENUITEM "Pause when inactive",         ID_OPTIONS_EMULATOR_PAUSEWHENINACTIVE
             POPUP "Show speed"
             BEGIN

@@ -17,7 +17,6 @@ typedef struct {
 void utilPutDword(u8 *p, u32 value);
 void utilPutWord(u8 *p, u16 value);
 bool utilWriteBMPFile(const char *, int, int, u16 *);
-void utilApplyIPS(const char *ips, u8 **rom, int *size);
 bool utilIsGBAImage(const char *);
 bool utilIsGBImage(const char *);
 bool utilIsGzipFile(const char *);

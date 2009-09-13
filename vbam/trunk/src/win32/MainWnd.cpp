@@ -239,20 +239,6 @@ bool MainWnd::FileRun()
   if(index != -1)
     theApp.filename = theApp.filename.Left(index);
 
-  CString patchName;
-  patchName.Format("%s.ips", theApp.filename);
-  if( !fileExists( patchName ) ) {
-	  patchName.Format("%s.ups", theApp.filename);
-	  if( !fileExists( patchName ) ) {
-		  patchName.Format("%s.ppf", theApp.filename);
-		  if( !fileExists( patchName ) ) {
-			  // don't use any patches
-			  patchName.Empty();
-		  }
-	  }
-  }
-
-
   IMAGE_TYPE type = utilFindType(theApp.szFile);
 
   if(type == IMAGE_UNKNOWN) {
