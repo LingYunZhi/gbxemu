@@ -18,7 +18,6 @@ bool skipBios = false;
 bool syncToAudio = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
-bool mirroringEnable = false;
 
 u8 *bios = 0;
 u8 *rom = 0;

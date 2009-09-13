@@ -32,7 +32,6 @@ extern bool skipBios;
 extern bool syncToAudio;
 extern int layerSettings;
 extern int layerEnable;
-extern bool mirroringEnable;
 
 extern u8 *bios;
 extern u8 *rom;
