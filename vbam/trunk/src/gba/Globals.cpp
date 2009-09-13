@@ -18,7 +18,6 @@ bool skipBios = false;
 bool speedup = false;
 bool syncToAudio = true;
 bool cpuIsMultiBoot = false;
-bool parseDebug = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 bool mirroringEnable = false;
