@@ -982,16 +982,18 @@ void CPUCleanUp()
   emulating = 0;
 }
 
-int CPULoadRom(const char *szFile)
+int CPULoadRom(const u8 *const data, const int size)
 {
-  romSize = 0x2000000;
+  if( size > 0x2000000 ) return 0;
+  romSize = 0x2000000; // currently necessary for accurate emulation ???
+
   if(rom != NULL) {
     CPUCleanUp();
   }
 
   systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 
-  rom = (u8 *)malloc(0x2000000);
+  rom = (u8 *)malloc(romSize);
   if(rom == NULL) {
     systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
                   "ROM");
@@ -1004,19 +1006,9 @@ int CPULoadRom(const char *szFile)
     return 0;
   }
 
-  u8 *whereToLoad = rom;
+  memcpy(rom, data, size);
 
-  if(!utilLoad(szFile,
-                      utilIsGBAImage,
-                      whereToLoad,
-                      romSize)) {
-    free(rom);
-    rom = NULL;
-    free(workRAM);
-    workRAM = NULL;
-    return 0;
-  }
-
+  //this code fills up the remaining bytes to 32 MB with up-counting bytes ???
   u16 *temp = (u16 *)(rom+((romSize+1)&~1));
   int i;
   for(i = (romSize+1)&~1; i < 0x2000000; i+=2) {
@@ -2553,7 +2545,7 @@ void applyTimer ()
 u8 cpuBitsSet[256];
 u8 cpuLowestBitSet[256];
 
-void CPUInit(const char *biosFileName, bool useBiosFile)
+void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
 {
 #ifdef WORDS_BIGENDIAN
   if(!cpuBiosSwapped) {
@@ -2568,17 +2560,13 @@ void CPUInit(const char *biosFileName, bool useBiosFile)
   saveType = 0;
   useBios = false;
 
-  if(useBiosFile) {
-    int size = 0x4000;
-    if(utilLoad(biosFileName,
-                CPUIsGBABios,
-                bios,
-                size)) {
-      if(size == 0x4000)
-        useBios = true;
-      else
-        systemMessage(MSG_INVALID_BIOS_FILE_SIZE, N_("Invalid BIOS file size"));
-    }
+  if( useBiosFile ) {
+      if( size == 0x4000) {
+          memcpy( bios, data, size );
+          useBios = true;
+      } else {
+          systemMessage(MSG_INVALID_BIOS_FILE_SIZE, N_("Invalid BIOS file size"));
+      }
   }
 
   if(!useBios) {

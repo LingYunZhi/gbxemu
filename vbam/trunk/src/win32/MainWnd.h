@@ -27,7 +27,7 @@ public:
 
 private:
 	bool fileExists( LPCTSTR lpFileName );
-
+    long fileSize( const char *const fileName );
 
 	DECLARE_MESSAGE_MAP()
 

@@ -46,6 +46,15 @@ bool MainWnd::fileExists( LPCTSTR lpFileName )
 	return GetFileAttributes( lpFileName ) != INVALID_FILE_ATTRIBUTES;
 }
 
+long MainWnd::fileSize( const char *const fileName )
+{
+    FILE *f = fopen( fileName, "rb" );
+    fseek( f, 0, SEEK_END );
+    const long size = ftell( f );
+    fclose( f );
+    return size;
+}
+
 
 BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   //{{AFX_MSG_MAP(MainWnd)
@@ -247,7 +256,14 @@ bool MainWnd::FileRun()
   systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
   theApp.cartridgeType = type;
   if(type == IMAGE_GBA) {
-    int size = CPULoadRom(theApp.szFile);
+      long fs = fileSize( theApp.szFile );
+      if( fs == 0 ) return false;
+      FILE *f = fopen( theApp.szFile, "rb" );
+      if( f == NULL ) return false;
+      u8 *data = new u8[fs];
+      fread( data, 1, fs, f );
+      fclose( f );
+    int size = CPULoadRom( data, fs );
     if(!size)
       return false;
 
@@ -269,7 +285,21 @@ bool MainWnd::FileRun()
 #endif
 
   skipBios = theApp.skipBiosFile;
-  CPUInit(theApp.biosFileNameGBA.GetString(), theApp.useBiosFileGBA);
+
+  if( theApp.useBiosFileGBA && !theApp.biosFileNameGBA.IsEmpty() ) {
+      long fs = fileSize( theApp.biosFileNameGBA.GetString() );
+      if( fs == 0 ) return false;
+      FILE *f = fopen( theApp.biosFileNameGBA.GetString(), "rb" );
+      if( f == NULL ) return false;
+      u8 *data = new u8[fs];
+      fread( data, 1, fs, f );
+      fclose( f );
+      CPUInit( true, data, fs );
+      delete [] data;
+  } else {
+      CPUInit();
+  }
+
   CPUReset();
 
   readBatteryFile();

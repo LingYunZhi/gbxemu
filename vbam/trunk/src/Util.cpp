@@ -11,8 +11,6 @@
 #include "gba/RTC.h"
 #include "common/Port.h"
 
-#include "common/fex.h"
-
 #ifndef _MSC_VER
 #define _stricmp strcasecmp
 #endif // ! _MSC_VER
@@ -118,23 +116,6 @@ bool utilIsGBAImage(const char * file)
   return false;
 }
 
-bool utilIsGBImage(const char * file)
-{
-  if(strlen(file) > 4) {
-    const char * p = strrchr(file,'.');
-
-    if(p != NULL) {
-      if((_stricmp(p, ".dmg") == 0) ||
-         (_stricmp(p, ".gb") == 0) ||
-         (_stricmp(p, ".gbc") == 0) ||
-         (_stricmp(p, ".cgb") == 0) ||
-         (_stricmp(p, ".sgb") == 0))
-        return true;
-    }
-  }
-
-  return false;
-}
 
 bool utilIsGzipFile(const char *file)
 {
@@ -166,66 +147,14 @@ void utilStripDoubleExtension(const char *file, char *buffer)
   }
 }
 
-// Opens and scans archive using accept(). Returns File_Extractor if found.
-// If error or not found, displays message and returns NULL.
-static File_Extractor* scan_arc(const char *file, bool (*accept)(const char *),
-		char (&buffer) [2048] )
-{
-	fex_err_t err;
-	File_Extractor* fe = fex_open( file, &err );
-	if(!fe)
-	{
-		systemMessage(MSG_CANNOT_OPEN_FILE, N_("Cannot open file %s: %s"), file, err);
-		return NULL;
-	}
-
-	// Scan filenames
-	bool found=false;
-	while(!fex_done(fe)) {
-		strncpy(buffer,fex_name(fe),sizeof buffer);
-		buffer [sizeof buffer-1] = '\0';
-
-		utilStripDoubleExtension(buffer, buffer);
-
-		if(accept(buffer)) {
-			found = true;
-			break;
-		}
-
-		fex_err_t err = fex_next(fe);
-		if(err) {
-			systemMessage(MSG_BAD_ZIP_FILE, N_("Cannot read archive %s: %s"), file, err);
-			fex_close(fe);
-			return NULL;
-		}
-	}
-
-	if(!found) {
-		systemMessage(MSG_NO_IMAGE_ON_ZIP,
-									N_("No image found in file %s"), file);
-		fex_close(fe);
-		return NULL;
-	}
-	return fe;
-}
 
 static bool utilIsImage(const char *file)
 {
-	return utilIsGBAImage(file) || utilIsGBImage(file);
+	return utilIsGBAImage(file);
 }
 
 IMAGE_TYPE utilFindType(const char *file)
 {
-	char buffer [2048];
-	if ( !utilIsImage( file ) ) // TODO: utilIsArchive() instead?
-	{
-		File_Extractor* fe = scan_arc(file,utilIsImage,buffer);
-		if(!fe)
-			return IMAGE_UNKNOWN;
-		fex_close(fe);
-		file = buffer;
-	}
-
 	return utilIsGBAImage(file) ? IMAGE_GBA : IMAGE_UNKNOWN;
 }
 
@@ -235,53 +164,6 @@ static int utilGetSize(int size)
   while(res < size)
     res <<= 1;
   return res;
-}
-
-u8 *utilLoad(const char *file,
-             bool (*accept)(const char *),
-             u8 *data,
-             int &size)
-{
-	// find image file
-	char buffer [2048];
-	File_Extractor *fe = scan_arc(file,accept,buffer);
-	if(!fe)
-		return NULL;
-
-	// Allocate space for image
-	int fileSize = fex_size(fe);
-	if(size == 0)
-		size = fileSize;
-
-	u8 *image = data;
-
-	if(image == NULL) {
-		// allocate buffer memory if none was passed to the function
-		image = (u8 *)malloc(utilGetSize(size));
-		if(image == NULL) {
-			fex_close(fe);
-			systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-										"data");
-			return NULL;
-		}
-		size = fileSize;
-	}
-
-	// Read image
-	int read = fileSize <= size ? fileSize : size; // do not read beyond file
-	fex_err_t err = fex_read_once(fe, image, read);
-	fex_close(fe);
-	if(err) {
-		systemMessage(MSG_ERROR_READING_IMAGE,
-									N_("Error reading image from %s: %s"), buffer, err);
-		if(data == NULL)
-			free(image);
-		return NULL;
-	}
-
-	size = fileSize;
-
-	return image;
 }
 
 

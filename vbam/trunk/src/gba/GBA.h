@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../System.h"
+#include <stdio.h> // for NULL
 
 #define SAVE_GAME_VERSION_1 1
 #define SAVE_GAME_VERSION_2 2
@@ -65,27 +66,27 @@ extern int armMode;
 extern void (*cpuSaveGameFunc)(u32,u8);
 
 
-extern bool CPUWriteBatteryFile(const char *);
-extern bool CPUReadBatteryFile(const char *);
-extern bool CPUExportEepromFile(const char *);
-extern bool CPUImportEepromFile(const char *);
-extern bool CPUWriteBMPFile(const char *);
-extern void CPUCleanUp();
-extern void CPUUpdateRender();
-extern void CPUUpdateRenderBuffers(bool);
-extern bool CPUReadMemState(char *, int);
-extern bool CPUReadState(const char *);
-extern bool CPUWriteMemState(char *, int);
-extern bool CPUWriteState(const char *);
-extern int CPULoadRom(const char *);
-extern void CPUUpdateRegister(u32, u16);
-extern void applyTimer ();
-extern void CPUInit(const char *,bool);
-extern void CPUReset();
-extern void CPULoop(int);
-extern void CPUCheckDMA(int,int);
-extern bool CPUIsGBAImage(const char *);
-extern bool CPUIsZipFile(const char *);
+bool CPUWriteBatteryFile(const char *);
+bool CPUReadBatteryFile(const char *);
+bool CPUExportEepromFile(const char *);
+bool CPUImportEepromFile(const char *);
+bool CPUWriteBMPFile(const char *);
+void CPUCleanUp();
+void CPUUpdateRender();
+void CPUUpdateRenderBuffers(bool);
+bool CPUReadMemState(char *, int);
+bool CPUReadState(const char *);
+bool CPUWriteMemState(char *, int);
+bool CPUWriteState(const char *);
+int CPULoadRom(const u8 *const data, const int size);
+void CPUUpdateRegister(u32, u16);
+void applyTimer ();
+void CPUInit(const bool useBiosFile = false, const u8 *const data = NULL, const int size = 0);
+void CPUReset();
+void CPULoop(int);
+void CPUCheckDMA(int,int);
+bool CPUIsGBAImage(const char *);
+bool CPUIsZipFile(const char *);
 
 extern struct EmulatedSystem GBASystem;
 
