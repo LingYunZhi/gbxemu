@@ -879,7 +879,6 @@ bool CPUIsZipFile(const char * file)
 
 bool CPUIsGBAImage(const char * file)
 {
-  cpuIsMultiBoot = false;
   if(strlen(file) > 4) {
     const char * p = strrchr(file,'.');
 
@@ -890,12 +889,6 @@ bool CPUIsGBAImage(const char * file)
         return true;
       if(_stricmp(p, ".bin") == 0)
         return true;
-      if(_stricmp(p, ".elf") == 0)
-        return true;
-      if(_stricmp(p, ".mb") == 0) {
-        cpuIsMultiBoot = true;
-        return true;
-      }
     }
   }
 
@@ -1011,7 +1004,7 @@ int CPULoadRom(const char *szFile)
     return 0;
   }
 
-  u8 *whereToLoad = cpuIsMultiBoot ? workRAM : rom;
+  u8 *whereToLoad = rom;
 
   if(!utilLoad(szFile,
                       utilIsGBAImage,
@@ -2765,14 +2758,6 @@ void CPUReset()
 
   armMode = 0x1F;
 
-  if(cpuIsMultiBoot) {
-    reg[13].I = 0x03007F00;
-    reg[15].I = 0x02000000;
-    reg[16].I = 0x00000000;
-    reg[R13_IRQ].I = 0x03007FA0;
-    reg[R13_SVC].I = 0x03007FE0;
-    armIrqEnable = true;
-  } else {
     if(useBios && !skipBios) {
       reg[15].I = 0x00000000;
       armMode = 0x13;
@@ -2785,7 +2770,6 @@ void CPUReset()
       reg[R13_SVC].I = 0x03007FE0;
       armIrqEnable = true;
     }
-  }
   armState = true;
   C_FLAG = V_FLAG = N_FLAG = Z_FLAG = false;
   UPDATE_REG(0x00, DISPCNT);
@@ -2888,15 +2872,8 @@ void CPUReset()
   CPUUpdateWindow1();
 
   // make sure registers are correctly initialized if not using BIOS
-  if(!useBios) {
-    if(cpuIsMultiBoot)
-      BIOS_RegisterRamReset(0xfe);
-    else
+  if(!useBios)
       BIOS_RegisterRamReset(0xff);
-  } else {
-    if(cpuIsMultiBoot)
-      BIOS_RegisterRamReset(0xfe);
-  }
 
   // auto-detect save type & real time clock
   const int address_max = romSize - 10;

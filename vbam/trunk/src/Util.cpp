@@ -102,24 +102,16 @@ bool utilWriteBMPFile(const char *fileName, int w, int h, u16 *pix)
   return true;
 }
 
-extern bool cpuIsMultiBoot;
-
 bool utilIsGBAImage(const char * file)
 {
-  cpuIsMultiBoot = false;
   if(strlen(file) > 4) {
     const char * p = strrchr(file,'.');
 
     if(p != NULL) {
       if((_stricmp(p, ".agb") == 0) ||
          (_stricmp(p, ".gba") == 0) ||
-         (_stricmp(p, ".bin") == 0) ||
-         (_stricmp(p, ".elf") == 0))
+         (_stricmp(p, ".bin") == 0))
         return true;
-      if(_stricmp(p, ".mb") == 0) {
-        cpuIsMultiBoot = true;
-        return true;
-      }
     }
   }
 

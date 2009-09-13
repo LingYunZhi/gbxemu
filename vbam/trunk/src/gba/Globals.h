@@ -31,7 +31,6 @@ extern bool useBios;
 extern bool skipBios;
 extern bool speedup;
 extern bool syncToAudio;
-extern bool cpuIsMultiBoot;
 extern int layerSettings;
 extern int layerEnable;
 extern bool mirroringEnable;
