@@ -3157,9 +3157,6 @@ void CPULoop(int ticks)
                 }
               }
 
-              u32 ext = (joy >> 10);
-              speedup = (ext & 1) ? true : false;
-
               DISPSTAT |= 1;
               DISPSTAT &= 0xFFFD;
               UPDATE_REG(0x04, DISPSTAT);

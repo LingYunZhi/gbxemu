@@ -29,7 +29,6 @@ extern u32 stop;
 extern int saveType;
 extern bool useBios;
 extern bool skipBios;
-extern bool speedup;
 extern bool syncToAudio;
 extern int layerSettings;
 extern int layerEnable;
