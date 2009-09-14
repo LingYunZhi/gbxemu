@@ -6,14 +6,15 @@
 
 #include "GBA.h"
 #include "GBAcpu.h"
-#include "GBAinline.h"
 #include "Globals.h"
 #include "EEprom.h"
 #include "Flash.h"
 #include "Sound.h"
 #include "Sram.h"
 #include "bios.h"
+#include "memory.h"
 #include "../System.h"
+#include "../common/port.h"
 
 
 #ifdef _MSC_VER

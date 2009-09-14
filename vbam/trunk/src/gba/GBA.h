@@ -4,7 +4,11 @@
 #define GBA_LOGGING
 
 #include "../System.h"
-#include <stdio.h> // for NULL
+
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 const u8 SAVE_GAME_VERSION_VBA2 = 20;
 const u8 SAVE_GAME_VERSION_CURRENT = SAVE_GAME_VERSION_VBA2;
@@ -68,7 +72,7 @@ void CPUUpdateRenderBuffers(bool);
 bool CPUReadState(const char *);
 bool CPUWriteState(const char *);
 int CPULoadRom(const u8 *const data, const int size);
-void CPUUpdateRegister(u32, u16);
+void CPUUpdateRegister(u32 address, u16 value);
 void CPUInit(const bool useBiosFile = false, const u8 *const data = NULL, const int size = 0);
 void CPUReset();
 void CPULoop(int);
@@ -126,3 +130,30 @@ enum ERR_CODE {
 };
 
 void printErrorMessage( ERR_CODE err );
+
+
+// shared variables
+extern bool cpuSramEnabled;
+extern bool cpuFlashEnabled;
+extern bool cpuEEPROMEnabled;
+extern bool cpuEEPROMSensorEnabled;
+extern bool cpuDmaHack;
+extern u32 cpuDmaLast;
+extern bool timer0On;
+extern int timer0Ticks;
+extern int cpuTotalTicks;
+extern int timer0ClockReload;
+extern bool timer1On;
+extern int timer1Ticks;
+extern int timer1ClockReload;
+extern bool timer2On;
+extern int timer2Ticks;
+extern int timer2ClockReload;
+extern bool timer3On;
+extern int timer3Ticks;
+extern int timer3ClockReload;
+extern bool stopState;
+extern bool holdState;
+extern int holdType;
+extern int cpuNextEvent;
+extern const u32 objTilesAddress[3];

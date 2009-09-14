@@ -600,15 +600,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\gba\gbainline.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\gba\Globals.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\gba\Globals.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gba\memory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gba\memory.h"
 					>
 				</File>
 				<File
@@ -633,6 +637,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\gba\Mode5.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\common\Port.h"
 					>
 				</File>
 				<File

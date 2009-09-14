@@ -5,7 +5,6 @@
 #include <string.h>
 #include "GBA.h"
 #include "GBAcpu.h"
-#include "GBAinline.h"
 #include "Globals.h"
 #include "GBAGfx.h"
 #include "EEprom.h"
@@ -13,6 +12,8 @@
 #include "Sound.h"
 #include "Sram.h"
 #include "bios.h"
+#include "RTC.h"
+#include "memory.h"
 #include "../common/Port.h"
 #include "../System.h"
 
@@ -99,7 +100,7 @@ const int TIMER_TICKS[4] = {
   10
 };
 
-const u32  objTilesAddress [3] = {0x010000, 0x014000, 0x014000};
+const u32 objTilesAddress[3] = {0x010000, 0x014000, 0x014000};
 const u8 gamepakRamWaitState[4] = { 4, 3, 2, 8 };
 const u8 gamepakWaitState[4] =  { 4, 3, 2, 8 };
 const u8 gamepakWaitState0[2] = { 2, 1 };

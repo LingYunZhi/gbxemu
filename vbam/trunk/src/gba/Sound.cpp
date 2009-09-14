@@ -36,7 +36,7 @@
 
 SoundDriver * soundDriver = 0;
 
-extern bool stopState;      // TODO: silence sound when true
+// TODO: silence sound when stopState == true
 
 int const SOUND_CLOCK_TICKS_ = 167772; // 1/100 second
 
