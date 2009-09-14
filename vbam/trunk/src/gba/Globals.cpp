@@ -11,7 +11,6 @@ bool armState = true;
 bool armIrqEnable = true;
 u32 armNextPC = 0x00000000;
 int armMode = 0x1f;
-u32 stop = 0x08000568;
 int saveType = 0;
 bool useBios = false;
 bool skipBios = false;

@@ -4,4 +4,3 @@ Developer Information File
 
 Known preprocessor switches:
 - GBA_LOGGING: Enables logging for the GBA core
-- FINAL_VERSION: Defined for release versions, disables additional GBA logging and completely disables GB logging. Increases the amount of CPU cycles being emulated in one go.
