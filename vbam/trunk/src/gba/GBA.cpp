@@ -528,7 +528,7 @@ void CPUUpdateRenderBuffers(bool force)
 
 static bool writeState( FILE *file )
 {
-    const int version = SAVE_GAME_VERSION;
+    const u8 version = SAVE_GAME_VERSION_CURRENT;
     fwrite( &version, sizeof(version), 1, file );
 
     // game id string
@@ -568,10 +568,10 @@ static bool writeState( FILE *file )
 
 static bool readState( FILE *file )
 {
-    int version = -1;
+    u8 version = 0;
     fread( &version, sizeof(version), 1, file );
 
-    if( version != SAVE_GAME_VERSION ) {
+    if( version != SAVE_GAME_VERSION_CURRENT ) {
         systemMessage(
             MSG_UNSUPPORTED_VBA_SGM,
             N_("Unsupported VisualBoyAdvance save game version %d"),

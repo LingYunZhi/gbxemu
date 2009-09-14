@@ -6,18 +6,9 @@
 #include "../System.h"
 #include <stdio.h> // for NULL
 
-#define SAVE_GAME_VERSION_1 1
-#define SAVE_GAME_VERSION_2 2
-#define SAVE_GAME_VERSION_3 3
-#define SAVE_GAME_VERSION_4 4
-#define SAVE_GAME_VERSION_5 5
-#define SAVE_GAME_VERSION_6 6
-#define SAVE_GAME_VERSION_7 7
-#define SAVE_GAME_VERSION_8 8
-#define SAVE_GAME_VERSION_9 9
-#define SAVE_GAME_VERSION_10 10
-#define SAVE_GAME_VERSION_11 11
-#define SAVE_GAME_VERSION  SAVE_GAME_VERSION_11
+const u8 SAVE_GAME_VERSION_VBA2 = 20;
+const u8 SAVE_GAME_VERSION_CURRENT = SAVE_GAME_VERSION_VBA2;
+
 
 typedef struct {
   u8 *address;
