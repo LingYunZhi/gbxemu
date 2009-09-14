@@ -877,34 +877,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\IOViewer.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\IOViewer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\IOViewerRegs.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\IUpdate.h"
 				>
 			</File>

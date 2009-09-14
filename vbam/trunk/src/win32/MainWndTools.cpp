@@ -3,7 +3,6 @@
 
 #include "AccelEditor.h"
 #include "FileDlg.h"
-#include "IOViewer.h"
 #include "MapView.h"
 #include "MemoryViewerDlg.h"
 #include "OamView.h"
@@ -34,17 +33,6 @@ void MainWnd::OnUpdateToolsLogging(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }
 
-void MainWnd::OnToolsIoviewer()
-{
-  IOViewer *dlg = new IOViewer;
-  dlg->Create(IDD_IO_VIEWER,this);
-  dlg->ShowWindow(SW_SHOW);
-}
-
-void MainWnd::OnUpdateToolsIoviewer(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable( (theApp.videoOption <= VIDEO_4X) && (theApp.cartridgeType == IMAGE_GBA));
-}
 
 void MainWnd::OnToolsMapview()
 {

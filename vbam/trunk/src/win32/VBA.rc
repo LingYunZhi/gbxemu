@@ -1063,7 +1063,6 @@ BEGIN
     POPUP "&Tools"
     BEGIN
         MENUITEM "Logging...",                  ID_TOOLS_LOGGING
-        MENUITEM "&IO Viewer...",               ID_TOOLS_IOVIEWER
         MENUITEM "&Map Viewer...",              ID_TOOLS_MAPVIEW
         MENUITEM "&Memory viewer...",           ID_TOOLS_MEMORYVIEWER
         MENUITEM "OAM Viewer...",               ID_TOOLS_OAMVIEWER
