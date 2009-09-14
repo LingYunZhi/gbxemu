@@ -12,7 +12,6 @@
 #include "IUpdate.h"
 #include "../System.h"
 #include "../Util.h"
-#include "WavWriter.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // VBA:
@@ -95,9 +94,6 @@ class VBA : public CWinApp
   int joypadDefault;
   int autoFire;
   bool autoFireToggle;
-  bool soundRecording;
-  WavWriter *soundRecorder;
-  CString soundRecordName;
   bool painting;
   int sensorX;
   int sensorY;

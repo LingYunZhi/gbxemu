@@ -137,10 +137,6 @@ protected:
 	afx_msg void OnUpdateToolsPaletteview(CCmdUI* pCmdUI);
 	afx_msg void OnToolsTileviewer();
 	afx_msg void OnUpdateToolsTileviewer(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsSoundStartrecording();
-	afx_msg void OnUpdateOptionsSoundStartrecording(CCmdUI* pCmdUI);
-	afx_msg void OnOptionsSoundStoprecording();
-	afx_msg void OnUpdateOptionsSoundStoprecording(CCmdUI* pCmdUI);
 	afx_msg void OnPaint();
 	afx_msg void OnToolsCustomize();
 	afx_msg void OnUpdateToolsCustomize(CCmdUI* pCmdUI);

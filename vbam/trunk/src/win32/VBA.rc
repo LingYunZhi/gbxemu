@@ -1062,12 +1062,6 @@ BEGIN
     END
     POPUP "&Tools"
     BEGIN
-        POPUP "Record"
-        BEGIN
-            MENUITEM "Start sound recording...",    ID_OPTIONS_SOUND_STARTRECORDING
-            MENUITEM "Stop sound recording",        ID_OPTIONS_SOUND_STOPRECORDING
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Logging...",                  ID_TOOLS_LOGGING
         MENUITEM "&IO Viewer...",               ID_TOOLS_IOVIEWER
         MENUITEM "&Map Viewer...",              ID_TOOLS_MAPVIEW
@@ -1316,8 +1310,6 @@ BEGIN
     IDS_FILTER_GCF          "Gameshark Code File_*.GCF__"
     IDS_SAVE_WILL_BE_LOST   "Importing a snapshot file will erase any saved games. Do you want to continue?"
     IDS_ADD_CBA_CODE        "Add CodeBreakerAdvance code"
-    IDS_FILTER_WAV          "Wave file_*.WAV__"
-    IDS_SELECT_WAV_NAME     "Select wave file name"
     IDS_FILTER_PAL          "Windows Palette (*.PAL)_*.PAL_PaintShop Palette (*.PAL)_*.PAL_Adobe Color Table (*.ACT)_*.ACT__"
     IDS_SELECT_PALETTE_NAME "Select palette name:"
     IDS_SEARCH_PRODUCED_NO_RESULTS "Search produced no results."

@@ -5,7 +5,6 @@
 #include "MainWnd.h"
 #include "Reg.h"
 #include "resource.h"
-#include "WavWriter.h"
 #include "WinResUtil.h"
 #include "Logging.h"
 
@@ -104,8 +103,6 @@ VBA::VBA()
   joypadDefault = 0;
   autoFire = 0;
   autoFireToggle = false;
-  soundRecording = false;
-  soundRecorder = NULL;
   painting = false;
   sensorX = 2047;
   sensorY = 2047;
@@ -453,43 +450,6 @@ SoundDriver * systemSoundInit()
     drv = newXAudio2_Output();
 
     return drv;
-}
-
-
-void systemOnSoundShutdown()
-{
-	if( theApp.soundRecorder ) {
-		delete theApp.soundRecorder;
-		theApp.soundRecorder = NULL;
-	}
-	theApp.soundRecording = false;
-}
-
-void systemOnWriteDataToSoundBuffer(const u16 * finalWave, int length)
-{
-	if( theApp.soundRecording ) {
-		if( theApp.soundRecorder ) {
-			theApp.soundRecorder->AddSound( (const u8 *)finalWave, length );
-		} else {
-			WAVEFORMATEX format;
-			format.cbSize = 0;
-			format.wFormatTag = WAVE_FORMAT_PCM;
-			format.nChannels = 2;
-			format.nSamplesPerSec = soundGetSampleRate();
-			format.wBitsPerSample = 16;
-			format.nBlockAlign = format.nChannels * ( format.wBitsPerSample >> 3 );
-			format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
-			theApp.soundRecorder = new WavWriter;
-			if( theApp.soundRecorder->Open( theApp.soundRecordName ) ) {
-				theApp.soundRecorder->SetFormat( &format );
-			}
-		}
-	}
-}
-
-bool systemCanChangeSoundQuality()
-{
-  return true;
 }
 
 

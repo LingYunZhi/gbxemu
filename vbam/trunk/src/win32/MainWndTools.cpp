@@ -10,7 +10,6 @@
 #include "PaletteView.h"
 #include "Reg.h"
 #include "TileView.h"
-#include "WavWriter.h"
 #include "WinResUtil.h"
 #include "Logging.h"
 
@@ -115,60 +114,6 @@ void MainWnd::OnToolsTileviewer()
 void MainWnd::OnUpdateToolsTileviewer(CCmdUI* pCmdUI)
 {
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
-
-
-void MainWnd::OnOptionsSoundStartrecording()
-{
-  CString captureBuffer;
-
-  CString capdir = regQueryStringValue("soundRecordDir", NULL);
-
-  if(capdir.IsEmpty())
-    capdir = getDirFromFile(theApp.filename);
-
-  CString filter = theApp.winLoadFilter(IDS_FILTER_WAV);
-  CString title = winResLoadString(IDS_SELECT_WAV_NAME);
-
-  LPCTSTR exts[] = { ".WAV" };
-
-  FileDlg dlg(this, "", filter, 1, "WAV", exts, capdir, title, true);
-
-  if(dlg.DoModal() == IDCANCEL) {
-    return;
-  }
-
-  captureBuffer = theApp.soundRecordName =  dlg.GetPathName();
-  theApp.soundRecording = true;
-
-  if(dlg.m_ofn.nFileOffset > 0) {
-    captureBuffer = captureBuffer.Left(dlg.m_ofn.nFileOffset);
-  }
-
-  int len = captureBuffer.GetLength();
-
-  if(len > 3 && captureBuffer[len-1] == '\\')
-    captureBuffer = captureBuffer.Left(len-1);
-  regSetStringValue("soundRecordDir", captureBuffer);
-}
-
-void MainWnd::OnUpdateOptionsSoundStartrecording(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(!theApp.soundRecording);
-}
-
-void MainWnd::OnOptionsSoundStoprecording()
-{
-  if(theApp.soundRecorder) {
-    delete theApp.soundRecorder;
-    theApp.soundRecorder = NULL;
-  }
-  theApp.soundRecording = false;
-}
-
-void MainWnd::OnUpdateOptionsSoundStoprecording(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.soundRecording);
 }
 
 

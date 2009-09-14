@@ -102,8 +102,6 @@ struct {
   { "ToolsOAMViewer", ID_TOOLS_OAMVIEWER },
   { "ToolsPaletteViewer", ID_TOOLS_PALETTEVIEW },
   { "ToolsTileViewer", ID_TOOLS_TILEVIEWER },
-  { "ToolsRecordSoundStartRecording", ID_OPTIONS_SOUND_STARTRECORDING },
-  { "ToolsRecordSoundStopRecording", ID_OPTIONS_SOUND_STOPRECORDING },
   { "ToolsCustomize", ID_TOOLS_CUSTOMIZE },
   { "HelpBugReport", ID_HELP_BUGREPORT },
   { "HelpFAQ", ID_HELP_FAQ },
