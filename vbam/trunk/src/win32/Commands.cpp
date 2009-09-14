@@ -57,7 +57,6 @@ struct {
   { "FileReset", ID_FILE_RESET },
   { "FileImportBatteryFile", ID_FILE_IMPORT_BATTERYFILE },
   { "FileExportBatteryFile", ID_FILE_EXPORT_BATTERYFILE },
-  { "FileScreenCapture", ID_FILE_SCREENCAPTURE },
   { "FileRomInformation", ID_FILE_ROMINFORMATION },
   { "FileToggleFullscreen", ID_FILE_TOGGLEMENU },
   { "FileClose", ID_FILE_CLOSE },

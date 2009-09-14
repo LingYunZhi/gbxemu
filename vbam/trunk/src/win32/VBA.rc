@@ -1064,8 +1064,6 @@ BEGIN
     BEGIN
         POPUP "Record"
         BEGIN
-            MENUITEM "Create screenshot...",        ID_FILE_SCREENCAPTURE
-            MENUITEM SEPARATOR
             MENUITEM "Start AVI recording...",      ID_TOOLS_RECORD_STARTAVIRECORDING
             MENUITEM "Stop AVI recording",          ID_TOOLS_RECORD_STOPAVIRECORDING
             MENUITEM SEPARATOR
@@ -1268,7 +1266,6 @@ BEGIN
     IDS_WROTE_STATE_N       "Wrote state %d"
     IDS_LOADED_BATTERY      "Loaded battery"
     IDS_SELECT_CAPTURE_NAME "Select screen capture name"
-    IDS_SCREEN_CAPTURE      "Screen capture"
     IDS_ADDRESS             "Address"
     IDS_OLD_VALUE           "Old Value"
     IDS_NEW_VALUE           "New Value"

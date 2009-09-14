@@ -71,8 +71,6 @@ protected:
 	afx_msg void OnUpdateFileImportBatteryfile(CCmdUI* pCmdUI);
 	afx_msg void OnFileExportBatteryfile();
 	afx_msg void OnUpdateFileExportBatteryfile(CCmdUI* pCmdUI);
-	afx_msg void OnFileScreencapture();
-	afx_msg void OnUpdateFileScreencapture(CCmdUI* pCmdUI);
 	afx_msg void OnFileRominformation();
 	afx_msg void OnUpdateFileRominformation(CCmdUI* pCmdUI);
 	afx_msg void OnFileTogglemenu();
