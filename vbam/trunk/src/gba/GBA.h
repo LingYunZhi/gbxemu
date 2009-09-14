@@ -1,5 +1,8 @@
 #pragma once
 
+// compile logging functionality
+#define GBA_LOGGING
+
 #include "../System.h"
 #include <stdio.h> // for NULL
 
