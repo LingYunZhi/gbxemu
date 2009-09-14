@@ -114,8 +114,6 @@ VBA::VBA()
   lastWindowed = VIDEO_3X;
   lastFullscreen = VIDEO_1024x768;
 
-  updateCount = 0;
-
   systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 
   ZeroMemory(&emulator, sizeof(emulator));
@@ -338,14 +336,6 @@ void systemDrawScreen()
     return;
 
   theApp.renderedFrames++;
-
-  if(theApp.updateCount) {
-    POSITION pos = theApp.updateList.GetHeadPosition();
-    while(pos) {
-      IUpdateListener *up = theApp.updateList.GetNext(pos);
-      up->update();
-    }
-  }
 
   if(!soundBufferLow)
   {
@@ -1207,23 +1197,6 @@ bool VBA::initInput()
   }
   delete input;
   return false;
-}
-
-void VBA::winAddUpdateListener(IUpdateListener *l)
-{
-  updateList.AddTail(l);
-  updateCount++;
-}
-
-void VBA::winRemoveUpdateListener(IUpdateListener *l)
-{
-  POSITION pos = updateList.Find(l);
-  if(pos) {
-    updateList.RemoveAt(pos);
-    updateCount--;
-    if(updateCount < 0)
-      updateCount = 0;
-  }
 }
 
 

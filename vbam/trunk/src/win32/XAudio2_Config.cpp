@@ -33,7 +33,7 @@ void XAudio2_Config::DoDataExchange(CDataExchange* pDX)
 	if( pDX->m_bSaveAndValidate == TRUE ) {
 		if( CB_ERR != m_combo_dev.GetCurSel() ) {
 			if( CB_ERR != m_combo_dev.GetItemData( m_combo_dev.GetCurSel() ) ) {
-				m_selected_device_index = m_combo_dev.GetItemData( m_combo_dev.GetCurSel() );
+				m_selected_device_index = (UINT32)m_combo_dev.GetItemData( m_combo_dev.GetCurSel() );
 			}
 		}
 

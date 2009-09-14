@@ -9,7 +9,6 @@
 #include "AcceleratorManager.h"
 #include "Display.h"
 #include "Input.h"
-#include "IUpdate.h"
 #include "../System.h"
 #include "../Util.h"
 
@@ -105,9 +104,6 @@ class VBA : public CWinApp
   VIDEO_SIZE lastWindowed;
   VIDEO_SIZE lastFullscreen;
 
-  CList<IUpdateListener *, IUpdateListener*&> updateList;
-  int updateCount;
-
   CAcceleratorManager winAccelMgr;
   HACCEL hAccel;
 
@@ -126,8 +122,6 @@ class VBA : public CWinApp
 
   void adjustDestRect();
   void updateMenuBar();
-  void winAddUpdateListener(IUpdateListener *l);
-  void winRemoveUpdateListener(IUpdateListener *l);
   CString winLoadFilter(UINT id);
 
   // Overrides
