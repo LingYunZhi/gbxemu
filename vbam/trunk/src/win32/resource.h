@@ -66,7 +66,6 @@
 #define IDD_LANG_SELECT                 122
 #define IDD_OPENDLG                     124
 #define IDD_PALETTE_VIEW                127
-#define IDD_OAM_VIEW                    130
 #define IDD_ACCEL_EDITOR                131
 #define IDD_TILE_VIEWER                 132
 #define IDD_DISASSEMBLE                 134
@@ -303,19 +302,7 @@
 #define IDS_MOVIE_PLAY                  1138
 #define IDC_CHANGE_BACKDROP             1140
 #define IDC_GO                          1143
-#define IDC_OAM_VIEW                    1147
-#define IDC_OAM_VIEW_ZOOM               1148
-#define IDC_SPRITE                      1150
-#define IDC_POS                         1151
 #define IDC_MODE                        1152
-#define IDC_COLORS                      1153
-#define IDC_PALETTE                     1154
-#define IDC_TILE                        1155
-#define IDC_PRIO                        1156
-#define IDC_SCROLLBAR                   1157
-#define IDC_SIZE2                       1159
-#define IDC_ROT                         1160
-#define IDC_FLAGS                       1161
 #define IDC_COMMANDS                    1162
 #define IDC_CURRENTS                    1163
 #define IDC_ASSIGN                      1164

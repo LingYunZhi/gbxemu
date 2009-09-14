@@ -3,7 +3,6 @@
 
 #include "AccelEditor.h"
 #include "FileDlg.h"
-#include "OamView.h"
 #include "PaletteView.h"
 #include "Reg.h"
 #include "TileView.h"
@@ -31,20 +30,6 @@ void MainWnd::OnUpdateToolsLogging(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }
 
-
-void MainWnd::OnToolsOamviewer()
-{
-  if(theApp.cartridgeType == IMAGE_GBA) {
-    OamView *dlg = new OamView;
-    dlg->Create(IDD_OAM_VIEW, this);
-    dlg->ShowWindow(SW_SHOW);
-  }
-}
-
-void MainWnd::OnUpdateToolsOamviewer(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
 
 void MainWnd::OnToolsPaletteview()
 {
