@@ -3,7 +3,6 @@
 
 #include "AccelEditor.h"
 #include "FileDlg.h"
-#include "MemoryViewerDlg.h"
 #include "OamView.h"
 #include "PaletteView.h"
 #include "Reg.h"
@@ -32,20 +31,6 @@ void MainWnd::OnUpdateToolsLogging(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }
 
-
-void MainWnd::OnToolsMemoryviewer()
-{
-  if(theApp.cartridgeType == IMAGE_GBA) {
-    MemoryViewerDlg *dlg = new MemoryViewerDlg;
-    dlg->Create(IDD_MEM_VIEWER, this);
-    dlg->ShowWindow(SW_SHOW);
-  }
-}
-
-void MainWnd::OnUpdateToolsMemoryviewer(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
 
 void MainWnd::OnToolsOamviewer()
 {
