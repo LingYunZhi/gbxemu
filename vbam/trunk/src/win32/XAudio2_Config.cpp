@@ -77,12 +77,12 @@ BOOL XAudio2_Config::OnInitDialog()
 
 	hr = XAudio2Create( &xa, flags );
 	if( hr != S_OK ) {
-		systemMessage( IDS_XAUDIO2_FAILURE, NULL );
+		//printErrorMessage( IDS_XAUDIO2_FAILURE, NULL );
 	} else {
 		UINT32 dev_count = 0;
 		hr = xa->GetDeviceCount( &dev_count );
 		if( hr != S_OK ) {
-			systemMessage( IDS_XAUDIO2_CANNOT_ENUMERATE_DEVICES, NULL );
+			//printErrorMessage( IDS_XAUDIO2_CANNOT_ENUMERATE_DEVICES, NULL );
 		} else {
 			XAUDIO2_DEVICE_DETAILS dd;
 			for( UINT32 i = 0; i < dev_count; i++ ) {
@@ -108,7 +108,7 @@ BOOL XAudio2_Config::OnInitDialog()
 					int id = m_combo_dev.AddString( temp );
 #endif
 					if( id < 0 ) {
-						systemMessage( IDS_XAUDIO2_CANNOT_ENUMERATE_DEVICES, NULL );
+						//printErrorMessage( IDS_XAUDIO2_CANNOT_ENUMERATE_DEVICES, NULL );
 						break;
 					} else {
 						m_combo_dev.SetItemData( id, i );

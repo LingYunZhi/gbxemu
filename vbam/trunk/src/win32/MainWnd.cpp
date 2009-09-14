@@ -214,8 +214,8 @@ bool MainWnd::FileRun()
   IMAGE_TYPE type = IMAGE_GBA;
 
   if(type == IMAGE_UNKNOWN) {
-    systemMessage(IDS_UNSUPPORTED_FILE_TYPE,
-                  "Unsupported file type: %s", theApp.filename);
+    //printErrorMessage(IDS_UNSUPPORTED_FILE_TYPE,
+                  //"Unsupported file type: %s", theApp.filename);
     return false;
   }
   systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;

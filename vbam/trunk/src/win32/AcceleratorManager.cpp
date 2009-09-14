@@ -64,7 +64,7 @@ CAcceleratorManager::~CAcceleratorManager()
   if ((m_bAutoSave == true) && (m_szRegKey.IsEmpty() != FALSE)) {
     //          bool bRet = Write();
     //          if (!bRet)
-    //                  systemMessage(0, "CAcceleratorManager::~CAcceleratorManager\nError in CAcceleratorManager::Write...");
+    //                  printErrorMessage(0, "CAcceleratorManager::~CAcceleratorManager\nError in CAcceleratorManager::Write...");
   }
 
   Reset();

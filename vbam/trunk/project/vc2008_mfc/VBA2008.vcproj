@@ -665,10 +665,6 @@
 			Name="Functionality"
 			>
 			<File
-				RelativePath="..\..\src\NLS.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\common\Port.h"
 				>
 			</File>

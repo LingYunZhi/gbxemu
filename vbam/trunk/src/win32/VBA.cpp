@@ -45,7 +45,7 @@ VBA::VBA()
 {
   // COINIT_MULTITHREADED is not supported by SHBrowseForFolder with BIF_USENEWUI
   if( S_OK != CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ) ) {
-	  systemMessage( IDS_COM_FAILURE, NULL );
+	  //printErrorMessage( IDS_COM_FAILURE, NULL );
   }
 
   // ! keep in mind that many of the following values will be really initialized in loadSettings()
@@ -352,20 +352,8 @@ u32 systemGetClock()
   return GetTickCount();
 }
 
-void systemMessage(int number, const char *defaultMsg, ...)
+void printErrorMessage( ERR_CODE err )
 {
-  CString buffer;
-  va_list valist;
-  CString msg = defaultMsg;
-  if(number)
-    msg = winResLoadString(number);
-
-  va_start(valist, defaultMsg);
-  buffer.FormatV(msg, valist);
-
-  AfxGetApp()->m_pMainWnd->MessageBox(buffer, winResLoadString(IDS_ERROR), MB_OK|MB_ICONERROR);
-
-  va_end(valist);
 }
 
 void systemShowSpeed(int speed)
@@ -1077,9 +1065,9 @@ void VBA::winSetLanguageOption(int option, bool force)
                            lbuffer, 10)) {
             l = winLoadLanguage(lbuffer);
             if(l == NULL) {
-              systemMessage(IDS_FAILED_TO_LOAD_LIBRARY,
-                            "Failed to load library %s",
-                            lbuffer);
+              //printErrorMessage(IDS_FAILED_TO_LOAD_LIBRARY,
+                            //"Failed to load library %s",
+                            //lbuffer);
               return;
             }
           }
@@ -1093,8 +1081,8 @@ void VBA::winSetLanguageOption(int option, bool force)
 #endif
         languageModule = l;
       } else {
-        systemMessage(IDS_FAILED_TO_GET_LOCINFO,
-                      "Failed to get locale information");
+        //printErrorMessage(IDS_FAILED_TO_GET_LOCINFO,
+                      //"Failed to get locale information");
         return;
       }
     }
@@ -1116,9 +1104,9 @@ void VBA::winSetLanguageOption(int option, bool force)
         if(dlg.DoModal()) {
           HINSTANCE l = winLoadLanguage(languageName);
           if(l == NULL) {
-            systemMessage(IDS_FAILED_TO_LOAD_LIBRARY,
-                          "Failed to load library %s",
-                          languageName);
+            //printErrorMessage(IDS_FAILED_TO_LOAD_LIBRARY,
+                          //"Failed to load library %s",
+                          //languageName);
             return;
           }
           AfxSetResourceHandle(l);
@@ -1137,9 +1125,9 @@ void VBA::winSetLanguageOption(int option, bool force)
           return;
         HINSTANCE l = winLoadLanguage(languageName);
         if(l == NULL) {
-          systemMessage(IDS_FAILED_TO_LOAD_LIBRARY,
-                        "Failed to load library %s",
-                        languageName);
+          //printErrorMessage(IDS_FAILED_TO_LOAD_LIBRARY,
+                        //"Failed to load library %s",
+                        //languageName);
           return;
         }
         AfxSetResourceHandle(l);

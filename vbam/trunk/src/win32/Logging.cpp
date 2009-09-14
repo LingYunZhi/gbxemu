@@ -174,12 +174,12 @@ void Logging::OnSave()
 
 void Logging::OnErrspaceLog()
 {
-  systemMessage(0, "Error allocating space");
+  //printErrorMessage(0, "Error allocating space");
 }
 
 void Logging::OnMaxtextLog()
 {
-  systemMessage(0, "Max text length reached %d", m_log.GetLimitText());
+  //printErrorMessage(0, "Max text length reached %d", m_log.GetLimitText());
 }
 
 void Logging::PostNcDestroy()

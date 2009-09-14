@@ -11,7 +11,6 @@
 
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
-#include "../NLS.h"
 #include "../gba/Sound.h"
 
 #include "../version.h"
@@ -363,12 +362,12 @@ void MainWnd::OnFileImportBatteryfile()
 
   res = theApp.emulator.emuReadBattery(dlg.GetPathName());
 
-  if(!res)
-    systemMessage(MSG_CANNOT_OPEN_FILE, "Cannot open file %s", dlg.GetPathName());
-  else {
+  //if(!res)
+    //printErrorMessage(ERR_CANNOT_OPEN_FILE, "Cannot open file %s", dlg.GetPathName());
+  //else {
     //Removed the reset to allow loading a battery file 'within' a save state.
     //theApp.emulator.emuReset();
-  }
+  //}
 }
 
 void MainWnd::OnUpdateFileImportBatteryfile(CCmdUI* pCmdUI)
@@ -427,9 +426,9 @@ void MainWnd::OnFileExportBatteryfile()
   if(theApp.cartridgeType == IMAGE_GBA)
     result = theApp.emulator.emuWriteBattery(dlg.GetPathName());
 
-  if(!result)
-    systemMessage(MSG_ERROR_CREATING_FILE, "Error creating file %s",
-                  dlg.GetPathName());
+  //if(!result)
+    //printErrorMessage(ERR_ERROR_CREATING_FILE, "Error creating file %s",
+                  //dlg.GetPathName());
 }
 
 void MainWnd::OnUpdateFileExportBatteryfile(CCmdUI* pCmdUI)

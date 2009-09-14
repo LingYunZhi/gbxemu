@@ -116,3 +116,21 @@ typedef struct {
 #include "Globals.h"
 #include "EEprom.h"
 #include "Flash.h"
+
+
+// error codes
+enum ERR_CODE {
+    ERR_UNSUPPORTED_SGM_VER,
+    ERR_CANNOT_LOAD_SGM_WRONG_GAME,
+    ERR_SAVE_GAME_NOT_USING_BIOS,
+    ERR_SAVE_GAME_USING_BIOS,
+    ERR_UNSUPPORTED_SAVE_TYPE,
+    ERR_UNSUPPORTED_BIOS_FUNCTION,
+    ERR_INVALID_BIOS_FILE_SIZE,
+    ERR_ERROR_CREATING_FILE,
+    ERR_UNSUPPORTED_ARM_MODE,
+    ERR_OUT_OF_MEMORY,
+    ERR_UNKNOWN_RTC_COMMAND
+};
+
+void printErrorMessage( ERR_CODE err );

@@ -13,7 +13,6 @@
 #include "Sound.h"
 #include "Sram.h"
 #include "bios.h"
-#include "../NLS.h"
 #include "../Util.h"
 #include "../common/Port.h"
 #include "../System.h"
@@ -572,17 +571,14 @@ static bool readState( FILE *file )
     fread( &version, sizeof(version), 1, file );
 
     if( version != SAVE_GAME_VERSION_CURRENT ) {
-        systemMessage(
-            MSG_UNSUPPORTED_VBA_SGM,
-            N_("Unsupported VisualBoyAdvance save game version %d"),
-            version );
+        printErrorMessage(ERR_UNSUPPORTED_SGM_VER);
         return false;
     }
     
     u8 romname[16];
     fread( &romname[0], 1, 16, file );
     if( 0 != memcmp( &rom[0xa0], &romname[0], 16 ) ) {
-        systemMessage(MSG_CANNOT_LOAD_SGM, N_("Cannot load save game for %s"), romname);
+        printErrorMessage(ERR_CANNOT_LOAD_SGM_WRONG_GAME);
         return false;
     }
 
@@ -593,13 +589,9 @@ static bool readState( FILE *file )
     
     if( stateUseBios != useBios ) {
         if( useBios )
-            systemMessage(
-            MSG_SAVE_GAME_NOT_USING_BIOS,
-            N_("Save game is not using the BIOS files") );
+            printErrorMessage(ERR_SAVE_GAME_NOT_USING_BIOS);
         else
-            systemMessage(
-            MSG_SAVE_GAME_USING_BIOS,
-            N_("Save game is using the BIOS file") );
+            printErrorMessage(ERR_SAVE_GAME_USING_BIOS);
         return false;
     }
 
@@ -660,8 +652,7 @@ static bool readState( FILE *file )
     gbaSaveType = 5;
     break;
   default:
-    systemMessage(MSG_UNSUPPORTED_SAVE_TYPE,
-                  N_("Unsupported save type %d"), saveType);
+    printErrorMessage(ERR_UNSUPPORTED_SAVE_TYPE);
     break;
   }
   if(eepromInUse)
@@ -684,7 +675,7 @@ bool CPUWriteState( const char *file )
     FILE *f = fopen( file, "wb" );
 
     if( f == NULL ) {
-        systemMessage(MSG_ERROR_CREATING_FILE, N_("Error creating file %s"), f);
+        printErrorMessage(ERR_ERROR_CREATING_FILE);
         return false;
     }
 
@@ -714,8 +705,7 @@ bool CPUExportEepromFile(const char *fileName)
     FILE *file = fopen(fileName, "wb");
 
     if(!file) {
-      systemMessage(MSG_ERROR_CREATING_FILE, N_("Error creating file %s"),
-                    fileName);
+      printErrorMessage(ERR_ERROR_CREATING_FILE);
       return false;
     }
 
@@ -752,8 +742,7 @@ bool CPUWriteBatteryFile(const char *fileName)
     FILE *file = fopen(fileName, "wb");
 
     if(!file) {
-      systemMessage(MSG_ERROR_CREATING_FILE, N_("Error creating file %s"),
-                    fileName);
+      printErrorMessage(ERR_ERROR_CREATING_FILE);
       return false;
     }
 
@@ -995,14 +984,12 @@ int CPULoadRom(const u8 *const data, const int size)
 
   rom = (u8 *)malloc(romSize);
   if(rom == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "ROM");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     return 0;
   }
   workRAM = (u8 *)calloc(1, 0x40000);
   if(workRAM == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "WRAM");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     return 0;
   }
 
@@ -1018,50 +1005,43 @@ int CPULoadRom(const u8 *const data, const int size)
 
   bios = (u8 *)calloc(1,0x4000);
   if(bios == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "BIOS");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
   internalRAM = (u8 *)calloc(1,0x8000);
   if(internalRAM == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "IRAM");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
   paletteRAM = (u8 *)calloc(1,0x400);
   if(paletteRAM == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "PRAM");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
   vram = (u8 *)calloc(1, 0x20000);
   if(vram == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "VRAM");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
   oam = (u8 *)calloc(1, 0x400);
   if(oam == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "OAM");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
   pix = (u16 *)calloc(1, pix_size);
   if(pix == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "PIX");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
   ioMem = (u8 *)calloc(1, 0x400);
   if(ioMem == NULL) {
-    systemMessage(MSG_OUT_OF_MEMORY, N_("Failed to allocate memory for %s"),
-                  "IO");
+    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return 0;
   }
@@ -1292,7 +1272,7 @@ void CPUSwitchMode(int mode, bool saveState, bool breakLoop)
       reg[17].I = reg[SPSR_UND].I;
     break;
   default:
-    systemMessage(MSG_UNSUPPORTED_ARM_MODE, N_("Unsupported ARM mode %02x"), mode);
+    printErrorMessage(ERR_UNSUPPORTED_ARM_MODE);
     break;
   }
   armMode = mode;
@@ -1335,7 +1315,6 @@ void CPUSoftwareInterrupt()
 
 void CPUSoftwareInterrupt(int comment)
 {
-  static bool disableMessage = false;
   if(armState) comment >>= 16;
   if(comment == 0xfa) {
     //agbPrintFlush();
@@ -1596,12 +1575,10 @@ void CPUSoftwareInterrupt(int comment)
     }
 #endif
 
-    if(!disableMessage) {
-      systemMessage(MSG_UNSUPPORTED_BIOS_FUNCTION,
-                    N_("Unsupported BIOS function %02x called from %08x. A BIOS file is needed in order to get correct behaviour."),
-                    comment,
-                    armMode ? armNextPC - 4: armNextPC - 2);
-      disableMessage = true;
+    static bool disableMessage = false;
+    if( !disableMessage ) {
+        printErrorMessage(ERR_UNSUPPORTED_BIOS_FUNCTION);
+        disableMessage = true;
     }
     break;
   }
@@ -2565,7 +2542,7 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
           memcpy( bios, data, size );
           useBios = true;
       } else {
-          systemMessage(MSG_INVALID_BIOS_FILE_SIZE, N_("Invalid BIOS file size"));
+          printErrorMessage(ERR_INVALID_BIOS_FILE_SIZE);
       }
   }
 

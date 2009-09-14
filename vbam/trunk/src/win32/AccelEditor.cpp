@@ -256,13 +256,13 @@ void AccelEditor::OnRemove()
           m_alreadyAffected.SetWindowText("");
           return;
         } else {
-          systemMessage(0,"Unable to remove this\naccelerator (Locked)");
+          //printErrorMessage(0,"Unable to remove this\naccelerator (Locked)");
           return;
         }
       }
     }
-    systemMessage(0,"internal error (CAccelDlgHelper::Remove : pAccel unavailable)");
+    //printErrorMessage(0,"internal error (CAccelDlgHelper::Remove : pAccel unavailable)");
     return;
   }
-  systemMessage(0,"internal error (CAccelDlgHelper::Remove : Lookup failed)");
+  //printErrorMessage(0,"internal error (CAccelDlgHelper::Remove : Lookup failed)");
 }

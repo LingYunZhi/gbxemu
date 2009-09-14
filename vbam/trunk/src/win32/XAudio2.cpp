@@ -11,7 +11,7 @@
 #include <xaudio2.h>
 
 // Internals
-#include "../System.h" // for systemMessage()
+#include "../System.h" // for printErrorMessage()
 #include "../gba/Globals.h"
 
 
@@ -150,7 +150,7 @@ bool XAudio2_Output::init(long sampleRate)
 
 	hr = XAudio2Create( &xaud, flags );
 	if( hr != S_OK ) {
-		systemMessage( IDS_XAUDIO2_FAILURE, NULL );
+		//printErrorMessage( IDS_XAUDIO2_FAILURE, NULL );
 		failed = true;
 		return false;
 	}
@@ -186,7 +186,7 @@ bool XAudio2_Output::init(long sampleRate)
 		theApp.xa2Device,
 		NULL );
 	if( hr != S_OK ) {
-		systemMessage( IDS_XAUDIO2_CANNOT_CREATE_MASTERINGVOICE, NULL );
+		//printErrorMessage( IDS_XAUDIO2_CANNOT_CREATE_MASTERINGVOICE, NULL );
 		failed = true;
 		return false;
 	}
@@ -195,7 +195,7 @@ bool XAudio2_Output::init(long sampleRate)
 	// create sound emitter
 	hr = xaud->CreateSourceVoice( &sVoice, &wfx, 0, 4.0f, &notify );
 	if( hr != S_OK ) {
-		systemMessage( IDS_XAUDIO2_CANNOT_CREATE_SOURCEVOICE, NULL );
+		//printErrorMessage( IDS_XAUDIO2_CANNOT_CREATE_SOURCEVOICE, NULL );
 		failed = true;
 		return false;
 	}

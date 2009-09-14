@@ -36,7 +36,6 @@ bool systemReadJoypads();
 // return information about the given joystick, -1 for default joystick
 u32 systemReadJoypad(int);
 u32 systemGetClock();
-void systemMessage(int, const char *, ...);
 SoundDriver * systemSoundInit();
 void systemScreenMessage(const char *);
 void systemUpdateMotionSensor();
