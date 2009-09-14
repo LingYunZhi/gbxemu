@@ -1201,30 +1201,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\win32\TileView.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\win32\TileView.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\win32\WinHelper.h"
 				>
 			</File>

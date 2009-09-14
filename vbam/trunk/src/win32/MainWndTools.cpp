@@ -4,7 +4,6 @@
 #include "AccelEditor.h"
 #include "FileDlg.h"
 #include "Reg.h"
-#include "TileView.h"
 #include "WinResUtil.h"
 #include "Logging.h"
 
@@ -25,21 +24,6 @@ void MainWnd::OnToolsLogging()
 }
 
 void MainWnd::OnUpdateToolsLogging(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
-
-
-void MainWnd::OnToolsTileviewer()
-{
-  if(theApp.cartridgeType == IMAGE_GBA) {
-    TileView *dlg = new TileView;
-    dlg->Create(IDD_TILE_VIEWER, this);
-    dlg->ShowWindow(SW_SHOW);
-  }
-}
-
-void MainWnd::OnUpdateToolsTileviewer(CCmdUI* pCmdUI)
 {
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }

@@ -96,7 +96,6 @@ struct {
   { "OptionsJoypadAutofireL", ID_OPTIONS_JOYPAD_AUTOFIRE_L },
   { "OptionsJoypadAutofireR", ID_OPTIONS_JOYPAD_AUTOFIRE_R },
   { "ToolsLogging", ID_TOOLS_LOGGING },
-  { "ToolsTileViewer", ID_TOOLS_TILEVIEWER },
   { "ToolsCustomize", ID_TOOLS_CUSTOMIZE },
   { "HelpBugReport", ID_HELP_BUGREPORT },
   { "HelpFAQ", ID_HELP_FAQ },
