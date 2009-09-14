@@ -9,6 +9,17 @@ static CString *regVbaPath = NULL;
 
 bool regEnabled = true;
 
+bool utilFileExists( const char *filename )
+{
+	FILE *f = fopen( filename, "r" );
+	if( f == NULL ) {
+		return false;
+	} else {
+		fclose( f );
+		return true;
+	}
+}
+
 void regInit(const char *path, bool force)
 {
 	if( regEnabled ) {

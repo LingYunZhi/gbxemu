@@ -235,8 +235,6 @@ bool MainWnd::FileRun()
   char file[2048];
   CString oldFile = theApp.filename;
 
-  utilStripDoubleExtension(theApp.szFile, tempName);
-
   _fullpath(file, tempName, 2048);
   theApp.filename = file;
 
@@ -244,7 +242,7 @@ bool MainWnd::FileRun()
   if(index != -1)
     theApp.filename = theApp.filename.Left(index);
 
-  IMAGE_TYPE type = utilFindType(theApp.szFile);
+  IMAGE_TYPE type = IMAGE_GBA;
 
   if(type == IMAGE_UNKNOWN) {
     systemMessage(IDS_UNSUPPORTED_FILE_TYPE,

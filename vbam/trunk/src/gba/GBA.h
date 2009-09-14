@@ -113,6 +113,12 @@ extern struct EmulatedSystem GBASystem;
 #define R14_FIQ  43
 #define SPSR_FIQ 44
 
+// save game
+typedef struct {
+  void *address;
+  int size;
+} variable_desc;
+
 #include "Globals.h"
 #include "EEprom.h"
 #include "Flash.h"

@@ -26,6 +26,12 @@ enum VIDEO_SIZE{
   VIDEO_OTHER
 };
 
+enum IMAGE_TYPE {
+  IMAGE_UNKNOWN = -1,
+  IMAGE_GBA     = 0,
+  //IMAGE_GB      = 1
+};
+
 
 class VBA : public CWinApp
 {
