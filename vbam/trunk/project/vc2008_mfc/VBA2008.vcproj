@@ -464,10 +464,6 @@
 				RelativePath="..\..\src\win32\VBA.rc"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\win32\res\VBA.rc2"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Documentation"

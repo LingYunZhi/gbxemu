@@ -39,7 +39,7 @@ BEGIN
     "#ifndef APSTUDIO_INVOKED\r\n"
     "#include ""targetver.h""\r\n"
     "#endif\r\n"
-    "#include ""afxres.h""\0"
+    "#include ""afxres.h\0"
 END
 
 3 TEXTINCLUDE 
@@ -983,14 +983,4 @@ END
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-#include "res\VBA.rc2"   // non-Microsoft Visual C++ edited resource
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
 
