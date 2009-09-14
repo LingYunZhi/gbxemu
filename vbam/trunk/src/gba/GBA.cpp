@@ -786,73 +786,6 @@ bool CPUReadBatteryFile(const char *fileName)
 }
 
 
-bool CPUIsZipFile(const char * file)
-{
-  if(strlen(file) > 4) {
-    const char * p = strrchr(file,'.');
-
-    if(p != NULL) {
-      if(_stricmp(p, ".zip") == 0)
-        return true;
-    }
-  }
-
-  return false;
-}
-
-bool CPUIsGBAImage(const char * file)
-{
-  if(strlen(file) > 4) {
-    const char * p = strrchr(file,'.');
-
-    if(p != NULL) {
-      if(_stricmp(p, ".gba") == 0)
-        return true;
-      if(_stricmp(p, ".agb") == 0)
-        return true;
-      if(_stricmp(p, ".bin") == 0)
-        return true;
-    }
-  }
-
-  return false;
-}
-
-bool CPUIsGBABios(const char * file)
-{
-  if(strlen(file) > 4) {
-    const char * p = strrchr(file,'.');
-
-    if(p != NULL) {
-      if(_stricmp(p, ".gba") == 0)
-        return true;
-      if(_stricmp(p, ".agb") == 0)
-        return true;
-      if(_stricmp(p, ".bin") == 0)
-        return true;
-      if(_stricmp(p, ".bios") == 0)
-        return true;
-      if(_stricmp(p, ".rom") == 0)
-        return true;
-    }
-  }
-
-  return false;
-}
-
-bool CPUIsELF(const char *file)
-{
-  if(strlen(file) > 4) {
-    const char * p = strrchr(file,'.');
-
-    if(p != NULL) {
-      if(_stricmp(p, ".elf") == 0)
-        return true;
-    }
-  }
-  return false;
-}
-
 void CPUCleanUp()
 {
   if(rom != NULL) {
@@ -2392,66 +2325,6 @@ void CPUUpdateRegister(u32 address, u16 value)
   }
 }
 
-void applyTimer ()
-{
-  if (timerOnOffDelay & 1)
-  {
-    timer0ClockReload = TIMER_TICKS[timer0Value & 3];
-    if(!timer0On && (timer0Value & 0x80)) {
-      // reload the counter
-      TM0D = timer0Reload;
-      timer0Ticks = (0x10000 - TM0D) << timer0ClockReload;
-      UPDATE_REG(0x100, TM0D);
-    }
-    timer0On = timer0Value & 0x80 ? true : false;
-    TM0CNT = timer0Value & 0xC7;
-    interp_rate();
-    UPDATE_REG(0x102, TM0CNT);
-    //    CPUUpdateTicks();
-  }
-  if (timerOnOffDelay & 2)
-  {
-    timer1ClockReload = TIMER_TICKS[timer1Value & 3];
-    if(!timer1On && (timer1Value & 0x80)) {
-      // reload the counter
-      TM1D = timer1Reload;
-      timer1Ticks = (0x10000 - TM1D) << timer1ClockReload;
-      UPDATE_REG(0x104, TM1D);
-    }
-    timer1On = timer1Value & 0x80 ? true : false;
-    TM1CNT = timer1Value & 0xC7;
-    interp_rate();
-    UPDATE_REG(0x106, TM1CNT);
-  }
-  if (timerOnOffDelay & 4)
-  {
-    timer2ClockReload = TIMER_TICKS[timer2Value & 3];
-    if(!timer2On && (timer2Value & 0x80)) {
-      // reload the counter
-      TM2D = timer2Reload;
-      timer2Ticks = (0x10000 - TM2D) << timer2ClockReload;
-      UPDATE_REG(0x108, TM2D);
-    }
-    timer2On = timer2Value & 0x80 ? true : false;
-    TM2CNT = timer2Value & 0xC7;
-    UPDATE_REG(0x10A, TM2CNT);
-  }
-  if (timerOnOffDelay & 8)
-  {
-    timer3ClockReload = TIMER_TICKS[timer3Value & 3];
-    if(!timer3On && (timer3Value & 0x80)) {
-      // reload the counter
-      TM3D = timer3Reload;
-      timer3Ticks = (0x10000 - TM3D) << timer3ClockReload;
-      UPDATE_REG(0x10C, TM3D);
-    }
-    timer3On = timer3Value & 0x80 ? true : false;
-    TM3CNT = timer3Value & 0xC7;
-    UPDATE_REG(0x10E, TM3CNT);
-  }
-  cpuNextEvent = CPUUpdateTicks();
-  timerOnOffDelay = 0;
-}
 
 u8 cpuBitsSet[256];
 u8 cpuLowestBitSet[256];
@@ -3275,15 +3148,72 @@ void CPULoop(int ticks)
         goto updateLoop;
       }
 
-      if (timerOnOffDelay)
-          applyTimer();
+      if( timerOnOffDelay )
+      {
+          if (timerOnOffDelay & 1)
+          {
+            timer0ClockReload = TIMER_TICKS[timer0Value & 3];
+            if(!timer0On && (timer0Value & 0x80)) {
+              // reload the counter
+              TM0D = timer0Reload;
+              timer0Ticks = (0x10000 - TM0D) << timer0ClockReload;
+              UPDATE_REG(0x100, TM0D);
+            }
+            timer0On = timer0Value & 0x80 ? true : false;
+            TM0CNT = timer0Value & 0xC7;
+            interp_rate();
+            UPDATE_REG(0x102, TM0CNT);
+            //    CPUUpdateTicks();
+          }
+          if (timerOnOffDelay & 2)
+          {
+            timer1ClockReload = TIMER_TICKS[timer1Value & 3];
+            if(!timer1On && (timer1Value & 0x80)) {
+              // reload the counter
+              TM1D = timer1Reload;
+              timer1Ticks = (0x10000 - TM1D) << timer1ClockReload;
+              UPDATE_REG(0x104, TM1D);
+            }
+            timer1On = timer1Value & 0x80 ? true : false;
+            TM1CNT = timer1Value & 0xC7;
+            interp_rate();
+            UPDATE_REG(0x106, TM1CNT);
+          }
+          if (timerOnOffDelay & 4)
+          {
+            timer2ClockReload = TIMER_TICKS[timer2Value & 3];
+            if(!timer2On && (timer2Value & 0x80)) {
+              // reload the counter
+              TM2D = timer2Reload;
+              timer2Ticks = (0x10000 - TM2D) << timer2ClockReload;
+              UPDATE_REG(0x108, TM2D);
+            }
+            timer2On = timer2Value & 0x80 ? true : false;
+            TM2CNT = timer2Value & 0xC7;
+            UPDATE_REG(0x10A, TM2CNT);
+          }
+          if (timerOnOffDelay & 8)
+          {
+            timer3ClockReload = TIMER_TICKS[timer3Value & 3];
+            if(!timer3On && (timer3Value & 0x80)) {
+              // reload the counter
+              TM3D = timer3Reload;
+              timer3Ticks = (0x10000 - TM3D) << timer3ClockReload;
+              UPDATE_REG(0x10C, TM3D);
+            }
+            timer3On = timer3Value & 0x80 ? true : false;
+            TM3CNT = timer3Value & 0xC7;
+            UPDATE_REG(0x10E, TM3CNT);
+          }
+          cpuNextEvent = CPUUpdateTicks();
+          timerOnOffDelay = 0;
+              }
 
       if(cpuNextEvent > ticks)
         cpuNextEvent = ticks;
 
       if(ticks <= 0 || cpuBreakLoop)
         break;
-
     }
   }
 }

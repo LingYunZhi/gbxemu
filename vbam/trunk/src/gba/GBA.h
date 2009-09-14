@@ -62,23 +62,17 @@ extern void (*cpuSaveGameFunc)(u32,u8);
 
 bool CPUWriteBatteryFile(const char *);
 bool CPUReadBatteryFile(const char *);
-bool CPUWriteBMPFile(const char *);
 void CPUCleanUp();
 void CPUUpdateRender();
 void CPUUpdateRenderBuffers(bool);
-bool CPUReadMemState(char *, int);
 bool CPUReadState(const char *);
-bool CPUWriteMemState(char *, int);
 bool CPUWriteState(const char *);
 int CPULoadRom(const u8 *const data, const int size);
 void CPUUpdateRegister(u32, u16);
-void applyTimer ();
 void CPUInit(const bool useBiosFile = false, const u8 *const data = NULL, const int size = 0);
 void CPUReset();
 void CPULoop(int);
 void CPUCheckDMA(int,int);
-bool CPUIsGBAImage(const char *);
-bool CPUIsZipFile(const char *);
 
 extern struct EmulatedSystem GBASystem;
 
