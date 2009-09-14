@@ -247,35 +247,6 @@ BEGIN
     LTEXT           "",IDC_LANG_NAME,140,9,40,8,SS_NOPREFIX
 END
 
-IDD_PALETTE_VIEW DIALOGEX 0, 0, 316, 266
-STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "Palette View"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    PUSHBUTTON      "Save BG...",IDC_SAVE_BG,102,246,50,14
-    PUSHBUTTON      "Save OBJ...",IDC_SAVE_OBJ,162,246,50,14
-    PUSHBUTTON      "&Refresh",IDC_REFRESH2,6,246,50,14
-    PUSHBUTTON      "&Close",IDC_CLOSE,260,246,50,14
-    LTEXT           "",IDC_ADDRESS,53,168,50,8,SS_NOPREFIX
-    LTEXT           "",IDC_R,53,180,50,8,SS_NOPREFIX
-    LTEXT           "",IDC_G,53,192,50,8,SS_NOPREFIX
-    LTEXT           "",IDC_B,53,204,50,8,SS_NOPREFIX
-    LTEXT           "",IDC_VALUE,53,216,50,8,SS_NOPREFIX
-    CONTROL         "Custom1",IDC_COLOR,"VbaColorControl",WS_TABSTOP,161,168,50,50
-    CONTROL         "PaletteViewBG",IDC_PALETTE_VIEW,"VbaPaletteViewControl",WS_TABSTOP,12,30,128,128
-    CONTROL         "PaletteViewBG",IDC_PALETTE_VIEW_OBJ,
-                    "VbaPaletteViewControl",WS_TABSTOP,166,30,128,128
-    GROUPBOX        "Background",IDC_STATIC,7,20,137,143
-    GROUPBOX        "Sprite",IDC_STATIC,161,20,137,143
-    LTEXT           "Address:",IDC_STATIC,7,168,38,8
-    LTEXT           "R:",IDC_STATIC,7,180,41,8
-    LTEXT           "G:",IDC_STATIC,7,192,43,8
-    LTEXT           "B:",IDC_STATIC,7,204,38,8
-    LTEXT           "Value:",IDC_STATIC,7,216,38,8
-    LTEXT           "Click on a color for more information",IDC_STATIC,7,7,302,8
-    CONTROL         "Automatic update",IDC_AUTO_UPDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,229,71,10
-END
-
 IDD_ACCEL_EDITOR DIALOGEX 0, 0, 399, 121
 STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Accelerator editor"
@@ -564,14 +535,6 @@ BEGIN
         BOTTOMMARGIN, 61
     END
 
-    IDD_PALETTE_VIEW, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 309
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 259
-    END
-
     IDD_ACCEL_EDITOR, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -843,7 +806,6 @@ BEGIN
     POPUP "&Tools"
     BEGIN
         MENUITEM "Logging...",                  ID_TOOLS_LOGGING
-        MENUITEM "&Palette Viewer...",          ID_TOOLS_PALETTEVIEW
         MENUITEM "Tile Viewer...",              ID_TOOLS_TILEVIEWER
         MENUITEM SEPARATOR
         MENUITEM "Customize...",                ID_TOOLS_CUSTOMIZE

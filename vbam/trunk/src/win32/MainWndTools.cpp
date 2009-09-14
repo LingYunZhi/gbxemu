@@ -3,7 +3,6 @@
 
 #include "AccelEditor.h"
 #include "FileDlg.h"
-#include "PaletteView.h"
 #include "Reg.h"
 #include "TileView.h"
 #include "WinResUtil.h"
@@ -30,20 +29,6 @@ void MainWnd::OnUpdateToolsLogging(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }
 
-
-void MainWnd::OnToolsPaletteview()
-{
-  if(theApp.cartridgeType == IMAGE_GBA) {
-    PaletteView *dlg = new PaletteView;
-    dlg->Create(IDD_PALETTE_VIEW, this);
-    dlg->ShowWindow(SW_SHOW);
-  }
-}
-
-void MainWnd::OnUpdateToolsPaletteview(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
 
 void MainWnd::OnToolsTileviewer()
 {

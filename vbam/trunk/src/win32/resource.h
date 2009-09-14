@@ -65,7 +65,6 @@
 #define IDD_MOTION_CONFIG               121
 #define IDD_LANG_SELECT                 122
 #define IDD_OPENDLG                     124
-#define IDD_PALETTE_VIEW                127
 #define IDD_ACCEL_EDITOR                131
 #define IDD_TILE_VIEWER                 132
 #define IDD_DISASSEMBLE                 134
@@ -275,16 +274,13 @@
 #define IDS_ERROR_NOT_GBA_IMAGE         1122
 #define IDS_EEPROM_NOT_SUPPORTED        1123
 #define IDS_FILTER_DUMP                 1124
-#define IDC_PALETTE_VIEW                1125
 #define IDS_SELECT_DUMP_FILE            1125
-#define IDC_PALETTE_VIEW_OBJ            1126
 #define IDC_REFRESH                     1126
 #define IDS_FILTER_AVI                  1126
 #define IDC_SAVE                        1127
 #define IDC_GOPC                        1127
 #define IDS_SELECT_AVI_NAME             1127
 #define IDS_INVALID_THROTTLE_VALUE      1128
-#define IDC_REFRESH2                    1129
 #define IDS_FILTER_INI                  1129
 #define IDS_SELECT_SKIN_FILE            1130
 #define IDC_CLOSE                       1131
@@ -295,9 +291,7 @@
 #define IDS_END_OF_MOVIE                1135
 #define IDC_COLOR                       1136
 #define IDS_INVALID_INTERVAL_VALUE      1136
-#define IDC_SAVE_BG                     1137
 #define IDS_REGISTRY                    1137
-#define IDC_SAVE_OBJ                    1138
 #define IDC_MAP_VIEW_ZOOM               1138
 #define IDS_MOVIE_PLAY                  1138
 #define IDC_CHANGE_BACKDROP             1140

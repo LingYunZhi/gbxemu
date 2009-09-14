@@ -125,8 +125,6 @@ protected:
 	afx_msg void OnUpdateOptionsJoypadMotionconfigure(CCmdUI* pCmdUI);
 	afx_msg void OnToolsLogging();
 	afx_msg void OnUpdateToolsLogging(CCmdUI* pCmdUI);
-	afx_msg void OnToolsPaletteview();
-	afx_msg void OnUpdateToolsPaletteview(CCmdUI* pCmdUI);
 	afx_msg void OnToolsTileviewer();
 	afx_msg void OnUpdateToolsTileviewer(CCmdUI* pCmdUI);
 	afx_msg void OnPaint();
