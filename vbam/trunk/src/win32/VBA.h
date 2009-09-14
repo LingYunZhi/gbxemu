@@ -10,7 +10,6 @@
 #include "Display.h"
 #include "Input.h"
 #include "../System.h"
-#include "../Util.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // VBA:

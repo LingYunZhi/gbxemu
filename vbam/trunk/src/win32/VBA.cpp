@@ -13,7 +13,6 @@
 #include "../gba/Globals.h"
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
-#include "../Util.h"
 #include "../common/SoundDriver.h"
 
 #include "../version.h"

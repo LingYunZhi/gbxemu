@@ -13,7 +13,6 @@
 #include "Sound.h"
 #include "Sram.h"
 #include "bios.h"
-#include "../Util.h"
 #include "../common/Port.h"
 #include "../System.h"
 

@@ -1,6 +1,5 @@
 #include "GBA.h"
 #include "EEprom.h"
-#include "../Util.h"
 #include <memory.h>
 #include <stddef.h> // for NULL
 

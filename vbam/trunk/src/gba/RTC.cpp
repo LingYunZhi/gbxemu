@@ -2,7 +2,6 @@
 #include "GBA.h"
 #include "Globals.h"
 #include "../common/Port.h"
-#include "../Util.h"
 
 #include <time.h>
 #include <memory.h>

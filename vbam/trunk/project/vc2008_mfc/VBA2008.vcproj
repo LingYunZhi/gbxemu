@@ -464,6 +464,10 @@
 				RelativePath="..\..\src\win32\VBA.rc"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\version.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Documentation"
@@ -660,26 +664,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Functionality"
-			>
-			<File
-				RelativePath="..\..\src\common\Port.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Util.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Util.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\version.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="IO"

@@ -18,7 +18,6 @@
 #include "../gba/Globals.h"
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
-#include "../Util.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

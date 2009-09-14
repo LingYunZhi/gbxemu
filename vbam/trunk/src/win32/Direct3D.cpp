@@ -12,7 +12,6 @@
 #include "../System.h"
 #include "../gba/GBA.h"
 #include "../gba/Globals.h"
-#include "../Util.h"
 
 #include <memory.h>
 #include <cassert>
