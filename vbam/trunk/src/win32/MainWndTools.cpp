@@ -2,7 +2,6 @@
 #include "MainWnd.h"
 
 #include "AccelEditor.h"
-#include "AVIWrite.h"
 #include "FileDlg.h"
 #include "IOViewer.h"
 #include "MapView.h"
@@ -170,117 +169,6 @@ void MainWnd::OnOptionsSoundStoprecording()
 void MainWnd::OnUpdateOptionsSoundStoprecording(CCmdUI* pCmdUI)
 {
   pCmdUI->Enable(theApp.soundRecording);
-}
-
-
-void MainWnd::OnToolsRecordStartavirecording()
-{
-	CString captureBuffer;
-	CString capdir = regQueryStringValue( "aviRecordDir", NULL );
-
-	if( capdir.IsEmpty() ) {
-		capdir = getDirFromFile( theApp.filename );
-	}
-
-	CString filter = theApp.winLoadFilter( IDS_FILTER_AVI );
-	CString title = winResLoadString( IDS_SELECT_AVI_NAME );
-
-	LPCTSTR exts[] = { ".AVI" };
-
-	FileDlg dlg( this, "", filter, 1, "AVI", exts, capdir, title, true );
-
-	if( dlg.DoModal() == IDCANCEL ) {
-		return;
-	}
-
-	captureBuffer = theApp.soundRecordName =  dlg.GetPathName();
-	theApp.aviRecordName = captureBuffer;
-	theApp.aviRecording = true;
-
-	if( dlg.m_ofn.nFileOffset > 0 ) {
-		captureBuffer = captureBuffer.Left( dlg.m_ofn.nFileOffset );
-	}
-
-	int len = captureBuffer.GetLength();
-
-	if( ( len > 3 ) && captureBuffer[ len - 1 ] == '\\' ) {
-		captureBuffer = captureBuffer.Left( len - 1 );
-	}
-
-	regSetStringValue( "aviRecordDir", captureBuffer );
-
-
-	// create AVI file
-	bool ret;
-
-	if( theApp.aviRecorder ) {
-		delete theApp.aviRecorder;
-		theApp.aviRecorder = NULL;
-	}
-	theApp.aviRecorder = new AVIWrite();
-
-	// create AVI file
-	ret = theApp.aviRecorder->CreateAVIFile( theApp.aviRecordName );
-	if( !ret ) {
-		systemMessage( IDS_AVI_CANNOT_CREATE_AVI, "Cannot create AVI file." );
-		delete theApp.aviRecorder;
-		theApp.aviRecorder = NULL;
-		theApp.aviRecording = false;
-		return;
-	}
-
-	// add video stream
-	ret = theApp.aviRecorder->CreateVideoStream(
-		theApp.sizeX,
-		theApp.sizeY,
-		16,
-		60,
-		this->GetSafeHwnd()
-		);
-	if( !ret ) {
-		systemMessage( IDS_AVI_CANNOT_CREATE_VIDEO, "Cannot create video stream in AVI file. Make sure the selected codec supports input in RGB24 color space!" );
-		delete theApp.aviRecorder;
-		theApp.aviRecorder = NULL;
-		theApp.aviRecording = false;
-		return;
-	}
-
-	// add audio stream
-	ret = theApp.aviRecorder->CreateAudioStream(
-		2,
-		soundGetSampleRate(),
-		16,
-		this->GetSafeHwnd()
-		);
-	if( !ret ) {
-		systemMessage( IDS_AVI_CANNOT_CREATE_AUDIO, "Cannot create audio stream in AVI file." );
-		delete theApp.aviRecorder;
-		theApp.aviRecorder = NULL;
-		theApp.aviRecording = false;
-		return;
-	}
-}
-
-
-void MainWnd::OnUpdateToolsRecordStartavirecording(CCmdUI* pCmdUI)
-{
-	pCmdUI->Enable( !theApp.aviRecording && emulating );
-}
-
-
-void MainWnd::OnToolsRecordStopavirecording()
-{
-	if( theApp.aviRecorder ) {
-		delete theApp.aviRecorder;
-		theApp.aviRecorder = NULL;
-	}
-	theApp.aviRecording = false;
-}
-
-
-void MainWnd::OnUpdateToolsRecordStopavirecording(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable( theApp.aviRecording );
 }
 
 

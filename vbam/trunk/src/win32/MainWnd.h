@@ -141,10 +141,6 @@ protected:
 	afx_msg void OnUpdateOptionsSoundStartrecording(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsSoundStoprecording();
 	afx_msg void OnUpdateOptionsSoundStoprecording(CCmdUI* pCmdUI);
-	afx_msg void OnToolsRecordStartavirecording();
-	afx_msg void OnUpdateToolsRecordStartavirecording(CCmdUI* pCmdUI);
-	afx_msg void OnToolsRecordStopavirecording();
-	afx_msg void OnUpdateToolsRecordStopavirecording(CCmdUI* pCmdUI);
 	afx_msg void OnPaint();
 	afx_msg void OnToolsCustomize();
 	afx_msg void OnUpdateToolsCustomize(CCmdUI* pCmdUI);

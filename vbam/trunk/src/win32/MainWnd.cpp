@@ -157,10 +157,6 @@ BEGIN_MESSAGE_MAP(MainWnd, CWnd)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUND_STARTRECORDING, OnUpdateOptionsSoundStartrecording)
   ON_COMMAND(ID_OPTIONS_SOUND_STOPRECORDING, OnOptionsSoundStoprecording)
   ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUND_STOPRECORDING, OnUpdateOptionsSoundStoprecording)
-  ON_COMMAND(ID_TOOLS_RECORD_STARTAVIRECORDING, OnToolsRecordStartavirecording)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_RECORD_STARTAVIRECORDING, OnUpdateToolsRecordStartavirecording)
-  ON_COMMAND(ID_TOOLS_RECORD_STOPAVIRECORDING, OnToolsRecordStopavirecording)
-  ON_UPDATE_COMMAND_UI(ID_TOOLS_RECORD_STOPAVIRECORDING, OnUpdateToolsRecordStopavirecording)
   ON_WM_PAINT()
   ON_COMMAND(ID_TOOLS_CUSTOMIZE, OnToolsCustomize)
   ON_UPDATE_COMMAND_UI(ID_TOOLS_CUSTOMIZE, OnUpdateToolsCustomize)
@@ -231,30 +227,19 @@ bool MainWnd::FileRun()
     end_apu_log();
 #endif
   }
-  char tempName[2048];
-  char file[2048];
-  CString oldFile = theApp.filename;
-
-  _fullpath(file, tempName, 2048);
-  theApp.filename = file;
-
-  int index = theApp.filename.ReverseFind('.');
-  if(index != -1)
-    theApp.filename = theApp.filename.Left(index);
-
   IMAGE_TYPE type = IMAGE_GBA;
 
   if(type == IMAGE_UNKNOWN) {
     systemMessage(IDS_UNSUPPORTED_FILE_TYPE,
-                  "Unsupported file type: %s", theApp.szFile);
+                  "Unsupported file type: %s", theApp.filename);
     return false;
   }
   systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
   theApp.cartridgeType = type;
   if(type == IMAGE_GBA) {
-      long fs = fileSize( theApp.szFile );
+      long fs = fileSize( theApp.filename );
       if( fs == 0 ) return false;
-      FILE *f = fopen( theApp.szFile, "rb" );
+      FILE *f = fopen( theApp.filename, "rb" );
       if( f == NULL ) return false;
       u8 *data = new u8[fs];
       fread( data, 1, fs, f );
@@ -300,7 +285,7 @@ bool MainWnd::FileRun()
 
   readBatteryFile();
 
-  theApp.addRecentFile(theApp.szFile);
+  theApp.addRecentFile(theApp.filename);
 
   theApp.updateWindowSize(theApp.videoOption);
 
@@ -638,8 +623,6 @@ bool MainWnd::fileOpenSelect()
 		initialDir = baseDir;
 	}
 */
-	theApp.szFile = _T("");
-
     CFileDialog dlg( TRUE,
                      NULL,
                      NULL,
@@ -649,7 +632,7 @@ bool MainWnd::fileOpenSelect()
                      this );
 
     if( IDOK == dlg.DoModal() ) {
-        theApp.szFile = dlg.GetPathName();
+        theApp.filename = dlg.GetPathName();
         return true;
     }
 
@@ -744,7 +727,7 @@ void MainWnd::OnDropFiles(HDROP hDropInfo)
                    0,
                    szFile,
                    1024)) {
-    theApp.szFile = szFile;
+    theApp.filename = szFile;
     if(FileRun()) {
       SetForegroundWindow();
       emulating = TRUE;

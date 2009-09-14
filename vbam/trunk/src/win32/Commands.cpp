@@ -104,8 +104,6 @@ struct {
   { "ToolsTileViewer", ID_TOOLS_TILEVIEWER },
   { "ToolsRecordSoundStartRecording", ID_OPTIONS_SOUND_STARTRECORDING },
   { "ToolsRecordSoundStopRecording", ID_OPTIONS_SOUND_STOPRECORDING },
-  { "ToolsRecordAVIStartRecording", ID_TOOLS_RECORD_STARTAVIRECORDING },
-  { "ToolsRecordAVIStopRecording", ID_TOOLS_RECORD_STOPAVIRECORDING },
   { "ToolsCustomize", ID_TOOLS_CUSTOMIZE },
   { "HelpBugReport", ID_HELP_BUGREPORT },
   { "HelpFAQ", ID_HELP_FAQ },

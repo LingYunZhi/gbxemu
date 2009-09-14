@@ -1064,9 +1064,6 @@ BEGIN
     BEGIN
         POPUP "Record"
         BEGIN
-            MENUITEM "Start AVI recording...",      ID_TOOLS_RECORD_STARTAVIRECORDING
-            MENUITEM "Stop AVI recording",          ID_TOOLS_RECORD_STOPAVIRECORDING
-            MENUITEM SEPARATOR
             MENUITEM "Start sound recording...",    ID_OPTIONS_SOUND_STARTRECORDING
             MENUITEM "Stop sound recording",        ID_OPTIONS_SOUND_STOPRECORDING
         END
@@ -1335,8 +1332,6 @@ BEGIN
     IDS_ERROR_NOT_GBA_IMAGE "Error: not a GBA image."
     IDS_FILTER_DUMP         "Memory Dump_*.DMP__"
     IDS_SELECT_DUMP_FILE    "Select dump file name"
-    IDS_FILTER_AVI          "AVI File_*.AVI__"
-    IDS_SELECT_AVI_NAME     "Select AVI file name"
     IDS_INVALID_THROTTLE_VALUE 
                             "Invalid throttle value. Please enter a number between 5 and 1000."
     IDS_FILTER_INI          "Skin INI File_*.INI__"
@@ -1357,12 +1352,6 @@ STRINGTABLE
 BEGIN
     IDS_OAL_NODEVICE        "There are no sound devices present on this system."
     IDS_OAL_NODLL           "OpenAL32.dll could not be found on your system. Please install the runtime from http://openal.org"
-    IDS_AVI_CANNOT_CREATE_AVI "Cannot create AVI file."
-    IDS_AVI_CANNOT_CREATE_VIDEO 
-                            "Cannot create video stream in AVI file. Make sure the selected codec supports input in RGB24 color space!"
-    IDS_AVI_CANNOT_CREATE_AUDIO "Cannot create audio stream in AVI file."
-    IDS_AVI_CANNOT_WRITE_VIDEO "Cannot write video frame to AVI file."
-    IDS_AVI_CANNOT_WRITE_AUDIO "Cannot write audio frame to AVI file."
     IDS_COM_FAILURE         "The COM (Component Object Model) failed to initialize!"
     IDS_XAUDIO2_FAILURE     "The XAudio2 interface failed to initialize!"
     IDS_XAUDIO2_CANNOT_CREATE_MASTERINGVOICE 

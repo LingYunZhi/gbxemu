@@ -13,7 +13,6 @@
 #include "../System.h"
 #include "../Util.h"
 #include "WavWriter.h"
-#include "AVIWrite.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // VBA:
@@ -99,11 +98,7 @@ class VBA : public CWinApp
   bool soundRecording;
   WavWriter *soundRecorder;
   CString soundRecordName;
-  bool aviRecording;
-  AVIWrite *aviRecorder;
-  CString aviRecordName;
   bool painting;
-  unsigned int skipAudioFrames;
   int sensorX;
   int sensorY;
   int mouseCounter;
@@ -125,7 +120,6 @@ class VBA : public CWinApp
 
   struct EmulatedSystem emulator;
 
-  CString szFile;
   CString filename;
 
   CString wndClass;

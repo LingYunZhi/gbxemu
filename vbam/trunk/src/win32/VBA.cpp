@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "VBA.h"
 
-#include "AVIWrite.h"
 #include "LangSelect.h"
 #include "MainWnd.h"
 #include "Reg.h"
@@ -107,10 +106,7 @@ VBA::VBA()
   autoFireToggle = false;
   soundRecording = false;
   soundRecorder = NULL;
-  aviRecording = false;
-  aviRecorder = NULL;
   painting = false;
-  skipAudioFrames = 0;
   sensorX = 2047;
   sensorY = 2047;
   mouseCounter = 0;
@@ -189,17 +185,11 @@ BOOL VBA::InitInstance()
           strcpy( winBuffer, __argv[2] );
           force = true;
           if( __argc > 3 ) {
-            szFile = __argv[3]; filename = szFile;
-            int index = filename.ReverseFind('.');
-            if(index != -1)
-              filename = filename.Left(index);
+            filename = __argv[3];
           }
         }
       } else {
-        szFile = __argv[1]; filename = szFile;
-        int index = filename.ReverseFind('.');
-        if(index != -1)
-          filename = filename.Left(index);
+        filename = __argv[1];
       }
     }
   }
@@ -359,35 +349,7 @@ void systemDrawScreen()
       up->update();
     }
   }
-/*
-  if( theApp.aviRecording ) {
-	  if( theApp.painting ) {
-		  theApp.skipAudioFrames++;
-	  } else {
-		  unsigned char *bmp;
-		  unsigned short srcPitch = theApp.sizeX * ( systemColorDepth >> 3 ) + 4;
-		  switch( systemColorDepth )
-		  {
-		  case 16:
-			  bmp = new unsigned char[ theApp.sizeX * theApp.sizeY * 2 ];
-			  cpyImg16bmp( bmp, pix + srcPitch, srcPitch, theApp.sizeX, theApp.sizeY );
-			  break;
-		  case 32:
-			  // use 24 bit colors to reduce video size
-			  bmp = new unsigned char[ theApp.sizeX * theApp.sizeY * 3 ];
-			  cpyImg32bmp( bmp, pix + srcPitch, srcPitch, theApp.sizeX, theApp.sizeY );
-			  break;
-		  }
-		  if( false == theApp.aviRecorder->AddVideoFrame( bmp ) ) {
-			  systemMessage( IDS_AVI_CANNOT_WRITE_VIDEO, "Cannot write video frame to AVI file." );
-			  delete theApp.aviRecorder;
-			  theApp.aviRecorder = NULL;
-			  theApp.aviRecording = false;
-		  }
-		  delete [] bmp;
-	  }
-  }
-*/
+
   if(!soundBufferLow)
   {
 	  theApp.display->render();
@@ -496,13 +458,6 @@ SoundDriver * systemSoundInit()
 
 void systemOnSoundShutdown()
 {
-	if( theApp.aviRecorder ) {
-		delete theApp.aviRecorder;
-		theApp.aviRecorder = NULL;
-	}
-	theApp.aviRecording = false;
-
-
 	if( theApp.soundRecorder ) {
 		delete theApp.soundRecorder;
 		theApp.soundRecorder = NULL;
@@ -527,19 +482,6 @@ void systemOnWriteDataToSoundBuffer(const u16 * finalWave, int length)
 			theApp.soundRecorder = new WavWriter;
 			if( theApp.soundRecorder->Open( theApp.soundRecordName ) ) {
 				theApp.soundRecorder->SetFormat( &format );
-			}
-		}
-	}
-
-	if( theApp.aviRecording && theApp.aviRecorder ) {
-		if( theApp.skipAudioFrames ) {
-			theApp.skipAudioFrames--;
-		} else {
-			if( false == theApp.aviRecorder->AddAudioFrame( ( u8 *)finalWave ) ) {
-				systemMessage( IDS_AVI_CANNOT_WRITE_AUDIO, "Cannot write audio frame to AVI file." );
-				delete theApp.aviRecorder;
-				theApp.aviRecorder = NULL;
-				theApp.aviRecording = false;
 			}
 		}
 	}

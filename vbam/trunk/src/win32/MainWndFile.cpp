@@ -87,7 +87,7 @@ void MainWnd::OnUpdateFileRecentFreeze(CCmdUI* pCmdUI)
 BOOL MainWnd::OnFileRecentFile(UINT nID)
 {
   if(theApp.recentFiles[(nID&0xFFFF)-ID_FILE_MRU_FILE1].GetLength()) {
-    theApp.szFile = theApp.recentFiles[(nID&0xFFFF)-ID_FILE_MRU_FILE1];
+    theApp.filename = theApp.recentFiles[(nID&0xFFFF)-ID_FILE_MRU_FILE1];
     if(FileRun())
       emulating = true;
     else {

@@ -322,7 +322,7 @@ void MainWnd::OnAudioCoreSettings()
 
 void MainWnd::OnUpdateAudioCoreSettings(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable( ( !theApp.aviRecording && !theApp.soundRecording ) ? TRUE : FALSE );
+	pCmdUI->Enable( ( !theApp.soundRecording ) ? TRUE : FALSE );
 }
 
 void MainWnd::updateSoundChannels(UINT id)
@@ -618,7 +618,7 @@ void MainWnd::OnOutputapiXaudio2config()
 
 void MainWnd::OnUpdateOutputapiXaudio2config(CCmdUI *pCmdUI)
 {
-    pCmdUI->Enable(!theApp.aviRecording && !theApp.soundRecording);
+    pCmdUI->Enable(!theApp.soundRecording);
 }
 
 void MainWnd::OnRenderapiD3dmotionblur()
