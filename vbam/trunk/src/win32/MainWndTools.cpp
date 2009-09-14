@@ -3,7 +3,6 @@
 
 #include "AccelEditor.h"
 #include "FileDlg.h"
-#include "MapView.h"
 #include "MemoryViewerDlg.h"
 #include "OamView.h"
 #include "PaletteView.h"
@@ -33,20 +32,6 @@ void MainWnd::OnUpdateToolsLogging(CCmdUI* pCmdUI)
   pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
 }
 
-
-void MainWnd::OnToolsMapview()
-{
-  if(theApp.cartridgeType == IMAGE_GBA) {
-    MapView *dlg = new MapView;
-    dlg->Create(IDD_MAP_VIEW, this);
-    dlg->ShowWindow(SW_SHOW);
-  }
-}
-
-void MainWnd::OnUpdateToolsMapview(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(theApp.videoOption <= VIDEO_4X);
-}
 
 void MainWnd::OnToolsMemoryviewer()
 {

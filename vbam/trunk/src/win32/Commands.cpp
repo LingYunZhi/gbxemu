@@ -96,7 +96,6 @@ struct {
   { "OptionsJoypadAutofireL", ID_OPTIONS_JOYPAD_AUTOFIRE_L },
   { "OptionsJoypadAutofireR", ID_OPTIONS_JOYPAD_AUTOFIRE_R },
   { "ToolsLogging", ID_TOOLS_LOGGING },
-  { "ToolsMapViewer", ID_TOOLS_MAPVIEW },
   { "ToolsMemoryViewer", ID_TOOLS_MEMORYVIEWER },
   { "ToolsOAMViewer", ID_TOOLS_OAMVIEWER },
   { "ToolsPaletteViewer", ID_TOOLS_PALETTEVIEW },
