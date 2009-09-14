@@ -62,8 +62,6 @@ extern void (*cpuSaveGameFunc)(u32,u8);
 
 bool CPUWriteBatteryFile(const char *);
 bool CPUReadBatteryFile(const char *);
-bool CPUExportEepromFile(const char *);
-bool CPUImportEepromFile(const char *);
 bool CPUWriteBMPFile(const char *);
 void CPUCleanUp();
 void CPUUpdateRender();
