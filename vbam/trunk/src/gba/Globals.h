@@ -3,17 +3,6 @@
 #include "../common/Types.h"
 #include "GBA.h"
 
-#define VERBOSE_SWI               0x001
-#define VERBOSE_UNALIGNED_MEMORY  0x002
-#define VERBOSE_ILLEGAL_WRITE     0x004
-#define VERBOSE_ILLEGAL_READ      0x008
-#define VERBOSE_DMA0              0x010
-#define VERBOSE_DMA1              0x020
-#define VERBOSE_DMA2              0x040
-#define VERBOSE_DMA3              0x080
-#define VERBOSE_UNDEFINED         0x100
-#define VERBOSE_AGBPRINT          0x200
-#define VERBOSE_SOUNDOUTPUT       0x400
 
 extern reg_pair reg[45];
 extern bool ioReadable[0x400];

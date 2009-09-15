@@ -28,7 +28,6 @@ struct EmulatedSystem {
 };
 
 void log(const char *,...);
-extern int systemVerbose;
 
 void systemDrawScreen();
 // updates the joystick data

@@ -22,6 +22,23 @@
 #endif
 
 
+// verbose info
+const u32 VERBOSE_SWI              = 0x001;
+const u32 VERBOSE_UNALIGNED_MEMORY = 0x002;
+const u32 VERBOSE_ILLEGAL_WRITE    = 0x004;
+const u32 VERBOSE_ILLEGAL_READ     = 0x008;
+const u32 VERBOSE_DMA0             = 0x010;
+const u32 VERBOSE_DMA1             = 0x020;
+const u32 VERBOSE_DMA2             = 0x040;
+const u32 VERBOSE_DMA3             = 0x080;
+const u32 VERBOSE_UNDEFINED        = 0x100;
+const u32 VERBOSE_AGBPRINT         = 0x200;
+const u32 VERBOSE_SOUNDOUTPUT      = 0x400;
+
+u32 systemVerbose = 0;
+
+
+
 extern int emulating;
 int SWITicks = 0;
 int IRQTicks = 0;

@@ -132,6 +132,22 @@ enum ERR_CODE {
 void printErrorMessage( ERR_CODE err );
 
 
+// verbose info
+extern const u32 VERBOSE_SWI;
+extern const u32 VERBOSE_UNALIGNED_MEMORY;
+extern const u32 VERBOSE_ILLEGAL_WRITE;
+extern const u32 VERBOSE_ILLEGAL_READ;
+extern const u32 VERBOSE_DMA0;
+extern const u32 VERBOSE_DMA1;
+extern const u32 VERBOSE_DMA2;
+extern const u32 VERBOSE_DMA3;
+extern const u32 VERBOSE_UNDEFINED;
+extern const u32 VERBOSE_AGBPRINT;
+extern const u32 VERBOSE_SOUNDOUTPUT;
+
+extern u32 systemVerbose;
+
+
 // shared variables
 extern bool cpuSramEnabled;
 extern bool cpuFlashEnabled;

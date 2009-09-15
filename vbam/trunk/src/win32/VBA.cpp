@@ -32,7 +32,6 @@ int emulating = 0;
 int RGB_LOW_BITS_MASK = 0;
 int systemSpeed = 0;
 
-int systemVerbose = 0;
 int systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 bool soundBufferLow = 0;
 
