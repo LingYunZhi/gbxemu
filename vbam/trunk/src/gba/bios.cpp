@@ -4,7 +4,6 @@
 
 #include "GBA.h"
 #include "bios.h"
-#include "Globals.h"
 #include "memory.h"
 
 s16 sineTable[256] = {

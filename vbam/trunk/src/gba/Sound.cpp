@@ -4,7 +4,6 @@
 #include "Sound.h"
 
 #include "GBA.h"
-#include "Globals.h"
 #include "../common/Port.h"
 
 #include "../apu/Gb_Apu.h"

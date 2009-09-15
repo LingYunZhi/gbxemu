@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <memory.h>
 #include "GBA.h"
-#include "Globals.h"
 #include "Flash.h"
 #include "Sram.h"
 

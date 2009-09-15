@@ -3,8 +3,7 @@
 
 #include "FileDlg.h"
 #include "Logging.h"
-
-#include "../gba/Globals.h"
+#include "../gba/gba.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -1,8 +1,8 @@
 #include "memory.h"
-#include "Globals.h"
 #include "../common/Port.h"
 #include "RTC.h"
 #include "Sound.h"
+#include "gba.h"
 
 u8 CPUReadByte(u32 address)
 {

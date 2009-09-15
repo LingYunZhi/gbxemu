@@ -10,7 +10,6 @@
 #include "Logging.h"
 
 #include "../gba/GBA.h"
-#include "../gba/Globals.h"
 #include "../gba/Sound.h"
 
 #include "../version.h"

@@ -6,7 +6,6 @@
 
 #include "GBA.h"
 #include "GBAcpu.h"
-#include "Globals.h"
 #include "EEprom.h"
 #include "Flash.h"
 #include "Sound.h"

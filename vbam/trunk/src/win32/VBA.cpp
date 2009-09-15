@@ -10,7 +10,6 @@
 
 #include "../System.h"
 #include "../gba/GBA.h"
-#include "../gba/Globals.h"
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
 #include "../common/SoundDriver.h"

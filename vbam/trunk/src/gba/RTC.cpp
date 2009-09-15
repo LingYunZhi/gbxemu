@@ -1,6 +1,5 @@
 #include "../System.h"
 #include "GBA.h"
-#include "Globals.h"
 #include "../common/Port.h"
 
 #include <time.h>

@@ -12,7 +12,7 @@
 
 // Internals
 #include "../System.h" // for printErrorMessage()
-#include "../gba/Globals.h"
+#include "../gba/gba.h"
 
 
 // Synchronization Event

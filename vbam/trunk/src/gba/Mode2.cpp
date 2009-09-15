@@ -1,5 +1,4 @@
 #include "GBA.h"
-#include "Globals.h"
 #include "GBAGfx.h"
 
 void mode2RenderLine()

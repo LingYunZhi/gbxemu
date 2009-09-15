@@ -13,9 +13,7 @@
 #include "../System.h"
 #include "../AutoBuild.h"
 #include "../gba/GBA.h"
-#include "../gba/Globals.h"
 #include "../gba/Flash.h"
-#include "../gba/Globals.h"
 #include "../gba/RTC.h"
 #include "../gba/Sound.h"
 
