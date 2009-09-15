@@ -16,5 +16,5 @@ void sramDelayedWrite(u32 address, u8 byte)
 void sramWrite(u32 address, u8 byte)
 {
   flashSaveMemory[address & 0xFFFF] = byte;
-  systemSaveUpdateCounter = SYSTEM_SAVE_UPDATED;
+  saveDataChanged = true;
 }

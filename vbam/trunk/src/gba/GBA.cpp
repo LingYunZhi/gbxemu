@@ -37,7 +37,6 @@ const u32 VERBOSE_SOUNDOUTPUT      = 0x400;
 u32 systemVerbose = 0;
 
 
-
 extern int emulating;
 int SWITicks = 0;
 int IRQTicks = 0;
@@ -102,6 +101,7 @@ u32 dma2Dest = 0;
 u32 dma3Source = 0;
 u32 dma3Dest = 0;
 void (*cpuSaveGameFunc)(u32,u8) = flashSaveDecide;
+bool saveDataChanged = false;
 void (*renderLine)() = mode0RenderLine;
 bool fxOn = false;
 bool windowOn = false;
@@ -674,7 +674,6 @@ static bool readState( FILE *file )
   if(eepromInUse)
     gbaSaveType = 3;
 
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
   if(armState) {
     ARM_PREFETCH;
   } else {
@@ -760,6 +759,7 @@ bool CPUWriteBatteryFile(const char *fileName)
     }
     fclose(file);
   }
+  saveDataChanged = false;
   return true;
 }
 
@@ -776,7 +776,7 @@ bool CPUReadBatteryFile(const char *fileName)
 
   long size = ftell(file);
   fseek(file, 0, SEEK_SET);
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
+  saveDataChanged = false;
 
   if(size == 512 || size == 0x2000) {
     if(fread(eepromData, 1, size, file) != (size_t)size) {
@@ -850,7 +850,7 @@ void CPUCleanUp()
     ioMem = NULL;
   }
 
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
+  saveDataChanged = false;
 
   emulating = 0;
 }
@@ -864,7 +864,7 @@ int CPULoadRom(const u8 *const data, const int size)
     CPUCleanUp();
   }
 
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
+  saveDataChanged = false;
 
   rom = (u8 *)malloc(romSize);
   if(rom == NULL) {
@@ -2780,7 +2780,7 @@ void CPUReset()
 
   ARM_PREFETCH;
 
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
+  saveDataChanged = false;
 
   cpuDmaHack = false;
 

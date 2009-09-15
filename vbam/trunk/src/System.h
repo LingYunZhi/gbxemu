@@ -45,7 +45,3 @@ void system10Frames(int);
 void systemFrame();
 
 extern int systemSpeed;
-
-extern int systemSaveUpdateCounter;
-#define SYSTEM_SAVE_UPDATED 30
-#define SYSTEM_SAVE_NOT_UPDATED 0

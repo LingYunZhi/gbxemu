@@ -31,7 +31,6 @@ int emulating = 0;
 int RGB_LOW_BITS_MASK = 0;
 int systemSpeed = 0;
 
-int systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 bool soundBufferLow = 0;
 
 
@@ -110,8 +109,6 @@ VBA::VBA()
   romSize = 0;
   lastWindowed = VIDEO_3X;
   lastFullscreen = VIDEO_1024x768;
-
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 
   ZeroMemory(&emulator, sizeof(emulator));
 
@@ -380,11 +377,8 @@ void systemFrame()
 
 void system10Frames(int rate)
 {
-    if(systemSaveUpdateCounter) {
-        if(--systemSaveUpdateCounter <= SYSTEM_SAVE_NOT_UPDATED) {
-            ((MainWnd *)theApp.m_pMainWnd)->writeBatteryFile();
-            systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
-        }
+    if(saveDataChanged) {
+        ((MainWnd *)theApp.m_pMainWnd)->writeBatteryFile();
     }
 
     theApp.wasPaused = false;

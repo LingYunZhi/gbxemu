@@ -63,6 +63,10 @@ extern bool armState;
 extern int armMode;
 extern void (*cpuSaveGameFunc)(u32,u8);
 
+// saveDataChanged is true if save data has changed. The new data should be written to a file.
+// TODO: reset to false on write
+extern bool saveDataChanged;
+
 
 bool CPUWriteBatteryFile(const char *);
 bool CPUReadBatteryFile(const char *);

@@ -215,7 +215,6 @@ bool MainWnd::FileRun()
                   //"Unsupported file type: %s", theApp.filename);
     return false;
   }
-  systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
   theApp.cartridgeType = type;
   if(type == IMAGE_GBA) {
       long fs = fileSize( theApp.filename );
