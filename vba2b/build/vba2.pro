@@ -3,8 +3,8 @@
 # -------------------------------------------------
 TARGET = vba2
 TEMPLATE = app
-SOURCES += main.cpp \
-    mainwindow.cpp \
+SOURCES += ../vba2/main.cpp \
+    ../vba2/mainwindow.cpp \
     ../gba2/apu/Multi_Buffer.cpp \
     ../gba2/apu/Gb_Oscs.cpp \
     ../gba2/apu/Gb_Apu_State.cpp \
@@ -28,7 +28,7 @@ SOURCES += main.cpp \
     ../gba2/gba/Flash.cpp \
     ../gba2/gba/EEprom.cpp \
     ../gba2/gba/bios.cpp
-HEADERS += mainwindow.h \
+HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
     ../gba2/apu/Gb_Apu.h \
@@ -51,4 +51,4 @@ HEADERS += mainwindow.h \
     ../gba2/gba/EEprom.h \
     ../gba2/gba/bios.h \
     ../gba2/System.h
-FORMS += mainwindow.ui
+FORMS += ../vba2/mainwindow.ui
