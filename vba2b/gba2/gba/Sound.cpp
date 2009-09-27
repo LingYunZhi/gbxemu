@@ -528,7 +528,6 @@ void soundReset()
 
 bool soundInit()
 {
-	soundDriver = systemSoundInit();
 	if ( !soundDriver )
 		return false;
 

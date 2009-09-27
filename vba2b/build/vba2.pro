@@ -27,7 +27,8 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/gba/GBA.cpp \
     ../gba2/gba/Flash.cpp \
     ../gba2/gba/EEprom.cpp \
-    ../gba2/gba/bios.cpp
+    ../gba2/gba/bios.cpp \
+    ../gba2/cemugba.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -50,5 +51,8 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/gba/Flash.h \
     ../gba2/gba/EEprom.h \
     ../gba2/gba/bios.h \
-    ../gba2/System.h
+    ../gba2/System.h \
+    ../gba2/cemugba.h \
+    ../gba2/common/csoundoutputdummy.h
 FORMS += ../vba2/mainwindow.ui
+RESOURCES += ../vba2/resource/resource.qrc

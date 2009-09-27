@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/MainWindow" >
+        <file>loadCartridge.png</file>
+        <file>unloadCartridge.png</file>
+    </qresource>
+</RCC>

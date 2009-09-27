@@ -152,6 +152,12 @@ extern const u32 VERBOSE_SOUNDOUTPUT;
 extern u32 systemVerbose;
 
 
+// constants
+
+// how many cycles one frame takes
+extern const u32 cyclesPerFrame;
+
+
 // shared variables
 extern bool cpuSramEnabled;
 extern bool cpuFlashEnabled;

@@ -3,8 +3,6 @@
 
 #include "common/Types.h"
 
-class SoundDriver;
-
 struct EmulatedSystem {
   // main emulation function
   void (*emuMain)(int);
@@ -38,7 +36,6 @@ inline bool systemReadJoypads() {return false;}
 // return information about the given joystick, -1 for default joystick
 inline u32 systemReadJoypad(int) {return 0;}
 inline u32 systemGetClock() {return 0;}
-inline SoundDriver * systemSoundInit() {return 0;}
 inline void systemScreenMessage(const char *) {}
 inline void systemUpdateMotionSensor() {}
 inline int  systemGetSensorX() {return 0;}

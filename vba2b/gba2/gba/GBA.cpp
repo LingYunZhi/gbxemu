@@ -36,6 +36,11 @@ const u32 VERBOSE_SOUNDOUTPUT      = 0x400;
 
 u32 systemVerbose = 0;
 
+// constants
+
+// visible+blanking pixels * 4 cylces per pixel
+const u32 cyclesPerFrame = (240+68)*(160+68)*4;
+
 
 int SWITicks = 0;
 int IRQTicks = 0;
@@ -3254,9 +3259,7 @@ struct EmulatedSystem GBASystem = {
   // emuHasDebugger
   true,
   // emuCount
-  // how many cycles one frame takes
-  // visible+blanking pixels * 4 cylces per pixel
-  (240+68)*(160+68)*4
+  cyclesPerFrame
 };
 
 
