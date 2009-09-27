@@ -2,5 +2,8 @@
     <qresource prefix="/MainWindow" >
         <file>loadCartridge.png</file>
         <file>unloadCartridge.png</file>
+        <file>pause_button.png</file>
+        <file>play_button.png</file>
+        <file>stop_button.png</file>
     </qresource>
 </RCC>

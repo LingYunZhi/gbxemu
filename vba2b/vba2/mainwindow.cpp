@@ -23,8 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     Q_ASSERT( m_timer != NULL );
     m_timer->setInterval( 1000 );
     connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
-
-    ui->actionPlay_Pause->setEnabled( false );
 }
 
 MainWindow::~MainWindow()
@@ -62,7 +60,6 @@ void MainWindow::on_actionUnload_ROM_triggered()
         m_emuGBA->closeROM();
         m_fileName.clear();
         ui->actionPlay_Pause->setEnabled( false );
-
     }
 }
 
@@ -84,8 +81,10 @@ void MainWindow::on_actionPlay_Pause_triggered()
     if( !m_fileName.isEmpty() ) {
         if( m_timer->isActive() ) {
             m_timer->stop();
+            ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
         } else {
             m_timer->start();
+            ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
         }
     } else {
         Q_ASSERT( false ); // should not be able to arrive here

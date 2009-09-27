@@ -87,6 +87,13 @@
    </property>
   </action>
   <action name="actionPlay_Pause">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/MainWindow/play_button.png</normaloff>:/MainWindow/play_button.png</iconset>
+   </property>
    <property name="text">
     <string>Play / Pause</string>
    </property>
