@@ -2,7 +2,7 @@
 
 #include "gba/GBA.h"
 #include "gba/Sound.h"
-#include "common/csoundoutputdummy.h"
+#include "common/cdriver_sound.h"
 #include "common/cdriver_graphics.h"
 #include <assert.h>
 
@@ -11,9 +11,9 @@ CEmuGBA::CEmuGBA()
     m_romLoaded = false;
     m_soundInitialized = false;
 
-    m_dummySound = NULL;
-    m_dummySound = new CSoundOutputDummy();
-    assert( m_dummySound != NULL );
+    m_snd = NULL;
+    m_snd = new CDummyDriver_Sound();
+    assert( m_snd != NULL );
 
     m_gfx = NULL;
     m_gfx = new CDummyDriver_Graphics();
@@ -22,8 +22,8 @@ CEmuGBA::CEmuGBA()
 
 CEmuGBA::~CEmuGBA()
 {
-    if( m_dummySound != NULL ) {
-        delete m_dummySound;
+    if( m_snd != NULL ) {
+        delete m_snd;
     }
 
     if( m_gfx != NULL ) {
@@ -37,7 +37,7 @@ bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
     if( m_soundInitialized ) {
         soundReset();
     } else {
-        soundDriver = m_dummySound;
+        soundDriver = m_snd;
         soundInit();
         m_soundInitialized = true;
     }

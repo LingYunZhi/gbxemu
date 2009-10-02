@@ -15,8 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef __VBA_SOUND_DRIVER_H__
-#define __VBA_SOUND_DRIVER_H__
+#ifndef CDRIVER_SOUND_H
+#define CDRIVER_SOUND_H
 
 #include "Types.h"
 
@@ -24,14 +24,14 @@
  * Sound driver abstract interface for the core to use to output sound.
  * Subclass this to implement a new sound driver.
  */
-class SoundDriver
+class CDriver_Sound
 {
 public:
 
 	/**
 	 * Destructor. Free the resources allocated by the sound driver.
 	 */
-	virtual ~SoundDriver() { };
+        virtual ~CDriver_Sound() { };
 
 	/**
 	 * Initialize the sound driver.
@@ -62,4 +62,17 @@ public:
 	virtual void setThrottle(unsigned short throttle) { };
 };
 
-#endif // __VBA_SOUND_DRIVER_H__
+
+// dummy sound driver
+class CDummyDriver_Sound : public CDriver_Sound
+{
+public:
+    bool init(long sampleRate) { return true; };
+    void pause() { };
+    void reset() { };
+    void resume() { };
+    void write(u16 * finalWave, int length) { };
+    void setThrottle(unsigned short throttle) { };
+};
+
+#endif // CDRIVER_SOUND_H

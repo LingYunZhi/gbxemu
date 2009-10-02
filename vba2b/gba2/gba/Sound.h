@@ -5,11 +5,11 @@
 
 #include "../System.h"
 #include <stdio.h>
-class SoundDriver;
+class CDriver_Sound;
 
 //// Setup/options (these affect GBA and GB sound)
 
-extern SoundDriver *soundDriver;
+extern CDriver_Sound *soundDriver;
 
 // Initializes sound and returns true if successful. Sets sound quality to
 // current value in soundQuality global.

@@ -39,7 +39,7 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/blargg_config.h \
     ../gba2/apu/blargg_common.h \
     ../gba2/common/Types.h \
-    ../gba2/common/SoundDriver.h \
+    ../gba2/common/cdriver_sound.h \
     ../gba2/common/Port.h \
     ../gba2/gba/Sram.h \
     ../gba2/gba/Sound.h \
@@ -53,7 +53,6 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/gba/bios.h \
     ../gba2/System.h \
     ../gba2/cemugba.h \
-    ../gba2/common/csoundoutputdummy.h \
     ../gba2/common/cdriver_graphics.h
 FORMS += ../vba2/mainwindow.ui
 RESOURCES += ../vba2/resource/resource.qrc

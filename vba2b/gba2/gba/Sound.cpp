@@ -9,7 +9,7 @@
 #include "../apu/Gb_Apu.h"
 #include "../apu/Multi_Buffer.h"
 
-#include "../common/SoundDriver.h"
+#include "../common/cdriver_sound.h"
 
 #define NR10 0x60
 #define NR11 0x62
@@ -33,7 +33,7 @@
 #define NR51 0x81
 #define NR52 0x84
 
-SoundDriver * soundDriver = 0;
+CDriver_Sound *soundDriver = NULL;
 
 // TODO: silence sound when stopState == true
 

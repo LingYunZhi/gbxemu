@@ -2,7 +2,7 @@
 #define CEMUGBA_H
 
 #include "common/Types.h"
-class SoundDriver;
+class CDriver_Sound;
 class CDriver_Graphics;
 
 class CEmuGBA
@@ -19,7 +19,7 @@ public:
 private:
     bool m_romLoaded;
     bool m_soundInitialized;
-    SoundDriver *m_dummySound;
+    CDriver_Sound    *m_snd;
     CDriver_Graphics *m_gfx;
 };
 
