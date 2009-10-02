@@ -1,7 +1,13 @@
-loadCartridge.png, unloadCartridge.png:
+loadCartridge.png
+This graphic is a modified version of:
 http://commons.wikimedia.org/wiki/File:Gba-cartridge.png
 
 
+unloadCartridge.png
+Original graphic by KDE project (GNU GPL v2): http://kde.org/
+Modified by Spacy
+
+
 play_button.png, pause_button.png, stop_button.png:
-Taken from Amarok 2.1.1 (GNU GPL v2)
+These are modified versions. Originals taken from Amarok 2.1.1 (GNU GPL v2)
 http://amarok.kde.org/
