@@ -3,6 +3,7 @@
 #include "gba/GBA.h"
 #include "gba/Sound.h"
 #include "common/csoundoutputdummy.h"
+#include "common/cdriver_graphics.h"
 #include <assert.h>
 
 CEmuGBA::CEmuGBA()
@@ -13,12 +14,20 @@ CEmuGBA::CEmuGBA()
     m_dummySound = NULL;
     m_dummySound = new CSoundOutputDummy();
     assert( m_dummySound != NULL );
+
+    m_gfx = NULL;
+    m_gfx = new CDummyDriver_Graphics();
+    assert( m_gfx != NULL );
 }
 
 CEmuGBA::~CEmuGBA()
 {
     if( m_dummySound != NULL ) {
         delete m_dummySound;
+    }
+
+    if( m_gfx != NULL ) {
+        delete m_gfx;
     }
 }
 

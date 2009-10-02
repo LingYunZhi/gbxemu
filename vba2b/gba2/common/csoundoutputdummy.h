@@ -8,7 +8,7 @@ class CSoundOutputDummy : public SoundDriver
 public:
     CSoundOutputDummy() { };
     ~CSoundOutputDummy() { };
-    bool init(long sampleRate) {return true; };
+    bool init(long sampleRate) { return true; };
     void pause() { };
     void reset() { };
     void resume() { };

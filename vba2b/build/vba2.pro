@@ -53,6 +53,7 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/gba/bios.h \
     ../gba2/System.h \
     ../gba2/cemugba.h \
-    ../gba2/common/csoundoutputdummy.h
+    ../gba2/common/csoundoutputdummy.h \
+    ../gba2/common/cdriver_graphics.h
 FORMS += ../vba2/mainwindow.ui
 RESOURCES += ../vba2/resource/resource.qrc
