@@ -25,6 +25,9 @@
 #include <QTimer>
 #include <assert.h>
 
+#include "../gba2/common/cdriver_sound.h"    // for dummy sound output
+#include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -41,11 +44,27 @@ MainWindow::MainWindow(QWidget *parent)
     Q_ASSERT( m_timer != NULL );
     m_timer->setInterval( 1000 );
     connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
+
+    m_snd = NULL;
+    m_snd = new CDummyDriver_Sound();
+    Q_ASSERT( m_snd != NULL );
+
+    m_gfx = NULL;
+    m_gfx = new CDummyDriver_Graphics();
+    Q_ASSERT( m_gfx != NULL );
 }
 
 MainWindow::~MainWindow()
 {
     on_actionUnload_ROM_triggered();
+
+    if( m_snd != NULL ) {
+        delete m_snd;
+    }
+
+    if( m_gfx != NULL ) {
+        delete m_gfx;
+    }
 
     delete m_emuGBA;
 

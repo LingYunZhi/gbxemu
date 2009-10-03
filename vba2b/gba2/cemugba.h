@@ -34,9 +34,14 @@ public:
 
     bool emulate();
 
+    bool setDriverSound( CDriver_Sound *drv );
+    bool setDriverGraphics( CDriver_Graphics *drv );
+
 private:
     bool m_romLoaded;
     bool m_soundInitialized;
+    bool m_soundDriverLoaded;
+    bool m_graphicsDriverLoaded;
     CDriver_Sound    *m_snd;
     CDriver_Graphics *m_gfx;
 };

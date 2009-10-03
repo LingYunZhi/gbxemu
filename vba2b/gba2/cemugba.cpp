@@ -20,37 +20,26 @@
 
 #include "gba/GBA.h"
 #include "gba/Sound.h"
-#include "common/cdriver_sound.h"
-#include "common/cdriver_graphics.h"
 #include <assert.h>
 
 CEmuGBA::CEmuGBA()
 {
     m_romLoaded = false;
     m_soundInitialized = false;
-
+    m_soundDriverLoaded = false;
+    m_graphicsDriverLoaded = false;
     m_snd = NULL;
-    m_snd = new CDummyDriver_Sound();
-    assert( m_snd != NULL );
-
     m_gfx = NULL;
-    m_gfx = new CDummyDriver_Graphics();
-    assert( m_gfx != NULL );
 }
 
 CEmuGBA::~CEmuGBA()
 {
-    if( m_snd != NULL ) {
-        delete m_snd;
-    }
-
-    if( m_gfx != NULL ) {
-        delete m_gfx;
-    }
 }
 
 bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
 {
+    if( !m_soundDriverLoaded ) return false;
+
     CPULoadRom( romData, romSize );
     if( m_soundInitialized ) {
         soundReset();
@@ -81,5 +70,21 @@ bool CEmuGBA::emulate()
     if( !m_romLoaded ) return false;
 
     CPULoop( cyclesPerFrame );
+    return true;
+}
+
+bool CEmuGBA::setDriverSound( CDriver_Sound *drv )
+{
+    if( drv == NULL ) return false;
+    m_snd = drv;
+    m_soundDriverLoaded = true;
+    return true;
+}
+
+bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
+{
+    if( drv == NULL ) return false;
+    m_gfx = drv;
+    m_graphicsDriverLoaded = true;
     return true;
 }

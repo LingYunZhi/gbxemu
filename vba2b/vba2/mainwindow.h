@@ -22,6 +22,8 @@
 #include <QtGui/QMainWindow>
 class CEmuGBA; // saves compile time compared to including complete header file
 class QTimer;
+class CDriver_Sound;
+class CDriver_Graphics;
 
 namespace Ui
 {
@@ -42,6 +44,8 @@ private:
     QString m_fileName;
     bool m_playing; // true: playing  false: paused
     QTimer *m_timer;
+    CDriver_Sound    *m_snd;
+    CDriver_Graphics *m_gfx;
 
 private slots:
     void timer_timeout();
