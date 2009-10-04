@@ -28,6 +28,8 @@
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
 
+#include "paintwidget.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -42,16 +44,24 @@ MainWindow::MainWindow(QWidget *parent)
     m_timer = NULL;
     m_timer = new QTimer( this );
     Q_ASSERT( m_timer != NULL );
-    m_timer->setInterval( 1000 );
+    m_timer->setInterval( 1000 / 60 ); // TODO: find out if this is exact enough
     connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
+
+    m_renderTarget = NULL;
+    m_renderTarget = new PaintWidget( this );
+    Q_ASSERT( m_renderTarget != NULL );
+    setCentralWidget( m_renderTarget );
 
     m_snd = NULL;
     m_snd = new CDummyDriver_Sound();
     Q_ASSERT( m_snd != NULL );
+    m_emuGBA->setDriverSound( m_snd );
 
     m_gfx = NULL;
-    m_gfx = new CDummyDriver_Graphics();
+//    m_gfx = new CDummyDriver_Graphics();
+    m_gfx = (CDriver_Graphics *)m_renderTarget;
     Q_ASSERT( m_gfx != NULL );
+    m_emuGBA->setDriverGraphics( m_gfx );
 }
 
 MainWindow::~MainWindow()
@@ -86,7 +96,11 @@ void MainWindow::on_actionLoad_ROM_triggered()
     QByteArray data = rom.readAll();
     rom.close();
     Q_ASSERT( size == data.size() );
-    m_emuGBA->loadROM( (const u8 *const)data.constData(), (u32)size );
+    bool retVal = m_emuGBA->loadROM( (const u8 *const)data.constData(), (u32)size );
+    if( !retVal ) {
+        QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
+        return;
+    }
     m_fileName = newFileName;
     ui->actionPlay_Pause->setEnabled( true );
 }
@@ -106,6 +120,7 @@ void MainWindow::timer_timeout()
     retVal = m_emuGBA->emulate();
 
     if( retVal == false ) {
+        Q_ASSERT( false ); // debug emulator code
         QMessageBox::critical( this, tr("Error"), tr("Emulator code messed up. Pausing emulation.") );
         if( m_timer->isActive() ) {
             m_timer->stop();

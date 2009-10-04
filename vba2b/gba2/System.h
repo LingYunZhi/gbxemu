@@ -48,7 +48,6 @@ struct EmulatedSystem {
 inline void log(const char *,...) {}
 
  // TODO: implement all
-inline void systemDrawScreen() {}
 // updates the joystick data
 inline bool systemReadJoypads() {return false;}
 // return information about the given joystick, -1 for default joystick

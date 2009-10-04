@@ -136,6 +136,11 @@ typedef struct {
 #include "Flash.h"
 
 
+// interface to display GBA LCD to user
+class CDriver_Graphics;
+extern CDriver_Graphics *graphicsDriver;
+
+
 // error codes
 enum ERR_CODE {
     ERR_UNSUPPORTED_SGM_VER,

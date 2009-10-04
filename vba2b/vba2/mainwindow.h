@@ -24,6 +24,7 @@ class CEmuGBA; // saves compile time compared to including complete header file
 class QTimer;
 class CDriver_Sound;
 class CDriver_Graphics;
+class PaintWidget;
 
 namespace Ui
 {
@@ -46,6 +47,7 @@ private:
     QTimer *m_timer;
     CDriver_Sound    *m_snd;
     CDriver_Graphics *m_gfx;
+    PaintWidget *m_renderTarget;
 
 private slots:
     void timer_timeout();

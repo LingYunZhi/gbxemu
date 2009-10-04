@@ -85,6 +85,7 @@ bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
 {
     if( drv == NULL ) return false;
     m_gfx = drv;
+    graphicsDriver = m_gfx; // set glboal variable in core
     m_graphicsDriverLoaded = true;
     return true;
 }

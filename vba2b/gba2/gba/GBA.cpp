@@ -32,11 +32,15 @@
 #include "RTC.h"
 #include "memory.h"
 #include "../common/Port.h"
+#include "../common/cdriver_graphics.h"
 #include "../System.h"
 
 #ifdef __GNUC__
 #define _stricmp strcasecmp
 #endif
+
+
+CDriver_Graphics *graphicsDriver = NULL;
 
 
 // verbose info
@@ -2974,7 +2978,10 @@ void CPULoop(int ticks)
                 UPDATE_REG(0x202, IF);
               }
               CPUCheckDMA(1, 0x0f);
-              systemDrawScreen();
+//              systemDrawScreen();
+              if( graphicsDriver != NULL ) {
+                  graphicsDriver->displayFrame( pix );
+              }
             }
 
             UPDATE_REG(0x04, DISPSTAT);

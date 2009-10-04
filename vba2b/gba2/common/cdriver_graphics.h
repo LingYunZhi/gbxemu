@@ -24,7 +24,7 @@ class CDriver_Graphics
 {
 public:
     virtual ~CDriver_Graphics() { };
-    virtual bool displayFrame( void *data ) = 0;
+    virtual bool displayFrame( const void *const data ) = 0;
 };
 
 
@@ -32,7 +32,7 @@ public:
 class CDummyDriver_Graphics : public CDriver_Graphics
 {
 public:
-    bool displayFrame( void *data ) { return true; };
+    bool displayFrame( const void *const data ) { return true; };
 };
 
 #endif // CDRIVER_GRAPHICS_H
