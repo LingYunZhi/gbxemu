@@ -103,11 +103,19 @@ void MainWindow::on_actionLoad_ROM_triggered()
     }
     m_fileName = newFileName;
     ui->actionPlay_Pause->setEnabled( true );
+    if( !m_timer->isActive() ) {
+        // start emulation
+        ui->actionPlay_Pause->trigger();
+    }
 }
 
 void MainWindow::on_actionUnload_ROM_triggered()
 {
     if( !m_fileName.isEmpty() ) {
+        if( m_timer->isActive() ) {
+            // stop emulation
+            ui->actionPlay_Pause->trigger();
+        }
         m_emuGBA->closeROM();
         m_fileName.clear();
         ui->actionPlay_Pause->setEnabled( false );
