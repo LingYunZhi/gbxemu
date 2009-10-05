@@ -19,7 +19,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
+#include <QTime>
 class CEmuGBA; // saves compile time compared to including complete header file
 class QTimer;
 class CDriver_Sound;
@@ -45,6 +46,8 @@ private:
     CEmuGBA *m_emuGBA;
     QString m_fileName;
     bool m_playing; // true: playing  false: paused
+    int m_timeoutCounter;
+    QTime m_timeCounter;
     QTimer *m_timer;
     CDriver_Sound    *m_snd;
     CDriver_Graphics *m_gfx;

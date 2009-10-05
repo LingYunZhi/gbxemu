@@ -22,8 +22,8 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTime>
 #include <QTimer>
-#include <assert.h>
 
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_timer = NULL;
     m_timer = new QTimer( this );
     Q_ASSERT( m_timer != NULL );
-    m_timer->setInterval( 1000 / 60 ); // TODO: find out if this is exact enough
+    m_timer->setInterval( 5 ); // 1000/60 only produces ~37 fps  -  5 produces ~200 fps
     connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
 
     m_renderTarget = NULL;
@@ -137,14 +137,26 @@ void MainWindow::on_actionUnload_ROM_triggered()
 
 void MainWindow::timer_timeout()
 {
-    bool retVal = false;
-    retVal = m_emuGBA->emulate();
+    const int nextTimeout = ( 1000 * m_timeoutCounter ) / 60;
+    const int timePassed = m_timeCounter.elapsed();
+    if( timePassed >= nextTimeout ) {
+        // show fps
+        if( ( m_timeoutCounter % 60 ) == 0 ) {
+            const double avgFps = m_timeoutCounter / ( timePassed / 1000.0f );
+            ui->statusBar->showMessage( tr("Timer avg fps: ") + QString::number( avgFps ) );
+        }
 
-    if( retVal == false ) {
-        Q_ASSERT( false ); // debug emulator code
-        QMessageBox::critical( this, tr("Error"), tr("Emulator code messed up. Pausing emulation.") );
-        if( m_timer->isActive() ) {
-            m_timer->stop();
+        m_timeoutCounter++;
+
+        bool retVal = false;
+        retVal = m_emuGBA->emulate();
+
+        if( retVal == false ) {
+            Q_ASSERT( false ); // debug emulator code
+            QMessageBox::critical( this, tr("Error"), tr("Emulator code messed up. Pausing emulation.") );
+            if( m_timer->isActive() ) {
+                m_timer->stop();
+            }
         }
     }
 }
@@ -153,11 +165,13 @@ void MainWindow::on_actionPlay_Pause_triggered()
 {
     if( !m_fileName.isEmpty() ) {
         if( m_timer->isActive() ) {
-            m_timer->stop();
             ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
+            m_timer->stop();
         } else {
-            m_timer->start();
             ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
+            m_timeoutCounter = 0;
+            m_timeCounter.start();
+            m_timer->start();
         }
     } else {
         Q_ASSERT( false ); // should not be able to arrive here
