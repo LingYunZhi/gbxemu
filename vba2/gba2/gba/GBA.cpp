@@ -2946,6 +2946,13 @@ void CPULoop(int ticks)
               }
               // update joystick information
               P1 = 0x03FF ^ (inputDriver->getKeyStates() & 0x03FF);
+              // disallow left+right and up+down at the same time
+              if( ( P1 & 0x0030 ) == 0 ) {
+                  P1 |= 0x0020; // release left button
+              }
+              if( ( P1 & 0x00C0 ) == 0 ) {
+                  P1 |= 0x0080; // release down button
+              }
               if(cpuEEPROMSensorEnabled)
                 systemUpdateMotionSensor();
               UPDATE_REG(0x130, P1);

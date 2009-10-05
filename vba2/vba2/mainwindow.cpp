@@ -67,7 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_emuGBA->setDriverGraphics( m_gfx );
 
     m_inp = NULL;
-    m_inp = new CDummyDriver_Input();
+//    m_inp = new CDummyDriver_Input();
+    m_inp = (CDriver_Input *)m_renderTarget;
     Q_ASSERT( m_inp != NULL );
     m_emuGBA->setDriverInput( m_inp );
 }
@@ -80,11 +81,11 @@ MainWindow::~MainWindow()
         delete m_snd;
     }
 
-    if( m_gfx != NULL ) {
+    if( ( m_renderTarget != m_gfx ) && ( m_gfx != NULL ) ) {
         delete m_gfx;
     }
 
-    if( m_inp != NULL ) {
+    if( ( m_renderTarget != m_inp ) && ( m_inp != NULL ) ) {
         delete m_inp;
     }
 

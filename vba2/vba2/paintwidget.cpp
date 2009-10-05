@@ -10,6 +10,7 @@ PaintWidget::PaintWidget( QWidget *parent )
     : QWidget( parent )
 {
     this->setMinimumSize( srcImgWidth, srcImgHeight );
+    this->setFocusPolicy( Qt::StrongFocus );
 
     m_pixels = NULL;
     m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_RGB555 );
@@ -19,6 +20,8 @@ PaintWidget::PaintWidget( QWidget *parent )
     m_placement = NULL;
     m_placement = new QRectF( 0, 0, 1, 1 );
     Q_ASSERT( m_placement != NULL );
+
+    m_keys = CDriver_Input::BUTTON__NONE;
 }
 
 PaintWidget::~PaintWidget()
@@ -50,6 +53,11 @@ bool PaintWidget::displayFrame( const void *const data )
     return true;
 }
 
+u16 PaintWidget::getKeyStates()
+{
+    return m_keys;
+}
+
 void PaintWidget::resizeEvent( QResizeEvent *event )
 {
     const int widgetWidth  = event->size().width();
@@ -70,4 +78,82 @@ void PaintWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p( this );
     p.drawImage( *m_placement, *m_pixels );
+}
+
+void PaintWidget::keyPressEvent( QKeyEvent *event )
+{
+    switch( event->key() )
+    {
+    case Qt::Key_S:
+        m_keys |= CDriver_Input::BUTTON_A;
+        break;
+    case Qt::Key_A:
+        m_keys |= CDriver_Input::BUTTON_B;
+        break;
+    case Qt::Key_Y:
+        m_keys |= CDriver_Input::BUTTON_SELECT;
+        break;
+    case Qt::Key_X:
+        m_keys |= CDriver_Input::BUTTON_START;
+        break;
+    case Qt::Key_Right:
+        m_keys |= CDriver_Input::BUTTON_RIGHT;
+        break;
+    case Qt::Key_Left:
+        m_keys |= CDriver_Input::BUTTON_LEFT;
+        break;
+    case Qt::Key_Up:
+        m_keys |= CDriver_Input::BUTTON_UP;
+        break;
+    case Qt::Key_Down:
+        m_keys |= CDriver_Input::BUTTON_DOWN;
+        break;
+    case Qt::Key_W:
+        m_keys |= CDriver_Input::BUTTON_R;
+        break;
+    case Qt::Key_Q:
+        m_keys |= CDriver_Input::BUTTON_L;
+        break;
+    default:
+        QWidget::keyPressEvent( event );
+    }
+}
+
+void PaintWidget::keyReleaseEvent( QKeyEvent *event )
+{
+    switch( event->key() )
+    {
+    case Qt::Key_S:
+        m_keys ^= CDriver_Input::BUTTON_A;
+        break;
+    case Qt::Key_A:
+        m_keys ^= CDriver_Input::BUTTON_B;
+        break;
+    case Qt::Key_Y:
+        m_keys ^= CDriver_Input::BUTTON_SELECT;
+        break;
+    case Qt::Key_X:
+        m_keys ^= CDriver_Input::BUTTON_START;
+        break;
+    case Qt::Key_Right:
+        m_keys ^= CDriver_Input::BUTTON_RIGHT;
+        break;
+    case Qt::Key_Left:
+        m_keys ^= CDriver_Input::BUTTON_LEFT;
+        break;
+    case Qt::Key_Up:
+        m_keys ^= CDriver_Input::BUTTON_UP;
+        break;
+    case Qt::Key_Down:
+        m_keys ^= CDriver_Input::BUTTON_DOWN;
+        break;
+    case Qt::Key_W:
+        m_keys ^= CDriver_Input::BUTTON_R;
+        break;
+    case Qt::Key_Q:
+        m_keys ^= CDriver_Input::BUTTON_L;
+        break;
+    default:
+        QWidget::keyReleaseEvent( event );
+    }
 }
