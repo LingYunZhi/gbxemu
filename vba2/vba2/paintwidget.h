@@ -29,7 +29,7 @@ protected:
 
 private:
     QImage *m_pixels;
-    QPoint *m_placement;
+    QRectF *m_placement;
     static const int srcImgWidth = 240;
     static const int srcImgHeight = 160;
     static const int srcImgPixelCount = srcImgWidth * srcImgHeight;
