@@ -1,19 +1,32 @@
 #include "paintwidget.h"
 
 #include <QPainter>
+#include <QResizeEvent>
+#include <QPaintEvent>
 #include <QImage>
+#include <QPoint>
 
 PaintWidget::PaintWidget( QWidget *parent )
     : QWidget( parent )
 {
+    this->setMinimumSize( srcImgWidth, srcImgHeight );
+
     m_pixels = NULL;
     m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_RGB555 );
     Q_ASSERT( m_pixels != NULL );
     m_pixels->fill( 0x0000 ); // initially fill with black
+
+    m_placement = NULL;
+    m_placement = new QPoint( 0, 0 );
+    Q_ASSERT( m_placement != NULL );
 }
 
 PaintWidget::~PaintWidget()
 {
+    if( m_placement != NULL ) {
+        delete m_placement;
+    }
+
     if( m_pixels != NULL ) {
         delete m_pixels;
     }
@@ -26,7 +39,7 @@ bool PaintWidget::displayFrame( const void *const data )
     const quint16 *source = (const quint16*)data;
     quint16 *dest = (quint16*)m_pixels->bits();
     quint16 r, g, b;
-    for( unsigned int counter = 0; counter < srcImgPixelCount; counter++ ) {
+    for( int counter = 0; counter < srcImgPixelCount; counter++ ) {
         const quint16 color = *(source++);
         r = ( color & 0x1f ) << 10;
         g = color & 0x3e0;
@@ -37,9 +50,17 @@ bool PaintWidget::displayFrame( const void *const data )
     return true;
 }
 
+void PaintWidget::resizeEvent( QResizeEvent *event )
+{
+    const int w = event->size().width();
+    const int h = event->size().height();
+    m_placement->setX( ( w - srcImgWidth ) / 2 );
+    m_placement->setY( ( h - srcImgHeight ) / 2 );
+}
+
 void PaintWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p( this );
     // TODO: draw centered, zoomed, etc.
-    p.drawImage( QPoint( 10, 20 ), *m_pixels );
+    p.drawImage( *m_placement, *m_pixels );
 }

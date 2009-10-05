@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2. I am a status bar. Yes I am.") );
+
     m_emuGBA = NULL;
     m_emuGBA = new CEmuGBA;
     Q_ASSERT( m_emuGBA != NULL );

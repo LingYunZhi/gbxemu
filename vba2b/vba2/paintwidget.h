@@ -3,7 +3,10 @@
 
 #include <QWidget>
 #include "../gba2/common/cdriver_graphics.h"
+class QResizeEvent;
+class QPaintEvent;
 class QImage;
+class QPoint;
 
 // PaintWidget is a Qt Widget that offers GBA graphic output capabilities.
 class PaintWidget : public QWidget, public CDriver_Graphics
@@ -21,13 +24,15 @@ public:
     ~PaintWidget();
 
 protected:
+    void resizeEvent( QResizeEvent *event );
     void paintEvent( QPaintEvent *event );
 
 private:
     QImage *m_pixels;
-    static const unsigned int srcImgWidth = 240;
-    static const unsigned int srcImgHeight = 160;
-    static const unsigned int srcImgPixelCount = srcImgWidth * srcImgHeight;
+    QPoint *m_placement;
+    static const int srcImgWidth = 240;
+    static const int srcImgHeight = 160;
+    static const int srcImgPixelCount = srcImgWidth * srcImgHeight;
 };
 
 #endif // PAINTWIDGET_H
