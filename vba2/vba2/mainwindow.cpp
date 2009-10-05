@@ -27,6 +27,7 @@
 
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
+#include "../gba2/common/cdriver_input.h"    // for dummy keypad input
 
 #include "paintwidget.h"
 
@@ -64,6 +65,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_gfx = (CDriver_Graphics *)m_renderTarget;
     Q_ASSERT( m_gfx != NULL );
     m_emuGBA->setDriverGraphics( m_gfx );
+
+    m_inp = NULL;
+    m_inp = new CDummyDriver_Input();
+    Q_ASSERT( m_inp != NULL );
+    m_emuGBA->setDriverInput( m_inp );
 }
 
 MainWindow::~MainWindow()
@@ -76,6 +82,10 @@ MainWindow::~MainWindow()
 
     if( m_gfx != NULL ) {
         delete m_gfx;
+    }
+
+    if( m_inp != NULL ) {
+        delete m_inp;
     }
 
     delete m_emuGBA;

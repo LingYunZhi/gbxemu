@@ -24,12 +24,17 @@
 
 CEmuGBA::CEmuGBA()
 {
+    m_snd = NULL;
+    m_soundDriverLoaded = false;
+
+    m_gfx = NULL;
+    m_graphicsDriverLoaded = false;
+
+    m_inp = NULL;
+    m_inputDriverLoaded = false;
+
     m_romLoaded = false;
     m_soundInitialized = false;
-    m_soundDriverLoaded = false;
-    m_graphicsDriverLoaded = false;
-    m_snd = NULL;
-    m_gfx = NULL;
 }
 
 CEmuGBA::~CEmuGBA()
@@ -38,7 +43,11 @@ CEmuGBA::~CEmuGBA()
 
 bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
 {
-    if( !m_soundDriverLoaded ) return false;
+    const bool allDriversLoaded =
+               m_soundDriverLoaded &&
+               m_graphicsDriverLoaded &&
+               m_inputDriverLoaded;
+    if( !allDriversLoaded ) return false;
 
     CPULoadRom( romData, romSize );
     if( m_soundInitialized ) {
@@ -87,5 +96,14 @@ bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
     m_gfx = drv;
     graphicsDriver = m_gfx; // set glboal variable in core
     m_graphicsDriverLoaded = true;
+    return true;
+}
+
+bool CEmuGBA::setDriverInput( CDriver_Input *drv )
+{
+    if( drv == NULL ) return false;
+    m_inp = drv;
+    inputDriver = m_inp; // set global variable in core
+    m_inputDriverLoaded = true;
     return true;
 }

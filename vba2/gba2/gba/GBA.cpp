@@ -33,6 +33,7 @@
 #include "memory.h"
 #include "../common/Port.h"
 #include "../common/cdriver_graphics.h"
+#include "../common/cdriver_input.h"
 #include "../System.h"
 
 #ifdef __GNUC__
@@ -41,6 +42,7 @@
 
 
 CDriver_Graphics *graphicsDriver = NULL;
+CDriver_Input    *inputDriver    = NULL;
 
 
 // verbose info
@@ -2942,12 +2944,8 @@ void CPULoop(int ticks)
                 lastTime = time;
                 count = 0;
               }
-              u32 joy = 0;
               // update joystick information
-              if(systemReadJoypads())
-                // read default joystick
-                joy = systemReadJoypad(-1);
-              P1 = 0x03FF ^ (joy & 0x3FF);
+              P1 = 0x03FF ^ (inputDriver->getKeyStates() & 0x03FF);
               if(cpuEEPROMSensorEnabled)
                 systemUpdateMotionSensor();
               UPDATE_REG(0x130, P1);

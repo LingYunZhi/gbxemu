@@ -140,6 +140,9 @@ typedef struct {
 class CDriver_Graphics;
 extern CDriver_Graphics *graphicsDriver;
 
+// interface to receive GBA keypad input from user
+class CDriver_Input;
+extern CDriver_Input    *inputDriver;
 
 // error codes
 enum ERR_CODE {

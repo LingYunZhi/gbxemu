@@ -22,6 +22,7 @@
 #include "common/Types.h"
 class CDriver_Sound;
 class CDriver_Graphics;
+class CDriver_Input;
 
 class CEmuGBA
 {
@@ -29,21 +30,30 @@ public:
     CEmuGBA();
     ~CEmuGBA();
 
+    // load drivers before loading ROM
+    // use CDummyDriver_xxx if no custom driver present
+    bool setDriverSound   ( CDriver_Sound    *drv );
+    bool setDriverGraphics( CDriver_Graphics *drv );
+    bool setDriverInput   ( CDriver_Input    *drv );
+
     bool loadROM( const u8 *const romData, const u32 romSize );
     bool closeROM();
 
     bool emulate();
 
-    bool setDriverSound( CDriver_Sound *drv );
-    bool setDriverGraphics( CDriver_Graphics *drv );
 
 private:
+    CDriver_Sound    *m_snd;
+    bool m_soundDriverLoaded;
+
+    CDriver_Graphics *m_gfx;
+    bool m_graphicsDriverLoaded;
+
+    CDriver_Input    *m_inp;
+    bool m_inputDriverLoaded;
+
     bool m_romLoaded;
     bool m_soundInitialized;
-    bool m_soundDriverLoaded;
-    bool m_graphicsDriverLoaded;
-    CDriver_Sound    *m_snd;
-    CDriver_Graphics *m_gfx;
 };
 
 #endif // CEMUGBA_H
