@@ -824,17 +824,17 @@ static INSN_REGPARM void arm121(u32 opcode)
     if (LIKELY((opcode & 0x0FFFFFF0) == 0x012FFF10)) {
         int base = opcode & 0x0F;
         busPrefetchCount = 0;
-        armState = reg[base].I & 1 ? false : true;
-        if (armState) {
-            reg[15].I = reg[base].I & 0xFFFFFFFC;
+        armState = reg[base].I & 1 ? false : true; // switch between ARM/THUMB mode
+        if (armState) { // ARM
+            reg[15].I = reg[base].I & 0xFFFFFFFC; // only jump to addresses divisible by 4
             armNextPC = reg[15].I;
             reg[15].I += 4;
             ARM_PREFETCH;
             clockTicks = 3 + codeTicksAccessSeq32(armNextPC)
                            + codeTicksAccessSeq32(armNextPC)
                            + codeTicksAccess32(armNextPC);
-        } else {
-            reg[15].I = reg[base].I & 0xFFFFFFFE;
+        } else { // THUMB
+            reg[15].I = reg[base].I & 0xFFFFFFFE; // only jump to addresses divisible by 2
             armNextPC = reg[15].I;
             reg[15].I += 2;
             THUMB_PREFETCH;
