@@ -15,6 +15,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+  @file ARM7TDMI_THUMB.cpp
+  This file contains all functions to emulate an ARM7TDMI processor that is
+  operating in THUMB mode (16 bit opcodes).
+*/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +29,7 @@
 #include <string.h>
 
 #include "GBA.h"
-#include "GBAcpu.h"
+#include "ARM7TDMI.h"
 #include "EEprom.h"
 #include "Flash.h"
 #include "Sound.h"

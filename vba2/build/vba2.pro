@@ -21,15 +21,15 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/gba/Mode1.cpp \
     ../gba2/gba/Mode0.cpp \
     ../gba2/gba/memory.cpp \
-    ../gba2/gba/GBA-thumb.cpp \
     ../gba2/gba/GBAGfx.cpp \
-    ../gba2/gba/GBA-arm.cpp \
     ../gba2/gba/GBA.cpp \
     ../gba2/gba/Flash.cpp \
     ../gba2/gba/EEprom.cpp \
     ../gba2/gba/bios.cpp \
     ../gba2/cemugba.cpp \
-    ../vba2/paintwidget.cpp
+    ../vba2/paintwidget.cpp \
+    ../gba2/gba/ARM7TDMI_THUMB.cpp \
+    ../gba2/gba/ARM7TDMI_ARM.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -47,7 +47,6 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/gba/RTC.h \
     ../gba2/gba/memory.h \
     ../gba2/gba/GBAGfx.h \
-    ../gba2/gba/GBAcpu.h \
     ../gba2/gba/GBA.h \
     ../gba2/gba/Flash.h \
     ../gba2/gba/EEprom.h \
@@ -56,6 +55,7 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/cemugba.h \
     ../gba2/common/cdriver_graphics.h \
     ../vba2/paintwidget.h \
-    ../gba2/common/cdriver_input.h
+    ../gba2/common/cdriver_input.h \
+    ../gba2/gba/ARM7TDMI.h
 FORMS += ../vba2/mainwindow.ui
 RESOURCES += ../vba2/resource/resource.qrc

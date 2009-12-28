@@ -22,7 +22,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include "GBA.h"
-#include "GBAcpu.h"
+#include "ARM7TDMI.h"
 #include "GBAGfx.h"
 #include "EEprom.h"
 #include "Flash.h"

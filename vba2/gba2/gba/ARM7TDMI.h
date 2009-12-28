@@ -16,11 +16,16 @@
 */
 
 
-#ifndef GBACPU_H
-#define GBACPU_H
+#ifndef ARM7TDMI_H
+#define ARM7TDMI_H
 
-extern int armExecute();
-extern int thumbExecute();
+
+/// load, decode & execute next ARM instruction
+int armExecute();
+
+/// load, decode & execute next THUMB instruction
+int thumbExecute();
+
 
 #ifdef __GNUC__
 # define INSN_REGPARM __attribute__((regparm(1)))
@@ -284,4 +289,4 @@ inline int codeTicksAccessSeq32(u32 address) // ARM SEQ
   }
 }
 
-#endif // GBACPU_H
+#endif // ARM7TDMI_H
