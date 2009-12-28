@@ -15,11 +15,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/** @file ARM7TDMI_ARM.cpp
-    @brief GBA CPU emulation core (ARM mode)
+/** @file
+@brief GBA CPU emulation core (ARM mode)
 
-This file contains all functions to emulate an ARM7TDMI processor that is
-operating in ARM mode (32 bit opcodes).
+This file contains all functions to emulate an ARM7TDMI processor that
+operates in ARM mode (32 bit opcodes, more flexible).
+A lot of preprocessor macros are used to avoid writing similar code
+over and over again.
 */
 
 
@@ -55,31 +57,19 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
 }
 
 
-// Common macros //////////////////////////////////////////////////////////
+// ########## Common macros ########## //
 
+/// nothing, empty
 #define NOTHING /* nothing */
 
-#define CONSOLE_OUTPUT(a,b)  /* nothing */
+/// check whether i (32 bit) is negative
+#define NEG(i) ( (i) & 0x80000000 )
 
-#define NEG(i) ((i) >> 31)
-#define POS(i) ((~(i)) >> 31)
+/// check whether i (32 bit) is positive
+#define POS(i) ( (~(i)) & 0x80000000 )
 
-// The following macros are used for optimization; any not defined for a
-// particular compiler/CPU combination default to the C core versions.
-//
-//    ALU_INIT_C:   Used at the beginning of ALU instructions (AND/EOR/...).
-//    (ALU_INIT_NC) Can consist of variable declarations, like the C core,
-//                  or the start of a continued assembly block, like the
-//                  x86-optimized version.  The _C version is used when the
-//                  carry flag from the shift operation is needed (logical
-//                  operations that set condition codes, like ANDS); the
-//                  _NC version is used when the carry result is ignored.
 //    VALUE_XXX: Retrieve the second operand's value for an ALU instruction.
-//               The _C and _NC versions are used the same way as ALU_INIT.
 //    OP_XXX: ALU operations.  XXX is the instruction name.
-//    ALU_FINISH: Appended to all ALU instructions.  Usually empty, but if
-//                ALU_INIT started a block ALU_FINISH can be used to end it
-//                (as with the asm(...) statement in the x86 core).
 //    SETCOND_NONE: Used in multiply instructions in place of SETCOND_MUL
 //                  when the condition codes are not set.  Usually empty.
 //    SETCOND_MUL: Used in multiply instructions to set the condition codes.
@@ -89,20 +79,26 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
 //    RRX_OFFSET: Used to rotate (RRX) the `offset' parameter for LDR and
 //                STR instructions.
 
-// C core
+/** @file
+  Regarding ALU macros:
+  The _C version is used when the carry flag from the shift operation is needed (logical operations that set condition codes, like ANDS).
+  The _NC version is used when the carry result is ignored.
+*/
 
 #define C_SETCOND_LOGICAL \
-    N_FLAG = ((s32)res < 0) ? true : false;             \
-    Z_FLAG = (res == 0) ? true : false;                 \
-    C_FLAG = C_OUT;
+  N_FLAG = res & 0x80000000; \
+  Z_FLAG = (res == 0); \
+  C_FLAG = C_OUT;
+
 #define C_SETCOND_ADD \
-    N_FLAG = ((s32)res < 0) ? true : false;             \
-    Z_FLAG = (res == 0) ? true : false;                 \
-    V_FLAG = ((NEG(lhs) & NEG(rhs) & POS(res)) |        \
-              (POS(lhs) & POS(rhs) & NEG(res))) ? true : false;\
-    C_FLAG = ((NEG(lhs) & NEG(rhs)) |                   \
-              (NEG(lhs) & POS(res)) |                   \
-              (NEG(rhs) & POS(res))) ? true : false;
+  N_FLAG = res & 0x80000000; \
+  Z_FLAG = (res == 0); \
+  V_FLAG = ( NEG(lhs) & NEG(rhs) & POS(res) ) | \
+           ( POS(lhs) & POS(rhs) & NEG(res) ); \
+  C_FLAG = ( NEG(lhs) & NEG(rhs) ) | \
+           ( NEG(lhs) & POS(res) ) | \
+           ( NEG(rhs) & POS(res) );
+
 #define C_SETCOND_SUB \
     N_FLAG = ((s32)res < 0) ? true : false;             \
     Z_FLAG = (res == 0) ? true : false;                 \
@@ -112,13 +108,19 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
               (NEG(lhs) & POS(res)) |                   \
               (POS(rhs) & POS(res))) ? true : false;
 
-#ifndef ALU_INIT_C
- #define ALU_INIT_C \
-    int dest = (opcode>>12) & 15;                       \
-    bool C_OUT = C_FLAG;                                \
-    u32 value;
-#endif
-// OP Rd,Rb,Rm LSL #
+
+/// Used at the beginning of ALU instructions (AND, EOR, etc.)
+#define ALU_INIT_C \
+  int dest = ( opcode >> 12 ) & 0x0F; \
+  bool C_OUT = C_FLAG; \
+  u32 value;
+
+/// Used at the beginning of ALU instructions that do not need a seperate destination register.
+#define ALU_INIT_NODEST_C \
+  bool C_OUT = C_FLAG; \
+  u32 value;
+
+ // OP Rd,Rb,Rm LSL #
 #ifndef VALUE_LSL_IMM_C
  #define VALUE_LSL_IMM_C \
     unsigned int shift = (opcode >> 7) & 0x1F;          \
@@ -271,9 +273,10 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
 
 // Make the non-carry versions default to the carry versions
 // (this is fine for C--the compiler will optimize the dead code out)
-#ifndef ALU_INIT_NC
- #define ALU_INIT_NC ALU_INIT_C
-#endif
+
+#define ALU_INIT_NC ALU_INIT_C
+#define ALU_INIT_NODEST_NC ALU_INIT_NODEST_C
+
 #ifndef VALUE_LSL_IMM_NC
  #define VALUE_LSL_IMM_NC VALUE_LSL_IMM_C
 #endif
@@ -379,11 +382,12 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
 #ifndef OP_RSCS
  #define OP_RSCS   OP_RSC C_CHECK_PC(C_SETCOND_SUB)
 #endif
-#ifndef OP_TST
- #define OP_TST \
-    u32 res = reg[(opcode >> 16) & 0x0F].I & value;     \
-    C_SETCOND_LOGICAL;
-#endif
+
+/// TST = Test
+#define OP_TST \
+  u32 res = reg[(opcode >> 16) & 0x0F].I & value; \
+  C_SETCOND_LOGICAL;
+
 #ifndef OP_TEQ
  #define OP_TEQ \
     u32 res = reg[(opcode >> 16) & 0x0F].I ^ value;     \
@@ -452,9 +456,13 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
   Z_FLAG = ( reg[dest].I == 0 ) && ( reg[acc].I == 0 );
 
 
-#ifndef ALU_FINISH
- #define ALU_FINISH /*nothing*/
-#endif
+/**
+Appended to all ALU instructions.
+
+Usually empty, but if ALU_INIT started a block, ALU_FINISH can be used to
+end it. (For example to close an inline _asm() statement.)
+*/
+#define ALU_FINISH /*nothing*/
 
 #ifndef ROR_IMM_MSR
  #define ROR_IMM_MSR \
@@ -470,14 +478,18 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
     offset = ((offset >> 1) | ((int)C_FLAG << 31));
 #endif
 
-// ALU ops (except multiply) //////////////////////////////////////////////
+// ##### ALU (arithmetic logic unit) instructions (except multiply) #####
 
-// ALU_INIT: init code (ALU_INIT_C or ALU_INIT_NC)
-// GETVALUE: load value and shift/rotate (VALUE_XXX)
-// OP: ALU operation (OP_XXX)
-// MODECHANGE: MODECHANGE_NO or MODECHANGE_YES
-// ISREGSHIFT: 1 for insns of the form ...,Rn LSL/etc Rs; 0 otherwise
-// ALU_INIT, GETVALUE, OP, and ALU_FINISH are concatenated in order.
+/**
+Generic ALU instruction.
+
+@param ALU_INIT init code (ALU_INIT_C or ALU_INIT_NC)
+@param GETVALUE load value and shift/rotate (VALUE_XXX)
+@param OP ALU operation to perform (OP_XXX)
+@param MODECHANGE MODECHANGE_NO or MODECHANGE_YES
+@param ISREGSHIFT 1 for insns of the form ...,Rn LSL/etc Rs;
+                  0 otherwise ALU_INIT, GETVALUE, OP, and ALU_FINISH are concatenated in order.
+*/
 #define ALU_INSN(ALU_INIT, GETVALUE, OP, MODECHANGE, ISREGSHIFT) \
     ALU_INIT GETVALUE OP ALU_FINISH;                            \
     if (LIKELY((opcode & 0x0000F000) != 0x0000F000)) {          \
@@ -505,102 +517,114 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
 #define MODECHANGE_NO  /*nothing*/
 #define MODECHANGE_YES CPUSwitchMode(reg[17].I & 0x1f, false);
 
-#define DEFINE_ALU_INSN_C(CODE1, CODE2, OP, MODECHANGE) \
-  static INSN_REGPARM void arm##CODE1##0(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_LSL_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##1(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_LSL_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE1##2(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_LSR_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##3(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_LSR_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE1##4(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_ASR_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##5(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_ASR_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE1##6(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_ROR_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##7(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_ROR_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE2##0(u32 opcode) { ALU_INSN(ALU_INIT_C, VALUE_IMM_C,     OP_##OP, MODECHANGE_##MODECHANGE, 0); }
-#define DEFINE_ALU_INSN_NC(CODE1, CODE2, OP, MODECHANGE) \
-  static INSN_REGPARM void arm##CODE1##0(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_LSL_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##1(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_LSL_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE1##2(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_LSR_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##3(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_LSR_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE1##4(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_ASR_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##5(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_ASR_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE1##6(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_ROR_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
-  static INSN_REGPARM void arm##CODE1##7(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_ROR_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
-  static INSN_REGPARM void arm##CODE2##0(u32 opcode) { ALU_INSN(ALU_INIT_NC, VALUE_IMM_NC,     OP_##OP, MODECHANGE_##MODECHANGE, 0); }
+/**
+Generic arithmetic logic unit instruction with carry.
+
+@param NODEST either empty argument or _NODEST if instruction does not have a destination register.
+*/
+#define DEFINE_ALU_INSN_C(CODE1, CODE2, OP, MODECHANGE, NODEST) \
+  static INSN_REGPARM void arm##CODE1##0(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_LSL_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##1(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_LSL_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE1##2(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_LSR_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##3(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_LSR_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE1##4(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_ASR_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##5(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_ASR_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE1##6(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_ROR_IMM_C, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##7(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_ROR_REG_C, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE2##0(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_C, VALUE_IMM_C,     OP_##OP, MODECHANGE_##MODECHANGE, 0); }
+
+/**
+Generic arithmetic logic unit instruction without carry.
+
+@param NODEST either empty argument or _NODEST if instruction does not have a destination register.
+*/
+#define DEFINE_ALU_INSN_NC(CODE1, CODE2, OP, MODECHANGE, NODEST) \
+  static INSN_REGPARM void arm##CODE1##0(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_LSL_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##1(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_LSL_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE1##2(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_LSR_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##3(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_LSR_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE1##4(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_ASR_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##5(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_ASR_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE1##6(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_ROR_IMM_NC, OP_##OP, MODECHANGE_##MODECHANGE, 0); }\
+  static INSN_REGPARM void arm##CODE1##7(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_ROR_REG_NC, OP_##OP, MODECHANGE_##MODECHANGE, 1); }\
+  static INSN_REGPARM void arm##CODE2##0(u32 opcode) { ALU_INSN(ALU_INIT##NODEST##_NC, VALUE_IMM_NC,     OP_##OP, MODECHANGE_##MODECHANGE, 0); }
 
 // AND
-DEFINE_ALU_INSN_NC(00, 20, AND,  NO)
+DEFINE_ALU_INSN_NC(00, 20, AND, NO, )
 // ANDS
-DEFINE_ALU_INSN_C (01, 21, ANDS, YES)
+DEFINE_ALU_INSN_C (01, 21, ANDS, YES, )
 
 // EOR
-DEFINE_ALU_INSN_NC(02, 22, EOR,  NO)
+DEFINE_ALU_INSN_NC(02, 22, EOR, NO, )
 // EORS
-DEFINE_ALU_INSN_C (03, 23, EORS, YES)
+DEFINE_ALU_INSN_C (03, 23, EORS, YES, )
 
 // SUB
-DEFINE_ALU_INSN_NC(04, 24, SUB,  NO)
+DEFINE_ALU_INSN_NC(04, 24, SUB, NO, )
 // SUBS
-DEFINE_ALU_INSN_NC(05, 25, SUBS, YES)
+DEFINE_ALU_INSN_NC(05, 25, SUBS, YES, )
 
 // RSB
-DEFINE_ALU_INSN_NC(06, 26, RSB,  NO)
+DEFINE_ALU_INSN_NC(06, 26, RSB, NO, )
 // RSBS
-DEFINE_ALU_INSN_NC(07, 27, RSBS, YES)
+DEFINE_ALU_INSN_NC(07, 27, RSBS, YES, )
 
 // ADD
-DEFINE_ALU_INSN_NC(08, 28, ADD,  NO)
+DEFINE_ALU_INSN_NC(08, 28, ADD, NO, )
 // ADDS
-DEFINE_ALU_INSN_NC(09, 29, ADDS, YES)
+DEFINE_ALU_INSN_NC(09, 29, ADDS, YES, )
 
 // ADC
-DEFINE_ALU_INSN_NC(0A, 2A, ADC,  NO)
+DEFINE_ALU_INSN_NC(0A, 2A, ADC, NO, )
 // ADCS
-DEFINE_ALU_INSN_NC(0B, 2B, ADCS, YES)
+DEFINE_ALU_INSN_NC(0B, 2B, ADCS, YES, )
 
 // SBC
-DEFINE_ALU_INSN_NC(0C, 2C, SBC,  NO)
+DEFINE_ALU_INSN_NC(0C, 2C, SBC, NO, )
 // SBCS
-DEFINE_ALU_INSN_NC(0D, 2D, SBCS, YES)
+DEFINE_ALU_INSN_NC(0D, 2D, SBCS, YES, )
 
 // RSC
-DEFINE_ALU_INSN_NC(0E, 2E, RSC,  NO)
+DEFINE_ALU_INSN_NC(0E, 2E, RSC, NO, )
 // RSCS
-DEFINE_ALU_INSN_NC(0F, 2F, RSCS, YES)
+DEFINE_ALU_INSN_NC(0F, 2F, RSCS, YES, )
 
 // TST
-DEFINE_ALU_INSN_C (11, 31, TST,  NO)
+DEFINE_ALU_INSN_C (11, 31, TST, NO, _NODEST )
 
 // TEQ
-DEFINE_ALU_INSN_C (13, 33, TEQ,  NO)
+DEFINE_ALU_INSN_C (13, 33, TEQ, NO, _NODEST )
 
 // CMP
-DEFINE_ALU_INSN_NC(15, 35, CMP,  NO)
+DEFINE_ALU_INSN_NC(15, 35, CMP, NO, _NODEST )
 
 // CMN
-DEFINE_ALU_INSN_NC(17, 37, CMN,  NO)
+DEFINE_ALU_INSN_NC(17, 37, CMN, NO, _NODEST )
 
 // ORR
-DEFINE_ALU_INSN_NC(18, 38, ORR,  NO)
+DEFINE_ALU_INSN_NC(18, 38, ORR, NO, )
 // ORRS
-DEFINE_ALU_INSN_C (19, 39, ORRS, YES)
+DEFINE_ALU_INSN_C (19, 39, ORRS, YES, )
 
 // MOV
-DEFINE_ALU_INSN_NC(1A, 3A, MOV,  NO)
+DEFINE_ALU_INSN_NC(1A, 3A, MOV, NO, )
 // MOVS
-DEFINE_ALU_INSN_C (1B, 3B, MOVS, YES)
+DEFINE_ALU_INSN_C (1B, 3B, MOVS, YES, )
 
 // BIC
-DEFINE_ALU_INSN_NC(1C, 3C, BIC,  NO)
+DEFINE_ALU_INSN_NC(1C, 3C, BIC, NO, )
 // BICS
-DEFINE_ALU_INSN_C (1D, 3D, BICS, YES)
+DEFINE_ALU_INSN_C (1D, 3D, BICS, YES, )
 
 // MVN
-DEFINE_ALU_INSN_NC(1E, 3E, MVN,  NO)
+DEFINE_ALU_INSN_NC(1E, 3E, MVN, NO, )
 // MVNS
-DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES)
+DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES, )
 
-// Multiply instructions //////////////////////////////////////////////////
 
-/** Generic multiplication instruction.
+// ########## Multiply instructions ########## //
+
+/** Generic multiply instruction.
 @param OP operation part (OP_MUL, OP_MLA, etc.)
 @param SETCOND CPSR change to happen afterwards (SETCOND_NONE, SETCOND_MUL, SETCOND_MULL)
 @param GETACC either GET_ACC or NOTHING (MUL and MULS do not need acc)
