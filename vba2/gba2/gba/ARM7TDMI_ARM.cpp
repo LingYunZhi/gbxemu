@@ -607,10 +607,10 @@ DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES)
 @param CYCLES base cycle count (1, 2, 3)
 */
 #define MUL_INSN(OP, SETCOND, GETACC, CYCLES) \
-    const u8 mult = (opcode & 0x0F);        /* Rm */ \
-    u32 rs = reg[(opcode >> 8) & 0x0F].I;   /* Rs */ \
-    GETACC                                  /* Rn or RdLo */ \
-    const u8 dest = (opcode >> 16) & 0x0F;  /* Rd or RdHi */ \
+    const u32 mult = reg[(opcode & 0x0F)].I; /* Rm */ \
+    u32 rs = reg[(opcode >> 8) & 0x0F].I;    /* Rs */ \
+    GETACC                                   /* Rn or RdLo */ \
+    const u8 dest = (opcode >> 16) & 0x0F;   /* Rd or RdHi */ \
     OP;                                                 \
     SETCOND;                                            \
     if ((s32)rs < 0)                                    \
@@ -628,21 +628,20 @@ DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES)
     clockTicks += 1 + codeTicksAccess32(armNextPC);
 
 #define OP_MUL \
-  reg[dest].I = reg[mult].I * rs;
+  reg[dest].I = mult * rs;
 
 #define OP_MLA \
-  reg[dest].I = reg[mult].I * rs + reg[acc].I;
+  reg[dest].I = ( mult * rs ) + reg[acc].I;
 
 #define OP_MULL(SIGN) \
-  SIGN##64 res = (SIGN##64)(SIGN##32)reg[mult].I \
-                 * (SIGN##64)(SIGN##32)rs; \
+  SIGN##64 res = (SIGN##64)(SIGN##32)mult * (SIGN##64)(SIGN##32)rs; \
   reg[acc].I = (u32)res; \
   reg[dest].I = (u32)(res >> 32);
 
 #define OP_MLAL(SIGN) \
-  SIGN##64 res = ((SIGN##64)reg[dest].I<<32 | reg[acc].I) \
-                 + ((SIGN##64)(SIGN##32)reg[mult].I \
-                 * (SIGN##64)(SIGN##32)rs); \
+  const SIGN##64 res = ((SIGN##64)reg[dest].I<<32 | reg[acc].I) \
+    + ((SIGN##64)(SIGN##32)mult \
+    * (SIGN##64)(SIGN##32)rs); \
   reg[acc].I = (u32)res; \
   reg[dest].I = (u32)(res >> 32);
 
@@ -687,7 +686,9 @@ static INSN_REGPARM void arm0E9(u32 opcode) { MUL_INSN(OP_SMLAL, SETCOND_NONE, G
 // SMLALS RdLo, RdHi, Rm, Rs
 static INSN_REGPARM void arm0F9(u32 opcode) { MUL_INSN(OP_SMLAL, SETCOND_MULL, GET_ACC, 3); }
 
-// Misc instructions //////////////////////////////////////////////////////
+
+
+// ########## Misc instructions ########## //
 
 // SWP Rd, Rm, [Rn]
 static INSN_REGPARM void arm109(u32 opcode)
