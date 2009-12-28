@@ -1,0 +1,26 @@
+Here is a short overview over the top level folders of the VisualBoyAdvance 2 source code:
+
+
+"build"
+Contains the project file for the Qt build system.
+I recommend opening it with the Qt Creator IDE that comes with the Qt SDK.
+The compiled binaries will also end up there.
+
+
+"doc"
+Contains documentation meant for the end user, like the license agreement and a readme file.
+
+
+"doxygen"
+Contains documentation targeted at developers.
+It will be automatically extracted from the source code using the  Doxygen tool ( http://www.stack.nl/~dimitri/doxygen/ ).
+
+
+"gba2"
+Contains the source code related to emulating a Game Boy Advance.
+Any connections to elements of the graphical user interface are strictly forbidden.
+
+
+"vba2"
+Contains the source code and resources related to the graphical user interface.
+It makes use of the functionality in the "gba2" folder to create a ready-to-use emulator application.

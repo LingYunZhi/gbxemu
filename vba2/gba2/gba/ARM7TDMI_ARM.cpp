@@ -15,10 +15,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
-  @file ARM7TDMI_ARM.cpp
-  This file contains all functions to emulate an ARM7TDMI processor that is
-  operating in ARM mode (32 bit opcodes).
+/** @file ARM7TDMI_ARM.cpp
+    @brief GBA CPU emulation core (ARM mode)
+
+This file contains all functions to emulate an ARM7TDMI processor that is
+operating in ARM mode (32 bit opcodes).
 */
 
 
