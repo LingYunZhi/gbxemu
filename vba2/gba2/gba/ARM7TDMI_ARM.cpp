@@ -57,6 +57,8 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
 
 // Common macros //////////////////////////////////////////////////////////
 
+#define NOTHING /* nothing */
+
 #define CONSOLE_OUTPUT(a,b)  /* nothing */
 
 #define NEG(i) ((i) >> 31)
@@ -434,19 +436,21 @@ static INSN_REGPARM void armUnknownInsn(u32 opcode)
  #define OP_MVNS   OP_MVN C_CHECK_PC(C_SETCOND_LOGICAL)
 #endif
 
-#ifndef SETCOND_NONE
- #define SETCOND_NONE /*nothing*/
-#endif
-#ifndef SETCOND_MUL
- #define SETCOND_MUL \
-     N_FLAG = ((s32)reg[dest].I < 0) ? true : false;    \
-     Z_FLAG = reg[dest].I ? false : true;
-#endif
-#ifndef SETCOND_MULL
- #define SETCOND_MULL \
-     N_FLAG = (reg[dest].I & 0x80000000) ? true : false;\
-     Z_FLAG = reg[dest].I || reg[acc].I ? false : true;
-#endif
+
+/// do not change CPSR
+#define SETCOND_NONE \
+  NOTHING
+
+/// change CPSR after normal multiplication
+#define SETCOND_MUL \
+  N_FLAG = reg[dest].I & 0x80000000; \
+  Z_FLAG = ( reg[dest].I == 0 );
+
+/// change CPSR after multiplication with 64 bit result
+#define SETCOND_MULL \
+  N_FLAG = reg[dest].I & 0x80000000; \
+  Z_FLAG = ( reg[dest].I == 0 ) && ( reg[acc].I == 0 );
+
 
 #ifndef ALU_FINISH
  #define ALU_FINISH /*nothing*/
@@ -596,14 +600,17 @@ DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES)
 
 // Multiply instructions //////////////////////////////////////////////////
 
-// OP: OP_MUL, OP_MLA etc.
-// SETCOND: SETCOND_NONE, SETCOND_MUL, or SETCOND_MULL
-// CYCLES: base cycle count (1, 2, or 3)
-#define MUL_INSN(OP, SETCOND, CYCLES) \
-    int mult = (opcode & 0x0F);                         \
-    u32 rs = reg[(opcode >> 8) & 0x0F].I;               \
-    int acc = (opcode >> 12) & 0x0F;   /* or destLo */  \
-    int dest = (opcode >> 16) & 0x0F;  /* or destHi */  \
+/** Generic multiplication instruction.
+@param OP operation part (OP_MUL, OP_MLA, etc.)
+@param SETCOND CPSR change to happen afterwards (SETCOND_NONE, SETCOND_MUL, SETCOND_MULL)
+@param GETACC either GET_ACC or NOTHING (MUL and MULS do not need acc)
+@param CYCLES base cycle count (1, 2, 3)
+*/
+#define MUL_INSN(OP, SETCOND, GETACC, CYCLES) \
+    const u8 mult = (opcode & 0x0F);        /* Rm */ \
+    u32 rs = reg[(opcode >> 8) & 0x0F].I;   /* Rs */ \
+    GETACC                                  /* Rn or RdLo */ \
+    const u8 dest = (opcode >> 16) & 0x0F;  /* Rd or RdHi */ \
     OP;                                                 \
     SETCOND;                                            \
     if ((s32)rs < 0)                                    \
@@ -621,54 +628,64 @@ DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES)
     clockTicks += 1 + codeTicksAccess32(armNextPC);
 
 #define OP_MUL \
-    reg[dest].I = reg[mult].I * rs;
+  reg[dest].I = reg[mult].I * rs;
+
 #define OP_MLA \
-    reg[dest].I = reg[mult].I * rs + reg[acc].I;
+  reg[dest].I = reg[mult].I * rs + reg[acc].I;
+
 #define OP_MULL(SIGN) \
-    SIGN##64 res = (SIGN##64)(SIGN##32)reg[mult].I      \
-                 * (SIGN##64)(SIGN##32)rs;              \
-    reg[acc].I = (u32)res;                              \
-    reg[dest].I = (u32)(res >> 32);
+  SIGN##64 res = (SIGN##64)(SIGN##32)reg[mult].I \
+                 * (SIGN##64)(SIGN##32)rs; \
+  reg[acc].I = (u32)res; \
+  reg[dest].I = (u32)(res >> 32);
+
 #define OP_MLAL(SIGN) \
-    SIGN##64 res = ((SIGN##64)reg[dest].I<<32 | reg[acc].I)\
-                 + ((SIGN##64)(SIGN##32)reg[mult].I     \
-                    * (SIGN##64)(SIGN##32)rs);          \
-    reg[acc].I = (u32)res;                              \
-    reg[dest].I = (u32)(res >> 32);
+  SIGN##64 res = ((SIGN##64)reg[dest].I<<32 | reg[acc].I) \
+                 + ((SIGN##64)(SIGN##32)reg[mult].I \
+                 * (SIGN##64)(SIGN##32)rs); \
+  reg[acc].I = (u32)res; \
+  reg[dest].I = (u32)(res >> 32);
+
+// unsigned
 #define OP_UMULL OP_MULL(u)
 #define OP_UMLAL OP_MLAL(u)
+// signed
 #define OP_SMULL OP_MULL(s)
 #define OP_SMLAL OP_MLAL(s)
 
+// only get acc/Rn/RdLo when necessary
+#define GET_ACC \
+  const u8 acc = (opcode >> 12) & 0x0F;
+
 // MUL Rd, Rm, Rs
-static INSN_REGPARM void arm009(u32 opcode) { MUL_INSN(OP_MUL, SETCOND_NONE, 1); }
+static INSN_REGPARM void arm009(u32 opcode) { MUL_INSN(OP_MUL, SETCOND_NONE, NOTHING, 1); }
 // MULS Rd, Rm, Rs
-static INSN_REGPARM void arm019(u32 opcode) { MUL_INSN(OP_MUL, SETCOND_MUL, 1); }
+static INSN_REGPARM void arm019(u32 opcode) { MUL_INSN(OP_MUL, SETCOND_MUL, NOTHING, 1); }
 
 // MLA Rd, Rm, Rs, Rn
-static INSN_REGPARM void arm029(u32 opcode) { MUL_INSN(OP_MLA, SETCOND_NONE, 2); }
+static INSN_REGPARM void arm029(u32 opcode) { MUL_INSN(OP_MLA, SETCOND_NONE, GET_ACC, 2); }
 // MLAS Rd, Rm, Rs, Rn
-static INSN_REGPARM void arm039(u32 opcode) { MUL_INSN(OP_MLA, SETCOND_MUL, 2); }
+static INSN_REGPARM void arm039(u32 opcode) { MUL_INSN(OP_MLA, SETCOND_MUL, GET_ACC, 2); }
 
 // UMULL RdLo, RdHi, Rn, Rs
-static INSN_REGPARM void arm089(u32 opcode) { MUL_INSN(OP_UMULL, SETCOND_NONE, 2); }
+static INSN_REGPARM void arm089(u32 opcode) { MUL_INSN(OP_UMULL, SETCOND_NONE, GET_ACC, 2); }
 // UMULLS RdLo, RdHi, Rn, Rs
-static INSN_REGPARM void arm099(u32 opcode) { MUL_INSN(OP_UMULL, SETCOND_MULL, 2); }
+static INSN_REGPARM void arm099(u32 opcode) { MUL_INSN(OP_UMULL, SETCOND_MULL, GET_ACC, 2); }
 
 // UMLAL RdLo, RdHi, Rn, Rs
-static INSN_REGPARM void arm0A9(u32 opcode) { MUL_INSN(OP_UMLAL, SETCOND_NONE, 3); }
+static INSN_REGPARM void arm0A9(u32 opcode) { MUL_INSN(OP_UMLAL, SETCOND_NONE, GET_ACC, 3); }
 // UMLALS RdLo, RdHi, Rn, Rs
-static INSN_REGPARM void arm0B9(u32 opcode) { MUL_INSN(OP_UMLAL, SETCOND_MULL, 3); }
+static INSN_REGPARM void arm0B9(u32 opcode) { MUL_INSN(OP_UMLAL, SETCOND_MULL, GET_ACC, 3); }
 
 // SMULL RdLo, RdHi, Rm, Rs
-static INSN_REGPARM void arm0C9(u32 opcode) { MUL_INSN(OP_SMULL, SETCOND_NONE, 2); }
+static INSN_REGPARM void arm0C9(u32 opcode) { MUL_INSN(OP_SMULL, SETCOND_NONE, GET_ACC, 2); }
 // SMULLS RdLo, RdHi, Rm, Rs
-static INSN_REGPARM void arm0D9(u32 opcode) { MUL_INSN(OP_SMULL, SETCOND_MULL, 2); }
+static INSN_REGPARM void arm0D9(u32 opcode) { MUL_INSN(OP_SMULL, SETCOND_MULL, GET_ACC, 2); }
 
 // SMLAL RdLo, RdHi, Rm, Rs
-static INSN_REGPARM void arm0E9(u32 opcode) { MUL_INSN(OP_SMLAL, SETCOND_NONE, 3); }
+static INSN_REGPARM void arm0E9(u32 opcode) { MUL_INSN(OP_SMLAL, SETCOND_NONE, GET_ACC, 3); }
 // SMLALS RdLo, RdHi, Rm, Rs
-static INSN_REGPARM void arm0F9(u32 opcode) { MUL_INSN(OP_SMLAL, SETCOND_MULL, 3); }
+static INSN_REGPARM void arm0F9(u32 opcode) { MUL_INSN(OP_SMLAL, SETCOND_MULL, GET_ACC, 3); }
 
 // Misc instructions //////////////////////////////////////////////////////
 
