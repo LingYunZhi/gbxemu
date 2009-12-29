@@ -228,6 +228,7 @@ extern bool skipBios;
 extern bool syncToAudio;
 extern int layerSettings;
 extern int layerEnable;
+extern bool fastforward;
 
 extern u8 *bios;
 extern u8 *rom;

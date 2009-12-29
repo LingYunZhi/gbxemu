@@ -36,13 +36,11 @@
 #include "../common/cdriver_input.h"
 #include "../System.h"
 
-#ifdef __GNUC__
-#define _stricmp strcasecmp
-#endif
-
 
 CDriver_Graphics *graphicsDriver = NULL;
 CDriver_Input    *inputDriver    = NULL;
+
+bool fastforward = false;
 
 
 // verbose info
@@ -60,6 +58,7 @@ const u32 VERBOSE_SOUNDOUTPUT      = 0x400;
 
 u32 systemVerbose = 0;
 
+
 // constants
 
 // visible+blanking pixels * 4 cylces per pixel
@@ -69,7 +68,6 @@ const u32 cyclesPerFrame = (240+68)*(160+68)*4;
 int SWITicks = 0;
 int IRQTicks = 0;
 
-u32 mastercode = 0;
 int layerEnableDelay = 0;
 bool busPrefetch = false;
 bool busPrefetchEnable = false;
@@ -93,7 +91,7 @@ bool cpuFlashEnabled = true;
 bool cpuEEPROMEnabled = true;
 bool cpuEEPROMSensorEnabled = false;
 
-u32 cpuPrefetch[2];
+u32 cpuPrefetch[2]; // instruction pipeline
 
 int cpuTotalTicks = 0;
 
@@ -2995,7 +2993,7 @@ void CPULoop(int ticks)
           } else {
             (*renderLine)();
 
-            // transfer pixels to output:
+            // transfer scanline to output:
             u16 *dest = &pix[VCOUNT * 240]; // start at current line
             for( u8 x = 0; x < 240; x++ ) {
               *(dest++) = lineMix[x] & 0x7FFF;

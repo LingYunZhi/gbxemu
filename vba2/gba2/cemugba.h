@@ -41,6 +41,8 @@ public:
 
     bool emulate();
 
+    void toggleFastForward( const bool enable );
+
 
 private:
     CDriver_Sound    *m_snd;

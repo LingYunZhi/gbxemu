@@ -24,17 +24,17 @@
 
 CEmuGBA::CEmuGBA()
 {
-    m_snd = NULL;
-    m_soundDriverLoaded = false;
+  m_snd = NULL;
+  m_soundDriverLoaded = false;
 
-    m_gfx = NULL;
-    m_graphicsDriverLoaded = false;
+  m_gfx = NULL;
+  m_graphicsDriverLoaded = false;
 
-    m_inp = NULL;
-    m_inputDriverLoaded = false;
+  m_inp = NULL;
+  m_inputDriverLoaded = false;
 
-    m_romLoaded = false;
-    m_soundInitialized = false;
+  m_romLoaded = false;
+  m_soundInitialized = false;
 }
 
 CEmuGBA::~CEmuGBA()
@@ -43,67 +43,71 @@ CEmuGBA::~CEmuGBA()
 
 bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
 {
-    const bool allDriversLoaded =
-               m_soundDriverLoaded &&
-               m_graphicsDriverLoaded &&
-               m_inputDriverLoaded;
-    if( !allDriversLoaded ) return false;
+  const bool allDriversLoaded =
+             m_soundDriverLoaded &&
+             m_graphicsDriverLoaded &&
+             m_inputDriverLoaded;
+  if( !allDriversLoaded ) return false;
 
-    CPULoadRom( romData, romSize );
-    if( m_soundInitialized ) {
-        soundReset();
-    } else {
-        soundDriver = m_snd;
-        soundInit();
-        m_soundInitialized = true;
-    }
-    CPUInit();
-    CPUReset();
-    m_romLoaded = true;
-    return true;
+  CPULoadRom( romData, romSize );
+  if( m_soundInitialized ) {
+    soundReset();
+  } else {
+    soundDriver = m_snd;
+    soundInit();
+    m_soundInitialized = true;
+  }
+  CPUInit();
+  CPUReset();
+  m_romLoaded = true;
+  return true;
 }
 
 bool CEmuGBA::closeROM()
 {
-    if( m_romLoaded ) {
-        CPUCleanUp();
-        m_romLoaded = false;
-        return true;
-    }
+  if( m_romLoaded ) {
+    CPUCleanUp();
+    m_romLoaded = false;
+    return true;
+  }
 
-    return false;
+  return false;
 }
 
 bool CEmuGBA::emulate()
 {
-    if( !m_romLoaded ) return false;
+  if( !m_romLoaded ) return false;
 
-    CPULoop( cyclesPerFrame );
-    return true;
+  CPULoop( cyclesPerFrame );
+  return true;
 }
 
 bool CEmuGBA::setDriverSound( CDriver_Sound *drv )
 {
-    if( drv == NULL ) return false;
-    m_snd = drv;
-    m_soundDriverLoaded = true;
-    return true;
+  if( drv == NULL ) return false;
+  m_snd = drv;
+  m_soundDriverLoaded = true;
+  return true;
 }
 
 bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
 {
-    if( drv == NULL ) return false;
-    m_gfx = drv;
-    graphicsDriver = m_gfx; // set glboal variable in core
-    m_graphicsDriverLoaded = true;
-    return true;
+  if( drv == NULL ) return false;
+  m_gfx = drv;
+  graphicsDriver = m_gfx; // set glboal variable in core
+  m_graphicsDriverLoaded = true;
+  return true;
 }
 
 bool CEmuGBA::setDriverInput( CDriver_Input *drv )
 {
-    if( drv == NULL ) return false;
-    m_inp = drv;
-    inputDriver = m_inp; // set global variable in core
-    m_inputDriverLoaded = true;
-    return true;
+  if( drv == NULL ) return false;
+  m_inp = drv;
+  inputDriver = m_inp; // set global variable in core
+  m_inputDriverLoaded = true;
+  return true;
+}
+
+void CEmuGBA::toggleFastForward( const bool enable ) {
+  fastforward = enable;
 }

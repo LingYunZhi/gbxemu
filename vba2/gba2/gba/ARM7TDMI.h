@@ -62,7 +62,6 @@ int thumbExecute();
 
 
 extern int SWITicks;
-extern u32 mastercode;
 extern bool busPrefetch;
 extern bool busPrefetchEnable;
 extern u32 busPrefetchCount;
