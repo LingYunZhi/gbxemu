@@ -48,13 +48,12 @@ struct EmulatedSystem {
 inline void log(const char *,...) {}
 
  // TODO: implement all
-inline u32 systemGetClock() {return 0;}
 inline void systemScreenMessage(const char *) {}
 inline void systemUpdateMotionSensor() {}
 inline int  systemGetSensorX() {return 0;}
 inline int  systemGetSensorY() {return 0;}
-inline void systemShowSpeed(int) {}
-inline void system10Frames(int) {}
-inline void systemFrame() {}
+
+//inline u32 systemGetClock() {return 0;}
+//inline void systemShowSpeed(int) {}
 
 #endif // SYSTEM_H

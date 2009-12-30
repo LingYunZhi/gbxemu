@@ -131,9 +131,9 @@ bool saveDataChanged = false;
 void (*renderLine)() = mode0RenderLine;
 bool fxOn = false;
 bool windowOn = false;
-int frameCount = 0;
-u32 lastTime = 0;
-int count = 0;
+//int frameCount = 0;
+//u32 lastTime = 0;
+//int count = 0;
 
 const int TIMER_TICKS[4] = {
   0,
@@ -2640,7 +2640,7 @@ void CPUReset()
   renderLine = mode0RenderLine;
   fxOn = false;
   windowOn = false;
-  frameCount = 0;
+//  frameCount = 0;
   saveType = 0;
   layerEnable = DISPCNT & layerSettings;
 
@@ -2808,7 +2808,7 @@ void CPUReset()
 
   cpuDmaHack = false;
 
-  lastTime = systemGetClock();
+//  lastTime = systemGetClock();
 
   SWITicks = 0;
 }
@@ -2893,55 +2893,64 @@ void CPULoop(int ticks)
       if(lcdTicks <= 0) {
         if(DISPSTAT & 1) { // V-BLANK
           // if in V-Blank mode, keep computing...
-          if(DISPSTAT & 2) {
+          if(DISPSTAT & 2) { // H-BLANK
             lcdTicks += 1008;
             VCOUNT++;
             UPDATE_REG(0x06, VCOUNT);
-            DISPSTAT &= 0xFFFD;
+            DISPSTAT &= 0xFFFD; // unset H-BLANK flag
             UPDATE_REG(0x04, DISPSTAT);
             CPUCompareVCOUNT();
-          } else {
+          } else { // not in H-BLANK
             lcdTicks += 224;
-            DISPSTAT |= 2;
+            DISPSTAT |= 2; // set H-BLANK flag
             UPDATE_REG(0x04, DISPSTAT);
-            if(DISPSTAT & 16) {
+            if(DISPSTAT & 16) { // H-BLANK interrupt requested
               IF |= 2;
               UPDATE_REG(0x202, IF);
             }
           }
 
-          if(VCOUNT >= 228) { //Reaching last line
+          if(VCOUNT >= 228) { // Reaching last line of V-BLANK area
+            /* unset "inside V-blank area flag"
+               unset "inside H-blank area flag"
+               keep "V counter test type"
+               keep "V-Blank IRQ flag"
+               unset "H-blank IRQ flag"
+               unset "V counter test enable"
+               set "V count setting to 0"
+               TODO: is all of this correct?
+            */
             DISPSTAT &= 0xFFFC;
             UPDATE_REG(0x04, DISPSTAT);
             VCOUNT = 0;
             UPDATE_REG(0x06, VCOUNT);
             CPUCompareVCOUNT();
           }
-        } else {
-          if(DISPSTAT & 2) {
+        } else { // not in V-BLANK
+          if(DISPSTAT & 2) { // H-BLANK
             // if in H-Blank, leave it and move to drawing mode
             VCOUNT++;
             UPDATE_REG(0x06, VCOUNT);
 
             lcdTicks += 1008;
             DISPSTAT &= 0xFFFD;
-            if(VCOUNT == 160) {
-              count++;
-              systemFrame();
+            if(VCOUNT == 160) { // V-BLANK reached
+//              count++;
+//              systemFrame();
 
-              if((count % 10) == 0) {
-                system10Frames(60);
-              }
-              if(count == 60) {
-                u32 time = systemGetClock();
-                if(time != lastTime) {
-                  u32 t = 100000/(time - lastTime);
-                  systemShowSpeed(t);
-                } else
-                  systemShowSpeed(0);
-                lastTime = time;
-                count = 0;
-              }
+//              if((count % 10) == 0) {
+//                system10Frames(60);
+//              }
+//              if(count == 60) {
+//                u32 time = systemGetClock();
+//                if(time != lastTime) {
+//                  u32 t = 100000/(time - lastTime);
+//                  systemShowSpeed(t);
+//                } else
+//                  systemShowSpeed(0);
+//                lastTime = time;
+//                count = 0;
+//              }
               // update joystick information
               P1 = 0x03FF ^ (inputDriver->getKeyStates() & 0x03FF);
               // disallow left+right and up+down at the same time
