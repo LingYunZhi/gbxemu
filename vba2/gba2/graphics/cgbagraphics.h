@@ -29,12 +29,12 @@ public:
   CGBAGraphics();
   ~CGBAGraphics();
 
-  void setVRAM( const u16 *vram_src );
-  void setIO( const u16 *io );
+  void setVRAM( const u8 *vram_src );
+  void setIO( const u8 *io );
   void render();
 
 private:
-  u16 *vram; // video memory
+  u8 *vram; // video memory [16 KiB]
 
   // video registers
   struct {
@@ -52,6 +52,17 @@ private:
     bool displayWIN1;
     bool displayOBJWIN;
   } DISPCNT;
+
+  struct {
+    u8 priority; // (max) 0 1 2 3 (min)
+    u16 tileOffset; // adress of tiles/characters in VRAM
+    bool mosaic;
+    bool colorMode; // false: 16x16  true: 256
+    u16 mapOffset; // adress of map/screen data in VRAM
+    bool wrapAround; // area overflow flag (only BG2/3)
+    u16 width;
+    u16 height;
+  } BG0CNT, BG1CNT, BG2CNT, BG3CNT;
 };
 
 

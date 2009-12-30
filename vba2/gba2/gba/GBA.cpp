@@ -2929,8 +2929,8 @@ void CPULoop(int ticks)
             UPDATE_REG(0x06, VCOUNT);
             CPUCompareVCOUNT();
             // send data to high-level graphics emulation
-            graphics2.setIO( (u16 *)ioMem );
-            graphics2.setVRAM( (u16 *)vram );
+            graphics2.setIO( ioMem );
+            graphics2.setVRAM( vram );
             graphics2.render();
           }
         } else { // not in V-BLANK
