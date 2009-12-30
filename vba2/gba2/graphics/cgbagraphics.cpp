@@ -53,7 +53,6 @@ void CGBAGraphics::setIO( const u8 *io ) {
   DISPCNT.oamAccessDuringHBlank = reg & BIT5;
   DISPCNT.objCharMapping = reg & BIT6;
   DISPCNT.forcedBlank = reg & BIT7;
-
   reg = io[0x01];
   DISPCNT.displayBG0 = reg & BIT0;
   DISPCNT.displayBG1 = reg & BIT1;
@@ -64,16 +63,83 @@ void CGBAGraphics::setIO( const u8 *io ) {
   DISPCNT.displayWIN1 = reg & BIT6;
   DISPCNT.displayOBJWIN = reg & BIT7;
 
-  reg = io[0x08];
-  BG0CNT.priority = reg & 3;
-  BG0CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
-  BG0CNT.mosaic = reg & BIT6;
-  BG0CNT.colorMode = reg & BIT7;
+  const u8 m = DISPCNT.bgMode; // display mode
 
-  reg = io[0x09];
-  BG0CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
-  BG0CNT.width = ( reg & BIT6 ) ? 512 : 256;
-  BG0CNT.height = ( reg & BIT7 ) ? 512 : 256;
+  if( m <= 1 ) {
+    // BG0
+    reg = io[0x08];
+    BG0CNT.priority = reg & 3;
+    BG0CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG0CNT.mosaic = reg & BIT6;
+    BG0CNT.colorMode = reg & BIT7;
+    reg = io[0x09];
+    BG0CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    BG0CNT.width = ( reg & BIT6 ) ? 512 : 256;
+    BG0CNT.height = ( reg & BIT7 ) ? 512 : 256;
+
+    // BG1
+    reg = io[0x0A];
+    BG1CNT.priority = reg & 3;
+    BG1CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG1CNT.mosaic = reg & BIT6;
+    BG1CNT.colorMode = reg & BIT7;
+    reg = io[0x0B];
+    BG1CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    BG1CNT.width = ( reg & BIT6 ) ? 512 : 256;
+    BG1CNT.height = ( reg & BIT7 ) ? 512 : 256;
+  }
+
+  // BG2
+  reg = io[0x0C];
+  BG2CNT.priority = reg & 3;
+  BG2CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+  BG2CNT.mosaic = reg & BIT6;
+  BG2CNT.colorMode = reg & BIT7;
+  reg = io[0x0D];
+  BG2CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+  BG2CNT.wrapAround = reg & BIT5;
+  switch( m ) {
+  case 0:
+    BG2CNT.width = ( reg & BIT6 ) ? 512 : 256;
+    BG2CNT.height = ( reg & BIT7 ) ? 512 : 256;
+    break;
+  case 1: // BG2 = rotation/scaling
+  case 2:
+    switch( reg & (BIT6|BIT7) ) {
+    case 0: BG2CNT.width = BG2CNT.height =  128; break;
+    case 1: BG2CNT.width = BG2CNT.height =  256; break;
+    case 2: BG2CNT.width = BG2CNT.height =  512; break;
+    case 3: BG2CNT.width = BG2CNT.height = 1024; break;
+    }
+    break;
+  case 3: // BG2 = bitmap based
+  case 4:
+    BG2CNT.width = 240;
+    BG2CNT.height = 160;
+    break;
+  case 5:
+    BG2CNT.width = 160;
+    BG2CNT.height = 128;
+    break;
+  }
+
+  if( ( m == 0 ) || ( m == 2 ) ) {
+    // BG3 = rotation/scaling
+    reg = io[0x0E];
+    BG3CNT.priority = reg & 3;
+    BG3CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG3CNT.mosaic = reg & BIT6;
+    BG3CNT.colorMode = reg & BIT7;
+    reg = io[0x0F];
+    BG3CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    BG3CNT.wrapAround = reg & BIT5;
+    switch( reg & (BIT6|BIT7) ) {
+    case 0: BG2CNT.width = BG2CNT.height =  128; break;
+    case 1: BG2CNT.width = BG2CNT.height =  256; break;
+    case 2: BG2CNT.width = BG2CNT.height =  512; break;
+    case 3: BG2CNT.width = BG2CNT.height = 1024; break;
+    }
+  }
 }
 
 
