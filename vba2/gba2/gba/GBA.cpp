@@ -35,10 +35,13 @@
 #include "../common/cdriver_graphics.h"
 #include "../common/cdriver_input.h"
 #include "../System.h"
+#include "../graphics/cgbagraphics.h"
 
 
 CDriver_Graphics *graphicsDriver = NULL;
 CDriver_Input    *inputDriver    = NULL;
+
+CGBAGraphics graphics2; // brand new high-level graphics emulation class
 
 bool fastforward = false;
 
@@ -2925,6 +2928,10 @@ void CPULoop(int ticks)
             VCOUNT = 0;
             UPDATE_REG(0x06, VCOUNT);
             CPUCompareVCOUNT();
+            // send data to high-level graphics emulation
+            graphics2.setIO( (u16 *)ioMem );
+            graphics2.setVRAM( (u16 *)vram );
+            graphics2.render();
           }
         } else { // not in V-BLANK
           if(DISPSTAT & 2) { // H-BLANK
@@ -2994,12 +3001,12 @@ void CPULoop(int ticks)
               if( graphicsDriver != NULL ) {
                   graphicsDriver->displayFrame( pix );
               }
-            }
+            } // if VCOUNT == 160
 
             UPDATE_REG(0x04, DISPSTAT);
             CPUCompareVCOUNT();
 
-          } else {
+          } else { // not in H-BLANK (and not in V-BLANK)
             (*renderLine)();
 
             // transfer scanline to output:

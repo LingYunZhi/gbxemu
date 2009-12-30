@@ -50,6 +50,7 @@ u8 CPUReadByte(u32 address)
     return paletteRAM[address & 0x3ff];
   case 6:
     address = (address & 0x1ffff);
+    // TODO. is this correct?
     if (((DISPCNT & 7) >2) && ((address & 0x1C000) == 0x18000))
       return 0;
     if ((address & 0x18000) == 0x18000)

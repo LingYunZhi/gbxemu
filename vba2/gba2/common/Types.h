@@ -19,29 +19,50 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#ifdef _MSC_VER
-typedef unsigned __int8   u8;
-typedef unsigned __int16 u16;
-typedef unsigned __int32 u32;
-typedef unsigned __int64 u64;
 
-typedef   signed __int8   s8;
-typedef   signed __int16 s16;
-typedef   signed __int32 s32;
-typedef   signed __int64 s64;
-#else
-
-#include <stdint.h>
-
-typedef uint8_t   u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
-
-typedef  int8_t   s8;
-typedef  int16_t s16;
-typedef  int32_t s32;
-typedef  int64_t s64;
+#ifndef NULL
+  #define NULL 0
 #endif
+
+
+#ifdef _MSC_VER
+  typedef unsigned __int8   u8;
+  typedef unsigned __int16 u16;
+  typedef unsigned __int32 u32;
+  typedef unsigned __int64 u64;
+  typedef   signed __int8   s8;
+  typedef   signed __int16 s16;
+  typedef   signed __int32 s32;
+  typedef   signed __int64 s64;
+#else
+  #include <stdint.h>
+  typedef uint8_t   u8;
+  typedef uint16_t u16;
+  typedef uint32_t u32;
+  typedef uint64_t u64;
+  typedef  int8_t   s8;
+  typedef  int16_t s16;
+  typedef  int32_t s32;
+  typedef  int64_t s64;
+#endif
+
+
+#define BIT0   0x1
+#define BIT1   0x2
+#define BIT2   0x4
+#define BIT3   0x8
+#define BIT4   0x10
+#define BIT5   0x20
+#define BIT6   0x40
+#define BIT7   0x80
+#define BIT8   0x100
+#define BIT9   0x200
+#define BIT10  0x400
+#define BIT11  0x800
+#define BIT12  0x1000
+#define BIT13  0x2000
+#define BIT14  0x4000
+#define BIT15  0x8000
+
 
 #endif // TYPES_H

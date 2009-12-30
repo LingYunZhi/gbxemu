@@ -29,7 +29,8 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/cemugba.cpp \
     ../vba2/paintwidget.cpp \
     ../gba2/gba/ARM7TDMI_THUMB.cpp \
-    ../gba2/gba/ARM7TDMI_ARM.cpp
+    ../gba2/gba/ARM7TDMI_ARM.cpp \
+    ../gba2/graphics/cgbagraphics.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -56,6 +57,7 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/common/cdriver_graphics.h \
     ../vba2/paintwidget.h \
     ../gba2/common/cdriver_input.h \
-    ../gba2/gba/ARM7TDMI.h
+    ../gba2/gba/ARM7TDMI.h \
+    ../gba2/graphics/cgbagraphics.h
 FORMS += ../vba2/mainwindow.ui
 RESOURCES += ../vba2/resource/resource.qrc

@@ -25,10 +25,6 @@
 #include "../System.h"
 
 
-#ifndef NULL
-#define NULL 0
-#endif
-
 const u8 SAVE_GAME_VERSION_VBA2 = 20;
 const u8 SAVE_GAME_VERSION_CURRENT = SAVE_GAME_VERSION_VBA2;
 
