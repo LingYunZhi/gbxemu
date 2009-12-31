@@ -21,19 +21,51 @@
 
 #include <string.h> // for memcpy
 #include <assert.h>
+#include "../common/Port.h"
 
 
 CGBAGraphics::CGBAGraphics() {
   vram = NULL;
   vram = new u8[0x4000];
+
+  bg0 = NULL;
+  bg1 = NULL;
+  bg2 = NULL;
+  bg3 = NULL;
 }
 
 
 CGBAGraphics::~CGBAGraphics() {
+  if( bg0 != NULL ) {
+    delete [] bg0;
+    bg0 = NULL;
+  }
+  if( bg1 != NULL ) {
+    delete [] bg1;
+    bg1 = NULL;
+  }
+  if( bg2 != NULL ) {
+    delete [] bg2;
+    bg2 = NULL;
+  }
+  if( bg3 != NULL ) {
+    delete [] bg3;
+    bg3 = NULL;
+  }
+
   if( vram != NULL ) {
     delete [] vram;
     vram = NULL;
   }
+}
+
+
+void CGBAGraphics::gba2rgba( RGBACOLOR *dest, u16 src ) {
+  dest->r = ( src & 0x001F ) << 3; // extend from 5 to 8 bit
+  dest->g = ( src & 0x03E0 ) >> 2;
+  dest->b = ( src & 0x7C00 ) >> 7;
+  dest->a = 0xFF; // TODO: check which alpha value is transparent
+  // TODO: use translation that offers pure white (0x00FFFFFF) for 0x7FFF GBA color
 }
 
 
@@ -92,12 +124,14 @@ void CGBAGraphics::setIO( const u8 *io ) {
   // BG2
   reg = io[0x0C];
   BG2CNT.priority = reg & 3;
-  BG2CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
   BG2CNT.mosaic = reg & BIT6;
-  BG2CNT.colorMode = reg & BIT7;
-  reg = io[0x0D];
-  BG2CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
-  BG2CNT.wrapAround = reg & BIT5;
+  if( m <= 2 ) {
+    BG2CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG2CNT.colorMode = reg & BIT7;
+    reg = io[0x0D];
+    BG2CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    BG2CNT.wrapAround = reg & BIT5;
+  }
   switch( m ) {
   case 0:
     BG2CNT.width = ( reg & BIT6 ) ? 512 : 256;
@@ -139,6 +173,30 @@ void CGBAGraphics::setIO( const u8 *io ) {
     case 2: BG2CNT.width = BG2CNT.height =  512; break;
     case 3: BG2CNT.width = BG2CNT.height = 1024; break;
     }
+  }
+
+  BG0HOFS = READ16LE( io + 0x10 ) & 0x01FF; // 9 bit
+  BG0VOFS = READ16LE( io + 0x12 ) & 0x01FF;
+  BG1HOFS = READ16LE( io + 0x14 ) & 0x01FF;
+  BG1VOFS = READ16LE( io + 0x16 ) & 0x01FF;
+  BG2HOFS = READ16LE( io + 0x18 ) & 0x01FF;
+  BG2VOFS = READ16LE( io + 0x1A ) & 0x01FF;
+  BG3HOFS = READ16LE( io + 0x1C ) & 0x01FF;
+  BG3VOFS = READ16LE( io + 0x1E ) & 0x01FF;
+}
+
+
+void CGBAGraphics::setPAL( const u8 *pal ) {
+  // convert & copy palettes
+  // GBA color format: (MSB) 1x 5b 5g 5r (LSB)
+  for( u16 i = 0; i <= 255; i++ ) {
+    // counter i can not be 8 bit because overflow would destroy for loop condition
+    gba2rgba( &(bgpal[i]), READ16LE(pal) );
+    pal += 2;
+  }
+  for( u16 i = 0; i <= 255; i++ ) {
+    gba2rgba( &(objpal[i]), READ16LE(pal) );
+    pal += 2;
   }
 }
 

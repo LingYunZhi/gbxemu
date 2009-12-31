@@ -2931,6 +2931,7 @@ void CPULoop(int ticks)
             // send data to high-level graphics emulation
             graphics2.setIO( ioMem );
             graphics2.setVRAM( vram );
+            graphics2.setPAL( paletteRAM );
             graphics2.render();
           }
         } else { // not in V-BLANK

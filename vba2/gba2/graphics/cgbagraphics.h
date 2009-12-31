@@ -31,10 +31,28 @@ public:
 
   void setVRAM( const u8 *vram_src );
   void setIO( const u8 *io );
+  void setPAL( const u8 *pal );
   void render();
+
+  /// 32 bit RGBA color as used in modern PC systems
+  typedef struct structRGBACOLOR {
+    u8 r; ///< red   0-255
+    u8 g; ///< green 0-255
+    u8 b; ///< blue  0-255
+    u8 a; ///< alpha 0-255
+  } RGBACOLOR;
+
+  /// convert 15 bit GBA color to 32 bit RGBA color
+  static void gba2rgba( RGBACOLOR *dest, u16 src );
+
 
 private:
   u8 *vram; // video memory [16 KiB]
+
+  RGBACOLOR bgpal[256]; // BG palette (RGBA color)
+  RGBACOLOR objpal[256]; // sprite palette (RGBA color)
+
+  RGBACOLOR *bg0, *bg1, *bg2, *bg3; // contains resulting bitmap of BG screen
 
   // video registers
   struct {
@@ -63,6 +81,12 @@ private:
     u16 width;
     u16 height;
   } BG0CNT, BG1CNT, BG2CNT, BG3CNT;
+
+  // horiontal offset (only in character mode)
+  u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS;
+
+  // vertical offset (only in character mode)
+  u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS;
 };
 
 
