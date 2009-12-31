@@ -6,6 +6,8 @@
 #include <QImage>
 #include <QPoint>
 
+#include <string.h> // memcpy
+
 PaintWidget::PaintWidget( QWidget *parent )
     : QWidget( parent )
 {
@@ -13,9 +15,9 @@ PaintWidget::PaintWidget( QWidget *parent )
     this->setFocusPolicy( Qt::StrongFocus );
 
     m_pixels = NULL;
-    m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_RGB555 );
+    m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_ARGB32 );// QImage::Format_RGB555 );
     Q_ASSERT( m_pixels != NULL );
-    m_pixels->fill( 0x0000 ); // initially fill with black
+    m_pixels->fill( 0 ); // initially fill with black
 
     m_placement = NULL;
     m_placement = new QRectF( 0, 0, 1, 1 );
@@ -36,7 +38,7 @@ PaintWidget::~PaintWidget()
 }
 
 bool PaintWidget::displayFrame( const void *const data )
-{
+{/*
     // we have to swap red and blue bits because the GBA and Qt handle 16 bit colors differently
     // TODO: use quint64 for parallel data processing
     const quint16 *source = (const quint16*)data;
@@ -50,7 +52,18 @@ bool PaintWidget::displayFrame( const void *const data )
         *(dest++) = r | g | b;
     }
     this->repaint(); // TODO: replace with update to make use of VSync
-    return true;
+   */ return true;
+}
+
+bool PaintWidget::renderFrame( CGBAGraphics::RESULT data ) {
+  if( data.DISPCNT->displayBG0 ) {
+    const quint32 *source = (const quint32 *)data.BGSC[0][0];
+    quint32 *dest = (quint32 *)m_pixels->bits();
+    memcpy( dest, source, sizeof(CGBAGraphics::RGBACOLOR) * 256 * 256 );
+  }
+  this->repaint(); // TODO: replace with update to make use of VSync
+
+  return true;
 }
 
 u16 PaintWidget::getKeyStates()

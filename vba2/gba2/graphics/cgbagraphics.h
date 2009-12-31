@@ -32,13 +32,13 @@ public:
   void setVRAM( const u8 *vram_src );
   void setIO( const u8 *io );
   void setPAL( const u8 *pal );
-  bool render();
+  bool process(); // prepare image data for render API
 
   /// 32 bit RGBA color as used in modern PC systems
   typedef struct structRGBACOLOR {
-    u8 r; ///< red   0-255
-    u8 g; ///< green 0-255
     u8 b; ///< blue  0-255
+    u8 g; ///< green 0-255
+    u8 r; ///< red   0-255
     u8 a; ///< alpha 0-255
   } RGBACOLOR;
 
@@ -76,20 +76,20 @@ public:
     bool isRotScale; ///< false: no rotation/scaling
   };
 
-  typedef struct structRenderResult {
+  typedef struct structRESULT {
     struct structDISPCNT *DISPCNT;
     struct structBGCNT   *BGCNT[4];
     RGBACOLOR            *BGSC[4][4]; ///< BGSC[BG#][block#]
-  } renderResult;
+  } RESULT;
 
-  renderResult getRenderResult();
+  RESULT getResult();
 
 
 private:
-  // all have to be true to be able to render
+  // all have to be true to be able to work
   bool vramLoaded, ioLoaded, palLoaded;
 
-  bool renderComplete;
+  bool done;
 
   u8 *vram; // video memory [96 KiB]
 
@@ -110,7 +110,7 @@ private:
   u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS; // horiontal offset (only in character mode)
   u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)
 
-  void buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp, u32 nChars );
+  void buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp );
 };
 
 

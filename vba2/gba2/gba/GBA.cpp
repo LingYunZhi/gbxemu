@@ -2932,7 +2932,10 @@ void CPULoop(int ticks)
             graphics2.setIO( ioMem );
             graphics2.setVRAM( vram );
             graphics2.setPAL( paletteRAM );
-            graphics2.render();
+            graphics2.process();
+            if( graphicsDriver != NULL ) {
+                graphicsDriver->renderFrame( graphics2.getResult() );
+            }
           }
         } else { // not in V-BLANK
           if(DISPSTAT & 2) { // H-BLANK

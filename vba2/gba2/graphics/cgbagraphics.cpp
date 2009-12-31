@@ -43,7 +43,7 @@ CGBAGraphics::CGBAGraphics() {
   vramLoaded = false;
   ioLoaded = false;
   palLoaded = false;
-  renderComplete = false;
+  done = false;
 }
 
 
@@ -76,7 +76,7 @@ void CGBAGraphics::gba2rgba( RGBACOLOR *dest, u16 src ) {
   dest->r = ( src & 0x001F ) << 3; // extend from 5 to 8 bit
   dest->g = ( src & 0x03E0 ) >> 2;
   dest->b = ( src & 0x7C00 ) >> 7;
-  dest->a = 0xFF; // TODO: check which alpha value is transparent
+  dest->a = 0xFF; // opaque
   // TODO: use translation that offers pure white (0x00FFFFFF) for 0x7FFF GBA color
 }
 
@@ -231,7 +231,8 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
 }
 
 
-void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp, u32 nChars ) {
+void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp ) {
+  u16 nChars = 1024; // TODO: condition
   u8 *srcChars = &vram[cnt->charOffset];
   if( cnt->colorMode ) { // 256x1 colors
     // contains all characters/tiles that will be copied to bg*bmp
@@ -243,12 +244,48 @@ void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp, u32 nCh
     // srcMap is divided in blocks of 32x32 tiles (= 256x256 pixels)
     for( u16 y = 0; y < 256; y += 8 ) { // 32 tiles * 8 pixel = 256 width
       for( u16 x = 0; x < 256; x += 8 ) {
-        const u32 charNumber = (*(srcMap++)) & 0x03FF;
-        const u32 charOffset = charNumber * 8*8;
-        // copy char block to bmp
-        for( u8 y2 = 0; y2 < 8; y2++ ) {
-          // copy a line of 8 pixel from chars to bmp
-          memcpy( &(bmp[x + (y*256)]), &(chars[charOffset + (y2*8)]), sizeof(RGBACOLOR) * 8 );
+        const u16 currentEntry = (*(srcMap++));
+        const u16 charNumber = currentEntry & 0x03FF;
+        u32 charOffset = charNumber * 8*8; // character's address
+        const bool hFlip = currentEntry & BIT10;
+        const bool vFlip = currentEntry & BIT11;
+        // copy single character to bmp
+        // TODO: remove redundant code somehow
+        if( hFlip ) {
+          if( vFlip ) { // hFlip && vFlip
+            charOffset += 63;
+            for( s8 charY = 0; charY < 8; charY++ ) {
+              for( s8 charX = 0; charX < 8; charX++ ) {
+                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                  = chars[ charOffset - charX - ( charY * 8 ) ];
+              }
+            }
+          } else { // hFlip && !vFlip
+            charOffset += 7;
+            for( s8 charY = 0; charY < 8; charY++ ) {
+              for( s8 charX = 0; charX < 8; charX++ ) {
+                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                  = chars[ charOffset - charX + ( charY * 8 ) ];
+              }
+            }
+          }
+        } else { // !hFlip
+          if( vFlip ) { // !hFlip && vFlip
+            charOffset += 56;
+            for( s8 charY = 0; charY < 8; charY++ ) {
+              for( s8 charX = 0; charX < 8; charX++ ) {
+                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                  = chars[ charOffset + charX - ( charY * 8 ) ];
+              }
+            }
+          } else { // !hFlip && !vFlip
+            for( s8 charY = 0; charY < 8; charY++ ) {
+              for( s8 charX = 0; charX < 8; charX++ ) {
+                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                  = chars[ charOffset + charX + ( charY * 8 ) ];
+              }
+            }
+          }
         }
       }
     }
@@ -257,10 +294,7 @@ void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp, u32 nCh
 }
 
 
-bool CGBAGraphics::render() {
-  // prepare graphic surfaces and send them to graphics renderer to
-  // combine & render them (possibly with hw acceleration)
-
+bool CGBAGraphics::process() {
   if( !( vramLoaded && ioLoaded && palLoaded ) ) {
     // we are missing some ingredients
     assert( false );
@@ -285,17 +319,19 @@ bool CGBAGraphics::render() {
         bg0sc0 = new RGBACOLOR[256*256];
       }
     }
-    buildCharBG( &BG0CNT, bg0sc0, 32*32 );
+    buildCharBG( &BG0CNT, bg0sc0 );
     break;
   }
 
-  renderComplete = true;
+  done = true;
   return true;
 }
 
 
-CGBAGraphics::renderResult CGBAGraphics::getRenderResult() {
-  renderResult res;
+CGBAGraphics::RESULT CGBAGraphics::getResult() {
+  if( !done ) { assert( false ); }
+
+  RESULT res;
   res.DISPCNT = &DISPCNT;
   res.BGCNT[0] = &BG0CNT;
   res.BGCNT[1] = &BG1CNT;
@@ -317,5 +353,6 @@ CGBAGraphics::renderResult CGBAGraphics::getRenderResult() {
   res.BGSC[3][1] = bg0sc0;
   res.BGSC[3][2] = bg0sc0;
   res.BGSC[3][3] = bg0sc0;
+
   return res;
 }

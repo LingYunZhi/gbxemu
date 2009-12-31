@@ -17,7 +17,7 @@ class PaintWidget : public QWidget, public CDriver_Graphics, public CDriver_Inpu
     // ### CDriver_Graphics interface:
 public:
     virtual bool displayFrame( const void *const data );
-
+    virtual bool renderFrame( CGBAGraphics::RESULT data );
 
     // ### CDriver_Input interface:
     virtual u16 getKeyStates();
@@ -37,8 +37,8 @@ protected:
 private:
     QImage *m_pixels;
     QRectF *m_placement;
-    static const int srcImgWidth = 240;
-    static const int srcImgHeight = 160;
+    static const int srcImgWidth = 256;//240;
+    static const int srcImgHeight = 256;//160;
     static const int srcImgPixelCount = srcImgWidth * srcImgHeight;
 
     u16 m_keys;

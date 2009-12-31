@@ -19,16 +19,26 @@
 #ifndef CDRIVER_GRAPHICS_H
 #define CDRIVER_GRAPHICS_H
 
-// graphics driver interface
+
+#include "../graphics/cgbagraphics.h"
+
+
+/// graphics driver interface
 class CDriver_Graphics
 {
 public:
     virtual ~CDriver_Graphics() { };
+
+    /// old method, draws only preprocessed data
     virtual bool displayFrame( const void *const data ) = 0;
+
+    /// new method, combines & renders prepared data.
+    /// should also apply special effects (hw accelerated if possible)
+    virtual bool renderFrame( CGBAGraphics::RESULT data ) { return true; }
 };
 
 
-// dummy graphics driver
+/// dummy graphics driver
 class CDummyDriver_Graphics : public CDriver_Graphics
 {
 public:
