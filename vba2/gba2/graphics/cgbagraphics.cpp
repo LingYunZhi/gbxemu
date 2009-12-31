@@ -232,13 +232,14 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
 
 
 void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp ) {
-  u16 nChars = 1024; // TODO: condition
-  u8 *srcChars = &vram[cnt->charOffset];
+  const u16 nChars = 1024; // TODO: add condition
+  u32 nPixelsInChars = nChars * 8*8; // 8x8 pixel per char
+  u8 *srcChar = &vram[cnt->charOffset];
   if( cnt->colorMode ) { // 256x1 colors
     // contains all characters/tiles that will be copied to bg*bmp
-    RGBACOLOR chars[nChars * 8*8]; // 8x8 pixel per char
+    RGBACOLOR chars[nPixelsInChars];
     RGBACOLOR *c = chars;
-    while( nChars-- ) { *(c++) = bgpal[*srcChars++]; }
+    while( nPixelsInChars-- ) { *(c++) = bgpal[*(srcChar++)]; }
     // copy chars to bmp as given by screen map
     u16 *srcMap = (u16 *)&(vram[cnt->mapOffset]);
     // srcMap is divided in blocks of 32x32 tiles (= 256x256 pixels)
