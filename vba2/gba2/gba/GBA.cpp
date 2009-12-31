@@ -663,7 +663,7 @@ static bool readState( FILE *file )
     fread( internalRAM, 1, 0x8000, file );
     fread( paletteRAM, 1, 0x400, file );
     fread( workRAM, 1, 0x40000, file );
-    fread( vram, 1, 0x20000, file );
+    fread( vram, 1, 0x20000, file ); // TODO: why not 96 KB???
     fread( oam, 1, 0x400, file );
     fread( pix, 1, pix_size, file );
     fread( ioMem, 1, 0x400, file );

@@ -33,34 +33,40 @@
 
 CGBAGraphics::CGBAGraphics() {
   vram = NULL;
-  vram = new u8[0x4000];
+  vram = new u8[0x18000];
 
-  bg0chars = NULL;
-  bg1chars = NULL;
-  bg2chars = NULL;
-  bg3chars = NULL;
-
-  bg0bmp = NULL;
-  bg1bmp = NULL;
-  bg2bmp = NULL;
-  bg3bmp = NULL;
+  bg0sc0 = NULL; bg0sc1 = NULL; bg0sc2 = NULL; bg0sc3 = NULL;
+  bg1sc0 = NULL; bg1sc1 = NULL; bg1sc2 = NULL; bg1sc3 = NULL;
+  bg2sc0 = NULL; bg2sc1 = NULL; bg2sc2 = NULL; bg2sc3 = NULL;
+  bg3sc0 = NULL; bg3sc1 = NULL; bg3sc2 = NULL; bg3sc3 = NULL;
 
   vramLoaded = false;
   ioLoaded = false;
   palLoaded = false;
+  renderComplete = false;
 }
 
 
 CGBAGraphics::~CGBAGraphics() {
-  SAFE_DELETE_ARRAY( bg0chars );
-  SAFE_DELETE_ARRAY( bg1chars );
-  SAFE_DELETE_ARRAY( bg2chars );
-  SAFE_DELETE_ARRAY( bg3chars );
+  SAFE_DELETE_ARRAY( bg0sc0 );
+  SAFE_DELETE_ARRAY( bg0sc1 );
+  SAFE_DELETE_ARRAY( bg0sc2 );
+  SAFE_DELETE_ARRAY( bg0sc3 );
 
-  SAFE_DELETE_ARRAY( bg0bmp );
-  SAFE_DELETE_ARRAY( bg1bmp );
-  SAFE_DELETE_ARRAY( bg2bmp );
-  SAFE_DELETE_ARRAY( bg3bmp );
+  SAFE_DELETE_ARRAY( bg1sc0 );
+  SAFE_DELETE_ARRAY( bg1sc1 );
+  SAFE_DELETE_ARRAY( bg1sc2 );
+  SAFE_DELETE_ARRAY( bg1sc3 );
+
+  SAFE_DELETE_ARRAY( bg2sc0 );
+  SAFE_DELETE_ARRAY( bg2sc1 );
+  SAFE_DELETE_ARRAY( bg2sc2 );
+  SAFE_DELETE_ARRAY( bg2sc3 );
+
+  SAFE_DELETE_ARRAY( bg3sc0 );
+  SAFE_DELETE_ARRAY( bg3sc1 );
+  SAFE_DELETE_ARRAY( bg3sc2 );
+  SAFE_DELETE_ARRAY( bg3sc3 );
 
   SAFE_DELETE_ARRAY( vram );
 }
@@ -76,23 +82,24 @@ void CGBAGraphics::gba2rgba( RGBACOLOR *dest, u16 src ) {
 
 
 void CGBAGraphics::setVRAM( const u8 *vram_src ) {
-  memcpy( vram, vram_src, 0x4000 );
+  memcpy( vram, vram_src, 0x18000 );
   vramLoaded = true;
 }
 
 
 void CGBAGraphics::setIO( const u8 *io ) {
   // read & interpret all video registers
-  u8 reg; // current register (low or high part)
+  u16 reg; // current register
 
-  reg = io[0x00];
+  // DISPCNT
+  reg = READ16LE(&io[0x00]);
   DISPCNT.bgMode = reg & 7;
     if( DISPCNT.bgMode > 5 ) assert( false ); // error
   DISPCNT.frameNumber = reg & BIT4;
   DISPCNT.oamAccessDuringHBlank = reg & BIT5;
   DISPCNT.objCharMapping = reg & BIT6;
   DISPCNT.forcedBlank = reg & BIT7;
-  reg = io[0x01];
+  reg >>= 8;
   DISPCNT.displayBG0 = reg & BIT0;
   DISPCNT.displayBG1 = reg & BIT1;
   DISPCNT.displayBG2 = reg & BIT2;
@@ -106,25 +113,27 @@ void CGBAGraphics::setIO( const u8 *io ) {
 
   if( m <= 1 ) {
     // BG0 = character based
-    reg = io[0x08];
+    reg = READ16LE(&io[0x08]);
     BG0CNT.priority = reg & 3;
-    BG0CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG0CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
     BG0CNT.mosaic = reg & BIT6;
     BG0CNT.colorMode = reg & BIT7;
-    reg = io[0x09];
+    reg >>= 8;
     BG0CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    BG0CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
     BG0CNT.width = ( reg & BIT6 ) ? 512 : 256;
     BG0CNT.height = ( reg & BIT7 ) ? 512 : 256;
     BG0CNT.isRotScale = false;
 
     // BG1 = character based
-    reg = io[0x0A];
+    reg = READ16LE(&io[0x0A]);
     BG1CNT.priority = reg & 3;
-    BG1CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG1CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
     BG1CNT.mosaic = reg & BIT6;
     BG1CNT.colorMode = reg & BIT7;
-    reg = io[0x0B];
+    reg >>= 8;
     BG1CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    BG1CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
     BG1CNT.width = ( reg & BIT6 ) ? 512 : 256;
     BG1CNT.height = ( reg & BIT7 ) ? 512 : 256;
     BG1CNT.isRotScale = false;
@@ -133,14 +142,15 @@ void CGBAGraphics::setIO( const u8 *io ) {
   // BG2
   // TODO: leave out some flags for bitmap mode
   BG2CNT.isRotScale = ( m != 0 );
-  reg = io[0x0C];
+  reg = READ16LE(&io[0x0C]);
   BG2CNT.priority = reg & 3;
-  BG2CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+  BG2CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
   BG2CNT.mosaic = reg & BIT6;
   BG2CNT.colorMode = reg & BIT7;
-  reg = io[0x0D];
+  reg >>= 8;
   BG2CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
   BG2CNT.wrapAround = reg & BIT5;
+  BG2CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
   switch( m ) {
   case 0: // BG2 = character based
     BG2CNT.width = ( reg & BIT6 ) ? 512 : 256;
@@ -169,14 +179,15 @@ void CGBAGraphics::setIO( const u8 *io ) {
   // BG3
   if( ( m == 0 ) || ( m == 2 ) ) {
     BG3CNT.isRotScale = ( m != 0 );
-    reg = io[0x0E];
+    reg = READ16LE(&io[0x0E]);
     BG3CNT.priority = reg & 3;
-    BG3CNT.tileOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    BG3CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
     BG3CNT.mosaic = reg & BIT6;
     BG3CNT.colorMode = reg & BIT7;
-    reg = io[0x0F];
+    reg >>= 8;
     BG3CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
     BG3CNT.wrapAround = reg & BIT5;
+    BG3CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
     if( m == 0 ) {
       BG3CNT.width = ( reg & BIT6 ) ? 512 : 256;
       BG3CNT.height = ( reg & BIT7 ) ? 512 : 256;
@@ -220,6 +231,32 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
 }
 
 
+void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp, u32 nChars ) {
+  u8 *srcChars = &vram[cnt->charOffset];
+  if( cnt->colorMode ) { // 256x1 colors
+    // contains all characters/tiles that will be copied to bg*bmp
+    RGBACOLOR chars[nChars * 8*8]; // 8x8 pixel per char
+    RGBACOLOR *c = chars;
+    while( nChars-- ) { *(c++) = bgpal[*srcChars++]; }
+    // copy chars to bmp as given by screen map
+    u16 *srcMap = (u16 *)&(vram[cnt->mapOffset]);
+    // srcMap is divided in blocks of 32x32 tiles (= 256x256 pixels)
+    for( u16 y = 0; y < 256; y += 8 ) { // 32 tiles * 8 pixel = 256 width
+      for( u16 x = 0; x < 256; x += 8 ) {
+        const u32 charNumber = (*(srcMap++)) & 0x03FF;
+        const u32 charOffset = charNumber * 8*8;
+        // copy char block to bmp
+        for( u8 y2 = 0; y2 < 8; y2++ ) {
+          // copy a line of 8 pixel from chars to bmp
+          memcpy( &(bmp[x + (y*256)]), &(chars[charOffset + (y2*8)]), sizeof(RGBACOLOR) * 8 );
+        }
+      }
+    }
+  } else { // 16x16 colors
+  }
+}
+
+
 bool CGBAGraphics::render() {
   // prepare graphic surfaces and send them to graphics renderer to
   // combine & render them (possibly with hw acceleration)
@@ -230,15 +267,55 @@ bool CGBAGraphics::render() {
     return false;
   }
 
-
   switch( DISPCNT.bgMode ) {
   case 0:
     if( DISPCNT.displayBG0 ) {
-      SAFE_DELETE_ARRAY( bg0bmp );
-      bg0bmp = new RGBACOLOR[BG0CNT.width * BG0CNT.height];
+      switch( BG0CNT.size ) {
+      case 3:
+        SAFE_DELETE_ARRAY( bg0sc3 );
+        bg0sc3 = new RGBACOLOR[256*256];
+        SAFE_DELETE_ARRAY( bg0sc2 );
+        bg0sc2 = new RGBACOLOR[256*256];
+      case 2:
+      case 1:
+        SAFE_DELETE_ARRAY( bg0sc1 );
+        bg0sc1 = new RGBACOLOR[256*256];
+      case 0:
+        SAFE_DELETE_ARRAY( bg0sc0 );
+        bg0sc0 = new RGBACOLOR[256*256];
+      }
     }
+    buildCharBG( &BG0CNT, bg0sc0, 32*32 );
     break;
   }
 
+  renderComplete = true;
   return true;
+}
+
+
+CGBAGraphics::renderResult CGBAGraphics::getRenderResult() {
+  renderResult res;
+  res.DISPCNT = &DISPCNT;
+  res.BGCNT[0] = &BG0CNT;
+  res.BGCNT[1] = &BG1CNT;
+  res.BGCNT[2] = &BG2CNT;
+  res.BGCNT[3] = &BG3CNT;
+  res.BGSC[0][0] = bg0sc0;
+  res.BGSC[0][1] = bg0sc0;
+  res.BGSC[0][2] = bg0sc0;
+  res.BGSC[0][3] = bg0sc0;
+  res.BGSC[1][0] = bg0sc0;
+  res.BGSC[1][1] = bg0sc0;
+  res.BGSC[1][2] = bg0sc0;
+  res.BGSC[1][3] = bg0sc0;
+  res.BGSC[2][0] = bg0sc0;
+  res.BGSC[2][1] = bg0sc0;
+  res.BGSC[2][2] = bg0sc0;
+  res.BGSC[2][3] = bg0sc0;
+  res.BGSC[3][0] = bg0sc0;
+  res.BGSC[3][1] = bg0sc0;
+  res.BGSC[3][2] = bg0sc0;
+  res.BGSC[3][3] = bg0sc0;
+  return res;
 }

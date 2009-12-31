@@ -45,25 +45,7 @@ public:
   /// convert 15 bit GBA color to 32 bit RGBA color
   static void gba2rgba( RGBACOLOR *dest, u16 src );
 
-
-private:
-  // all have to be true to be able to render
-  bool vramLoaded, ioLoaded, palLoaded;
-
-  u8 *vram; // video memory [16 KiB]
-
-  RGBACOLOR bgpal[256]; // BG palette (RGBA color)
-  RGBACOLOR objpal[256]; // sprite palette (RGBA color)
-
-  // contains all characters/tiles that will be copied to bg*bmp
-  // each character/tile is 8x8 pixel in size
-  RGBACOLOR *bg0chars, *bg1chars, *bg2chars, *bg3chars;
-
-  // contains resulting bitmap of BG screens
-  RGBACOLOR *bg0bmp, *bg1bmp, *bg2bmp, *bg3bmp;
-  // TODO: split up into SC0, SC1 etc.
-
-  // video registers
+  /// display control
   struct structDISPCNT {
     u8 bgMode; // 0-5
     bool frameNumber; // frame buffer 0 or 1
@@ -78,25 +60,57 @@ private:
     bool displayWIN0;
     bool displayWIN1;
     bool displayOBJWIN;
-  } DISPCNT;
+  };
 
+  /// background control
   struct structBGCNT {
-    u8 priority; // (max) 0 1 2 3 (min)
-    u16 tileOffset; // adress of tiles/characters in VRAM
-    bool mosaic;
-    bool colorMode; // false: 16x16  true: 256
-    u16 mapOffset; // adress of map/screen data in VRAM
-    bool wrapAround; // area overflow flag (only BG2/3)
-    u32 width;  // u16 is too small when we have to multiply
-    u32 height; //  width * height later on
-    bool isRotScale; // false: no rotation/scaling
-  } BG0CNT, BG1CNT, BG2CNT, BG3CNT;
+    u8 priority; ///< (max) 0 1 2 3 (min)
+    u16 charOffset; ///< adress of tiles/characters in VRAM
+    bool mosaic; ///< enables or disables mosaic effect
+    bool colorMode; ///< false: 16x16  true: 256x1
+    u16 mapOffset; ///< adress of map/screen data in VRAM
+    bool wrapAround; ///< area overflow flag (only BG2&3)
+    u8 size; ///< for char mode: 0=256x256  1=512x256  2=256x512  3=512x512
+    u32 width; ///< width of BG when combining all its macro-blocks
+    u32 height; ///< height of BG when combining all its macro-blocks
+    bool isRotScale; ///< false: no rotation/scaling
+  };
 
-  // horiontal offset (only in character mode)
-  u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS;
+  typedef struct structRenderResult {
+    struct structDISPCNT *DISPCNT;
+    struct structBGCNT   *BGCNT[4];
+    RGBACOLOR            *BGSC[4][4]; ///< BGSC[BG#][block#]
+  } renderResult;
 
-  // vertical offset (only in character mode)
-  u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS;
+  renderResult getRenderResult();
+
+
+private:
+  // all have to be true to be able to render
+  bool vramLoaded, ioLoaded, palLoaded;
+
+  bool renderComplete;
+
+  u8 *vram; // video memory [96 KiB]
+
+  RGBACOLOR bgpal[256]; // BG palette (RGBA color)
+  RGBACOLOR objpal[256]; // sprite palette (RGBA color)
+
+  // contains resulting bitmap of BG screens
+  // each BG may consist of up to 4 macro-blocks of 256x256 pixels
+  // for 512x512:  sc0=top-left  sc1=top-right  sc2=bottom-left  sc3=bottom-right
+  RGBACOLOR *bg0sc0, *bg0sc1, *bg0sc2, *bg0sc3;
+  RGBACOLOR *bg1sc0, *bg1sc1, *bg1sc2, *bg1sc3;
+  RGBACOLOR *bg2sc0, *bg2sc1, *bg2sc2, *bg2sc3;
+  RGBACOLOR *bg3sc0, *bg3sc1, *bg3sc2, *bg3sc3;
+
+  // video registers
+  struct structDISPCNT DISPCNT;
+  struct structBGCNT BG0CNT, BG1CNT, BG2CNT, BG3CNT;
+  u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS; // horiontal offset (only in character mode)
+  u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)
+
+  void buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp, u32 nChars );
 };
 
 
