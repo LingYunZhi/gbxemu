@@ -32,7 +32,7 @@ public:
   void setVRAM( const u8 *vram_src );
   void setIO( const u8 *io );
   void setPAL( const u8 *pal );
-  void render();
+  bool render();
 
   /// 32 bit RGBA color as used in modern PC systems
   typedef struct structRGBACOLOR {
@@ -47,15 +47,24 @@ public:
 
 
 private:
+  // all have to be true to be able to render
+  bool vramLoaded, ioLoaded, palLoaded;
+
   u8 *vram; // video memory [16 KiB]
 
   RGBACOLOR bgpal[256]; // BG palette (RGBA color)
   RGBACOLOR objpal[256]; // sprite palette (RGBA color)
 
-  RGBACOLOR *bg0, *bg1, *bg2, *bg3; // contains resulting bitmap of BG screen
+  // contains all characters/tiles that will be copied to bg*bmp
+  // each character/tile is 8x8 pixel in size
+  RGBACOLOR *bg0chars, *bg1chars, *bg2chars, *bg3chars;
+
+  // contains resulting bitmap of BG screens
+  RGBACOLOR *bg0bmp, *bg1bmp, *bg2bmp, *bg3bmp;
+  // TODO: split up into SC0, SC1 etc.
 
   // video registers
-  struct {
+  struct structDISPCNT {
     u8 bgMode; // 0-5
     bool frameNumber; // frame buffer 0 or 1
     bool oamAccessDuringHBlank;
@@ -71,15 +80,16 @@ private:
     bool displayOBJWIN;
   } DISPCNT;
 
-  struct {
+  struct structBGCNT {
     u8 priority; // (max) 0 1 2 3 (min)
     u16 tileOffset; // adress of tiles/characters in VRAM
     bool mosaic;
     bool colorMode; // false: 16x16  true: 256
     u16 mapOffset; // adress of map/screen data in VRAM
     bool wrapAround; // area overflow flag (only BG2/3)
-    u16 width;
-    u16 height;
+    u32 width;  // u16 is too small when we have to multiply
+    u32 height; //  width * height later on
+    bool isRotScale; // false: no rotation/scaling
   } BG0CNT, BG1CNT, BG2CNT, BG3CNT;
 
   // horiontal offset (only in character mode)
