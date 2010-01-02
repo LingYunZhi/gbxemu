@@ -34,7 +34,7 @@ public:
 
     /// new method, combines & renders prepared data.
     /// should also apply special effects (hw accelerated if possible)
-    virtual bool renderFrame( CGBAGraphics::RESULT data ) { return true; }
+    virtual bool renderFrame( CGBAGraphics::RESULT &data ) { return true; }
 };
 
 

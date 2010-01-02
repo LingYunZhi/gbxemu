@@ -35,44 +35,18 @@ CGBAGraphics::CGBAGraphics() {
   vram = NULL;
   vram = new u8[0x18000];
 
-  bg0sc0 = NULL; bg0sc1 = NULL; bg0sc2 = NULL; bg0sc3 = NULL;
-  bg1sc0 = NULL; bg1sc1 = NULL; bg1sc2 = NULL; bg1sc3 = NULL;
-  bg2sc0 = NULL; bg2sc1 = NULL; bg2sc2 = NULL; bg2sc3 = NULL;
-  bg3sc0 = NULL; bg3sc1 = NULL; bg3sc2 = NULL; bg3sc3 = NULL;
-
   vramLoaded = false;
   ioLoaded = false;
   palLoaded = false;
-  done = false;
 }
 
 
 CGBAGraphics::~CGBAGraphics() {
-  SAFE_DELETE_ARRAY( bg0sc0 );
-  SAFE_DELETE_ARRAY( bg0sc1 );
-  SAFE_DELETE_ARRAY( bg0sc2 );
-  SAFE_DELETE_ARRAY( bg0sc3 );
-
-  SAFE_DELETE_ARRAY( bg1sc0 );
-  SAFE_DELETE_ARRAY( bg1sc1 );
-  SAFE_DELETE_ARRAY( bg1sc2 );
-  SAFE_DELETE_ARRAY( bg1sc3 );
-
-  SAFE_DELETE_ARRAY( bg2sc0 );
-  SAFE_DELETE_ARRAY( bg2sc1 );
-  SAFE_DELETE_ARRAY( bg2sc2 );
-  SAFE_DELETE_ARRAY( bg2sc3 );
-
-  SAFE_DELETE_ARRAY( bg3sc0 );
-  SAFE_DELETE_ARRAY( bg3sc1 );
-  SAFE_DELETE_ARRAY( bg3sc2 );
-  SAFE_DELETE_ARRAY( bg3sc3 );
-
   SAFE_DELETE_ARRAY( vram );
 }
 
 
-void CGBAGraphics::gba2rgba( RGBACOLOR *dest, u16 src ) {
+void CGBAGraphics::gba2rgba( COLOR32 *dest, u16 src ) {
   dest->r = ( src & 0x001F ) << 3; // extend from 5 to 8 bit
   dest->g = ( src & 0x03E0 ) >> 2;
   dest->b = ( src & 0x7C00 ) >> 7;
@@ -90,113 +64,118 @@ void CGBAGraphics::setVRAM( const u8 *vram_src ) {
 void CGBAGraphics::setIO( const u8 *io ) {
   // read & interpret all video registers
   u16 reg; // current register
+  struct structDISPCNT *d = &result.DISPCNT;
+  struct structBGCNT *b0 = &result.BGCNT[0];
+  struct structBGCNT *b1 = &result.BGCNT[1];
+  struct structBGCNT *b2 = &result.BGCNT[2];
+  struct structBGCNT *b3 = &result.BGCNT[3];
 
   // DISPCNT
   reg = READ16LE(&io[0x00]);
-  DISPCNT.bgMode = reg & 7;
-    if( DISPCNT.bgMode > 5 ) assert( false ); // error
-  DISPCNT.frameNumber = reg & BIT4;
-  DISPCNT.oamAccessDuringHBlank = reg & BIT5;
-  DISPCNT.objCharMapping = reg & BIT6;
-  DISPCNT.forcedBlank = reg & BIT7;
+  d->bgMode = reg & 7;
+    if( d->bgMode > 5 ) assert( false ); // error
+  d->frameNumber = reg & BIT4;
+  d->oamAccessDuringHBlank = reg & BIT5;
+  d->objCharMapping = reg & BIT6;
+  d->forcedBlank = reg & BIT7;
   reg >>= 8;
-  DISPCNT.displayBG0 = reg & BIT0;
-  DISPCNT.displayBG1 = reg & BIT1;
-  DISPCNT.displayBG2 = reg & BIT2;
-  DISPCNT.displayBG3 = reg & BIT3;
-  DISPCNT.displayOBJ = reg & BIT4;
-  DISPCNT.displayWIN0 = reg & BIT5;
-  DISPCNT.displayWIN1 = reg & BIT6;
-  DISPCNT.displayOBJWIN = reg & BIT7;
+  d->displayBG0 = reg & BIT0;
+  d->displayBG1 = reg & BIT1;
+  d->displayBG2 = reg & BIT2;
+  d->displayBG3 = reg & BIT3;
+  d->displayOBJ = reg & BIT4;
+  d->displayWIN0 = reg & BIT5;
+  d->displayWIN1 = reg & BIT6;
+  d->displayOBJWIN = reg & BIT7;
 
-  const u8 m = DISPCNT.bgMode; // display mode
+  const u8 m = d->bgMode; // display mode
 
   if( m <= 1 ) {
     // BG0 = character based
     reg = READ16LE(&io[0x08]);
-    BG0CNT.priority = reg & 3;
-    BG0CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
-    BG0CNT.mosaic = reg & BIT6;
-    BG0CNT.colorMode = reg & BIT7;
+    b0->priority = reg & 3;
+    b0->charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    b0->mosaic = reg & BIT6;
+    b0->colorMode = reg & BIT7;
     reg >>= 8;
-    BG0CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
-    BG0CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
-    BG0CNT.width = ( reg & BIT6 ) ? 512 : 256;
-    BG0CNT.height = ( reg & BIT7 ) ? 512 : 256;
-    BG0CNT.isRotScale = false;
+    b0->mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    b0->size = ( reg & (BIT6|BIT7) ) >> 6;
+    b0->width = ( reg & BIT6 ) ? 512 : 256;
+    b0->height = ( reg & BIT7 ) ? 512 : 256;
+    b0->isRotScale = false;
 
     // BG1 = character based
     reg = READ16LE(&io[0x0A]);
-    BG1CNT.priority = reg & 3;
-    BG1CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
-    BG1CNT.mosaic = reg & BIT6;
-    BG1CNT.colorMode = reg & BIT7;
+    b1->priority = reg & 3;
+    b1->charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    b1->mosaic = reg & BIT6;
+    b1->colorMode = reg & BIT7;
     reg >>= 8;
-    BG1CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
-    BG1CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
-    BG1CNT.width = ( reg & BIT6 ) ? 512 : 256;
-    BG1CNT.height = ( reg & BIT7 ) ? 512 : 256;
-    BG1CNT.isRotScale = false;
+    b1->mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    b1->size = ( reg & (BIT6|BIT7) ) >> 6;
+    b1->width = ( reg & BIT6 ) ? 512 : 256;
+    b1->height = ( reg & BIT7 ) ? 512 : 256;
+    b1->isRotScale = false;
   }
 
   // BG2
   // TODO: leave out some flags for bitmap mode
-  BG2CNT.isRotScale = ( m != 0 );
+  b2->isRotScale = ( m != 0 );
   reg = READ16LE(&io[0x0C]);
-  BG2CNT.priority = reg & 3;
-  BG2CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
-  BG2CNT.mosaic = reg & BIT6;
-  BG2CNT.colorMode = reg & BIT7;
+  b2->priority = reg & 3;
+  b2->charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+  b2->mosaic = reg & BIT6;
+  b2->colorMode = reg & BIT7;
   reg >>= 8;
-  BG2CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
-  BG2CNT.wrapAround = reg & BIT5;
-  BG2CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
+  b2->mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+  b2->wrapAround = reg & BIT5;
+  b2->size = ( reg & (BIT6|BIT7) ) >> 6;
   switch( m ) {
   case 0: // BG2 = character based
-    BG2CNT.width = ( reg & BIT6 ) ? 512 : 256;
-    BG2CNT.height = ( reg & BIT7 ) ? 512 : 256;
+    b2->width = ( reg & BIT6 ) ? 512 : 256;
+    b2->height = ( reg & BIT7 ) ? 512 : 256;
     break;
   case 1: // BG2 = rotation/scaling
   case 2:
     switch( reg & (BIT6|BIT7) ) {
-    case 0: BG2CNT.width = BG2CNT.height =  128; break;
-    case 1: BG2CNT.width = BG2CNT.height =  256; break;
-    case 2: BG2CNT.width = BG2CNT.height =  512; break;
-    case 3: BG2CNT.width = BG2CNT.height = 1024; break;
+    case 0: b2->width = b2->height =  128; break;
+    case 1: b2->width = b2->height =  256; break;
+    case 2: b2->width = b2->height =  512; break;
+    case 3: b2->width = b2->height = 1024; break;
     }
     break;
   case 3: // BG2 = bitmap based
   case 4:
-    BG2CNT.width = 240;
-    BG2CNT.height = 160;
+    b2->width = 240;
+    b2->height = 160;
     break;
   case 5:
-    BG2CNT.width = 160;
-    BG2CNT.height = 128;
+    b2->width = 160;
+    b2->height = 128;
     break;
   }
 
   // BG3
   if( ( m == 0 ) || ( m == 2 ) ) {
-    BG3CNT.isRotScale = ( m != 0 );
+    b3->isRotScale = ( m != 0 );
     reg = READ16LE(&io[0x0E]);
-    BG3CNT.priority = reg & 3;
-    BG3CNT.charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
-    BG3CNT.mosaic = reg & BIT6;
-    BG3CNT.colorMode = reg & BIT7;
+    b3->priority = reg & 3;
+    b3->charOffset = ( (u16)reg & (BIT2|BIT3) ) << 12;
+    b3->mosaic = reg & BIT6;
+    b3->colorMode = reg & BIT7;
     reg >>= 8;
-    BG3CNT.mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
-    BG3CNT.wrapAround = reg & BIT5;
-    BG3CNT.size = ( reg & (BIT6|BIT7) ) >> 6;
+    b3->mapOffset = ( (u16)reg & (BIT0|BIT1|BIT2|BIT3|BIT4) ) << 11;
+    b3->wrapAround = reg & BIT5;
+    b3->size = ( reg & (BIT6|BIT7) ) >> 6;
     if( m == 0 ) {
-      BG3CNT.width = ( reg & BIT6 ) ? 512 : 256;
-      BG3CNT.height = ( reg & BIT7 ) ? 512 : 256;
+      b3->width = ( reg & BIT6 ) ? 512 : 256;
+      b3->height = ( reg & BIT7 ) ? 512 : 256;
     } else {
       switch( reg & (BIT6|BIT7) ) {
-      case 0: BG3CNT.width = BG3CNT.height =  128; break;
-      case 1: BG3CNT.width = BG3CNT.height =  256; break;
-      case 2: BG3CNT.width = BG3CNT.height =  512; break;
-      case 3: BG3CNT.width = BG3CNT.height = 1024; break;
+      case 0: b3->width = b3->height =  128; break;
+      case 1: b3->width = b3->height =  256; break;
+      case 2: b3->width = b3->height =  512; break;
+      case 3: b3->width = b3->height = 1024; break;
       }
     }
   }
@@ -231,14 +210,14 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
 }
 
 
-void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp ) {
+void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, CPicture &pic ) {
   const u16 nChars = 1024; // TODO: add condition
   u32 nPixelsInChars = nChars * 8*8; // 8x8 pixel per char
   u8 *srcChar = &vram[cnt->charOffset];
   if( cnt->colorMode ) { // 256x1 colors
     // contains all characters/tiles that will be copied to bg*bmp
-    RGBACOLOR chars[nPixelsInChars];
-    RGBACOLOR *c = chars;
+    COLOR32 chars[nPixelsInChars];
+    COLOR32 *c = chars;
     while( nPixelsInChars-- ) { *(c++) = bgpal[*(srcChar++)]; }
     // copy chars to bmp as given by screen map
     u16 *srcMap = (u16 *)&(vram[cnt->mapOffset]);
@@ -257,7 +236,8 @@ void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp ) {
             charOffset += 63;
             for( s8 charY = 0; charY < 8; charY++ ) {
               for( s8 charX = 0; charX < 8; charX++ ) {
-                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+//                bmp[ x + charX + ( ( y + charY ) * 256 ) ]
+                pic.pixel( x + charX, y + charY )\
                   = chars[ charOffset - charX - ( charY * 8 ) ];
               }
             }
@@ -265,7 +245,7 @@ void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp ) {
             charOffset += 7;
             for( s8 charY = 0; charY < 8; charY++ ) {
               for( s8 charX = 0; charX < 8; charX++ ) {
-                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                pic.pixel( x + charX, y + charY ) \
                   = chars[ charOffset - charX + ( charY * 8 ) ];
               }
             }
@@ -275,14 +255,14 @@ void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp ) {
             charOffset += 56;
             for( s8 charY = 0; charY < 8; charY++ ) {
               for( s8 charX = 0; charX < 8; charX++ ) {
-                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                pic.pixel( x + charX, y + charY ) \
                   = chars[ charOffset + charX - ( charY * 8 ) ];
               }
             }
           } else { // !hFlip && !vFlip
             for( s8 charY = 0; charY < 8; charY++ ) {
               for( s8 charX = 0; charX < 8; charX++ ) {
-                bmp[ x + charX + ( ( y + charY ) * 256 ) ] \
+                pic.pixel( x + charX, y + charY ) \
                   = chars[ charOffset + charX + ( charY * 8 ) ];
               }
             }
@@ -302,58 +282,23 @@ bool CGBAGraphics::process() {
     return false;
   }
 
-  switch( DISPCNT.bgMode ) {
+  switch( result.DISPCNT.bgMode ) {
   case 0:
-    if( DISPCNT.displayBG0 ) {
-      switch( BG0CNT.size ) {
+    if( result.DISPCNT.displayBG0 ) {
+      switch( result.BGCNT[0].size ) {
       case 3:
-        SAFE_DELETE_ARRAY( bg0sc3 );
-        bg0sc3 = new RGBACOLOR[256*256];
-        SAFE_DELETE_ARRAY( bg0sc2 );
-        bg0sc2 = new RGBACOLOR[256*256];
+        result.BGSC[0][3].create( 256, 256 );
+        result.BGSC[0][2].create( 256, 256 );
       case 2:
       case 1:
-        SAFE_DELETE_ARRAY( bg0sc1 );
-        bg0sc1 = new RGBACOLOR[256*256];
+        result.BGSC[0][1].create( 256, 256 );
       case 0:
-        SAFE_DELETE_ARRAY( bg0sc0 );
-        bg0sc0 = new RGBACOLOR[256*256];
+        result.BGSC[0][0].create( 256, 256 );
       }
+      buildCharBG( &result.BGCNT[0], result.BGSC[0][0] );
     }
-    buildCharBG( &BG0CNT, bg0sc0 );
     break;
   }
 
-  done = true;
   return true;
-}
-
-
-CGBAGraphics::RESULT CGBAGraphics::getResult() {
-  if( !done ) { assert( false ); }
-
-  RESULT res;
-  res.DISPCNT = &DISPCNT;
-  res.BGCNT[0] = &BG0CNT;
-  res.BGCNT[1] = &BG1CNT;
-  res.BGCNT[2] = &BG2CNT;
-  res.BGCNT[3] = &BG3CNT;
-  res.BGSC[0][0] = bg0sc0;
-  res.BGSC[0][1] = bg0sc0;
-  res.BGSC[0][2] = bg0sc0;
-  res.BGSC[0][3] = bg0sc0;
-  res.BGSC[1][0] = bg0sc0;
-  res.BGSC[1][1] = bg0sc0;
-  res.BGSC[1][2] = bg0sc0;
-  res.BGSC[1][3] = bg0sc0;
-  res.BGSC[2][0] = bg0sc0;
-  res.BGSC[2][1] = bg0sc0;
-  res.BGSC[2][2] = bg0sc0;
-  res.BGSC[2][3] = bg0sc0;
-  res.BGSC[3][0] = bg0sc0;
-  res.BGSC[3][1] = bg0sc0;
-  res.BGSC[3][2] = bg0sc0;
-  res.BGSC[3][3] = bg0sc0;
-
-  return res;
 }

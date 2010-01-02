@@ -21,6 +21,7 @@
 
 
 #include "../common/Types.h"
+#include "cpicture.h"
 
 
 class CGBAGraphics
@@ -34,16 +35,9 @@ public:
   void setPAL( const u8 *pal );
   bool process(); // prepare image data for render API
 
-  /// 32 bit RGBA color as used in modern PC systems
-  typedef struct structRGBACOLOR {
-    u8 b; ///< blue  0-255
-    u8 g; ///< green 0-255
-    u8 r; ///< red   0-255
-    u8 a; ///< alpha 0-255
-  } RGBACOLOR;
 
   /// convert 15 bit GBA color to 32 bit RGBA color
-  static void gba2rgba( RGBACOLOR *dest, u16 src );
+  static void gba2rgba( COLOR32 *dest, u16 src );
 
   /// display control
   struct structDISPCNT {
@@ -76,41 +70,32 @@ public:
     bool isRotScale; ///< false: no rotation/scaling
   };
 
+
   typedef struct structRESULT {
-    struct structDISPCNT *DISPCNT;
-    struct structBGCNT   *BGCNT[4];
-    RGBACOLOR            *BGSC[4][4]; ///< BGSC[BG#][block#]
+    struct structDISPCNT  DISPCNT; // display control registers
+    struct structBGCNT    BGCNT[4]; // background control registers
+    /// BG screen ( = division of BG )
+    /// contains resulting bitmap of BG screens
+    /// each BG may consist of up to 4 macro-blocks of 256x256 pixels
+    /// for 512x512:  sc0=top-left  sc1=top-right  sc2=bottom-left  sc3=bottom-right
+    CPicture              BGSC[4][4]; ///< BGSC[BG#][block#]
   } RESULT;
 
-  RESULT getResult();
+  RESULT result; // this struct will be used by the renderer later on
 
 
 private:
   // all have to be true to be able to work
   bool vramLoaded, ioLoaded, palLoaded;
 
-  bool done;
-
   u8 *vram; // video memory [96 KiB]
+  COLOR32 bgpal[256]; // BG palette (converted to RGBA color)
+  COLOR32 objpal[256]; // sprite palette (converted to RGBA color)
 
-  RGBACOLOR bgpal[256]; // BG palette (RGBA color)
-  RGBACOLOR objpal[256]; // sprite palette (RGBA color)
-
-  // contains resulting bitmap of BG screens
-  // each BG may consist of up to 4 macro-blocks of 256x256 pixels
-  // for 512x512:  sc0=top-left  sc1=top-right  sc2=bottom-left  sc3=bottom-right
-  RGBACOLOR *bg0sc0, *bg0sc1, *bg0sc2, *bg0sc3;
-  RGBACOLOR *bg1sc0, *bg1sc1, *bg1sc2, *bg1sc3;
-  RGBACOLOR *bg2sc0, *bg2sc1, *bg2sc2, *bg2sc3;
-  RGBACOLOR *bg3sc0, *bg3sc1, *bg3sc2, *bg3sc3;
-
-  // video registers
-  struct structDISPCNT DISPCNT;
-  struct structBGCNT BG0CNT, BG1CNT, BG2CNT, BG3CNT;
   u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS; // horiontal offset (only in character mode)
   u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)
 
-  void buildCharBG( struct structBGCNT *cnt, RGBACOLOR *bmp );
+  void buildCharBG( struct structBGCNT *cnt, CPicture &pic );
 };
 
 

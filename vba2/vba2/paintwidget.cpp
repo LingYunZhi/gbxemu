@@ -7,6 +7,7 @@
 #include <QPoint>
 
 #include <string.h> // memcpy
+#include <assert.h>
 
 PaintWidget::PaintWidget( QWidget *parent )
     : QWidget( parent )
@@ -55,11 +56,12 @@ bool PaintWidget::displayFrame( const void *const data )
    */ return true;
 }
 
-bool PaintWidget::renderFrame( CGBAGraphics::RESULT data ) {
-  if( data.DISPCNT->displayBG0 ) {
-    const quint32 *source = (const quint32 *)data.BGSC[0][0];
+bool PaintWidget::renderFrame( CGBAGraphics::RESULT &data ) {
+  if( data.DISPCNT.displayBG0 ) {
+    const quint32 *source = (const quint32 *)data.BGSC[0][0].picture;
     quint32 *dest = (quint32 *)m_pixels->bits();
-    memcpy( dest, source, sizeof(CGBAGraphics::RGBACOLOR) * 256 * 256 );
+    assert( source != NULL ); // can be removed if every video mode is emulated
+    memcpy( dest, source, 4 * 256 * 256 );
   }
   this->repaint(); // TODO: replace with update to make use of VSync
 

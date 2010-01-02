@@ -17,7 +17,7 @@ class PaintWidget : public QWidget, public CDriver_Graphics, public CDriver_Inpu
     // ### CDriver_Graphics interface:
 public:
     virtual bool displayFrame( const void *const data );
-    virtual bool renderFrame( CGBAGraphics::RESULT data );
+    virtual bool renderFrame( CGBAGraphics::RESULT &data );
 
     // ### CDriver_Input interface:
     virtual u16 getKeyStates();

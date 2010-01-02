@@ -2934,7 +2934,7 @@ void CPULoop(int ticks)
             graphics2.setPAL( paletteRAM );
             graphics2.process();
             if( graphicsDriver != NULL ) {
-                graphicsDriver->renderFrame( graphics2.getResult() );
+                graphicsDriver->renderFrame( graphics2.result );
             }
           }
         } else { // not in V-BLANK
