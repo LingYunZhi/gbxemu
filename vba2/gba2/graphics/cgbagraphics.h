@@ -26,18 +26,22 @@
 
 class CGBAGraphics
 {
+// /----------
 public:
   CGBAGraphics();
   ~CGBAGraphics();
 
+  /// copy VRAM
   void setVRAM( const u8 *vram_src );
+  /// read & interpret all video registers
   void setIO( const u8 *io );
+  /// convert & copy palettes
   void setPAL( const u8 *pal );
-  bool process(); // prepare image data for render API
+  /// prepare image data for render API
+  bool process();
 
+// \----------
 
-  /// convert 15 bit GBA color to 32 bit RGBA color
-  static void gba2rgba( COLOR32 *dest, u16 src );
 
   /// display control
   struct structDISPCNT {
@@ -46,10 +50,7 @@ public:
     bool oamAccessDuringHBlank;
     bool objCharMapping;
     bool forcedBlank;
-    bool displayBG0;
-    bool displayBG1;
-    bool displayBG2;
-    bool displayBG3;
+    bool displayBG[4];
     bool displayOBJ;
     bool displayWIN0;
     bool displayWIN1;
@@ -71,7 +72,7 @@ public:
   };
 
 
-  typedef struct structRESULT {
+  typedef struct {
     struct structDISPCNT  DISPCNT; // display control registers
     struct structBGCNT    BGCNT[4]; // background control registers
     /// BG screen ( = division of BG )
@@ -92,11 +93,15 @@ private:
   COLOR32 bgpal[256]; // BG palette (converted to RGBA color)
   COLOR32 objpal[256]; // sprite palette (converted to RGBA color)
 
+  /// convert 15 bit GBA color to 32 bit RGBA color
+  void gba2rgba( COLOR32 *dest, u16 src );
+
   u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS; // horiontal offset (only in character mode)
   u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)
 
-  void buildCharBG( struct structBGCNT *cnt, CPicture &pic );
+  // ### mode 0 ###
   bool process_mode0();
+  void buildCharBG( u8 bg_number );
 };
 
 

@@ -62,7 +62,6 @@ void CGBAGraphics::setVRAM( const u8 *vram_src ) {
 
 
 void CGBAGraphics::setIO( const u8 *io ) {
-  // read & interpret all video registers
   u16 reg; // current register
   struct structDISPCNT *d = &result.DISPCNT;
   struct structBGCNT *b0 = &result.BGCNT[0];
@@ -79,10 +78,10 @@ void CGBAGraphics::setIO( const u8 *io ) {
   d->objCharMapping = reg & BIT6;
   d->forcedBlank = reg & BIT7;
   reg >>= 8;
-  d->displayBG0 = reg & BIT0;
-  d->displayBG1 = reg & BIT1;
-  d->displayBG2 = reg & BIT2;
-  d->displayBG3 = reg & BIT3;
+  d->displayBG[0] = reg & BIT0;
+  d->displayBG[1] = reg & BIT1;
+  d->displayBG[2] = reg & BIT2;
+  d->displayBG[3] = reg & BIT3;
   d->displayOBJ = reg & BIT4;
   d->displayWIN0 = reg & BIT5;
   d->displayWIN1 = reg & BIT6;
@@ -195,7 +194,6 @@ void CGBAGraphics::setIO( const u8 *io ) {
 
 
 void CGBAGraphics::setPAL( const u8 *pal ) {
-  // convert & copy palettes
   // GBA color format: (MSB) 1x 5b 5g 5r (LSB)
   for( u16 i = 0; i <= 255; i++ ) {
     // counter i can not be 8 bit because overflow would destroy for loop condition
@@ -207,71 +205,6 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
     pal += 2;
   }
   palLoaded = true;
-}
-
-
-void CGBAGraphics::buildCharBG( struct structBGCNT *cnt, CPicture &pic ) {
-  const u16 nChars = 1024; // TODO: add condition
-  u32 nPixelsInChars = nChars * 8*8; // 8x8 pixel per char
-  u8 *srcChar = &vram[cnt->charOffset];
-  if( cnt->colorMode ) { // 256x1 colors
-    // contains all characters/tiles that will be copied to bg*bmp
-    COLOR32 chars[nPixelsInChars];
-    COLOR32 *c = chars;
-    while( nPixelsInChars-- ) { *(c++) = bgpal[*(srcChar++)]; }
-    // copy chars to bmp as given by screen map
-    u16 *srcMap = (u16 *)&(vram[cnt->mapOffset]);
-    // srcMap is divided in blocks of 32x32 tiles (= 256x256 pixels)
-    for( u16 y = 0; y < 256; y += 8 ) { // 32 tiles * 8 pixel = 256 width
-      for( u16 x = 0; x < 256; x += 8 ) {
-        const u16 currentEntry = (*(srcMap++));
-        const u16 charNumber = currentEntry & 0x03FF;
-        u32 charOffset = charNumber * 8*8; // character's address
-        const bool hFlip = currentEntry & BIT10;
-        const bool vFlip = currentEntry & BIT11;
-        // copy single character to bmp
-        // TODO: remove redundant code somehow
-        if( hFlip ) {
-          if( vFlip ) { // hFlip && vFlip
-            charOffset += 63;
-            for( s8 charY = 0; charY < 8; charY++ ) {
-              for( s8 charX = 0; charX < 8; charX++ ) {
-//                bmp[ x + charX + ( ( y + charY ) * 256 ) ]
-                pic.pixel( x + charX, y + charY )\
-                  = chars[ charOffset - charX - ( charY * 8 ) ];
-              }
-            }
-          } else { // hFlip && !vFlip
-            charOffset += 7;
-            for( s8 charY = 0; charY < 8; charY++ ) {
-              for( s8 charX = 0; charX < 8; charX++ ) {
-                pic.pixel( x + charX, y + charY ) \
-                  = chars[ charOffset - charX + ( charY * 8 ) ];
-              }
-            }
-          }
-        } else { // !hFlip
-          if( vFlip ) { // !hFlip && vFlip
-            charOffset += 56;
-            for( s8 charY = 0; charY < 8; charY++ ) {
-              for( s8 charX = 0; charX < 8; charX++ ) {
-                pic.pixel( x + charX, y + charY ) \
-                  = chars[ charOffset + charX - ( charY * 8 ) ];
-              }
-            }
-          } else { // !hFlip && !vFlip
-            for( s8 charY = 0; charY < 8; charY++ ) {
-              for( s8 charX = 0; charX < 8; charX++ ) {
-                pic.pixel( x + charX, y + charY ) \
-                  = chars[ charOffset + charX + ( charY * 8 ) ];
-              }
-            }
-          }
-        }
-      }
-    }
-  } else { // 16x16 colors
-  }
 }
 
 

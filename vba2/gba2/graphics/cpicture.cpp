@@ -20,10 +20,14 @@
 #include <assert.h>
 
 
-CPicture::CPicture()
+CPicture::CPicture( unsigned int width, unsigned int height )
 {
   picture = NULL;
   size = 0;
+
+  if( ( width != 0 ) && ( height != 0 ) ) {
+    create( width, height );
+  }
 }
 
 

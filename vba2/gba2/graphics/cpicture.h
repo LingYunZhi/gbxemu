@@ -36,16 +36,16 @@ typedef struct {
 class CPicture
 {
 public:
-    CPicture();
-    ~CPicture();
-    void create( unsigned int width, unsigned int height );
-    COLOR32 &pixel( unsigned int x, unsigned int y ); ///< get a reference to the pixel at the specified coordinates
-    COLOR32 *picture; ///< address of picture data
+  CPicture( unsigned int width = 0, unsigned int height = 0 );
+  ~CPicture();
+  void create( unsigned int width, unsigned int height );
+  COLOR32 &pixel( unsigned int x, unsigned int y ); ///< get a reference to the pixel at the specified coordinates
+  COLOR32 *picture; ///< address of picture data
+  unsigned int size; ///< count of pixel that are stored in picture
 
 private:
-    unsigned int size; ///< number of bytes that have been allocated at this memory address
-    unsigned int width;
-    unsigned int height;
+  unsigned int width;
+  unsigned int height;
 };
 
 

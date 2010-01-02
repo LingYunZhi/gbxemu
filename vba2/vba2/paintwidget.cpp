@@ -57,7 +57,7 @@ bool PaintWidget::displayFrame( const void *const data )
 }
 
 bool PaintWidget::renderFrame( CGBAGraphics::RESULT &data ) {
-  if( data.DISPCNT.displayBG0 ) {
+  if( data.DISPCNT.displayBG[0] ) {
     const quint32 *source = (const quint32 *)data.BGSC[0][0].picture;
     quint32 *dest = (quint32 *)m_pixels->bits();
     assert( source != NULL ); // can be removed if every video mode is emulated
