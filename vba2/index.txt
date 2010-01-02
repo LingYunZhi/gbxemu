@@ -13,7 +13,8 @@ Contains documentation meant for the end user, like the license agreement and a 
 
 "doxygen"
 Contains documentation targeted at developers.
-It will be automatically extracted from the source code using the  Doxygen tool ( http://www.stack.nl/~dimitri/doxygen/ ).
+It will be automatically extracted from the source code using the Doxygen tool.
+http://www.stack.nl/~dimitri/doxygen/
 
 
 "gba2"
