@@ -16,42 +16,23 @@
 */
 
 
-#include "cpicture.h"
-#include <assert.h>
+#include "cgbagraphics.h"
 
 
-CPicture::CPicture()
-{
-  picture = NULL;
-  size = 0;
-}
-
-
-CPicture::~CPicture()
-{
-  if( picture != NULL ) {
-    delete [] picture;
-  }
-}
-
-
-void CPicture::create( unsigned int width, unsigned int height ) {
-  const unsigned int newSize = width * height;
-  assert( newSize != 0 );
-  // no need to reallocate memory if the size is the same
-  if( newSize != size ) {
-    if( picture != NULL ) {
-      delete [] picture;
+bool CGBAGraphics::process_mode0() {
+  if( result.DISPCNT.displayBG0 ) {
+    switch( result.BGCNT[0].size ) {
+    case 3:
+      result.BGSC[0][3].create( 256, 256 );
+      result.BGSC[0][2].create( 256, 256 );
+    case 2:
+    case 1:
+      result.BGSC[0][1].create( 256, 256 );
+    case 0:
+      result.BGSC[0][0].create( 256, 256 );
     }
-    picture = new COLOR32[newSize];
-    assert( picture != NULL ); // catch out of memory
+    buildCharBG( &result.BGCNT[0], result.BGSC[0][0] );
   }
-  size = newSize;
-  this->width = width;
-  this->height = height;
-}
 
-
-COLOR32 &CPicture::pixel( unsigned int x, unsigned int y ) {
-  return picture[ x + ( y * width ) ];
+  return true;
 }

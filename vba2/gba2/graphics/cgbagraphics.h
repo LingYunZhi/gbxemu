@@ -96,6 +96,7 @@ private:
   u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)
 
   void buildCharBG( struct structBGCNT *cnt, CPicture &pic );
+  bool process_mode0();
 };
 
 

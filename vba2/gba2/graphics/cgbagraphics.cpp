@@ -284,21 +284,8 @@ bool CGBAGraphics::process() {
 
   switch( result.DISPCNT.bgMode ) {
   case 0:
-    if( result.DISPCNT.displayBG0 ) {
-      switch( result.BGCNT[0].size ) {
-      case 3:
-        result.BGSC[0][3].create( 256, 256 );
-        result.BGSC[0][2].create( 256, 256 );
-      case 2:
-      case 1:
-        result.BGSC[0][1].create( 256, 256 );
-      case 0:
-        result.BGSC[0][0].create( 256, 256 );
-      }
-      buildCharBG( &result.BGCNT[0], result.BGSC[0][0] );
-    }
-    break;
+    return process_mode0();
   }
 
-  return true;
+  return false;
 }
