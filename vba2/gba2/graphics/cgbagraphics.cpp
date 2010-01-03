@@ -209,20 +209,10 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
 
 
 bool CGBAGraphics::buildCharBG( u8 bg_number ) {
-  // create picture memory as required
-  switch( result.BGCNT[bg_number].size ) {
-  case 3:
-    result.BGSC[bg_number][3].create( 256, 256 );
-    result.BGSC[bg_number][2].create( 256, 256 );
-  case 2:
-  case 1:
-    result.BGSC[bg_number][1].create( 256, 256 );
-  case 0:
-    result.BGSC[bg_number][0].create( 256, 256 );
-  }
-
   const struct structBGCNT &cnt = result.BGCNT[bg_number];
-  const u16 nChars = 1024; // TODO: add condition
+  CPicture &pic = result.BGIMAGE[bg_number];
+  pic.create( cnt.width, cnt.height );
+  const u16 nChars = 1024; // char BG always offers 1024 different characters
   u8 *srcChar = &vram[ cnt.charOffset ];
   static const u8 nScreensPerSize[4] = { 1, 2, 2, 4 }; // number of screens/macroblocks per BG size setting
   const u8 nScreens = nScreensPerSize[cnt.size]; // number of screens/macroblocks we have to process
@@ -240,7 +230,10 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
     // copy chars to BG layer as defined by screen map
     // srcMap is divided in blocks (=sc) of 32x32 tiles (= 256x256 pixels)
     for( u8 sc = 0; sc < nScreens; sc++ ) {
-      CPicture &pic = result.BGSC[bg_number][sc];
+      const bool isRightScreen = (sc==3) || ((sc==1) && (cnt.size==1));
+      const bool isBottomScreen = (sc==2) || ((sc==1) && (cnt.size==2));
+      const u16 screenX = isRightScreen ? 256 : 0;
+      const u16 screenY = isBottomScreen ? 256 : 0;
       for( u16 y = 0; y < 256; y += 8 ) { // 32 tiles * 8 pixel = 256 width
         for( u16 x = 0; x < 256; x += 8 ) {
           const u16 currentEntry = (*(srcMap++));
@@ -254,13 +247,15 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
             if( vFlip ) { // hFlip && vFlip
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
-                  pic.pixel( x + charX, y + charY ) = chars.pixel( 7 - charX, charOffset + 7 - charY );
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
+                    = chars.pixel( 7 - charX, charOffset + 7 - charY );
                 }
               }
             } else { // hFlip && !vFlip
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
-                  pic.pixel( x + charX, y + charY ) = chars.pixel( 7 - charX, charOffset + charY );
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
+                    = chars.pixel( 7 - charX, charOffset + charY );
                 }
               }
             }
@@ -268,13 +263,15 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
             if( vFlip ) { // !hFlip && vFlip
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
-                  pic.pixel( x + charX, y + charY ) = chars.pixel( charX, charOffset + 7 - charY );
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
+                    = chars.pixel( charX, charOffset + 7 - charY );
                 }
               }
             } else { // !hFlip && !vFlip
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
-                  pic.pixel( x + charX, y + charY ) = chars.pixel( charX, charOffset + charY );
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
+                    = chars.pixel( charX, charOffset + charY );
                 }
               }
             }
@@ -283,6 +280,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
       }
     }
   } else { // 16x16 colors
+
     // one byte contains two pixel, so we seperate them for faster operation later
     const u32 numPixels = (u32)nChars * 64;
     u8 chars[numPixels]; // will be filled with optimized pixel data (palette not applied)
@@ -292,7 +290,10 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
     }
 
     for( u8 sc = 0; sc < nScreens; sc++ ) {
-      CPicture &pic = result.BGSC[bg_number][sc];
+      const bool isRightScreen = (sc==3) || ((sc==1) && (cnt.size==1));
+      const bool isBottomScreen = (sc==2) || ((sc==1) && (cnt.size==2));
+      const u16 screenX = isRightScreen ? 256 : 0;
+      const u16 screenY = isBottomScreen ? 256 : 0;
       for( u16 y = 0; y < 256; y += 8 ) {
         for( u16 x = 0; x < 256; x += 8 ) {
           // get tile info
@@ -309,7 +310,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
                   const u8 currentPixel = chars[ charOffset - charX - ( charY * 8 ) ];
-                  pic.pixel( x + charX, y + charY ) \
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
                       = bgpal[ paletteOffset + currentPixel ];
                 }
               }
@@ -318,7 +319,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
                   const u8 currentPixel = chars[ charOffset - charX + ( charY * 8 ) ];
-                  pic.pixel( x + charX, y + charY ) \
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
                       = bgpal[ paletteOffset + currentPixel ];
                 }
               }
@@ -329,7 +330,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
                   const u8 currentPixel = chars[ charOffset + charX - ( charY * 8 ) ];
-                  pic.pixel( x + charX, y + charY ) \
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
                       = bgpal[ paletteOffset + currentPixel ];
                 }
               }
@@ -337,7 +338,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
               for( u8 charY = 0; charY < 8; charY++ ) {
                 for( u8 charX = 0; charX < 8; charX++ ) {
                   const u8 currentPixel = chars[ charOffset + charX + ( charY * 8 ) ];
-                  pic.pixel( x + charX, y + charY ) \
+                  pic.pixel( screenX + x + charX, screenY + y + charY ) \
                       = bgpal[ paletteOffset + currentPixel ];
                 }
               }
@@ -346,6 +347,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
         }
       }
     }
+
   }
   return true;
 }
@@ -354,7 +356,7 @@ bool CGBAGraphics::buildCharBG( u8 bg_number ) {
 bool CGBAGraphics::buildRotScaleBG( u8 bg_number ) {
   // allocate picture memory as required
   const u16 screenSize = result.BGCNT[bg_number].width; // = height
-  CPicture &pic = result.BGSC[bg_number][0];
+  CPicture &pic = result.BGIMAGE[bg_number];
   pic.create( screenSize, screenSize );
 
   // create picture containing all characters
@@ -405,6 +407,8 @@ bool CGBAGraphics::process() {
     return process_mode0();
   case 1:
     return process_mode1();
+  case 2:
+    return process_mode2();
   }
 
   return false;
@@ -433,6 +437,19 @@ bool CGBAGraphics::process_mode1() {
 
   if( result.DISPCNT.displayBG[2] )
     ok &= buildRotScaleBG( 2 );
+
+  return ok;
+}
+
+
+bool CGBAGraphics::process_mode2() {
+  bool ok = true;
+
+  if( result.DISPCNT.displayBG[2] )
+    ok &= buildRotScaleBG( 2 );
+
+  if( result.DISPCNT.displayBG[3] )
+    ok &= buildRotScaleBG( 3 );
 
   return ok;
 }

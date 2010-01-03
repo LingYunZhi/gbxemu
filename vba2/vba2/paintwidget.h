@@ -37,8 +37,8 @@ protected:
 private:
     QImage *m_pixels;
     QRectF *m_placement;
-    static const int srcImgWidth = 256;//240;
-    static const int srcImgHeight = 256;//160;
+    static const int srcImgWidth = 1024;//240;
+    static const int srcImgHeight = 1024;//160;
     static const int srcImgPixelCount = srcImgWidth * srcImgHeight;
 
     u16 m_keys;

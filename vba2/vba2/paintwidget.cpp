@@ -54,12 +54,13 @@ bool PaintWidget::displayFrame( const void *const data )
 }
 
 bool PaintWidget::renderFrame( CGBAGraphics::RESULT &data ) {
-  if( data.DISPCNT.displayBG[2] ) {
-    m_pixels = new QImage( data.BGCNT[2].width, data.BGCNT[2].height, QImage::Format_ARGB32 );
-    const quint32 *source = (const quint32 *)data.BGSC[2][0].picture;
+  if( data.DISPCNT.displayBG[3] ) {
+    CPicture &pic = data.BGIMAGE[3];
+    m_pixels = new QImage( pic.width, pic.height, QImage::Format_ARGB32 );
+    const quint32 *source = (const quint32 *)pic.picture;
     quint32 *dest = (quint32 *)m_pixels->bits();
     assert( source != NULL ); // can be removed if every video mode is emulated
-    memcpy( dest, source, 4 * data.BGCNT[2].width * data.BGCNT[2].height );
+    memcpy( dest, source, 4 * pic.width * pic.height );
   }
   this->repaint(); // TODO: replace with update to make use of VSync
 

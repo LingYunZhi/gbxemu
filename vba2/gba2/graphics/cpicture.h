@@ -42,10 +42,8 @@ public:
   COLOR32 &pixel( unsigned int x, unsigned int y ); ///< get a reference to the pixel at the specified coordinates
   COLOR32 *picture; ///< address of picture data
   unsigned int size; ///< count of pixel that are stored in picture
-
-private:
-  unsigned int width;
-  unsigned int height;
+  unsigned int width; ///< width of picture in pixels
+  unsigned int height; ///< height of picture in pixels
 };
 
 

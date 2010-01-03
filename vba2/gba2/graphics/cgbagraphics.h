@@ -73,13 +73,9 @@ public:
 
 
   typedef struct {
-    struct structDISPCNT  DISPCNT; // display control registers
-    struct structBGCNT    BGCNT[4]; // background control registers
-    /// BG screen ( = division of BG )
-    /// contains resulting bitmap of BG screens
-    /// each BG may consist of up to 4 macro-blocks of 256x256 pixels
-    /// for 512x512:  sc0=top-left  sc1=top-right  sc2=bottom-left  sc3=bottom-right
-    CPicture              BGSC[4][4]; ///< BGSC[BG#][block#]
+    struct structDISPCNT DISPCNT; /// display control registers
+    struct structBGCNT   BGCNT[4]; /// background control registers
+    CPicture             BGIMAGE[4]; /// a picture of the whole BG layer
   } RESULT;
 
   RESULT result; // this struct will be used by the renderer later on
@@ -107,6 +103,7 @@ private:
   // handle all 5 modes seperately
   bool process_mode0();
   bool process_mode1();
+  bool process_mode2();
 };
 
 
