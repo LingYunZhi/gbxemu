@@ -90,7 +90,8 @@ private:
   COLOR32 objpal[256]; // sprite palette (converted to RGBA color)
 
   /// convert 15 bit GBA color to 32 bit RGBA color
-  void gba2rgba( COLOR32 *dest, u16 src );
+  /// GBA color format: (MSB) 1x 5b 5g 5r (LSB)
+  COLOR32 colorTable[ 0x8000 ];
 
   u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS; // horiontal offset (only in character mode)
   u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)

@@ -35,6 +35,17 @@ CGBAGraphics::CGBAGraphics() {
   vram = NULL;
   vram = new u8[0x18000];
 
+  // initialize color table
+  // TODO: use translation that offers pure white (0x00FFFFFF) for 0x7FFF GBA color
+  for( u32 color = 0; color < 0x8000; color++ ) {
+    COLOR32 &c = colorTable[color];
+    c.a = 0xFF; // opaque
+    c.r = ( color & 0x001F ) << 3; // extend from 5 to 8 bit
+    c.g = ( color & 0x03E0 ) >> 2;
+    c.b = ( color & 0x7C00 ) >> 7;
+  }
+
+
   vramLoaded = false;
   ioLoaded = false;
   palLoaded = false;
@@ -43,15 +54,6 @@ CGBAGraphics::CGBAGraphics() {
 
 CGBAGraphics::~CGBAGraphics() {
   SAFE_DELETE_ARRAY( vram );
-}
-
-
-void CGBAGraphics::gba2rgba( COLOR32 *dest, u16 src ) {
-  dest->r = ( src & 0x001F ) << 3; // extend from 5 to 8 bit
-  dest->g = ( src & 0x03E0 ) >> 2;
-  dest->b = ( src & 0x7C00 ) >> 7;
-  dest->a = 0xFF; // opaque
-  // TODO: use translation that offers pure white (0x00FFFFFF) for 0x7FFF GBA color
 }
 
 
@@ -194,14 +196,21 @@ void CGBAGraphics::setIO( const u8 *io ) {
 
 
 void CGBAGraphics::setPAL( const u8 *pal ) {
-  // GBA color format: (MSB) 1x 5b 5g 5r (LSB)
+  assert( ioLoaded );
+  switch( result.DISPCNT.bgMode ) {
+  case 3:
+  case 5:
+    // mode three and five do not use palettes
+    return;
+  }
+
+  // counter i can not be 8 bit because overflow would destroy loop condition
   for( u16 i = 0; i <= 255; i++ ) {
-    // counter i can not be 8 bit because overflow would destroy for loop condition
-    gba2rgba( &(bgpal[i]), READ16LE(pal) );
+    bgpal[i] = colorTable[ READ16LE(pal) ];
     pal += 2;
   }
   for( u16 i = 0; i <= 255; i++ ) {
-    gba2rgba( &(objpal[i]), READ16LE(pal) );
+    objpal[i] = colorTable[ READ16LE(pal) ];
     pal += 2;
   }
   palLoaded = true;
