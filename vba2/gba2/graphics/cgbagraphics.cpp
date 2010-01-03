@@ -171,10 +171,10 @@ void CGBAGraphics::setIO( const u8 *io ) {
       b3->height = ( reg & BIT7 ) ? 512 : 256;
     } else {
       switch( reg & (BIT6|BIT7) ) {
-      case 0: b3->width = b3->height =  128; break;
-      case 1: b3->width = b3->height =  256; break;
-      case 2: b3->width = b3->height =  512; break;
-      case 3: b3->width = b3->height = 1024; break;
+      case 0: b3->width = b3->height =  128; break; //  16x16  characters
+      case 1: b3->width = b3->height =  256; break; //  32x32  characters
+      case 2: b3->width = b3->height =  512; break; //  64x64  characters
+      case 3: b3->width = b3->height = 1024; break; // 128x128 characters
       }
     }
   }
@@ -208,6 +208,191 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
 }
 
 
+bool CGBAGraphics::buildCharBG( u8 bg_number ) {
+  // create picture memory as required
+  switch( result.BGCNT[bg_number].size ) {
+  case 3:
+    result.BGSC[bg_number][3].create( 256, 256 );
+    result.BGSC[bg_number][2].create( 256, 256 );
+  case 2:
+  case 1:
+    result.BGSC[bg_number][1].create( 256, 256 );
+  case 0:
+    result.BGSC[bg_number][0].create( 256, 256 );
+  }
+
+  const struct structBGCNT &cnt = result.BGCNT[bg_number];
+  const u16 nChars = 1024; // TODO: add condition
+  u8 *srcChar = &vram[ cnt.charOffset ];
+  static const u8 nScreensPerSize[4] = { 1, 2, 2, 4 }; // number of screens/macroblocks per BG size setting
+  const u8 nScreens = nScreensPerSize[cnt.size]; // number of screens/macroblocks we have to process
+  u16 *srcMap = (u16 *)&(vram[cnt.mapOffset]); // where the map data lies
+
+  if( cnt.colorMode ) { // 256x1 colors
+
+    // Create picture containing all characters
+    // (since there is only one palette, we already know the colors of every tile/block)
+    CPicture chars( 8, nChars * 8 ); // 8x8 pixel per char
+    COLOR32 *c = chars.picture;
+    u32 nPixelsInChars = chars.size;
+    while( nPixelsInChars-- ) { *(c++) = bgpal[*(srcChar++)]; }
+
+    // copy chars to BG layer as defined by screen map
+    // srcMap is divided in blocks (=sc) of 32x32 tiles (= 256x256 pixels)
+    for( u8 sc = 0; sc < nScreens; sc++ ) {
+      CPicture &pic = result.BGSC[bg_number][sc];
+      for( u16 y = 0; y < 256; y += 8 ) { // 32 tiles * 8 pixel = 256 width
+        for( u16 x = 0; x < 256; x += 8 ) {
+          const u16 currentEntry = (*(srcMap++));
+          const u16 charNumber = currentEntry & 0x03FF;
+          u32 charOffset = charNumber * 8; // character's address
+          const bool hFlip = currentEntry & BIT10;
+          const bool vFlip = currentEntry & BIT11;
+          // copy single character to pic
+          // TODO: remove redundant code somehow
+          if( hFlip ) {
+            if( vFlip ) { // hFlip && vFlip
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  pic.pixel( x + charX, y + charY ) = chars.pixel( 7 - charX, charOffset + 7 - charY );
+                }
+              }
+            } else { // hFlip && !vFlip
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  pic.pixel( x + charX, y + charY ) = chars.pixel( 7 - charX, charOffset + charY );
+                }
+              }
+            }
+          } else { // !hFlip
+            if( vFlip ) { // !hFlip && vFlip
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  pic.pixel( x + charX, y + charY ) = chars.pixel( charX, charOffset + 7 - charY );
+                }
+              }
+            } else { // !hFlip && !vFlip
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  pic.pixel( x + charX, y + charY ) = chars.pixel( charX, charOffset + charY );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  } else { // 16x16 colors
+    // one byte contains two pixel, so we seperate them for faster operation later
+    const u32 numPixels = (u32)nChars * 64;
+    u8 chars[numPixels]; // will be filled with optimized pixel data (palette not applied)
+    for( u32 i = 0; i < numPixels; i += 2 ) {
+      chars[i] = *srcChar & 0x0F;
+      chars[i+1] = *(srcChar++) >> 4;
+    }
+
+    for( u8 sc = 0; sc < nScreens; sc++ ) {
+      CPicture &pic = result.BGSC[bg_number][sc];
+      for( u16 y = 0; y < 256; y += 8 ) {
+        for( u16 x = 0; x < 256; x += 8 ) {
+          // get tile info
+          const u16 currentEntry = (*(srcMap++));
+          const u16 charNumber = currentEntry & 0x03FF;
+          u32 charOffset = charNumber * 64;
+          const bool hFlip = currentEntry & BIT10;
+          const bool vFlip = currentEntry & BIT11;
+          const u8 paletteNumber = ( currentEntry & 0xF000 ) >> 12;
+          const u8 paletteOffset = paletteNumber * 16;
+          if( hFlip ) {
+            if( vFlip ) { // hFlip && vFlip
+              charOffset += 63;
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  const u8 currentPixel = chars[ charOffset - charX - ( charY * 8 ) ];
+                  pic.pixel( x + charX, y + charY ) \
+                      = bgpal[ paletteOffset + currentPixel ];
+                }
+              }
+            } else { // hFlip && !vFlip
+              charOffset += 7;
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  const u8 currentPixel = chars[ charOffset - charX + ( charY * 8 ) ];
+                  pic.pixel( x + charX, y + charY ) \
+                      = bgpal[ paletteOffset + currentPixel ];
+                }
+              }
+            }
+          } else { // !hFlip
+            if( vFlip ) { // !hFlip && vFlip
+              charOffset += 56;
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  const u8 currentPixel = chars[ charOffset + charX - ( charY * 8 ) ];
+                  pic.pixel( x + charX, y + charY ) \
+                      = bgpal[ paletteOffset + currentPixel ];
+                }
+              }
+            } else { // !hFlip && !vFlip
+              for( u8 charY = 0; charY < 8; charY++ ) {
+                for( u8 charX = 0; charX < 8; charX++ ) {
+                  const u8 currentPixel = chars[ charOffset + charX + ( charY * 8 ) ];
+                  pic.pixel( x + charX, y + charY ) \
+                      = bgpal[ paletteOffset + currentPixel ];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
+
+bool CGBAGraphics::buildRotScaleBG( u8 bg_number ) {
+  // allocate picture memory as required
+  const u16 screenSize = result.BGCNT[bg_number].width; // = height
+  CPicture &pic = result.BGSC[bg_number][0];
+  pic.create( screenSize, screenSize );
+
+  // create picture containing all characters
+  // 8x8 pixel per char
+  // character data comes as 256 colors x 1 palette format
+  // since there is only one palette, we already know the final color of every pixel
+  const u16 nChars = 256;
+  CPicture chars( 8, nChars * 8 );
+  // get VRAM address of character pixels
+  u8 *srcChar = &vram[ result.BGCNT[ bg_number ].charOffset ];
+  COLOR32 *pixel = chars.picture;
+  u32 nPixelsInChars = chars.size;
+  while( nPixelsInChars-- )
+    *(pixel++) = bgpal[*(srcChar++)];
+
+  // create a picture out of the characters
+  // screen data format:
+  // one byte per entry
+  // all eight bits give the number of the character to use
+  u8 *srcMap = &(vram[result.BGCNT[bg_number].mapOffset]);
+
+  // process all entries of screen map
+  for( u16 y = 0; y < screenSize; y += 8 ) {
+    for( u16 x = 0; x < screenSize; x += 8 ) {
+      const u8 charNumber = (*(srcMap++));
+      const u16 charOffset = charNumber * 8;
+      // copy single character to pic
+      // fortunately, rotation/scaling BGs do not support character mirroring
+      for( u8 charY = 0; charY < 8; charY++ )
+        for( u8 charX = 0; charX < 8; charX++ )
+          pic.pixel( x + charX, y + charY ) \
+            = chars.pixel( charX, charOffset + charY );
+    }
+  }
+  return true;
+}
+
+
 bool CGBAGraphics::process() {
   if( !( vramLoaded && ioLoaded && palLoaded ) ) {
     // we are missing some ingredients
@@ -218,7 +403,36 @@ bool CGBAGraphics::process() {
   switch( result.DISPCNT.bgMode ) {
   case 0:
     return process_mode0();
+  case 1:
+    return process_mode1();
   }
 
   return false;
+}
+
+
+bool CGBAGraphics::process_mode0() {
+  bool ok = true;
+
+  for( u8 bg = 0; bg < 4; bg++ )
+    if( result.DISPCNT.displayBG[bg] )
+      ok &= buildCharBG( bg );
+
+  return ok;
+}
+
+
+bool CGBAGraphics::process_mode1() {
+  bool ok = true;
+
+  if( result.DISPCNT.displayBG[0] )
+    ok &= buildCharBG( 0 );
+
+  if( result.DISPCNT.displayBG[1] )
+    ok &= buildCharBG( 1 );
+
+  if( result.DISPCNT.displayBG[2] )
+    ok &= buildRotScaleBG( 2 );
+
+  return ok;
 }

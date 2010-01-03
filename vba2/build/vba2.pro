@@ -31,8 +31,7 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/gba/ARM7TDMI_THUMB.cpp \
     ../gba2/gba/ARM7TDMI_ARM.cpp \
     ../gba2/graphics/cgbagraphics.cpp \
-    ../gba2/graphics/cpicture.cpp \
-    ../gba2/graphics/cgbagraphics_mode0.cpp
+    ../gba2/graphics/cpicture.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \

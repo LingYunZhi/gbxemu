@@ -99,9 +99,14 @@ private:
   u16 BG0HOFS, BG1HOFS, BG2HOFS, BG3HOFS; // horiontal offset (only in character mode)
   u16 BG0VOFS, BG1VOFS, BG2VOFS, BG3VOFS; // vertical offset (only in character mode)
 
-  // ### mode 0 ###
+  /// create a picture out of the BG data and character data
+  bool buildCharBG( u8 bg_number );  
+  bool buildRotScaleBG( u8 bg_number );
+
+
+  // handle all 5 modes seperately
   bool process_mode0();
-  void buildCharBG( u8 bg_number );
+  bool process_mode1();
 };
 
 

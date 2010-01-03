@@ -15,14 +15,11 @@ PaintWidget::PaintWidget( QWidget *parent )
     this->setMinimumSize( srcImgWidth, srcImgHeight );
     this->setFocusPolicy( Qt::StrongFocus );
 
-    m_pixels = NULL;
-    m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_ARGB32 );// QImage::Format_RGB555 );
-    Q_ASSERT( m_pixels != NULL );
-    m_pixels->fill( 0 ); // initially fill with black
-
     m_placement = NULL;
     m_placement = new QRectF( 0, 0, 1, 1 );
     Q_ASSERT( m_placement != NULL );
+
+    m_pixels = NULL;
 
     m_keys = CDriver_Input::BUTTON__NONE;
 }
@@ -57,11 +54,12 @@ bool PaintWidget::displayFrame( const void *const data )
 }
 
 bool PaintWidget::renderFrame( CGBAGraphics::RESULT &data ) {
-  if( data.DISPCNT.displayBG[0] ) {
-    const quint32 *source = (const quint32 *)data.BGSC[0][0].picture;
+  if( data.DISPCNT.displayBG[2] ) {
+    m_pixels = new QImage( data.BGCNT[2].width, data.BGCNT[2].height, QImage::Format_ARGB32 );
+    const quint32 *source = (const quint32 *)data.BGSC[2][0].picture;
     quint32 *dest = (quint32 *)m_pixels->bits();
     assert( source != NULL ); // can be removed if every video mode is emulated
-    memcpy( dest, source, 4 * 256 * 256 );
+    memcpy( dest, source, 4 * data.BGCNT[2].width * data.BGCNT[2].height );
   }
   this->repaint(); // TODO: replace with update to make use of VSync
 
@@ -92,7 +90,8 @@ void PaintWidget::resizeEvent( QResizeEvent *event )
 void PaintWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p( this );
-    p.drawImage( *m_placement, *m_pixels );
+    if( m_pixels != NULL )
+      p.drawImage( *m_placement, *m_pixels );
 }
 
 void PaintWidget::keyPressEvent( QKeyEvent *event )
