@@ -201,6 +201,7 @@ void CGBAGraphics::setPAL( const u8 *pal ) {
   case 3:
   case 5:
     // mode three and five do not use palettes
+    palLoaded = true;
     return;
   }
 
@@ -415,21 +416,24 @@ bool CGBAGraphics::buildBitmapBG( u8 mode ) {
 
   switch( mode ) {
   case 3: {
-      u16 *sourcePixel = (u16 *)vram;
+      u16 *sourcePixel = (u16 *)&vram[0];
       while( numPixel-- )
         *destPixel++ = colorTable[ *sourcePixel++ ];
       break; }
+
   case 4: {
-      u8 *sourcePixel = vram; // first frame
-      if( result.DISPCNT.frameNumber )
-        sourcePixel += 0xA000; // second frame
+      u8 *sourcePixel = result.DISPCNT.frameNumber ? &vram[0xA000] : &vram[0];
       while( numPixel-- )
         *destPixel++ = bgpal[ *sourcePixel++ ];
     break; }
-  case 5:
-    break;
-  }
 
+  case 5: {
+      u16 *sourcePixel = (u16 *)(result.DISPCNT.frameNumber ? &vram[0xA000] : &vram[0]);
+      while( numPixel-- )
+        *destPixel++ = colorTable[ *sourcePixel++ ];
+      break;
+    }
+  }
 
   return true;
 }
