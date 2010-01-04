@@ -99,12 +99,7 @@ private:
   /// create a picture out of the BG data and character data
   bool buildCharBG( u8 bg_number );  
   bool buildRotScaleBG( u8 bg_number );
-
-
-  // handle all 5 modes seperately
-  bool process_mode0();
-  bool process_mode1();
-  bool process_mode2();
+  bool buildBitmapBG( u8 mode );
 };
 
 

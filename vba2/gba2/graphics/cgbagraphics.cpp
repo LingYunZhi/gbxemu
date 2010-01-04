@@ -404,6 +404,37 @@ bool CGBAGraphics::buildRotScaleBG( u8 bg_number ) {
 }
 
 
+bool CGBAGraphics::buildBitmapBG( u8 mode ) {
+  // bitmap mode always uses BG2's registers
+  // (priority, mosaic, rotation, scaling)
+
+  CPicture &pic = result.BGIMAGE[2];
+  pic.create( result.BGCNT[2].width, result.BGCNT[2].height );
+  u16 numPixel = pic.size;
+  COLOR32 *destPixel = pic.picture;
+
+  switch( mode ) {
+  case 3: {
+      u16 *sourcePixel = (u16 *)vram;
+      while( numPixel-- )
+        *destPixel++ = colorTable[ *sourcePixel++ ];
+      break; }
+  case 4: {
+      u8 *sourcePixel = vram; // first frame
+      if( result.DISPCNT.frameNumber )
+        sourcePixel += 0xA000; // second frame
+      while( numPixel-- )
+        *destPixel++ = bgpal[ *sourcePixel++ ];
+    break; }
+  case 5:
+    break;
+  }
+
+
+  return true;
+}
+
+
 bool CGBAGraphics::process() {
   if( !( vramLoaded && ioLoaded && palLoaded ) ) {
     // we are missing some ingredients
@@ -411,54 +442,38 @@ bool CGBAGraphics::process() {
     return false;
   }
 
+  bool ok = true;
+
   switch( result.DISPCNT.bgMode ) {
   case 0:
-    return process_mode0();
+    for( u8 bg = 0; bg < 4; bg++ )
+      if( result.DISPCNT.displayBG[bg] )
+        ok &= buildCharBG( bg );
+    return ok;
+
   case 1:
-    return process_mode1();
+    if( result.DISPCNT.displayBG[0] )
+      ok &= buildCharBG( 0 );
+    if( result.DISPCNT.displayBG[1] )
+      ok &= buildCharBG( 1 );
+    if( result.DISPCNT.displayBG[2] )
+      ok &= buildRotScaleBG( 2 );
+    return ok;
+
   case 2:
-    return process_mode2();
+    if( result.DISPCNT.displayBG[2] )
+      ok &= buildRotScaleBG( 2 );
+    if( result.DISPCNT.displayBG[3] )
+      ok &= buildRotScaleBG( 3 );
+    return ok;
+
+  case 3:
+  case 4:
+  case 5:
+    if( result.DISPCNT.displayBG[2] )
+      ok &= buildBitmapBG( result.DISPCNT.bgMode );
+    return ok;
   }
 
   return false;
-}
-
-
-bool CGBAGraphics::process_mode0() {
-  bool ok = true;
-
-  for( u8 bg = 0; bg < 4; bg++ )
-    if( result.DISPCNT.displayBG[bg] )
-      ok &= buildCharBG( bg );
-
-  return ok;
-}
-
-
-bool CGBAGraphics::process_mode1() {
-  bool ok = true;
-
-  if( result.DISPCNT.displayBG[0] )
-    ok &= buildCharBG( 0 );
-
-  if( result.DISPCNT.displayBG[1] )
-    ok &= buildCharBG( 1 );
-
-  if( result.DISPCNT.displayBG[2] )
-    ok &= buildRotScaleBG( 2 );
-
-  return ok;
-}
-
-
-bool CGBAGraphics::process_mode2() {
-  bool ok = true;
-
-  if( result.DISPCNT.displayBG[2] )
-    ok &= buildRotScaleBG( 2 );
-
-  if( result.DISPCNT.displayBG[3] )
-    ok &= buildRotScaleBG( 3 );
-
-  return ok;
 }

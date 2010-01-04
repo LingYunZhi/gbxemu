@@ -54,8 +54,8 @@ bool PaintWidget::displayFrame( const void *const data )
 }
 
 bool PaintWidget::renderFrame( CGBAGraphics::RESULT &data ) {
-  if( data.DISPCNT.displayBG[0] ) {
-    CPicture &pic = data.BGIMAGE[0];
+  if( data.DISPCNT.displayBG[2] ) {
+    CPicture &pic = data.BGIMAGE[2];
     m_pixels = new QImage( pic.width, pic.height, QImage::Format_ARGB32 );
     const quint32 *source = (const quint32 *)pic.picture;
     quint32 *dest = (quint32 *)m_pixels->bits();
