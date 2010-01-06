@@ -6,20 +6,20 @@
 #include <QImage>
 #include <QPoint>
 
-#include <string.h> // memcpy
-#include <assert.h>
-
 PaintWidget::PaintWidget( QWidget *parent )
-    : QWidget( parent )
+    : QGLWidget( parent )
 {
     this->setMinimumSize( srcImgWidth, srcImgHeight );
     this->setFocusPolicy( Qt::StrongFocus );
 
+    m_pixels = NULL;
+    m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_RGB555 );
+    Q_ASSERT( m_pixels != NULL );
+    m_pixels->fill( 0x0000 ); // initially fill with black
+
     m_placement = NULL;
     m_placement = new QRectF( 0, 0, 1, 1 );
     Q_ASSERT( m_placement != NULL );
-
-    m_pixels = NULL;
 
     m_keys = CDriver_Input::BUTTON__NONE;
 }
@@ -36,7 +36,7 @@ PaintWidget::~PaintWidget()
 }
 
 bool PaintWidget::displayFrame( const void *const data )
-{/*
+{
     // we have to swap red and blue bits because the GBA and Qt handle 16 bit colors differently
     // TODO: use quint64 for parallel data processing
     const quint16 *source = (const quint16*)data;
@@ -50,21 +50,7 @@ bool PaintWidget::displayFrame( const void *const data )
         *(dest++) = r | g | b;
     }
     this->repaint(); // TODO: replace with update to make use of VSync
-   */ return true;
-}
-
-bool PaintWidget::renderFrame( CGBAGraphics::RESULT &data ) {
-  if( data.DISPCNT.displayBG[2] ) {
-    CPicture &pic = data.BGIMAGE[2];
-    m_pixels = new QImage( pic.width, pic.height, QImage::Format_ARGB32 );
-    const quint32 *source = (const quint32 *)pic.picture;
-    quint32 *dest = (quint32 *)m_pixels->bits();
-    assert( source != NULL ); // can be removed if every video mode is emulated
-    memcpy( dest, source, 4 * pic.width * pic.height );
-  }
-  this->repaint(); // TODO: replace with update to make use of VSync
-
-  return true;
+    return true;
 }
 
 u16 PaintWidget::getKeyStates()
@@ -91,8 +77,7 @@ void PaintWidget::resizeEvent( QResizeEvent *event )
 void PaintWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p( this );
-    if( m_pixels != NULL )
-      p.drawImage( *m_placement, *m_pixels );
+    p.drawImage( *m_placement, *m_pixels );
 }
 
 void PaintWidget::keyPressEvent( QKeyEvent *event )

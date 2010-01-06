@@ -3,6 +3,7 @@
 # -------------------------------------------------
 TARGET = vba2
 TEMPLATE = app
+QT += opengl
 SOURCES += ../vba2/main.cpp \
     ../vba2/mainwindow.cpp \
     ../gba2/apu/Multi_Buffer.cpp \
