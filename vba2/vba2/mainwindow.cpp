@@ -138,8 +138,7 @@ void MainWindow::on_actionUnload_ROM_triggered()
 void MainWindow::timer_timeout()
 {
   // TODO: m_timeoutCounter: use local static instead of global ?
-//    const int nextTimeout = ( 1000 * m_timeoutCounter ) / 60;
-    const int nextTimeout = ( 1000 * m_timeoutCounter ) / 120;
+    const int nextTimeout = ( 1000 * m_timeoutCounter ) / 60;
     const int timePassed = m_timeCounter.elapsed();
     if( timePassed >= nextTimeout ) {
         // show fps

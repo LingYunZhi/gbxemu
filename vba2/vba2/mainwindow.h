@@ -48,6 +48,8 @@ private:
     bool m_playing; // true: playing  false: paused
     int m_timeoutCounter;
     QTime m_timeCounter;
+
+    // m_timer times out around 3 times the GBA frame rate in order to allow exacter frame display time calculation
     QTimer *m_timer;
     CDriver_Sound    *m_snd;
     CDriver_Graphics *m_gfx;
