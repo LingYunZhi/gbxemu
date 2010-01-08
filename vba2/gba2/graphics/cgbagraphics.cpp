@@ -75,6 +75,7 @@ void CGBAGraphics::setIO( const u8 *io ) {
   reg = READ16LE(&io[0x00]);
   d->bgMode = reg & 7;
     if( d->bgMode > 5 ) assert( false ); // error
+  const u8 m = d->bgMode; // short display mode
   d->frameNumber = reg & BIT4;
   d->oamAccessDuringHBlank = reg & BIT5;
   d->objCharMapping = reg & BIT6;
@@ -89,7 +90,22 @@ void CGBAGraphics::setIO( const u8 *io ) {
   d->displayWIN1 = reg & BIT6;
   d->displayOBJWIN = reg & BIT7;
 
-  const u8 m = d->bgMode; // display mode
+  // disable non-existent BGs
+  switch( m ) {
+  case 1:
+    d->displayBG[3] = false;
+    break;
+  case 3:
+  case 4:
+  case 5:
+    d->displayBG[3] = false;
+    // no break here
+  case 2:
+    d->displayBG[0] = false;
+    d->displayBG[1] = false;
+    break;
+  }
+
 
   if( m <= 1 ) {
     // BG0 = character based
