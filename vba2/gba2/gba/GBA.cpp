@@ -39,6 +39,7 @@
 
 
 CDriver_Graphics *graphicsDriver = NULL;
+CDriver_Graphics *graphicsDebugDriver = NULL;
 CDriver_Input    *inputDriver    = NULL;
 
 CGBAGraphics graphics2; // brand new high-level graphics emulation class
@@ -2935,6 +2936,9 @@ void CPULoop(int ticks)
             graphics2.process();
             if( graphicsDriver != NULL ) {
                 graphicsDriver->renderFrame( graphics2.result );
+            }
+            if( graphicsDebugDriver != NULL ) {
+              graphicsDebugDriver->renderFrame( graphics2.result );
             }
           }
         } else { // not in V-BLANK

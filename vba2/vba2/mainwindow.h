@@ -27,40 +27,42 @@ class CDriver_Sound;
 class CDriver_Graphics;
 class CDriver_Input;
 class PaintWidget;
+class CDebugWindow_Graphics;
 
 namespace Ui
 {
-    class MainWindow;
+  class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+  MainWindow(QWidget *parent = 0);
+  ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    CEmuGBA *m_emuGBA;
-    QString m_fileName;
-    bool m_playing; // true: playing  false: paused
-    int m_timeoutCounter;
-    QTime m_timeCounter;
+  Ui::MainWindow *ui;
+  CEmuGBA *m_emuGBA;
+  QString m_fileName;
+  bool m_playing; // true: playing  false: paused
+  int m_timeoutCounter;
+  QTime m_timeCounter;
 
-    // m_timer times out around 3 times the GBA frame rate in order to allow exacter frame display time calculation
-    QTimer *m_timer;
-    CDriver_Sound    *m_snd;
-    CDriver_Graphics *m_gfx;
-    CDriver_Input    *m_inp;
-    PaintWidget *m_renderTarget;
+  // m_timer times out around 3 times the GBA frame rate in order to allow exacter frame display time calculation
+  QTimer *m_timer;
+  CDriver_Sound    *m_snd;
+  CDriver_Graphics *m_gfx;
+  CDriver_Input    *m_inp;
+  PaintWidget *m_renderTarget;
+  CDebugWindow_Graphics *m_debugGraphics;
 
 private slots:
-    void timer_timeout();
-    void on_actionPlay_Pause_triggered();
-    void on_actionUnload_ROM_triggered();
-    void on_actionLoad_ROM_triggered();
+  void timer_timeout();
+  void on_actionPlay_Pause_triggered();
+  void on_actionUnload_ROM_triggered();
+  void on_actionLoad_ROM_triggered();
 };
 
 #endif // MAINWINDOW_H

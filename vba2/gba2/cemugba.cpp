@@ -30,6 +30,9 @@ CEmuGBA::CEmuGBA()
   m_gfx = NULL;
   m_graphicsDriverLoaded = false;
 
+  m_gfxdbg = NULL;
+  m_graphicsDebugDriverLoaded = false;
+
   m_inp = NULL;
   m_inputDriverLoaded = false;
 
@@ -94,8 +97,16 @@ bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
 {
   if( drv == NULL ) return false;
   m_gfx = drv;
-  graphicsDriver = m_gfx; // set glboal variable in core
+  graphicsDriver = m_gfx; // set global variable in core
   m_graphicsDriverLoaded = true;
+  return true;
+}
+
+bool CEmuGBA::setDebugDriverGraphics( CDriver_Graphics *drv )
+{
+  m_gfxdbg = drv;
+  graphicsDebugDriver = m_gfxdbg; // set global variable in core
+  m_graphicsDebugDriverLoaded = true;
   return true;
 }
 

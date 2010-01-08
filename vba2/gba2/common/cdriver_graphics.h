@@ -30,7 +30,7 @@ public:
     virtual ~CDriver_Graphics() { };
 
     /// old method, draws only preprocessed data
-    virtual bool displayFrame( const void *const data ) = 0;
+    virtual bool displayFrame( const void *const data ) { return true; }
 
     /// new method, combines & renders prepared data.
     /// should also apply special effects (hw accelerated if possible)

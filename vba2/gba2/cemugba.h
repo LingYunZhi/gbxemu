@@ -35,6 +35,7 @@ public:
     bool setDriverSound   ( CDriver_Sound    *drv );
     bool setDriverGraphics( CDriver_Graphics *drv );
     bool setDriverInput   ( CDriver_Input    *drv );
+    bool setDebugDriverGraphics( CDriver_Graphics *drv );
 
     bool loadROM( const u8 *const romData, const u32 romSize );
     bool closeROM();
@@ -50,6 +51,10 @@ private:
 
     CDriver_Graphics *m_gfx;
     bool m_graphicsDriverLoaded;
+
+    // a second graphics driver which can be used for debugging purposes
+    CDriver_Graphics *m_gfxdbg;
+    bool m_graphicsDebugDriverLoaded;
 
     CDriver_Input    *m_inp;
     bool m_inputDriverLoaded;

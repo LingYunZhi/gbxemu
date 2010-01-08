@@ -135,6 +135,7 @@ typedef struct {
 // interface to display GBA LCD to user
 class CDriver_Graphics;
 extern CDriver_Graphics *graphicsDriver;
+extern CDriver_Graphics *graphicsDebugDriver; // a driver to use for debugging
 
 // interface to receive GBA keypad input from user
 class CDriver_Input;
