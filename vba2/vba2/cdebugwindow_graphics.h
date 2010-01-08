@@ -31,6 +31,7 @@ private:
   QMenu *menu;
 
 private slots:
+  void exportToFile();
   void showBG0();
   void showBG1();
   void showBG2();

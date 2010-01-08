@@ -3,12 +3,13 @@
 #include <QPainter>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QFileDialog>
 
 
 CDebugWindow_Graphics::CDebugWindow_Graphics( QWidget *parent )
   : QDialog( parent )
 {
-  resize( 256, 256 );
+  setFixedSize( 256, 256 );
   move( parent->frameGeometry().topRight() );
 
   for( quint8 s = 0; s < nSurfaces; s++ ) {
@@ -19,6 +20,7 @@ CDebugWindow_Graphics::CDebugWindow_Graphics( QWidget *parent )
   showBG0();
 
   menu = new QMenu( this );
+  menu->addAction( tr("export to file"), this, SLOT( exportToFile() ) );
   menu->addAction( tr("BG0"), this, SLOT( showBG0() ) );
   menu->addAction( tr("BG1"), this, SLOT( showBG1() ) );
   menu->addAction( tr("BG2"), this, SLOT( showBG2() ) );
@@ -36,10 +38,14 @@ CDebugWindow_Graphics::~CDebugWindow_Graphics()
 
 
 bool CDebugWindow_Graphics::renderFrame( CGBAGraphics::RESULT &data ) {
+  for( quint8 s = 0; s < nSurfaces; s++ ) {
+    delete surface[s];
+    surface[s] = NULL;
+  }
+
   if( data.DISPCNT.displayBG[currentSurface] ) {
-      delete surface[currentSurface];
-      resize( data.BGIMAGE[currentSurface].width,
-              data.BGIMAGE[currentSurface].height );
+      setFixedSize( data.BGIMAGE[currentSurface].width,
+                    data.BGIMAGE[currentSurface].height );
       surface[currentSurface] =
           new QImage( (uchar*)data.BGIMAGE[currentSurface].picture,
                       data.BGIMAGE[currentSurface].width,
@@ -52,8 +58,10 @@ bool CDebugWindow_Graphics::renderFrame( CGBAGraphics::RESULT &data ) {
 
 
 void CDebugWindow_Graphics::paintEvent( QPaintEvent *event ) {
-  QPainter p( this );
-  p.drawImage( QPoint(0,0), *surface[currentSurface] );
+  if( surface[currentSurface] != NULL ) {
+    QPainter p( this );
+    p.drawImage( QPoint(0,0), *surface[currentSurface] );
+  }
 }
 
 
@@ -61,6 +69,19 @@ void CDebugWindow_Graphics::mousePressEvent ( QMouseEvent *event ) {
   if( event->button() == Qt::RightButton ) {
     menu->popup( event->globalPos() );
   }
+}
+
+
+void CDebugWindow_Graphics::exportToFile() {
+  if( surface[currentSurface] == NULL ) return;
+  if( surface[currentSurface]->isNull() ) return;
+  // create a backup of the current surface because emulation continues while
+  // user selects a file name.
+  QImage backup( *surface[currentSurface] );
+  const QString filter = tr("Portable Network Graphics (*.png)");
+  const QString filename = QFileDialog::getSaveFileName( this,
+    tr("export surface to file..."), QString(), filter );
+  backup.save( filename, "PNG", 100 );
 }
 
 
