@@ -27,7 +27,7 @@ class CDriver_Sound;
 class CDriver_Graphics;
 class CDriver_Input;
 class PaintWidget;
-class CDebugWindow_Graphics;
+//class CDebugWindow_Graphics;
 
 namespace Ui
 {
@@ -56,7 +56,7 @@ private:
   CDriver_Graphics *m_gfx;
   CDriver_Input    *m_inp;
   PaintWidget *m_renderTarget;
-  CDebugWindow_Graphics *m_debugGraphics;
+//  CDebugWindow_Graphics *m_debugGraphics;
 
 private slots:
   void timer_timeout();

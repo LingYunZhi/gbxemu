@@ -2929,6 +2929,7 @@ void CPULoop(int ticks)
             VCOUNT = 0;
             UPDATE_REG(0x06, VCOUNT);
             CPUCompareVCOUNT();
+#if 0
             // send data to high-level graphics emulation
             graphics2.setIO( ioMem );
             graphics2.setVRAM( vram );
@@ -2940,6 +2941,7 @@ void CPULoop(int ticks)
             if( graphicsDebugDriver != NULL ) {
               graphicsDebugDriver->renderFrame( graphics2.result );
             }
+#endif
           }
         } else { // not in V-BLANK
           if(DISPSTAT & 2) { // H-BLANK

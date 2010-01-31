@@ -56,11 +56,11 @@ MainWindow::MainWindow(QWidget *parent)
     Q_ASSERT( m_renderTarget != NULL );
     setCentralWidget( m_renderTarget );
 
-    m_debugGraphics = NULL;
-    m_debugGraphics = new CDebugWindow_Graphics( this );
-    Q_ASSERT( m_debugGraphics != NULL );
-    m_emuGBA->setDebugDriverGraphics( m_debugGraphics );
-    m_debugGraphics->show();
+//    m_debugGraphics = NULL;
+//    m_debugGraphics = new CDebugWindow_Graphics( this );
+//    Q_ASSERT( m_debugGraphics != NULL );
+//    m_emuGBA->setDebugDriverGraphics( m_debugGraphics );
+//    m_debugGraphics->show();
 
     m_snd = NULL;
     m_snd = new CDummyDriver_Sound();
