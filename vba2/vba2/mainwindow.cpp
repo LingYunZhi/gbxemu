@@ -30,7 +30,8 @@
 #include "../gba2/common/cdriver_input.h"    // for dummy keypad input
 
 #include "paintwidget.h"
-#include "cdebugwindow_graphics.h"
+//#include "cdebugwindow_graphics.h"
+#include "sound_output_qt.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -62,8 +63,13 @@ MainWindow::MainWindow(QWidget *parent)
 //    m_emuGBA->setDebugDriverGraphics( m_debugGraphics );
 //    m_debugGraphics->show();
 
+    m_soundOutput = NULL;
+    m_soundOutput = new sound_output_qt( this );
+    Q_ASSERT( m_soundOutput != NULL );
+
     m_snd = NULL;
-    m_snd = new CDummyDriver_Sound();
+//    m_snd = new CDummyDriver_Sound();
+    m_snd = (CDriver_Sound *)m_soundOutput;
     Q_ASSERT( m_snd != NULL );
     m_emuGBA->setDriverSound( m_snd );
 

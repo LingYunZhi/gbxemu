@@ -21,19 +21,47 @@
 
 
 #include "../gba2/common/cdriver_sound.h"
+#include <QIODevice>
+#include <QObject>
+class QAudioOutput;
 
 
-class sound_output_qt : public CDriver_Sound
+// the source sound buffer
+class sound_buffer_qt : public QIODevice
 {
+  Q_OBJECT
+
 public:
-  sound_output_qt();
+  sound_buffer_qt( qint64 bufferSize, QObject *parent );
+  ~sound_buffer_qt();
+  qint64 readData( char *data, qint64 maxlen );
+  qint64 writeData( const char *data, qint64 len );
+
+private:
+  qint64   m_bufferSize;
+  quint16 *m_buffer;
+  qint64   m_bufferBytesFilled;
+};
+
+
+// the playback class
+class sound_output_qt : public QObject, public CDriver_Sound
+{
+  Q_OBJECT
+
+public:
+  sound_output_qt( QObject *parent );
   ~sound_output_qt();
   bool init( long sampleRate );
   void pause();
   void reset();
   void resume();
-  void write( u16 * finalWave, int length );
+  void write( u16 *finalWave, int length );
   void setThrottle( unsigned short throttle );
+
+private:
+  QAudioOutput *device;
+  sound_buffer_qt *buffer;
 };
 
 
