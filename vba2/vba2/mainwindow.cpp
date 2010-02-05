@@ -33,6 +33,10 @@
 //#include "cdebugwindow_graphics.h"
 #include "sound_output_qt.h"
 
+
+#define FRAME_RATE 60
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -151,7 +155,7 @@ void MainWindow::on_actionUnload_ROM_triggered()
 void MainWindow::timer_timeout()
 {
   // TODO: m_timeoutCounter: use local static instead of global ?
-    const int nextTimeout = ( 1000 * m_timeoutCounter ) / 60;
+    const int nextTimeout = ( 1000 * m_timeoutCounter ) / FRAME_RATE;
     const int timePassed = m_timeCounter.elapsed();
     if( timePassed >= nextTimeout ) {
         // show fps
