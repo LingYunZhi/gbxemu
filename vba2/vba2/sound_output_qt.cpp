@@ -20,6 +20,21 @@
 #include <QtMultimedia/QAudioOutput>
 #include <QtMultimedia/QAudioFormat>
 #include <QIODevice>
+#include <QThread>
+
+
+// buffer size in units of 1/60 seconds
+#define BUFFER_SIZE 6
+
+
+// expose protected QThread::usleep() function to public
+class CSleep : QThread {
+  Q_OBJECT
+public:
+  static void usleep ( unsigned long usecs ) {
+    QThread::usleep( usecs );
+  }
+};
 
 
 sound_output_qt::sound_output_qt( QObject *parent )
@@ -43,20 +58,31 @@ bool sound_output_qt::init( long sampleRate ) {
   Q_ASSERT( initialized == false );
   initialized = true;
 
+  // size in bytes of 1/60 seconds of audio data
+  const int audio_frame_size = ( sampleRate * 2 * 2 ) / 60;
+  const int desired_buffer_size = BUFFER_SIZE * audio_frame_size;
+
   QAudioFormat format;
   format.setCodec( "audio/pcm" );
   format.setFrequency( sampleRate );
   format.setChannels( 2 );
   format.setSampleType( QAudioFormat::SignedInt );
   format.setSampleSize( 16 );
-  format.setByteOrder( QAudioFormat::LittleEndian );
+  format.setByteOrder( QAudioFormat::LittleEndian ); // TODO: is this correct on other architectures?
   Q_ASSERT( format.isValid() );
 
   device = new QAudioOutput( format, this );
   Q_ASSERT( device != NULL );
 
+  device->setBufferSize( desired_buffer_size );
+
   buffer = device->start();
   Q_ASSERT( buffer != NULL );
+
+  const int delta_buffer_size = device->bufferSize() - desired_buffer_size;
+  qDebug( "audio buffer size delta = %i bytes", delta_buffer_size );
+
+  Q_ASSERT( device->bufferSize() >= audio_frame_size );
 
   return true;
 }
@@ -92,8 +118,19 @@ void sound_output_qt::resume() {
 void sound_output_qt::write( u16 *finalWave, int length ) {
   if( buffer == NULL ) return;
 
+  quint64 wait_count = 0;
+  while( device->bytesFree() < length ) {
+    // synchronize process/thread to audio
+    CSleep::usleep( 1000000 / 60 );
+    if( (++wait_count) > (60*3) ) {
+      // if we waited more than three seconds, something went terribly wrong
+      Q_ASSERT( false );
+      break; // prevent application hang
+    }
+  }
+
   const qint64 bytes_written = buffer->write( (const char *)finalWave, length );
-  // TODO: sync to audio
+  Q_ASSERT( bytes_written == length );
 }
 
 
