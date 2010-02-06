@@ -29,6 +29,7 @@ class CDriver_Input;
 class PaintWidget;
 class sound_output_qt;
 //class CDebugWindow_Graphics;
+class FrameDialog;
 
 namespace Ui
 {
@@ -59,6 +60,8 @@ private:
   PaintWidget      *m_renderTarget;
   //  CDebugWindow_Graphics *m_debugGraphics;
   sound_output_qt  *m_soundOutput;
+
+  FrameDialog *settingsDialog;
 
 private slots:
   void timer_timeout();

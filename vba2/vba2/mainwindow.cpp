@@ -33,6 +33,8 @@
 //#include "cdebugwindow_graphics.h"
 #include "sound_output_qt.h"
 
+#include "settings/framedialog.h"
+
 
 #define FRAME_RATE 60
 
@@ -88,6 +90,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_inp = (CDriver_Input *)m_renderTarget;
     Q_ASSERT( m_inp != NULL );
     m_emuGBA->setDriverInput( m_inp );
+
+    settingsDialog = NULL;
+    settingsDialog = new FrameDialog( this );
+    Q_ASSERT( settingsDialog != NULL );
+    connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
 }
 
 MainWindow::~MainWindow()

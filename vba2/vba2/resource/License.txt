@@ -11,3 +11,15 @@ Modified by Spacy
 play_button.png, pause_button.png, stop_button.png:
 These are modified versions. Originals taken from Amarok 2.1.1 (GNU GPL v2)
 http://amarok.kde.org/
+
+
+settings.png
+http://www.iconarchive.com/show/simple-icons-by-harwen/Settings-icon.html
+
+
+keyboard.png
+http://www.iconarchive.com/show/hydropro-hardware-icons-by-media-design/HP-Keyboard-icon.html
+
+
+sound.png
+http://www.iconarchive.com/show/aesthetica-2-icons-by-dryicons/sound-icon.html
