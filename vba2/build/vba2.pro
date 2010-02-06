@@ -78,3 +78,4 @@ FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
     ../vba2/settings/settingssheet_keyboardinput.ui
 RESOURCES += ../vba2/resource/resource.qrc
+RC_FILE = ../vba2/resource/windows.rc
