@@ -16,27 +16,27 @@
 */
 
 
-#include "settingssheet_keyboardinput.h"
-#include "ui_settingssheet_keyboardinput.h"
+#include "settingssheet_directories.h"
+#include "ui_settingssheet_directories.h"
 #include "../cappsettings.h"
 
 
-SettingsSheet_KeyboardInput::SettingsSheet_KeyboardInput( CAppSettings &settings, QWidget *parent )
+SettingsSheet_Directories::SettingsSheet_Directories( CAppSettings &settings, QWidget *parent )
   : QWidget(parent),
-  ui(new Ui::SettingsSheet_KeyboardInput),
+  ui(new Ui::SettingsSheet_Directories),
   m_settings( settings )
 {
   ui->setupUi(this);
 }
 
 
-SettingsSheet_KeyboardInput::~SettingsSheet_KeyboardInput()
+SettingsSheet_Directories::~SettingsSheet_Directories()
 {
   delete ui;
 }
 
 
-void SettingsSheet_KeyboardInput::changeEvent(QEvent *e)
+void SettingsSheet_Directories::changeEvent(QEvent *e)
 {
   QWidget::changeEvent(e);
   switch (e->type()) {
@@ -49,5 +49,5 @@ void SettingsSheet_KeyboardInput::changeEvent(QEvent *e)
 }
 
 
-void SettingsSheet_KeyboardInput::applySettings() {
+void SettingsSheet_Directories::applySettings() {
 }

@@ -42,6 +42,9 @@ protected:
 private:
   Ui::SettingsSheet_KeyboardInput *ui;
   CAppSettings &m_settings;
+
+public slots:
+  void applySettings();
 };
 
 

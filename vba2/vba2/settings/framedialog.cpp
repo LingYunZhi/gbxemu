@@ -22,6 +22,7 @@
 #include "../cappsettings.h"
 #include "settingssheet_audiooutput.h"
 #include "settingssheet_keyboardinput.h"
+#include "settingssheet_directories.h"
 
 #include <QListWidgetItem>
 
@@ -43,6 +44,7 @@ FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   i = new QListWidgetItem( ki->windowIcon(), ki->windowTitle() ); \
   Q_ASSERT( i != NULL ); \
   ui->listWidget->addItem( i );
+  connect( this, SIGNAL(accepted()), ki, SLOT(applySettings()) );
 
   SettingsSheet_AudioOutput *ao = NULL;
   ao = new SettingsSheet_AudioOutput( settings );
@@ -53,6 +55,16 @@ FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   Q_ASSERT( i != NULL ); \
   ui->listWidget->addItem( i );
   connect( this, SIGNAL(accepted()), ao, SLOT(applySettings()) );
+
+  SettingsSheet_Directories *dir = NULL;
+  dir = new SettingsSheet_Directories( settings );
+  Q_ASSERT( dir != NULL ); \
+  ui->stackedWidget->addWidget( dir ); \
+  i = NULL; \
+  i = new QListWidgetItem( dir->windowIcon(), dir->windowTitle() ); \
+  Q_ASSERT( i != NULL ); \
+  ui->listWidget->addItem( i );
+  connect( this, SIGNAL(accepted()), dir, SLOT(applySettings()) );
 
   // clicking on item activates corresponding settings sheet
   connect( ui->listWidget, SIGNAL(currentRowChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)) );

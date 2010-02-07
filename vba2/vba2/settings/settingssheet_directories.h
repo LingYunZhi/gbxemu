@@ -16,38 +16,35 @@
 */
 
 
-#include "settingssheet_keyboardinput.h"
-#include "ui_settingssheet_keyboardinput.h"
-#include "../cappsettings.h"
+#ifndef SETTINGSSHEET_DIRECTORIES_H
+#define SETTINGSSHEET_DIRECTORIES_H
 
 
-SettingsSheet_KeyboardInput::SettingsSheet_KeyboardInput( CAppSettings &settings, QWidget *parent )
-  : QWidget(parent),
-  ui(new Ui::SettingsSheet_KeyboardInput),
-  m_settings( settings )
-{
-  ui->setupUi(this);
+#include <QWidget>
+class CAppSettings;
+
+
+namespace Ui {
+  class SettingsSheet_Directories;
 }
 
+class SettingsSheet_Directories : public QWidget {
+  Q_OBJECT
 
-SettingsSheet_KeyboardInput::~SettingsSheet_KeyboardInput()
-{
-  delete ui;
-}
+public:
+  SettingsSheet_Directories( CAppSettings &settings, QWidget *parent = 0 );
+  ~SettingsSheet_Directories();
+
+protected:
+  void changeEvent(QEvent *e);
+
+private:
+  Ui::SettingsSheet_Directories *ui;
+  CAppSettings &m_settings;
+
+public slots:
+  void applySettings();
+};
 
 
-void SettingsSheet_KeyboardInput::changeEvent(QEvent *e)
-{
-  QWidget::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    ui->retranslateUi(this);
-    break;
-  default:
-    break;
-  }
-}
-
-
-void SettingsSheet_KeyboardInput::applySettings() {
-}
+#endif // SETTINGSSHEET_DIRECTORIES_H
