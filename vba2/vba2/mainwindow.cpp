@@ -36,7 +36,8 @@
 #include "settings/framedialog.h"
 
 
-#define FRAME_RATE 60
+// set this to 60 to manually throttle the game, but audio sync + video sync are probably better
+#define FRAME_RATE 120
 
 
 MainWindow::MainWindow(QWidget *parent)

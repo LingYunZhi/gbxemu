@@ -43,6 +43,7 @@ public:
 private:
   QAudioOutput *device;
   QIODevice    *buffer;
+  bool          enableAudioSync;
 };
 
 

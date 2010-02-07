@@ -42,6 +42,7 @@ sound_output_qt::sound_output_qt( QObject *parent )
 {
   device = NULL;
   buffer = NULL;
+  enableAudioSync = true;
 }
 
 
@@ -118,19 +119,21 @@ void sound_output_qt::resume() {
 void sound_output_qt::write( u16 *finalWave, int length ) {
   if( buffer == NULL ) return;
 
-  quint64 wait_count = 0;
-  while( device->bytesFree() < length ) {
-    // synchronize process/thread to audio
-    CSleep::usleep( 1000000 / 60 );
-    if( (++wait_count) > (60*3) ) {
-      // if we waited more than three seconds, something went terribly wrong
-      Q_ASSERT( false );
-      break; // prevent application hang
+  if( enableAudioSync ) {
+    quint64 wait_count = 0;
+    while( device->bytesFree() < length ) {
+      // synchronize process/thread to audio
+      CSleep::usleep( 1000000 / 60 );
+      if( (++wait_count) > (60*3) ) {
+        // if we waited more than three seconds, something went terribly wrong
+        Q_ASSERT( false );
+        break; // prevent application hang
+      }
     }
   }
 
   const qint64 bytes_written = buffer->write( (const char *)finalWave, length );
-  Q_ASSERT( bytes_written == length );
+//  Q_ASSERT( bytes_written == length ); // only when enableAudioSync == true
 }
 
 

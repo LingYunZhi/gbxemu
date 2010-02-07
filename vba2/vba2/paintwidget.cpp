@@ -1,3 +1,21 @@
+/*  VisualBoyAdvance 2
+    Copyright (C) 2009-2010  VBA development team
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include "paintwidget.h"
 
 #include <QPainter>
@@ -6,34 +24,50 @@
 #include <QImage>
 #include <QPoint>
 
+
 PaintWidget::PaintWidget( QWidget *parent )
-    : QGLWidget( parent )
+  : QGLWidget( parent )
 {
-    this->setMinimumSize( srcImgWidth, srcImgHeight );
-    this->setFocusPolicy( Qt::StrongFocus );
+  setMinimumSize( srcImgWidth, srcImgHeight );
+  setFocusPolicy( Qt::StrongFocus );
 
-    m_pixels = NULL;
-    m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_RGB555 );
-    Q_ASSERT( m_pixels != NULL );
-    m_pixels->fill( 0x0000 ); // initially fill with black
+  m_pixels = NULL;
+  m_pixels = new QImage( srcImgWidth, srcImgHeight, QImage::Format_RGB555 );
+  Q_ASSERT( m_pixels != NULL );
+  m_pixels->fill( 0x0000 ); // initially fill with black
 
-    m_placement = NULL;
-    m_placement = new QRectF( 0, 0, 1, 1 );
-    Q_ASSERT( m_placement != NULL );
+  m_placement = NULL;
+  m_placement = new QRectF( 0, 0, 1, 1 );
+  Q_ASSERT( m_placement != NULL );
 
-    m_keys = CDriver_Input::BUTTON__NONE;
+  m_keys = CDriver_Input::BUTTON__NONE;
+
+  enableVSync( true );
 }
+
 
 PaintWidget::~PaintWidget()
 {
-    if( m_placement != NULL ) {
-        delete m_placement;
-    }
+  if( m_placement != NULL ) {
+    delete m_placement;
+  }
 
-    if( m_pixels != NULL ) {
-        delete m_pixels;
-    }
+  if( m_pixels != NULL ) {
+    delete m_pixels;
+  }
 }
+
+
+void PaintWidget::enableVSync( bool enable ) {
+  QGLFormat f = format();
+  Q_ASSERT( ( f.swapInterval() == 0 ) || ( f.swapInterval() == 1 ) );
+  const bool vsync_enabled = f.swapInterval() != 0;
+  if( vsync_enabled != enable ) {
+    f.setSwapInterval( enable ? 1 : 0 );
+    setFormat( f );
+  }
+}
+
 
 bool PaintWidget::displayFrame( const void *const data )
 {
