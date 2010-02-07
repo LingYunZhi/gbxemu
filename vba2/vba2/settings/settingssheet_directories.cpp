@@ -18,13 +18,10 @@
 
 #include "settingssheet_directories.h"
 #include "ui_settingssheet_directories.h"
-#include "../cappsettings.h"
 
 
 SettingsSheet_Directories::SettingsSheet_Directories( CAppSettings &settings, QWidget *parent )
-  : QWidget(parent),
-  ui(new Ui::SettingsSheet_Directories),
-  m_settings( settings )
+  : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_Directories)
 {
   ui->setupUi(this);
 }
@@ -36,18 +33,8 @@ SettingsSheet_Directories::~SettingsSheet_Directories()
 }
 
 
-void SettingsSheet_Directories::changeEvent(QEvent *e)
-{
-  QWidget::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    ui->retranslateUi(this);
-    break;
-  default:
-    break;
-  }
-}
-
-
 void SettingsSheet_Directories::applySettings() {
 }
+
+
+RETRANSLATE_CODE( SettingsSheet_Directories )

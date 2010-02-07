@@ -76,7 +76,8 @@ HEADERS += ../vba2/mainwindow.h \
     ../vba2/settings/settingssheet_audiooutput.h \
     ../vba2/settings/settingssheet_keyboardinput.h \
     ../vba2/cappsettings.h \
-    ../vba2/settings/settingssheet_directories.h
+    ../vba2/settings/settingssheet_directories.h \
+    ../vba2/settings/settingssheet.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \

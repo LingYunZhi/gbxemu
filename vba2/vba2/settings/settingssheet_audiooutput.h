@@ -19,8 +19,8 @@
 #ifndef SETTINGSSHEET_AUDIOOUTPUT_H
 #define SETTINGSSHEET_AUDIOOUTPUT_H
 
-#include <QWidget>
-class CAppSettings;
+
+#include "settingssheet.h"
 
 
 namespace Ui {
@@ -28,19 +28,16 @@ namespace Ui {
 }
 
 
-class SettingsSheet_AudioOutput : public QWidget {
+class SettingsSheet_AudioOutput : public SettingsSheet {
   Q_OBJECT
+  RETRANSLATE_DECL
 
 public:
   SettingsSheet_AudioOutput( CAppSettings &settings, QWidget *parent = 0 );
   ~SettingsSheet_AudioOutput();
 
-protected:
-  void changeEvent(QEvent *e);
-
 private:
   Ui::SettingsSheet_AudioOutput *ui;
-  CAppSettings &m_settings;
 
 public slots:
   void applySettings();

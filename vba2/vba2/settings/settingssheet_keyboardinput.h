@@ -20,8 +20,7 @@
 #define SETTINGSSHEET_KEYBOARDINPUT_H
 
 
-#include <QWidget>
-class CAppSettings;
+#include "settingssheet.h"
 
 
 namespace Ui {
@@ -29,19 +28,16 @@ namespace Ui {
 }
 
 
-class SettingsSheet_KeyboardInput : public QWidget {
+class SettingsSheet_KeyboardInput : public SettingsSheet {
   Q_OBJECT
+  RETRANSLATE_DECL
 
 public:
   SettingsSheet_KeyboardInput( CAppSettings &settings, QWidget *parent = 0 );
   ~SettingsSheet_KeyboardInput();
 
-protected:
-  void changeEvent(QEvent *e);
-
 private:
   Ui::SettingsSheet_KeyboardInput *ui;
-  CAppSettings &m_settings;
 
 public slots:
   void applySettings();

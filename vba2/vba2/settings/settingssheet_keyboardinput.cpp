@@ -18,13 +18,10 @@
 
 #include "settingssheet_keyboardinput.h"
 #include "ui_settingssheet_keyboardinput.h"
-#include "../cappsettings.h"
 
 
 SettingsSheet_KeyboardInput::SettingsSheet_KeyboardInput( CAppSettings &settings, QWidget *parent )
-  : QWidget(parent),
-  ui(new Ui::SettingsSheet_KeyboardInput),
-  m_settings( settings )
+  : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_KeyboardInput)
 {
   ui->setupUi(this);
 }
@@ -36,18 +33,8 @@ SettingsSheet_KeyboardInput::~SettingsSheet_KeyboardInput()
 }
 
 
-void SettingsSheet_KeyboardInput::changeEvent(QEvent *e)
-{
-  QWidget::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    ui->retranslateUi(this);
-    break;
-  default:
-    break;
-  }
-}
-
-
 void SettingsSheet_KeyboardInput::applySettings() {
 }
+
+
+RETRANSLATE_CODE( SettingsSheet_KeyboardInput )

@@ -27,44 +27,31 @@
 #include <QListWidgetItem>
 
 
+#define ADD_SHEET( SHEET_TYPE ) \
+{ \
+  SHEET_TYPE *s = NULL; \
+  /* parent will be assigned by the addWidget function */ \
+  s = new SHEET_TYPE( settings ); \
+  Q_ASSERT( s != NULL ); \
+  ui->stackedWidget->addWidget( s ); \
+  QListWidgetItem *i; \
+  i = NULL; \
+  i = new QListWidgetItem( s->windowIcon(), s->windowTitle() ); \
+  Q_ASSERT( i != NULL ); \
+  ui->listWidget->addItem( i ); \
+  connect( this, SIGNAL(accepted()), s, SLOT(applySettings()) ); \
+}
+
+
 FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   : QDialog( parent ),
   ui(new Ui::FrameDialog)
 {
   ui->setupUi(this);
 
-  // parent will be assigned by the addWidget function
-  QListWidgetItem *i;
-
-  SettingsSheet_KeyboardInput *ki = NULL;
-  ki = new SettingsSheet_KeyboardInput( settings );
-  Q_ASSERT( ki != NULL ); \
-  ui->stackedWidget->addWidget( ki ); \
-  i = NULL; \
-  i = new QListWidgetItem( ki->windowIcon(), ki->windowTitle() ); \
-  Q_ASSERT( i != NULL ); \
-  ui->listWidget->addItem( i );
-  connect( this, SIGNAL(accepted()), ki, SLOT(applySettings()) );
-
-  SettingsSheet_AudioOutput *ao = NULL;
-  ao = new SettingsSheet_AudioOutput( settings );
-  Q_ASSERT( ao != NULL ); \
-  ui->stackedWidget->addWidget( ao ); \
-  i = NULL; \
-  i = new QListWidgetItem( ao->windowIcon(), ao->windowTitle() ); \
-  Q_ASSERT( i != NULL ); \
-  ui->listWidget->addItem( i );
-  connect( this, SIGNAL(accepted()), ao, SLOT(applySettings()) );
-
-  SettingsSheet_Directories *dir = NULL;
-  dir = new SettingsSheet_Directories( settings );
-  Q_ASSERT( dir != NULL ); \
-  ui->stackedWidget->addWidget( dir ); \
-  i = NULL; \
-  i = new QListWidgetItem( dir->windowIcon(), dir->windowTitle() ); \
-  Q_ASSERT( i != NULL ); \
-  ui->listWidget->addItem( i );
-  connect( this, SIGNAL(accepted()), dir, SLOT(applySettings()) );
+  ADD_SHEET( SettingsSheet_KeyboardInput );
+  ADD_SHEET( SettingsSheet_AudioOutput );
+  ADD_SHEET( SettingsSheet_Directories );
 
   // clicking on item activates corresponding settings sheet
   connect( ui->listWidget, SIGNAL(currentRowChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)) );

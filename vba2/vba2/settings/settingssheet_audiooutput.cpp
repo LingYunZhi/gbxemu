@@ -18,16 +18,14 @@
 
 #include "settingssheet_audiooutput.h"
 #include "ui_settingssheet_audiooutput.h"
-#include "../cappsettings.h"
 
 #include <QtMultimedia/QAudioDeviceInfo>
 #include <QVariant>
 
 
 SettingsSheet_AudioOutput::SettingsSheet_AudioOutput( CAppSettings &settings, QWidget *parent )
-  : QWidget(parent),
-  ui(new Ui::SettingsSheet_AudioOutput),
-  m_settings( settings )
+  : SettingsSheet( settings, parent ),
+  ui(new Ui::SettingsSheet_AudioOutput)
 {
   ui->setupUi(this);
 
@@ -51,20 +49,9 @@ SettingsSheet_AudioOutput::~SettingsSheet_AudioOutput()
 }
 
 
-void SettingsSheet_AudioOutput::changeEvent(QEvent *e)
-{
-  QWidget::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    ui->retranslateUi(this);
-    break;
-  default:
-    break;
-  }
-}
-
-
 void SettingsSheet_AudioOutput::applySettings()
 {
   m_settings.s_soundOutputDevice = ui->comboBox_device->itemData( ui->comboBox_device->currentIndex() ).value<QAudioDeviceInfo>();
 }
+
+RETRANSLATE_CODE( SettingsSheet_AudioOutput )

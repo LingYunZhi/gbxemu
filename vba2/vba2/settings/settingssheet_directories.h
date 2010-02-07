@@ -20,27 +20,24 @@
 #define SETTINGSSHEET_DIRECTORIES_H
 
 
-#include <QWidget>
-class CAppSettings;
+#include "settingssheet.h"
 
 
 namespace Ui {
   class SettingsSheet_Directories;
 }
 
-class SettingsSheet_Directories : public QWidget {
+
+class SettingsSheet_Directories : public SettingsSheet {
   Q_OBJECT
+  RETRANSLATE_DECL
 
 public:
   SettingsSheet_Directories( CAppSettings &settings, QWidget *parent = 0 );
   ~SettingsSheet_Directories();
 
-protected:
-  void changeEvent(QEvent *e);
-
 private:
   Ui::SettingsSheet_Directories *ui;
-  CAppSettings &m_settings;
 
 public slots:
   void applySettings();
