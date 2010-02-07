@@ -77,7 +77,7 @@
   </widget>
   <action name="actionLoad_ROM">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/loadCartridge.png</normaloff>:/MainWindow/loadCartridge.png</iconset>
    </property>
    <property name="text">
@@ -89,7 +89,7 @@
   </action>
   <action name="actionUnload_ROM">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/unloadCartridge.png</normaloff>:/MainWindow/unloadCartridge.png</iconset>
    </property>
    <property name="text">
@@ -104,7 +104,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/play_button.png</normaloff>:/MainWindow/play_button.png</iconset>
    </property>
    <property name="text">
@@ -116,7 +116,7 @@
   </action>
   <action name="actionSettings">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/settings.png</normaloff>:/MainWindow/settings.png</iconset>
    </property>
    <property name="text">
@@ -125,8 +125,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resource/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

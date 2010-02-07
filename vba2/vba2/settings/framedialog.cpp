@@ -19,15 +19,16 @@
 #include "framedialog.h"
 #include "ui_framedialog.h"
 
+#include "../cappsettings.h"
 #include "settingssheet_audiooutput.h"
 #include "settingssheet_keyboardinput.h"
 
 #include <QListWidgetItem>
 
 
-#define ADD_SHEET( type ) \
+#define ADD_SHEET( newType ) \
   w = NULL; \
-  w = new type; \
+  w = new newType; \
   Q_ASSERT( w != NULL ); \
   ui->stackedWidget->addWidget( w ); \
   i = NULL; \
@@ -36,10 +37,9 @@
   ui->listWidget->addItem( i );
 
 
-
-FrameDialog::FrameDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::FrameDialog)
+FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
+  : QDialog( parent ),
+  ui(new Ui::FrameDialog)
 {
   ui->setupUi(this);
 
@@ -47,8 +47,8 @@ FrameDialog::FrameDialog(QWidget *parent) :
   QWidget *w;
   QListWidgetItem *i;
 
-  ADD_SHEET( SettingsSheet_KeyboardInput );
-  ADD_SHEET( SettingsSheet_AudioOutput );
+  ADD_SHEET( SettingsSheet_KeyboardInput( settings ) );
+  ADD_SHEET( SettingsSheet_AudioOutput( settings ) );
 
   // clicking on item activates corresponding settings sheet
   connect( ui->listWidget, SIGNAL(currentRowChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)) );

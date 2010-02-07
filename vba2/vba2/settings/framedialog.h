@@ -21,25 +21,26 @@
 
 
 #include <QDialog>
+class CAppSettings;
 
 
 namespace Ui {
-    class FrameDialog;
+  class FrameDialog;
 }
 
 
 class FrameDialog : public QDialog {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    FrameDialog(QWidget *parent = 0);
-    ~FrameDialog();
+  FrameDialog( CAppSettings &settings, QWidget *parent = 0 );
+  ~FrameDialog();
 
 protected:
-    void changeEvent(QEvent *e);
+  void changeEvent( QEvent *e );
 
 private:
-    Ui::FrameDialog *ui;
+  Ui::FrameDialog *ui;
 };
 
 

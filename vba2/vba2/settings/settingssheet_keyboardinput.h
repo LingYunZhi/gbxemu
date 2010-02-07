@@ -19,23 +19,30 @@
 #ifndef SETTINGSSHEET_KEYBOARDINPUT_H
 #define SETTINGSSHEET_KEYBOARDINPUT_H
 
+
 #include <QWidget>
+class CAppSettings;
+
 
 namespace Ui {
-    class SettingsSheet_KeyboardInput;
+  class SettingsSheet_KeyboardInput;
 }
 
+
 class SettingsSheet_KeyboardInput : public QWidget {
-    Q_OBJECT
+  Q_OBJECT
+
 public:
-    SettingsSheet_KeyboardInput(QWidget *parent = 0);
-    ~SettingsSheet_KeyboardInput();
+  SettingsSheet_KeyboardInput( CAppSettings &settings, QWidget *parent = 0 );
+  ~SettingsSheet_KeyboardInput();
 
 protected:
-    void changeEvent(QEvent *e);
+  void changeEvent(QEvent *e);
 
 private:
-    Ui::SettingsSheet_KeyboardInput *ui;
+  Ui::SettingsSheet_KeyboardInput *ui;
+  CAppSettings &m_settings;
 };
+
 
 #endif // SETTINGSSHEET_KEYBOARDINPUT_H

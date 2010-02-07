@@ -16,35 +16,10 @@
 */
 
 
-#ifndef SETTINGSSHEET_AUDIOOUTPUT_H
-#define SETTINGSSHEET_AUDIOOUTPUT_H
-
-#include <QWidget>
-class CAppSettings;
+#include "cappsettings.h"
 
 
-namespace Ui {
-  class SettingsSheet_AudioOutput;
+CAppSettings::CAppSettings( QObject *parent )
+  : QObject( parent )
+{
 }
-
-
-class SettingsSheet_AudioOutput : public QWidget {
-  Q_OBJECT
-
-public:
-  SettingsSheet_AudioOutput( CAppSettings &settings, QWidget *parent = 0 );
-  ~SettingsSheet_AudioOutput();
-
-protected:
-  void changeEvent(QEvent *e);
-
-private:
-  Ui::SettingsSheet_AudioOutput *ui;
-  CAppSettings &m_settings;
-
-private slots:
-    void on_comboBox_device_currentIndexChanged( int index );
-};
-
-
-#endif // SETTINGSSHEET_AUDIOOUTPUT_H

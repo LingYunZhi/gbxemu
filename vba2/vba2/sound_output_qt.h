@@ -24,6 +24,7 @@
 #include <QObject>
 class QAudioOutput;
 class QIODevice;
+class QAudioDeviceInfo;
 
 
 class sound_output_qt : public QObject, public CDriver_Sound
@@ -31,8 +32,8 @@ class sound_output_qt : public QObject, public CDriver_Sound
   Q_OBJECT
 
 public:
-  sound_output_qt( QObject *parent );
-  ~sound_output_qt();
+  sound_output_qt( QAudioDeviceInfo &outputDevice, QObject *parent );
+
   bool init( long sampleRate );
   void pause();
   void reset();
@@ -41,9 +42,11 @@ public:
   void setThrottle( unsigned short throttle );
 
 private:
-  QAudioOutput *device;
-  QIODevice    *buffer;
-  bool          enableAudioSync;
+  QAudioDeviceInfo &m_selectedDevice;
+  QAudioOutput     *m_device;
+  QIODevice        *m_buffer;
+  bool              m_enableAudioSync;
+  bool              m_initialized;
 };
 
 

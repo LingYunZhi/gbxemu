@@ -19,6 +19,7 @@
 #include "sound_output_qt.h"
 #include <QtMultimedia/QAudioOutput>
 #include <QtMultimedia/QAudioFormat>
+#include <QtMultimedia/QAudioDeviceInfo>
 #include <QIODevice>
 #include <QThread>
 
@@ -27,7 +28,7 @@
 #define BUFFER_SIZE 6
 
 
-// expose protected QThread::usleep() function to public
+// hack: expose protected QThread::usleep() function to public
 class CSleep : QThread {
   Q_OBJECT
 public:
@@ -37,27 +38,24 @@ public:
 };
 
 
-sound_output_qt::sound_output_qt( QObject *parent )
-  : QObject( parent )
+sound_output_qt::sound_output_qt( QAudioDeviceInfo &outputDevice, QObject *parent )
+  : QObject( parent ),
+  m_selectedDevice( outputDevice )
 {
-  device = NULL;
-  buffer = NULL;
-  enableAudioSync = true;
-}
-
-
-sound_output_qt::~sound_output_qt()
-{
-  if( device != NULL ) {
-    device->stop();
+  m_device = NULL;
+  m_buffer = NULL;
+  m_enableAudioSync = true;
+  m_initialized = false;
+  if( m_selectedDevice.isNull() ) {
+    m_selectedDevice = QAudioDeviceInfo::defaultOutputDevice();
+    Q_ASSERT( m_selectedDevice.isNull() == false );
   }
 }
 
 
 bool sound_output_qt::init( long sampleRate ) {
-  static bool initialized = false;
-  Q_ASSERT( initialized == false );
-  initialized = true;
+  if( m_initialized ) return false;
+  m_initialized = true;
 
   // size in bytes of 1/60 seconds of audio data
   const int audio_frame_size = ( sampleRate * 2 * 2 ) / 60;
@@ -72,25 +70,25 @@ bool sound_output_qt::init( long sampleRate ) {
   format.setByteOrder( QAudioFormat::LittleEndian ); // TODO: is this correct on other architectures?
   Q_ASSERT( format.isValid() );
 
-  device = new QAudioOutput( format, this );
-  Q_ASSERT( device != NULL );
+  m_device = new QAudioOutput( m_selectedDevice, format, this );
+  Q_ASSERT( m_device != NULL );
 
-  device->setBufferSize( desired_buffer_size );
+  m_device->setBufferSize( desired_buffer_size );
 
-  buffer = device->start();
-  Q_ASSERT( buffer != NULL );
+  m_buffer = m_device->start();
+  Q_ASSERT( m_buffer != NULL );
 
-  const int delta_buffer_size = device->bufferSize() - desired_buffer_size;
+  const int delta_buffer_size = m_device->bufferSize() - desired_buffer_size;
   qDebug( "audio buffer size delta = %i bytes", delta_buffer_size );
 
-  Q_ASSERT( device->bufferSize() >= audio_frame_size );
+  Q_ASSERT( m_device->bufferSize() >= audio_frame_size );
 
   return true;
 }
 
 
 void sound_output_qt::pause() {
-  if( device == NULL ) return;
+  if( m_device == NULL ) return;
 
   qDebug( "pausing sound..." );
 
@@ -99,7 +97,7 @@ void sound_output_qt::pause() {
 
 
 void sound_output_qt::reset() {
-  if( device == NULL ) return;
+  if( m_device == NULL ) return;
 
   qDebug( "resetting sound..." );
 
@@ -108,7 +106,7 @@ void sound_output_qt::reset() {
 
 
 void sound_output_qt::resume() {
-  if( device == NULL ) return;
+  if( m_device == NULL ) return;
 
   qDebug( "resuming sound..." );
 
@@ -117,11 +115,11 @@ void sound_output_qt::resume() {
 
 
 void sound_output_qt::write( u16 *finalWave, int length ) {
-  if( buffer == NULL ) return;
+  if( m_buffer == NULL ) return;
 
-  if( enableAudioSync ) {
+  if( m_enableAudioSync ) {
     quint64 wait_count = 0;
-    while( device->bytesFree() < length ) {
+    while( m_device->bytesFree() < length ) {
       // synchronize process/thread to audio
       CSleep::usleep( 1000000 / 60 );
       if( (++wait_count) > (60*3) ) {
@@ -132,7 +130,7 @@ void sound_output_qt::write( u16 *finalWave, int length ) {
     }
   }
 
-  const qint64 bytes_written = buffer->write( (const char *)finalWave, length );
+  const qint64 bytes_written = m_buffer->write( (const char *)finalWave, length );
 //  Q_ASSERT( bytes_written == length ); // only when enableAudioSync == true
 }
 

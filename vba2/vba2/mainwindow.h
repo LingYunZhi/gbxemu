@@ -30,6 +30,7 @@ class PaintWidget;
 class sound_output_qt;
 //class CDebugWindow_Graphics;
 class FrameDialog;
+class CAppSettings;
 
 namespace Ui
 {
@@ -62,6 +63,8 @@ private:
   sound_output_qt  *m_soundOutput;
 
   FrameDialog *settingsDialog;
+
+  CAppSettings *m_settings;
 
 private slots:
   void timer_timeout();

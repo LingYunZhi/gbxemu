@@ -35,6 +35,8 @@
 
 #include "settings/framedialog.h"
 
+#include "cappsettings.h"
+
 
 // set this to 60 to manually throttle the game, but audio sync + video sync are probably better
 #define FRAME_RATE 120
@@ -45,7 +47,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2. I am a status bar. Yes I am.") );
+    m_settings = NULL;
+    m_settings = new CAppSettings( this );
+    Q_ASSERT( m_settings != NULL );
+
+    ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
 
     m_emuGBA = NULL;
     m_emuGBA = new CEmuGBA;
@@ -71,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    m_debugGraphics->show();
 
     m_soundOutput = NULL;
-    m_soundOutput = new sound_output_qt( this );
+    m_soundOutput = new sound_output_qt( m_settings->s_soundOutputDevice, this );
     Q_ASSERT( m_soundOutput != NULL );
 
     m_snd = NULL;
@@ -93,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_emuGBA->setDriverInput( m_inp );
 
     settingsDialog = NULL;
-    settingsDialog = new FrameDialog( this );
+    settingsDialog = new FrameDialog( *m_settings, this );
     Q_ASSERT( settingsDialog != NULL );
     connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
 }

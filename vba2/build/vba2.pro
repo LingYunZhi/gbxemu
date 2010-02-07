@@ -38,7 +38,8 @@ SOURCES += ../vba2/main.cpp \
     ../vba2/sound_output_qt.cpp \
     ../vba2/settings/framedialog.cpp \
     ../vba2/settings/settingssheet_audiooutput.cpp \
-    ../vba2/settings/settingssheet_keyboardinput.cpp
+    ../vba2/settings/settingssheet_keyboardinput.cpp \
+    ../vba2/cappsettings.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -72,7 +73,8 @@ HEADERS += ../vba2/mainwindow.h \
     ../vba2/sound_output_qt.h \
     ../vba2/settings/framedialog.h \
     ../vba2/settings/settingssheet_audiooutput.h \
-    ../vba2/settings/settingssheet_keyboardinput.h
+    ../vba2/settings/settingssheet_keyboardinput.h \
+    ../vba2/cappsettings.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \

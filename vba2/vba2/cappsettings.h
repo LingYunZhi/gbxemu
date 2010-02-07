@@ -16,35 +16,26 @@
 */
 
 
-#ifndef SETTINGSSHEET_AUDIOOUTPUT_H
-#define SETTINGSSHEET_AUDIOOUTPUT_H
-
-#include <QWidget>
-class CAppSettings;
+#ifndef CAPPSETTINGS_H
+#define CAPPSETTINGS_H
 
 
-namespace Ui {
-  class SettingsSheet_AudioOutput;
-}
+#include <QObject>
+#include <QtMultimedia/QAudioDeviceInfo>
 
 
-class SettingsSheet_AudioOutput : public QWidget {
+class CAppSettings : public QObject
+{
   Q_OBJECT
 
 public:
-  SettingsSheet_AudioOutput( CAppSettings &settings, QWidget *parent = 0 );
-  ~SettingsSheet_AudioOutput();
+  CAppSettings( QObject *parent = 0 );
 
-protected:
-  void changeEvent(QEvent *e);
+  // TODO: add load/save to file method
 
-private:
-  Ui::SettingsSheet_AudioOutput *ui;
-  CAppSettings &m_settings;
-
-private slots:
-    void on_comboBox_device_currentIndexChanged( int index );
+  // settings:
+  QAudioDeviceInfo s_soundOutputDevice;
 };
 
 
-#endif // SETTINGSSHEET_AUDIOOUTPUT_H
+#endif // CAPPSETTINGS_H
