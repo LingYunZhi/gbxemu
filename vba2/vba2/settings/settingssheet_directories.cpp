@@ -23,7 +23,7 @@
 SettingsSheet_Directories::SettingsSheet_Directories( CAppSettings &settings, QWidget *parent )
   : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_Directories)
 {
-  ui->setupUi(this);
+  ui->setupUi( this );
 }
 
 

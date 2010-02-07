@@ -19,7 +19,6 @@
 #include "framedialog.h"
 #include "ui_framedialog.h"
 
-#include "../cappsettings.h"
 #include "settingssheet_audiooutput.h"
 #include "settingssheet_keyboardinput.h"
 #include "settingssheet_directories.h"
@@ -47,7 +46,7 @@ FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   : QDialog( parent ),
   ui(new Ui::FrameDialog)
 {
-  ui->setupUi(this);
+  ui->setupUi( this );
 
   ADD_SHEET( SettingsSheet_KeyboardInput );
   ADD_SHEET( SettingsSheet_AudioOutput );
@@ -64,14 +63,4 @@ FrameDialog::~FrameDialog()
 }
 
 
-void FrameDialog::changeEvent(QEvent *e)
-{
-  QDialog::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    ui->retranslateUi(this);
-    break;
-  default:
-    break;
-  }
-}
+RETRANSLATE_CODE( FrameDialog )

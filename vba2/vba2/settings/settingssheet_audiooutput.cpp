@@ -27,7 +27,7 @@ SettingsSheet_AudioOutput::SettingsSheet_AudioOutput( CAppSettings &settings, QW
   : SettingsSheet( settings, parent ),
   ui(new Ui::SettingsSheet_AudioOutput)
 {
-  ui->setupUi(this);
+  ui->setupUi( this );
 
   const QList<QAudioDeviceInfo> deviceInfo = QAudioDeviceInfo::availableDevices( QAudio::AudioOutput );
 

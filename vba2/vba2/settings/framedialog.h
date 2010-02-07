@@ -21,7 +21,7 @@
 
 
 #include <QDialog>
-class CAppSettings;
+#include "settingssheet.h"
 
 
 namespace Ui {
@@ -31,13 +31,11 @@ namespace Ui {
 
 class FrameDialog : public QDialog {
   Q_OBJECT
+  RETRANSLATE_DECL
 
 public:
   FrameDialog( CAppSettings &settings, QWidget *parent = 0 );
   ~FrameDialog();
-
-protected:
-  void changeEvent( QEvent *e );
 
 private:
   Ui::FrameDialog *ui;

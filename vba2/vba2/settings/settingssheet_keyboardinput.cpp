@@ -23,7 +23,7 @@
 SettingsSheet_KeyboardInput::SettingsSheet_KeyboardInput( CAppSettings &settings, QWidget *parent )
   : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_KeyboardInput)
 {
-  ui->setupUi(this);
+  ui->setupUi( this );
 }
 
 
