@@ -54,5 +54,14 @@ bool CAppSettings::saveLoad( bool save ) {
     }
   }
 
+  // directories
+  if( save ) {
+    s.setValue( "directories/cartridgeFiles", s_cartridgeFilesDir );
+    s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
+  } else {
+    s_cartridgeFilesDir = s.value( "directories/cartridgeFiles" ).toString();
+    s_cartridgeSavesDir = s.value( "directories/cartridgeSaves" ).toString();
+  }
+
   return true;
 }

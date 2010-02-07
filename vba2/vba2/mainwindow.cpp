@@ -127,30 +127,34 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionLoad_ROM_triggered()
 {
-    QString newFileName = QFileDialog::getOpenFileName(
-            this, tr("Select ROM image to load"), m_fileName, tr("GBA ROMs (*.gba)") );
-    if( newFileName.isEmpty() ) return;
-    QFile rom( newFileName );
-    qint64 size = rom.size();
-    if( size > (32*1024*1024) ) {
-        QMessageBox::critical( this, tr("Error"), tr("GBA ROM size must not exceed 32 MB.") );
-        return;
-    }
-    rom.open( QFile::ReadOnly );
-    QByteArray data = rom.readAll();
-    rom.close();
-    Q_ASSERT( size == data.size() );
-    bool retVal = m_emuGBA->loadROM( (const u8 *const)data.constData(), (u32)size );
-    if( !retVal ) {
-        QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
-        return;
-    }
-    m_fileName = newFileName;
-    ui->actionPlay_Pause->setEnabled( true );
-    if( !m_timer->isActive() ) {
-        // start emulation
-        ui->actionPlay_Pause->trigger();
-    }
+  QString startDir = m_fileName;
+  if( !m_settings->s_cartridgeFilesDir.isEmpty() ) {
+    startDir = m_settings->s_cartridgeFilesDir;
+  }
+
+  QString newFileName = QFileDialog::getOpenFileName( this, tr("Select ROM image to load"), startDir, tr("GBA ROMs (*.gba)") );
+  if( newFileName.isEmpty() ) return;
+  QFile rom( newFileName );
+  qint64 size = rom.size();
+  if( size > (32*1024*1024) ) {
+    QMessageBox::critical( this, tr("Error"), tr("GBA ROM size must not exceed 32 MB.") );
+    return;
+  }
+  rom.open( QFile::ReadOnly );
+  QByteArray data = rom.readAll();
+  rom.close();
+  Q_ASSERT( size == data.size() );
+  bool retVal = m_emuGBA->loadROM( (const u8 *const)data.constData(), (u32)size );
+  if( !retVal ) {
+    QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
+    return;
+  }
+  m_fileName = newFileName;
+  ui->actionPlay_Pause->setEnabled( true );
+  if( !m_timer->isActive() ) {
+    // start emulation
+    ui->actionPlay_Pause->trigger();
+  }
 }
 
 void MainWindow::on_actionUnload_ROM_triggered()

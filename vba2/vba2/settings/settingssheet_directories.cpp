@@ -20,10 +20,15 @@
 #include "ui_settingssheet_directories.h"
 
 
+#include <QFileDialog>
+
+
 SettingsSheet_Directories::SettingsSheet_Directories( CAppSettings &settings, QWidget *parent )
   : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_Directories)
 {
   ui->setupUi( this );
+  ui->lineEditGameCartridges->setText( m_settings.s_cartridgeFilesDir );
+  ui->lineEditCartridgeSaves->setText( m_settings.s_cartridgeSavesDir );
 }
 
 
@@ -34,7 +39,31 @@ SettingsSheet_Directories::~SettingsSheet_Directories()
 
 
 void SettingsSheet_Directories::applySettings() {
+  m_settings.s_cartridgeFilesDir = ui->lineEditGameCartridges->text();
+  m_settings.s_cartridgeSavesDir = ui->lineEditCartridgeSaves->text();
 }
 
 
 RETRANSLATE_CODE( SettingsSheet_Directories )
+
+
+void SettingsSheet_Directories::selectDir( QLineEdit *editControl ) {
+  const QString dir =
+      QFileDialog::getExistingDirectory( this, tr("Select Directory"),
+                                         editControl->text() );
+  if( !dir.isEmpty() ) {
+    editControl->setText( dir );
+  }
+}
+
+
+void SettingsSheet_Directories::on_pushButtonGameCartridges_clicked()
+{
+  selectDir( ui->lineEditGameCartridges );
+}
+
+
+void SettingsSheet_Directories::on_pushButtonCartridgeSaves_clicked()
+{
+  selectDir( ui->lineEditCartridgeSaves );
+}

@@ -21,6 +21,7 @@
 
 
 #include "settingssheet.h"
+#include <QLineEdit>
 
 
 namespace Ui {
@@ -38,9 +39,14 @@ public:
 
 private:
   Ui::SettingsSheet_Directories *ui;
+  void selectDir( QLineEdit *editControl );
 
 public slots:
   void applySettings();
+
+private slots:
+    void on_pushButtonCartridgeSaves_clicked();
+    void on_pushButtonGameCartridges_clicked();
 };
 
 

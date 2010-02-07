@@ -37,6 +37,8 @@ private:
 
 public: // settings:
   QAudioDeviceInfo s_soundOutputDevice;
+  QString s_cartridgeFilesDir;
+  QString s_cartridgeSavesDir;
 };
 
 

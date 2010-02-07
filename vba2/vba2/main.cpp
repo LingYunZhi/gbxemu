@@ -16,14 +16,19 @@
 */
 
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "mainwindow.h"
 
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    return a.exec();
+  /* skins
+  QStyle *style = NULL;
+  style = QApplication::setStyle( "cleanlooks" );
+  Q_ASSERT( style != 0 );
+  */
+  QApplication a(argc, argv);
+  MainWindow w;
+  w.show();
+  return a.exec();
 }
