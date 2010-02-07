@@ -26,17 +26,6 @@
 #include <QListWidgetItem>
 
 
-#define ADD_SHEET( newType ) \
-  w = NULL; \
-  w = new newType; \
-  Q_ASSERT( w != NULL ); \
-  ui->stackedWidget->addWidget( w ); \
-  i = NULL; \
-  i = new QListWidgetItem( w->windowIcon(), w->windowTitle() ); \
-  Q_ASSERT( i != NULL ); \
-  ui->listWidget->addItem( i );
-
-
 FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   : QDialog( parent ),
   ui(new Ui::FrameDialog)
@@ -44,11 +33,26 @@ FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   ui->setupUi(this);
 
   // parent will be assigned by the addWidget function
-  QWidget *w;
   QListWidgetItem *i;
 
-  ADD_SHEET( SettingsSheet_KeyboardInput( settings ) );
-  ADD_SHEET( SettingsSheet_AudioOutput( settings ) );
+  SettingsSheet_KeyboardInput *ki = NULL;
+  ki = new SettingsSheet_KeyboardInput( settings );
+  Q_ASSERT( ki != NULL ); \
+  ui->stackedWidget->addWidget( ki ); \
+  i = NULL; \
+  i = new QListWidgetItem( ki->windowIcon(), ki->windowTitle() ); \
+  Q_ASSERT( i != NULL ); \
+  ui->listWidget->addItem( i );
+
+  SettingsSheet_AudioOutput *ao = NULL;
+  ao = new SettingsSheet_AudioOutput( settings );
+  Q_ASSERT( ao != NULL ); \
+  ui->stackedWidget->addWidget( ao ); \
+  i = NULL; \
+  i = new QListWidgetItem( ao->windowIcon(), ao->windowTitle() ); \
+  Q_ASSERT( i != NULL ); \
+  ui->listWidget->addItem( i );
+  connect( this, SIGNAL(accepted()), ao, SLOT(applySettings()) );
 
   // clicking on item activates corresponding settings sheet
   connect( ui->listWidget, SIGNAL(currentRowChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)) );

@@ -17,9 +17,42 @@
 
 
 #include "cappsettings.h"
+#include <QSettings>
 
 
 CAppSettings::CAppSettings( QObject *parent )
   : QObject( parent )
 {
+  // load settings
+  saveLoad( false );
+}
+
+
+CAppSettings::~CAppSettings() {
+  // save settings
+  saveLoad( true );
+}
+
+
+bool CAppSettings::saveLoad( bool save ) {
+  QSettings s( "Open Source", "VisualBoyAdvance 2" );
+
+  // s_soundOutputDevice
+  if( save ) {
+    s.setValue( "audioOutput/deviceID", s_soundOutputDevice.deviceName() );
+  } else {
+    const QString str = s.value( "audioOutput/deviceID" ).toString();
+    s_soundOutputDevice = QAudioDeviceInfo::defaultOutputDevice();
+
+    const QList<QAudioDeviceInfo> deviceInfo = QAudioDeviceInfo::availableDevices( QAudio::AudioOutput );
+    const int nDevices = deviceInfo.size();
+    for( int i = 0; i < nDevices; i++ ) {
+      const QAudioDeviceInfo &currentInfo = deviceInfo.at(i);
+      if( str == currentInfo.deviceName() ) {
+        s_soundOutputDevice = currentInfo;
+      }
+    }
+  }
+
+  return true;
 }

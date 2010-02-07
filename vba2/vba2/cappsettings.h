@@ -30,10 +30,12 @@ class CAppSettings : public QObject
 
 public:
   CAppSettings( QObject *parent = 0 );
+  ~CAppSettings();
 
-  // TODO: add load/save to file method
+private:
+  bool saveLoad( bool save );
 
-  // settings:
+public: // settings:
   QAudioDeviceInfo s_soundOutputDevice;
 };
 

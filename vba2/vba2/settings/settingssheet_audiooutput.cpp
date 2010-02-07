@@ -31,12 +31,16 @@ SettingsSheet_AudioOutput::SettingsSheet_AudioOutput( CAppSettings &settings, QW
 {
   ui->setupUi(this);
 
-  QList<QAudioDeviceInfo> m_deviceInfo = QAudioDeviceInfo::availableDevices( QAudio::AudioOutput );
+  const QList<QAudioDeviceInfo> deviceInfo = QAudioDeviceInfo::availableDevices( QAudio::AudioOutput );
 
-  const int nDevices = m_deviceInfo.size();
+  const int nDevices = deviceInfo.size();
   for( int i = 0; i < nDevices; i++ ) {
-    const QAudioDeviceInfo &currentInfo = m_deviceInfo.at(i);
+    const QAudioDeviceInfo &currentInfo = deviceInfo.at(i);
     ui->comboBox_device->addItem( currentInfo.deviceName(), qVariantFromValue(currentInfo) );
+    if( m_settings.s_soundOutputDevice.deviceName() == currentInfo.deviceName() ) {
+      // select memorized device
+      ui->comboBox_device->setCurrentIndex( i );
+    }
   }
 }
 
@@ -60,7 +64,7 @@ void SettingsSheet_AudioOutput::changeEvent(QEvent *e)
 }
 
 
-void SettingsSheet_AudioOutput::on_comboBox_device_currentIndexChanged( int index )
+void SettingsSheet_AudioOutput::applySettings()
 {
-  m_settings.s_soundOutputDevice = ui->comboBox_device->itemData( index ).value<QAudioDeviceInfo>();
+  m_settings.s_soundOutputDevice = ui->comboBox_device->itemData( ui->comboBox_device->currentIndex() ).value<QAudioDeviceInfo>();
 }

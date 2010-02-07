@@ -42,8 +42,8 @@ private:
   Ui::SettingsSheet_AudioOutput *ui;
   CAppSettings &m_settings;
 
-private slots:
-    void on_comboBox_device_currentIndexChanged( int index );
+public slots:
+  void applySettings();
 };
 
 
