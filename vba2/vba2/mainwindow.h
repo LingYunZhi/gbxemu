@@ -67,6 +67,7 @@ private:
   CAppSettings *m_settings;
 
 private slots:
+  void applyNewSettings();
   void timer_timeout();
   void on_actionPlay_Pause_triggered();
   void on_actionUnload_ROM_triggered();

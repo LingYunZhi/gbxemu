@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
   settingsDialog = new FrameDialog( *m_settings, this );
   Q_ASSERT( settingsDialog != NULL );
   connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
+  connect( settingsDialog, SIGNAL(accepted()), this, SLOT(applyNewSettings()) );
 
   m_emuGBA = NULL;
   m_emuGBA = new CEmuGBA;
@@ -162,42 +163,56 @@ void MainWindow::on_actionLoad_ROM_triggered()
 
 void MainWindow::on_actionUnload_ROM_triggered()
 {
-    if( !m_fileName.isEmpty() ) {
-        if( m_timer->isActive() ) {
-            // stop emulation
-            ui->actionPlay_Pause->trigger();
-        }
-        m_emuGBA->closeROM();
-        m_fileName.clear();
-        ui->actionPlay_Pause->setEnabled( false );
+  if( !m_fileName.isEmpty() ) {
+    if( m_timer->isActive() ) {
+      // stop emulation
+      ui->actionPlay_Pause->trigger();
     }
+    m_emuGBA->closeROM();
+    m_fileName.clear();
+    ui->actionPlay_Pause->setEnabled( false );
+  }
 }
+
+
+void MainWindow::applyNewSettings() {
+  if( m_settings == NULL ) return;
+
+  if( m_soundOutput != NULL ) {
+    m_soundOutput->enableAudioSync( m_settings->s_enableAudioSync );
+  }
+
+  if( m_renderTarget != NULL ) {
+    m_renderTarget->enableVSync( m_settings->s_enableVSync );
+  }
+}
+
 
 void MainWindow::timer_timeout()
 {
   // TODO: m_timeoutCounter: use local static instead of global ?
-    const int nextTimeout = ( 1000 * m_timeoutCounter ) / FRAME_RATE;
-    const int timePassed = m_timeCounter.elapsed();
-    if( timePassed >= nextTimeout ) {
-        // show fps
-        if( ( m_timeoutCounter % 60 ) == 0 ) {
-            const double avgFps = m_timeoutCounter / ( timePassed / 1000.0f );
-            ui->statusBar->showMessage( tr("Timer avg fps: ") + QString::number( avgFps ) );
-        }
-
-        m_timeoutCounter++;
-
-        bool retVal = false;
-        retVal = m_emuGBA->emulate();
-
-        if( retVal == false ) {
-            Q_ASSERT( false ); // debug emulator code
-            QMessageBox::critical( this, tr("Error"), tr("Emulator code messed up. Pausing emulation.") );
-            if( m_timer->isActive() ) {
-                m_timer->stop();
-            }
-        }
+  const int nextTimeout = ( 1000 * m_timeoutCounter ) / FRAME_RATE;
+  const int timePassed = m_timeCounter.elapsed();
+  if( timePassed >= nextTimeout ) {
+    // show fps
+    if( ( m_timeoutCounter % 60 ) == 0 ) {
+      const double avgFps = m_timeoutCounter / ( timePassed / 1000.0f );
+      ui->statusBar->showMessage( tr("Timer avg fps: ") + QString::number( avgFps ) );
     }
+
+    m_timeoutCounter++;
+
+    bool retVal = false;
+    retVal = m_emuGBA->emulate();
+
+    if( retVal == false ) {
+      Q_ASSERT( false ); // debug emulator code
+      QMessageBox::critical( this, tr("Error"), tr("Emulator code messed up. Pausing emulation.") );
+      if( m_timer->isActive() ) {
+        m_timer->stop();
+      }
+    }
+  }
 }
 
 void MainWindow::on_actionPlay_Pause_triggered()
