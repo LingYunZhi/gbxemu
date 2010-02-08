@@ -41,6 +41,7 @@ public: // settings:
   QString s_cartridgeFilesDir;
   QString s_cartridgeSavesDir;
   bool    s_enableVSync;
+  bool    s_enableAudioSync;
 };
 
 

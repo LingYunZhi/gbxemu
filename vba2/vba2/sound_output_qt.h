@@ -48,6 +48,9 @@ private:
   QIODevice        *m_buffer;
   bool              m_enableAudioSync;
   bool              m_initialized;
+
+public slots:
+  void enableAudioSync( bool enable );
 };
 
 

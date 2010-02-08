@@ -43,7 +43,7 @@ sound_output_qt::sound_output_qt( int selectedDevice, QObject *parent )
 {
   m_device = NULL;
   m_buffer = NULL;
-  m_enableAudioSync = true;
+  m_enableAudioSync = false;
   m_initialized = false;
   m_selectedDevice = NULL;
 
@@ -148,4 +148,9 @@ void sound_output_qt::write( u16 *finalWave, int length ) {
 
 void sound_output_qt::setThrottle( unsigned short throttle ) {
   // TODO: implement
+}
+
+
+void sound_output_qt::enableAudioSync( bool enable ) {
+  m_enableAudioSync = enable;
 }

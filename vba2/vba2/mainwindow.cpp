@@ -84,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
   m_soundOutput = NULL;
   m_soundOutput = new sound_output_qt( m_settings->s_soundOutputDevice, this );
   Q_ASSERT( m_soundOutput != NULL );
+  m_soundOutput->enableAudioSync( m_settings->s_enableAudioSync );
 
   m_snd = NULL;
 //    m_snd = new CDummyDriver_Sound();
@@ -201,17 +202,17 @@ void MainWindow::timer_timeout()
 
 void MainWindow::on_actionPlay_Pause_triggered()
 {
-    if( !m_fileName.isEmpty() ) {
-        if( m_timer->isActive() ) {
-            ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
-            m_timer->stop();
-        } else {
-            ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
-            m_timeoutCounter = 0;
-            m_timeCounter.start();
-            m_timer->start();
-        }
+  if( !m_fileName.isEmpty() ) {
+    if( m_timer->isActive() ) {
+      ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
+      m_timer->stop();
     } else {
-        Q_ASSERT( false ); // should not be able to arrive here
+      ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
+      m_timeoutCounter = 0;
+      m_timeCounter.start();
+      m_timer->start();
     }
+  } else {
+    Q_ASSERT( false ); // should not be able to arrive here
+  }
 }
