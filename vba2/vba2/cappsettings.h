@@ -40,6 +40,7 @@ public: // settings:
   int     s_soundOutputDevice;
   QString s_cartridgeFilesDir;
   QString s_cartridgeSavesDir;
+  bool    s_enableVSync;
 };
 
 

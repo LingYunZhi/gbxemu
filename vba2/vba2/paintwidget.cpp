@@ -41,8 +41,6 @@ PaintWidget::PaintWidget( QWidget *parent )
   Q_ASSERT( m_placement != NULL );
 
   m_keys = CDriver_Input::BUTTON__NONE;
-
-  enableVSync( true );
 }
 
 

@@ -40,6 +40,7 @@ void CAppSettings::save() {
   s.setValue( "audioOutput/deviceID", s_soundOutputDevice );
   s.setValue( "directories/cartridgeFiles", s_cartridgeFilesDir );
   s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
+  s.setValue( "graphicsOutput/enableVSync", s_enableVSync );
 }
 
 
@@ -48,4 +49,5 @@ void CAppSettings::load() {
   s_soundOutputDevice = s.value( "audioOutput/deviceID" ).toInt();
   s_cartridgeFilesDir = s.value( "directories/cartridgeFiles" ).toString();
   s_cartridgeSavesDir = s.value( "directories/cartridgeSaves" ).toString();
+  s_enableVSync = s.value( "graphicsOutput/enableVSync" ).toBool();
 }

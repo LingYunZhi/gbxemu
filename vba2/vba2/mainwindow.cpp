@@ -45,30 +45,35 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+  ui->setupUi(this);
 
-    m_settings = NULL;
-    m_settings = new CAppSettings( this );
-    Q_ASSERT( m_settings != NULL );
+  // it is important that the settings are loaded first
+  m_settings = NULL;
+  m_settings = new CAppSettings( this );
+  Q_ASSERT( m_settings != NULL );
 
-    ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
+  settingsDialog = NULL;
+  settingsDialog = new FrameDialog( *m_settings, this );
+  Q_ASSERT( settingsDialog != NULL );
+  connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
 
-    m_emuGBA = NULL;
-    m_emuGBA = new CEmuGBA;
-    Q_ASSERT( m_emuGBA != NULL );
+  m_emuGBA = NULL;
+  m_emuGBA = new CEmuGBA;
+  Q_ASSERT( m_emuGBA != NULL );
 
-    m_playing = false;
+  m_playing = false;
 
-    m_timer = NULL;
-    m_timer = new QTimer( this );
-    Q_ASSERT( m_timer != NULL );
-    m_timer->setInterval( 5 ); // 1000/60 only produces ~37 fps  -  5 produces ~200 fps
-    connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
+  m_timer = NULL;
+  m_timer = new QTimer( this );
+  Q_ASSERT( m_timer != NULL );
+  m_timer->setInterval( 5 ); // 1000/60 only produces ~37 fps  -  5 produces ~200 fps
+  connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
 
-    m_renderTarget = NULL;
-    m_renderTarget = new PaintWidget( this );
-    Q_ASSERT( m_renderTarget != NULL );
-    setCentralWidget( m_renderTarget );
+  m_renderTarget = NULL;
+  m_renderTarget = new PaintWidget( this );
+  Q_ASSERT( m_renderTarget != NULL );
+  m_renderTarget->enableVSync( m_settings->s_enableVSync );
+  setCentralWidget( m_renderTarget );
 
 //    m_debugGraphics = NULL;
 //    m_debugGraphics = new CDebugWindow_Graphics( this );
@@ -76,32 +81,29 @@ MainWindow::MainWindow(QWidget *parent)
 //    m_emuGBA->setDebugDriverGraphics( m_debugGraphics );
 //    m_debugGraphics->show();
 
-    m_soundOutput = NULL;
-    m_soundOutput = new sound_output_qt( m_settings->s_soundOutputDevice, this );
-    Q_ASSERT( m_soundOutput != NULL );
+  m_soundOutput = NULL;
+  m_soundOutput = new sound_output_qt( m_settings->s_soundOutputDevice, this );
+  Q_ASSERT( m_soundOutput != NULL );
 
-    m_snd = NULL;
+  m_snd = NULL;
 //    m_snd = new CDummyDriver_Sound();
-    m_snd = (CDriver_Sound *)m_soundOutput;
-    Q_ASSERT( m_snd != NULL );
-    m_emuGBA->setDriverSound( m_snd );
+  m_snd = (CDriver_Sound *)m_soundOutput;
+  Q_ASSERT( m_snd != NULL );
+  m_emuGBA->setDriverSound( m_snd );
 
-    m_gfx = NULL;
+  m_gfx = NULL;
 //    m_gfx = new CDummyDriver_Graphics();
-    m_gfx = (CDriver_Graphics *)m_renderTarget;
-    Q_ASSERT( m_gfx != NULL );
-    m_emuGBA->setDriverGraphics( m_gfx );
+  m_gfx = (CDriver_Graphics *)m_renderTarget;
+  Q_ASSERT( m_gfx != NULL );
+  m_emuGBA->setDriverGraphics( m_gfx );
 
-    m_inp = NULL;
+  m_inp = NULL;
 //    m_inp = new CDummyDriver_Input();
-    m_inp = (CDriver_Input *)m_renderTarget;
-    Q_ASSERT( m_inp != NULL );
-    m_emuGBA->setDriverInput( m_inp );
+  m_inp = (CDriver_Input *)m_renderTarget;
+  Q_ASSERT( m_inp != NULL );
+  m_emuGBA->setDriverInput( m_inp );
 
-    settingsDialog = NULL;
-    settingsDialog = new FrameDialog( *m_settings, this );
-    Q_ASSERT( settingsDialog != NULL );
-    connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
+  ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
 }
 
 MainWindow::~MainWindow()
