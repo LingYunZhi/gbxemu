@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>SettingsSheet_AudioOutput</class>
  <widget class="QWidget" name="SettingsSheet_AudioOutput">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>284</width>
+    <height>71</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Audio Output</string>
   </property>
@@ -21,6 +29,13 @@
     <widget class="QComboBox" name="comboBox_device">
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToContents</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QCheckBox" name="checkBox_audioSync">
+     <property name="text">
+      <string>Synchronize game with audio output rate</string>
      </property>
     </widget>
    </item>

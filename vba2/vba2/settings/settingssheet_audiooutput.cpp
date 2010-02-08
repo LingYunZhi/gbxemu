@@ -40,6 +40,8 @@ SettingsSheet_AudioOutput::SettingsSheet_AudioOutput( CAppSettings &settings, QW
       ui->comboBox_device->setCurrentIndex( i );
     }
   }
+
+  ui->checkBox_audioSync->setChecked( m_settings.s_enableAudioSync );
 }
 
 
@@ -52,6 +54,7 @@ SettingsSheet_AudioOutput::~SettingsSheet_AudioOutput()
 void SettingsSheet_AudioOutput::applySettings()
 {
   m_settings.s_soundOutputDevice = ui->comboBox_device->itemData( ui->comboBox_device->currentIndex() ).toInt();
+  m_settings.s_enableAudioSync = ui->checkBox_audioSync->isChecked();
 }
 
 RETRANSLATE_CODE( SettingsSheet_AudioOutput )
