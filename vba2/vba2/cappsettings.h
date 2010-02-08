@@ -33,10 +33,11 @@ public:
   ~CAppSettings();
 
 private:
-  bool saveLoad( bool save );
+  void save();
+  void load();
 
 public: // settings:
-  QAudioDeviceInfo s_soundOutputDevice;
+  int     s_soundOutputDevice;
   QString s_cartridgeFilesDir;
   QString s_cartridgeSavesDir;
 };

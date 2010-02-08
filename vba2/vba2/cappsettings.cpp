@@ -18,50 +18,34 @@
 
 #include "cappsettings.h"
 #include <QSettings>
+#include <QtCore/QCoreApplication>
 
 
 CAppSettings::CAppSettings( QObject *parent )
   : QObject( parent )
 {
-  // load settings
-  saveLoad( false );
+  QCoreApplication::setOrganizationName( "Open Source" );
+  QCoreApplication::setApplicationName( "VisualBoyAdvance 2" );
+  load();
 }
 
 
 CAppSettings::~CAppSettings() {
-  // save settings
-  saveLoad( true );
+  save();
 }
 
 
-bool CAppSettings::saveLoad( bool save ) {
-  QSettings s( "Open Source", "VisualBoyAdvance 2" );
+void CAppSettings::save() {
+  QSettings s;
+  s.setValue( "audioOutput/deviceID", s_soundOutputDevice );
+  s.setValue( "directories/cartridgeFiles", s_cartridgeFilesDir );
+  s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
+}
 
-  // s_soundOutputDevice
-  if( save ) {
-    s.setValue( "audioOutput/deviceID", s_soundOutputDevice.deviceName() );
-  } else {
-    const QString str = s.value( "audioOutput/deviceID" ).toString();
-    s_soundOutputDevice = QAudioDeviceInfo::defaultOutputDevice();
 
-    const QList<QAudioDeviceInfo> deviceInfo = QAudioDeviceInfo::availableDevices( QAudio::AudioOutput );
-    const int nDevices = deviceInfo.size();
-    for( int i = 0; i < nDevices; i++ ) {
-      const QAudioDeviceInfo &currentInfo = deviceInfo.at(i);
-      if( str == currentInfo.deviceName() ) {
-        s_soundOutputDevice = currentInfo;
-      }
-    }
-  }
-
-  // directories
-  if( save ) {
-    s.setValue( "directories/cartridgeFiles", s_cartridgeFilesDir );
-    s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
-  } else {
-    s_cartridgeFilesDir = s.value( "directories/cartridgeFiles" ).toString();
-    s_cartridgeSavesDir = s.value( "directories/cartridgeSaves" ).toString();
-  }
-
-  return true;
+void CAppSettings::load() {
+  QSettings s;
+  s_soundOutputDevice = s.value( "audioOutput/deviceID" ).toInt();
+  s_cartridgeFilesDir = s.value( "directories/cartridgeFiles" ).toString();
+  s_cartridgeSavesDir = s.value( "directories/cartridgeSaves" ).toString();
 }

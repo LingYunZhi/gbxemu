@@ -38,17 +38,28 @@ public:
 };
 
 
-sound_output_qt::sound_output_qt( QAudioDeviceInfo &outputDevice, QObject *parent )
-  : QObject( parent ),
-  m_selectedDevice( outputDevice )
+sound_output_qt::sound_output_qt( int selectedDevice, QObject *parent )
+  : QObject( parent )
 {
   m_device = NULL;
   m_buffer = NULL;
   m_enableAudioSync = true;
   m_initialized = false;
-  if( m_selectedDevice.isNull() ) {
-    m_selectedDevice = QAudioDeviceInfo::defaultOutputDevice();
-    Q_ASSERT( m_selectedDevice.isNull() == false );
+  m_selectedDevice = NULL;
+
+  const QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices( QAudio::AudioOutput );
+  if( (selectedDevice >= 0) && (selectedDevice < devices.size()) ) {
+    m_selectedDevice = new QAudioDeviceInfo( devices.at(selectedDevice) );
+  } else {
+    m_selectedDevice = new QAudioDeviceInfo( QAudioDeviceInfo::defaultOutputDevice() );
+  }
+  Q_ASSERT( m_selectedDevice != NULL );
+}
+
+
+sound_output_qt::~sound_output_qt() {
+  if( m_selectedDevice != NULL ) {
+    delete m_selectedDevice;
   }
 }
 
@@ -70,7 +81,7 @@ bool sound_output_qt::init( long sampleRate ) {
   format.setByteOrder( QAudioFormat::LittleEndian ); // TODO: is this correct on other architectures?
   Q_ASSERT( format.isValid() );
 
-  m_device = new QAudioOutput( m_selectedDevice, format, this );
+  m_device = new QAudioOutput( *m_selectedDevice, format, this );
   Q_ASSERT( m_device != NULL );
 
   m_device->setBufferSize( desired_buffer_size );
