@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
   settingsDialog = new FrameDialog( *m_settings, this );
   Q_ASSERT( settingsDialog != NULL );
   connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
-  connect( settingsDialog, SIGNAL(accepted()), this, SLOT(applyNewSettings()) );
+  connect( settingsDialog, SIGNAL(accepted()), this, SLOT(resetSound()) );
 
   m_emuGBA = NULL;
   m_emuGBA = new CEmuGBA;
@@ -83,15 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    m_debugGraphics->show();
 
   m_soundOutput = NULL;
-  m_soundOutput = new sound_output_qt( m_settings->s_soundOutputDevice, this );
-  Q_ASSERT( m_soundOutput != NULL );
-  m_soundOutput->enableAudioSync( m_settings->s_enableAudioSync );
-
-  m_snd = NULL;
-//    m_snd = new CDummyDriver_Sound();
-  m_snd = (CDriver_Sound *)m_soundOutput;
-  Q_ASSERT( m_snd != NULL );
-  m_emuGBA->setDriverSound( m_snd );
+  resetSound();
 
   m_gfx = NULL;
 //    m_gfx = new CDummyDriver_Graphics();
@@ -111,10 +103,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     on_actionUnload_ROM_triggered();
-
-    if( m_snd != NULL ) {
-        delete m_snd;
-    }
 
     if( ( m_renderTarget != m_gfx ) && ( m_gfx != NULL ) ) {
         delete m_gfx;
@@ -175,16 +163,19 @@ void MainWindow::on_actionUnload_ROM_triggered()
 }
 
 
-void MainWindow::applyNewSettings() {
+void MainWindow::resetSound() {
   if( m_settings == NULL ) return;
+  if( m_emuGBA == NULL ) return;
 
   if( m_soundOutput != NULL ) {
-    m_soundOutput->enableAudioSync( m_settings->s_enableAudioSync );
+    delete m_soundOutput;
+    m_soundOutput = NULL;
   }
+  m_soundOutput = new sound_output_qt( m_settings->s_soundOutputDevice, this );
+  Q_ASSERT( m_soundOutput != NULL );
+  m_soundOutput->enableAudioSync( m_settings->s_enableAudioSync );
 
-  if( m_renderTarget != NULL ) {
-    m_renderTarget->enableVSync( m_settings->s_enableVSync );
-  }
+  m_emuGBA->setDriverSound( (CDriver_Sound *)m_soundOutput );
 }
 
 

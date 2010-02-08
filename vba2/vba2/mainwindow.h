@@ -55,7 +55,6 @@ private:
 
   // m_timer times out around 3 times the GBA frame rate in order to allow exacter frame display time calculation
   QTimer *m_timer;
-  CDriver_Sound    *m_snd;
   CDriver_Graphics *m_gfx;
   CDriver_Input    *m_inp;
   PaintWidget      *m_renderTarget;
@@ -66,8 +65,10 @@ private:
 
   CAppSettings *m_settings;
 
+
 private slots:
-  void applyNewSettings();
+  // initialize or reinitialize sound output
+  void resetSound();
   void timer_timeout();
   void on_actionPlay_Pause_triggered();
   void on_actionUnload_ROM_triggered();

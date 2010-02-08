@@ -90,6 +90,10 @@ bool CEmuGBA::setDriverSound( CDriver_Sound *drv )
   if( drv == NULL ) return false;
   m_snd = drv;
   m_soundDriverLoaded = true;
+  if( m_soundInitialized ) {
+    soundDriver = m_snd;
+    soundInit();
+  }
   return true;
 }
 
