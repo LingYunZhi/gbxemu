@@ -41,7 +41,8 @@ SOURCES += ../vba2/main.cpp \
     ../vba2/settings/settingssheet_keyboardinput.cpp \
     ../vba2/cappsettings.cpp \
     ../vba2/settings/settingssheet_directories.cpp \
-    ../gba2/backupmedia.cpp
+    ../gba2/backupmedia.cpp \
+    ../gba2/cartridgeheader.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -79,7 +80,8 @@ HEADERS += ../vba2/mainwindow.h \
     ../vba2/cappsettings.h \
     ../vba2/settings/settingssheet_directories.h \
     ../vba2/settings/settingssheet.h \
-    ../gba2/backupmedia.h
+    ../gba2/backupmedia.h \
+    ../gba2/cartridgeheader.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
