@@ -29,10 +29,19 @@
 class BackupMedia
 {
 public:
-  BackupMedia();
+  BackupMedia( u32 *romData, u32 romSize );
+  ~BackupMedia();
 
-  enum BACKUPMEDIATYPE { NONE, EEPROM, SRAM, FLASH64KiB, FLASH128KiB };
-  static BACKUPMEDIATYPE findBackupMediaType( u32 *romData, u32 romSize );
+  typedef enum { NONE, SRAM, EEPROM, FLASH64KiB, FLASH128KiB } BACKUPMEDIATYPE;
+  BACKUPMEDIATYPE getType();
+  u8 read( u32 address );
+  void write( u8 data, u32 address );
+
+  static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize );
+
+private:
+  BACKUPMEDIATYPE m_type;
+  u8 *m_data;
 };
 
 

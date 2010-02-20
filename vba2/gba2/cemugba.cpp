@@ -17,6 +17,7 @@
 
 
 #include "cemugba.h"
+#include "backupmedia.h"
 
 #include "gba/GBA.h"
 #include "gba/Sound.h"
@@ -38,10 +39,15 @@ CEmuGBA::CEmuGBA()
 
   m_romLoaded = false;
   m_soundInitialized = false;
+
+  m_backupMedia = NULL;
 }
 
 CEmuGBA::~CEmuGBA()
 {
+  if( m_backupMedia != NULL ) {
+    delete m_backupMedia;
+  }
 }
 
 bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
@@ -52,11 +58,20 @@ bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
              m_inputDriverLoaded;
   if( !allDriversLoaded ) return false;
 
+  // initialize backup media
+  if( m_backupMedia != NULL ) {
+    delete m_backupMedia;
+    m_backupMedia = NULL;
+  }
+  m_backupMedia = new BackupMedia( (u32*)romData, romSize );
+  backupMedia = m_backupMedia; // set global variable in core
+
   CPULoadRom( romData, romSize );
+
   if( m_soundInitialized ) {
     soundReset();
   } else {
-    soundDriver = m_snd;
+    soundDriver = m_snd; // set global variable in core
     soundInit();
     m_soundInitialized = true;
   }

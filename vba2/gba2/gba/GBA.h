@@ -131,6 +131,9 @@ typedef struct {
 #include "EEprom.h"
 #include "Flash.h"
 
+#include "../backupmedia.h"
+extern BackupMedia *backupMedia;
+
 
 // interface to display GBA LCD to user
 class CDriver_Graphics;

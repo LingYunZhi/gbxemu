@@ -3337,6 +3337,8 @@ bool syncToAudio = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 
+BackupMedia *backupMedia = NULL;
+
 u8 *bios = 0;
 u8 *rom = 0;
 u8 *internalRAM = 0;

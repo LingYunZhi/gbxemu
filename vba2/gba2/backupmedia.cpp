@@ -18,12 +18,52 @@
 
 #include "backupmedia.h"
 
+#include <assert.h>
 
-BackupMedia::BackupMedia()
+
+BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 {
+  m_type = findOutType( romData, romSize );
+  m_data = NULL;
+
+  switch( m_type ) {
+  case SRAM:
+    m_data = new u8[0x8000]; // 32 KiB
+    assert( m_data != NULL );
+    break;
+  }
 }
 
 
+BackupMedia::~BackupMedia() {
+  if( m_data != NULL ) {
+    delete[] m_data;
+  }
+}
+
+
+BackupMedia::BACKUPMEDIATYPE BackupMedia::getType() {
+  return m_type;
+}
+
+
+u8 BackupMedia::read( u32 address ) {
+  assert( m_type == SRAM );
+  assert( address & 0xE000000 );
+  assert( (address & 0x0FFFFFF) < 0x8000 );
+  return m_data[address & 0x7FFF];
+}
+
+
+void BackupMedia::write( u8 data, u32 address ) {
+  assert( m_type == SRAM );
+  assert( address & 0xE000000 );
+  assert( (address & 0x0FFFFFF) < 0x8000 );
+  m_data[address & 0x7FFF] = data;
+}
+
+
+// used by findOutType()
 u32 stringToValue( const char s[5] ) {
   // maximum string length: 4 characters + zero byte
   u64 result = 0;
@@ -35,9 +75,10 @@ u32 stringToValue( const char s[5] ) {
 }
 
 
-BackupMedia::BACKUPMEDIATYPE BackupMedia::findBackupMediaType
-    ( u32 *romData, u32 romSize )
+BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize )
 {
+  assert( romData != NULL );
+
   /* possible strings are:
      - "EEPROM_V"
      - "SRAM_V"

@@ -23,6 +23,7 @@
 class CDriver_Sound;
 class CDriver_Graphics;
 class CDriver_Input;
+class BackupMedia;
 
 class CEmuGBA
 {
@@ -61,6 +62,8 @@ private:
 
     bool m_romLoaded;
     bool m_soundInitialized;
+
+    BackupMedia *m_backupMedia;
 };
 
 #endif // CEMUGBA_H

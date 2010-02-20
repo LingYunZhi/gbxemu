@@ -69,6 +69,12 @@ u8 CPUReadByte(u32 address)
       return eepromRead(address);
     goto unreadable;
   case 14:
+    if( backupMedia != NULL ) {
+      if( backupMedia->getType() == BackupMedia::SRAM ) {
+        return backupMedia->read( address );
+      }
+    }
+    /*
     if(cpuSramEnabled | cpuFlashEnabled)
       return flashRead(address);
     if(cpuEEPROMSensorEnabled) {
@@ -83,6 +89,7 @@ u8 CPUReadByte(u32 address)
     return systemGetSensorY() >> 8;
       }
     }
+    */
     // default
   default:
 unreadable:
@@ -477,13 +484,21 @@ void CPUWriteByte(u32 address, u8 b)
     }
     goto unwritable;
   case 14:
+    if( backupMedia != NULL ) {
+      if( backupMedia->getType() == BackupMedia::SRAM ) {
+        backupMedia->write( b, address );
+      }
+    }
+    break;
+    /*
     if ((saveType != 5) && ((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled)) {
 
       //if(!cpuEEPROMEnabled && (cpuSramEnabled | cpuFlashEnabled)) {
 
       (*cpuSaveGameFunc)(address, b);
+
       break;
-    }
+    }*/
     // default
   default:
 unwritable:
