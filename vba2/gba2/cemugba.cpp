@@ -23,6 +23,7 @@
 #include "gba/Sound.h"
 #include <assert.h>
 
+
 CEmuGBA::CEmuGBA()
 {
   m_snd = NULL;
@@ -41,7 +42,9 @@ CEmuGBA::CEmuGBA()
   m_soundInitialized = false;
 
   m_backupMedia = NULL;
+  saveDataLocked = false;
 }
+
 
 CEmuGBA::~CEmuGBA()
 {
@@ -49,6 +52,7 @@ CEmuGBA::~CEmuGBA()
     delete m_backupMedia;
   }
 }
+
 
 bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
 {
@@ -81,6 +85,7 @@ bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
   return true;
 }
 
+
 bool CEmuGBA::closeROM()
 {
   if( m_romLoaded ) {
@@ -92,13 +97,18 @@ bool CEmuGBA::closeROM()
   return false;
 }
 
+
 bool CEmuGBA::emulate()
 {
   if( !m_romLoaded ) return false;
 
+  // don't emulate while save data is locked
+  if( saveDataLocked ) return false;
+
   CPULoop( cyclesPerFrame );
   return true;
 }
+
 
 bool CEmuGBA::setDriverSound( CDriver_Sound *drv )
 {
@@ -112,6 +122,7 @@ bool CEmuGBA::setDriverSound( CDriver_Sound *drv )
   return true;
 }
 
+
 bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
 {
   if( drv == NULL ) return false;
@@ -121,6 +132,7 @@ bool CEmuGBA::setDriverGraphics( CDriver_Graphics *drv )
   return true;
 }
 
+
 bool CEmuGBA::setDebugDriverGraphics( CDriver_Graphics *drv )
 {
   m_gfxdbg = drv;
@@ -128,6 +140,7 @@ bool CEmuGBA::setDebugDriverGraphics( CDriver_Graphics *drv )
   m_graphicsDebugDriverLoaded = true;
   return true;
 }
+
 
 bool CEmuGBA::setDriverInput( CDriver_Input *drv )
 {
@@ -138,6 +151,26 @@ bool CEmuGBA::setDriverInput( CDriver_Input *drv )
   return true;
 }
 
+
 void CEmuGBA::toggleFastForward( const bool enable ) {
   fastforward = enable;
+}
+
+
+u32 CEmuGBA::getSaveDataSize() {
+  if( m_backupMedia == NULL ) return 0;
+  u32 result = 0;
+  m_backupMedia->getData( &result );
+  return result;
+}
+
+u8 *CEmuGBA::lockSaveData() {
+  if( m_backupMedia == NULL ) return NULL;
+  saveDataLocked = true;
+  return m_backupMedia->getData( 0 );
+}
+
+
+void CEmuGBA::unlockSaveData() {
+  saveDataLocked = false;
 }

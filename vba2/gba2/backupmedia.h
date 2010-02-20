@@ -37,11 +37,15 @@ public:
   u8 read( u32 address );
   void write( u8 data, u32 address );
 
+  // use this function when loading/saving the backup media content from/to a file
+  u8 *getData( u32 *size );
+
   static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize );
 
 private:
   BACKUPMEDIATYPE m_type;
   u8 *m_data;
+  u32 m_size;
 };
 
 

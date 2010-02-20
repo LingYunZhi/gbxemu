@@ -28,6 +28,7 @@
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
 #include "../gba2/common/cdriver_input.h"    // for dummy keypad input
+#include "../gba2/cartridgeheader.h"
 
 #include "paintwidget.h"
 //#include "cdebugwindow_graphics.h"
@@ -136,18 +137,96 @@ void MainWindow::on_actionLoad_ROM_triggered()
   QByteArray data = rom.readAll();
   rom.close();
   Q_ASSERT( size == data.size() );
-  bool retVal = m_emuGBA->loadROM( (const u8 *const)data.constData(), (u32)size );
+  const u8 *const romData = (const u8 *const)data.constData();
+
+  // build unique save game file name
+  CartridgeHeader header( romData );
+  QString version;
+  if( header.gameVersion > 0 ) {
+    // add version only if necessary
+    version = " [v" + QString::number( header.gameVersion ) + "]";
+  }
+  m_saveFile = m_settings->s_cartridgeSavesDir + "/" + header.gameTitle +
+               " (" + header.gameCode + ")" + version + ".sav";
+  // TODO: add exception for homebrew games with empty gameTitle
+
+  bool retVal = m_emuGBA->loadROM( romData, (u32)size );
   if( !retVal ) {
     QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
     return;
   }
   m_fileName = newFileName;
+
+  loadGame();
+
   ui->actionPlay_Pause->setEnabled( true );
   if( !m_timer->isActive() ) {
     // start emulation
     ui->actionPlay_Pause->trigger();
   }
 }
+
+
+bool MainWindow::saveGame() {
+  if( m_saveFile.isEmpty() ) return false;
+
+  const u32 size = m_emuGBA->getSaveDataSize();
+  if( size == 0 ) return true; // nothing to write to
+
+  bool error = false;
+
+  QFile file( m_saveFile );
+  // TODO: create backup before overwriting old save game?
+  const u8 *data = m_emuGBA->lockSaveData();
+  Q_ASSERT( data != NULL );
+
+  if( file.open( QIODevice::WriteOnly ) ) {
+    const qint64 written = file.write( (const char *)data, size );
+    file.close();
+    if( written != (int)size ) {
+      QMessageBox::critical( this, tr("Error"), tr("Error writing to file: ") + m_saveFile );
+      error = true;
+    }
+  } else {
+    QMessageBox::critical( this, tr("Error"), tr("Error opening file: ") + m_saveFile );
+    error = true;
+  }
+  m_emuGBA->unlockSaveData();
+
+  return error;
+}
+
+
+bool MainWindow::loadGame() {
+  if( m_saveFile.isEmpty() ) return false;
+
+  const u32 size = m_emuGBA->getSaveDataSize();
+  if( size == 0 ) return true; // nothing to write to
+
+  bool error = false;
+
+  QFile file( m_saveFile );
+  if( !file.exists() ) return true; // nothing to read from
+
+  u8 *data = m_emuGBA->lockSaveData();
+  Q_ASSERT( data != NULL );
+
+  if( file.open( QIODevice::ReadOnly ) ) {
+    const qint64 read = file.read( (char *)data, size );
+    file.close();
+    if( read != (int)size ) {
+      QMessageBox::critical( this, tr("Error"), tr("Error reading from file: ") + m_saveFile );
+      error = true;
+    }
+  } else {
+    QMessageBox::critical( this, tr("Error"), tr("Error opening file: ") + m_saveFile );
+    error = true;
+  }
+  m_emuGBA->unlockSaveData();
+
+  return error;
+}
+
 
 void MainWindow::on_actionUnload_ROM_triggered()
 {
@@ -156,6 +235,9 @@ void MainWindow::on_actionUnload_ROM_triggered()
       // stop emulation
       ui->actionPlay_Pause->trigger();
     }
+
+    saveGame();
+
     m_emuGBA->closeROM();
     m_fileName.clear();
     ui->actionPlay_Pause->setEnabled( false );

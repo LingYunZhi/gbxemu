@@ -49,6 +49,7 @@ private:
   Ui::MainWindow *ui;
   CEmuGBA *m_emuGBA;
   QString m_fileName;
+  QString m_saveFile;
   bool m_playing; // true: playing  false: paused
   int m_timeoutCounter;
   QTime m_timeCounter;
@@ -64,6 +65,11 @@ private:
   FrameDialog *settingsDialog;
 
   CAppSettings *m_settings;
+
+  // backup save game data to file
+  bool saveGame();
+  // load save game data from file (if it exists)
+  bool loadGame();
 
 
 private slots:

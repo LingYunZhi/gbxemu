@@ -25,10 +25,12 @@ BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 {
   m_type = findOutType( romData, romSize );
   m_data = NULL;
+  m_size = 0;
 
   switch( m_type ) {
   case SRAM:
-    m_data = new u8[0x8000]; // 32 KiB
+    m_size = 0x8000; // 32 KiB
+    m_data = new u8[m_size];
     assert( m_data != NULL );
     break;
   }
@@ -60,6 +62,15 @@ void BackupMedia::write( u8 data, u32 address ) {
   assert( address & 0xE000000 );
   assert( (address & 0x0FFFFFF) < 0x8000 );
   m_data[address & 0x7FFF] = data;
+}
+
+
+u8 *BackupMedia::getData( u32 *size ) {
+  if( m_size == 0 ) return NULL;
+  if( size != NULL ) {
+    *size = m_size;
+  }
+  return m_data;
 }
 
 
