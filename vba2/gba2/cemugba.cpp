@@ -42,7 +42,6 @@ CEmuGBA::CEmuGBA()
   m_soundInitialized = false;
 
   m_backupMedia = NULL;
-  saveDataLocked = false;
 }
 
 
@@ -101,10 +100,6 @@ bool CEmuGBA::closeROM()
 bool CEmuGBA::emulate()
 {
   if( !m_romLoaded ) return false;
-
-  // don't emulate while save data is locked
-  if( saveDataLocked ) return false;
-
   CPULoop( cyclesPerFrame );
   return true;
 }
@@ -157,20 +152,6 @@ void CEmuGBA::toggleFastForward( const bool enable ) {
 }
 
 
-u32 CEmuGBA::getSaveDataSize() {
-  if( m_backupMedia == NULL ) return 0;
-  u32 result = 0;
-  m_backupMedia->getData( &result );
-  return result;
-}
-
-u8 *CEmuGBA::lockSaveData() {
-  if( m_backupMedia == NULL ) return NULL;
-  saveDataLocked = true;
-  return m_backupMedia->getData( 0 );
-}
-
-
-void CEmuGBA::unlockSaveData() {
-  saveDataLocked = false;
+BackupMedia *CEmuGBA::getBackupMedia() {
+  return m_backupMedia;
 }

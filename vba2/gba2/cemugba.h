@@ -45,10 +45,7 @@ public:
 
     void toggleFastForward( const bool enable );
 
-    // use the returned pointer and size to write save data to a file
-    u32 getSaveDataSize();
-    u8 *lockSaveData();
-    void unlockSaveData();
+    BackupMedia *getBackupMedia();
 
 
 private:
@@ -69,7 +66,6 @@ private:
     bool m_soundInitialized;
 
     BackupMedia *m_backupMedia;
-    bool saveDataLocked;
 };
 
 #endif // CEMUGBA_H

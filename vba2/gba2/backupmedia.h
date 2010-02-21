@@ -33,14 +33,18 @@ public:
   ~BackupMedia();
 
   typedef enum { NONE, SRAM, EEPROM, FLASH64KiB, FLASH128KiB } BACKUPMEDIATYPE;
+  static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize );
   BACKUPMEDIATYPE getType();
+
   u8 read( u32 address );
   void write( u8 data, u32 address );
 
-  // use this function when loading/saving the backup media content from/to a file
-  u8 *getData( u32 *size );
+  // use these functions when loading/saving the backup media content from/to a file
+  u32 getSize();
+  u8 *getData();
 
-  static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize );
+  // you don't have to write m_data to a file if no write occured to it
+  bool writeOccured;
 
 private:
   BACKUPMEDIATYPE m_type;

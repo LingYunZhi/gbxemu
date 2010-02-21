@@ -29,6 +29,7 @@
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
 #include "../gba2/common/cdriver_input.h"    // for dummy keypad input
 #include "../gba2/cartridgeheader.h"
+#include "../gba2/backupmedia.h"
 
 #include "paintwidget.h"
 //#include "cdebugwindow_graphics.h"
@@ -157,7 +158,7 @@ void MainWindow::on_actionLoad_ROM_triggered()
   }
   m_fileName = newFileName;
 
-  loadGame();
+  loadBackupMedia();
 
   ui->actionPlay_Pause->setEnabled( true );
   if( !m_timer->isActive() ) {
@@ -167,17 +168,26 @@ void MainWindow::on_actionLoad_ROM_triggered()
 }
 
 
-bool MainWindow::saveGame() {
-  if( m_saveFile.isEmpty() ) return false;
+bool MainWindow::saveBackupMedia() {
+  if( m_saveFile.isEmpty() ) {
+    Q_ASSERT( false );
+    return true;
+  }
 
-  const u32 size = m_emuGBA->getSaveDataSize();
-  if( size == 0 ) return true; // nothing to write to
+  BackupMedia *media = m_emuGBA->getBackupMedia();
+  if( media == NULL ) return true;
 
-  bool error = false;
+  const u32 size = media->getSize();
+  if( size == 0 ) return true;
+
+  // don't save if nothing changed
+  if( !media->writeOccured ) return true;
+
+  bool ok = true;
 
   QFile file( m_saveFile );
   // TODO: create backup before overwriting old save game?
-  const u8 *data = m_emuGBA->lockSaveData();
+  const u8 *data = media->getData();
   Q_ASSERT( data != NULL );
 
   if( file.open( QIODevice::WriteOnly ) ) {
@@ -185,30 +195,40 @@ bool MainWindow::saveGame() {
     file.close();
     if( written != (int)size ) {
       QMessageBox::critical( this, tr("Error"), tr("Error writing to file: ") + m_saveFile );
-      error = true;
+      ok = false;
     }
   } else {
     QMessageBox::critical( this, tr("Error"), tr("Error opening file: ") + m_saveFile );
-    error = true;
+    ok = false;
   }
-  m_emuGBA->unlockSaveData();
 
-  return error;
+  // reset flag because we created a backup just now
+  media->writeOccured = false;
+
+  return ok;
 }
 
 
-bool MainWindow::loadGame() {
-  if( m_saveFile.isEmpty() ) return false;
+bool MainWindow::loadBackupMedia() {
+  if( m_saveFile.isEmpty() ) {
+    Q_ASSERT( false );
+    return true;
+  }
 
-  const u32 size = m_emuGBA->getSaveDataSize();
-  if( size == 0 ) return true; // nothing to write to
+  BackupMedia *media = m_emuGBA->getBackupMedia();
+  if( media == NULL ) return true;
 
-  bool error = false;
+  const u32 size = media->getSize();
+  if( size == 0 ) return true;
+
+  bool ok = true;
 
   QFile file( m_saveFile );
   if( !file.exists() ) return true; // nothing to read from
 
-  u8 *data = m_emuGBA->lockSaveData();
+  // TODO: if(media->writeOccured) create a backup of the currently loaded data before overwriting it
+
+  u8 *data = media->getData();
   Q_ASSERT( data != NULL );
 
   if( file.open( QIODevice::ReadOnly ) ) {
@@ -216,15 +236,17 @@ bool MainWindow::loadGame() {
     file.close();
     if( read != (int)size ) {
       QMessageBox::critical( this, tr("Error"), tr("Error reading from file: ") + m_saveFile );
-      error = true;
+      ok = false;
     }
   } else {
     QMessageBox::critical( this, tr("Error"), tr("Error opening file: ") + m_saveFile );
-    error = true;
+    ok = false;
   }
-  m_emuGBA->unlockSaveData();
 
-  return error;
+  // reset flag because we modified it just now
+  media->writeOccured = false;
+
+  return ok;
 }
 
 
@@ -236,7 +258,7 @@ void MainWindow::on_actionUnload_ROM_triggered()
       ui->actionPlay_Pause->trigger();
     }
 
-    saveGame();
+    saveBackupMedia();
 
     m_emuGBA->closeROM();
     m_fileName.clear();

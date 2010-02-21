@@ -67,9 +67,9 @@ private:
   CAppSettings *m_settings;
 
   // backup save game data to file
-  bool saveGame();
+  bool saveBackupMedia();
   // load save game data from file (if it exists)
-  bool loadGame();
+  bool loadBackupMedia();
 
 
 private slots:

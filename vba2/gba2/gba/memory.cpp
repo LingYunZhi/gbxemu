@@ -201,9 +201,11 @@ u32 CPUReadHalfWord(u32 address)
       return  eepromRead(address);
     goto unreadable;
   case 14:
+    /*
     if(cpuFlashEnabled | cpuSramEnabled)
       // no need to swap this
       return flashRead(address);
+      */
     // default
   default:
 unreadable:
@@ -289,10 +291,12 @@ void CPUWriteMemory(u32 address, u32 value)
     }
     goto unwritable;
   case 0x0E:
+    /*
     if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled) {
       (*cpuSaveGameFunc)(address, (u8)value);
       break;
     }
+    */
     // default
   default:
 unwritable:
@@ -362,11 +366,13 @@ void CPUWriteHalfWord(u32 address, u16 value)
     }
     goto unwritable;
   case 14:
+    /*
     if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled) {
       (*cpuSaveGameFunc)(address, (u8)value);
       break;
     }
     goto unwritable;
+    */
   default:
 unwritable:
 #ifdef GBA_LOGGING
@@ -588,9 +594,11 @@ u32 CPUReadMemory(u32 address)
       return eepromRead(address);
     goto unreadable;
   case 14:
+    /*
     if(cpuFlashEnabled | cpuSramEnabled)
       // no need to swap this
       return flashRead(address);
+      */
     // default
   default:
 unreadable:
