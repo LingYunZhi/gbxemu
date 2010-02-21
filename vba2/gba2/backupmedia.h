@@ -36,8 +36,13 @@ public:
   static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize );
   BACKUPMEDIATYPE getType();
 
-  u8 read( u32 address );
-  void write( u8 data, u32 address );
+  // SRAM
+  u8 read8( u32 address );
+  void write8( u8 data, u32 address );
+
+  // EEPROM
+  u16 read16( u32 address );
+  void write16( u16 data, u32 address );
 
   // use these functions when loading/saving the backup media content from/to a file
   u32 getSize();
@@ -50,6 +55,14 @@ private:
   BACKUPMEDIATYPE m_type;
   u8 *m_data;
   u32 m_size;
+  static const u32 SIZE_SRAM         = 0x8000;
+  static const u32 SIZE_EEPROM_SMALL = 0x0200;
+  static const u32 SIZE_EEPROM_LARGE = 0x2000;
+  typedef enum { IDLE, SETTING_ADDRESS, READING, WRITING } EEPROM_STATE;
+  EEPROM_STATE m_state;
+  u16 m_eepromAddress;
+  bool m_eepromWriteOK;
+  u8 m_eepromBitsRead;
 };
 
 

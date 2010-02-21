@@ -65,13 +65,15 @@ u8 CPUReadByte(u32 address)
   case 12:
     return rom[address & 0x1FFFFFF];
   case 13:
+    /*
     if(cpuEEPROMEnabled)
       return eepromRead(address);
+      */
     goto unreadable;
   case 14:
     if( backupMedia != NULL ) {
       if( backupMedia->getType() == BackupMedia::SRAM ) {
-        return backupMedia->read( address );
+        return backupMedia->read8( address );
       }
     }
     /*
@@ -196,9 +198,18 @@ u32 CPUReadHalfWord(u32 address)
       value = READ16LE(((u16 *)&rom[address & 0x1FFFFFE]));
     break;
   case 13:
+    /*
     if(cpuEEPROMEnabled)
       // no need to swap this
       return  eepromRead(address);
+      */
+    if( backupMedia != NULL ) {
+      if( backupMedia->getType() == BackupMedia::EEPROM ) {
+        // TODO: further check address bits
+        value = backupMedia->read16( address );
+        break;
+      }
+    }
     goto unreadable;
   case 14:
     /*
@@ -206,6 +217,7 @@ u32 CPUReadHalfWord(u32 address)
       // no need to swap this
       return flashRead(address);
       */
+    goto unreadable;
     // default
   default:
 unreadable:
@@ -360,12 +372,22 @@ void CPUWriteHalfWord(u32 address, u16 value)
     } else /*if(!agbPrintWrite(address, value))*/ goto unwritable;
     break;
   case 13:
+    /*
     if(cpuEEPROMEnabled) {
       eepromWrite(address, (u8)value);
       break;
+    }*/
+    if( backupMedia != NULL ) {
+      if( backupMedia->getType() == BackupMedia::EEPROM ) {
+        // TODO: further check address bits
+        backupMedia->write16( value, address );
+        break;
+      }
     }
     goto unwritable;
   case 14:
+    int foo;
+    foo = 123;
     /*
     if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled) {
       (*cpuSaveGameFunc)(address, (u8)value);
@@ -492,7 +514,7 @@ void CPUWriteByte(u32 address, u8 b)
   case 14:
     if( backupMedia != NULL ) {
       if( backupMedia->getType() == BackupMedia::SRAM ) {
-        backupMedia->write( b, address );
+        backupMedia->write8( b, address );
       }
     }
     break;
@@ -589,9 +611,11 @@ u32 CPUReadMemory(u32 address)
     value = READ32LE(((u32 *)&rom[address&0x1FFFFFC]));
     break;
   case 13:
+    /*
     if(cpuEEPROMEnabled)
       // no need to swap this
       return eepromRead(address);
+      */
     goto unreadable;
   case 14:
     /*
@@ -599,6 +623,7 @@ u32 CPUReadMemory(u32 address)
       // no need to swap this
       return flashRead(address);
       */
+    goto unreadable;
     // default
   default:
 unreadable:

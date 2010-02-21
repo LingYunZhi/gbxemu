@@ -21,6 +21,11 @@
 #include <assert.h>
 #include <string.h>
 
+//#define DEBUG_EEPROM
+#ifdef DEBUG_EEPROM
+#include <stdio.h>
+#endif
+
 
 BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 {
@@ -28,15 +33,25 @@ BackupMedia::BackupMedia( u32 *romData, u32 romSize )
   m_data = NULL;
   m_size = 0;
   writeOccured = false;
+  m_eepromWriteOK = true; // TODO: what is its default state?
+  m_eepromBitsRead = 68; // 68 means can not read more
 
   switch( m_type ) {
   case SRAM:
-    m_size = 0x8000; // 32 KiB
-    m_data = new u8[m_size];
+    // SRAM is always 32 KiB
+    m_size = SIZE_SRAM;
+    m_data = new u8[SIZE_SRAM];
     assert( m_data != NULL );
-    // TODO: is 0x00 the correct initial value?
-    memset( m_data, 0x00, m_size );
+    memset( m_data, 0xFF, SIZE_SRAM );
     break;
+  case EEPROM:
+    // EEPROM is either 512 Bytes or 8 KiB
+    // size variable will grow if more than 512 Bytes are accessed by the game
+    m_size = SIZE_EEPROM_SMALL;
+    m_data = new u8[SIZE_EEPROM_LARGE];
+    assert( m_data != NULL );
+    memset( m_data, 0xFF, SIZE_EEPROM_LARGE );
+    m_state = IDLE;
   }
 }
 
@@ -53,20 +68,127 @@ BackupMedia::BACKUPMEDIATYPE BackupMedia::getType() {
 }
 
 
-u8 BackupMedia::read( u32 address ) {
+u8 BackupMedia::read8( u32 address ) {
   assert( m_type == SRAM );
-  assert( address & 0xE000000 );
-  assert( (address & 0x0FFFFFF) < 0x8000 );
+  assert( address & 0x0E000000 );
+  assert( (address & 0x00FFFFFF) < 0x8000 );
   return m_data[address & 0x7FFF];
 }
 
 
-void BackupMedia::write( u8 data, u32 address ) {
+void BackupMedia::write8( u8 data, u32 address ) {
   assert( m_type == SRAM );
-  assert( address & 0xE000000 );
-  assert( (address & 0x0FFFFFF) < 0x8000 );
+  assert( address & 0x0E000000 );
+  assert( (address & 0x00FFFFFF) < 0x8000 );
   m_data[address & 0x7FFF] = data;
   writeOccured = true;
+}
+
+
+u16 BackupMedia::read16( u32 address ) {
+#ifdef DEBUG_EEPROM
+  fprintf( stderr, "EEPROM read from %X\n", address );
+#endif
+  assert( m_type == EEPROM );
+  assert( address & 0x0D000000 );
+
+  if( m_state == READING ) {
+    // read out:
+    // - garbage (4 bits)
+    // - data (64 bits, MSB first)
+
+    assert( m_eepromBitsRead < 68 );
+
+    if( m_eepromBitsRead < 4 ) {
+      m_eepromBitsRead++;
+      return 0; // garbage
+    } else {
+      const u8 data_bit_index = m_eepromBitsRead - 4;
+      const u8 data_byte_index = data_bit_index >> 3;
+      const u8 mask = 1 << ( 7 - (data_bit_index & 7) );
+      const u16 current_eeprom_address = m_eepromAddress + data_byte_index;
+      assert( current_eeprom_address < m_size );
+      m_eepromBitsRead++;
+      if( m_eepromBitsRead == 68 ) {
+        m_state = IDLE;
+      }
+      return (m_data[current_eeprom_address] & mask) ? 1 : 0;
+    }
+  } else if ( (m_state == IDLE) && (address == 0x0D000000) ) {
+    // confirm there were no write errors
+    return m_eepromWriteOK;
+  } else {
+    // error: read occured, but no address was specified before
+    assert( false );
+  }
+}
+
+
+void BackupMedia::write16( u16 data, u32 address ) {
+#ifdef DEBUG_EEPROM
+  fprintf( stderr, "EEPROM write %X to %X\n", data, address );
+#endif
+  assert( m_type == EEPROM );
+  assert( address & 0x0D000000 );
+
+  const bool bit = data & 1;
+  static u8 bit_count; // number of bits already received
+  static u16 buffer;
+
+  switch( m_state ) {
+  case IDLE:
+    // receive a '1' bit to awake from idle state
+    assert( bit == 1 );
+    bit_count = 0;
+    buffer = 0;
+    m_state = SETTING_ADDRESS;
+    break;
+  case SETTING_ADDRESS:
+    assert( bit_count <= 7 );
+    // receive in order:
+    // - requested mode (1=read 0=write)
+    // - address (6 bit, MSB first), references an 8 byte block of EEPROM storage
+    if( bit_count <= 7 ) {
+      buffer <<= 1;
+      buffer |= bit;
+    }
+    if( bit_count == 7 ) {
+      // receiving last address bit
+      m_state = (buffer & 0x40) ? READING : WRITING;
+      m_eepromAddress = (buffer & 0x3F) << 3;
+      buffer = 0; // we need this to be 0 in case WRITING
+    }
+    break;
+  case READING:
+    // after SETTING_ADDRESS, a single end bit is expected to be received, not more!
+    assert( bit_count == 8 );
+    m_eepromBitsRead = 0;
+    break;
+  case WRITING:
+    // receive in order:
+    // - data to be written to m_eepromAddress (64 bit, MSB first)
+    // - a single end bit
+    assert( bit_count >= 8 );
+    if( bit_count < (8+64) ) {
+      m_eepromWriteOK = false; // not done yet
+      buffer <<= 1;
+      buffer |= bit;
+      if( ((bit_count+1) % 8) == 0 ) {
+        assert( m_eepromAddress < m_size );
+        m_data[ m_eepromAddress ] = buffer;
+        m_eepromAddress++;
+        writeOccured = true; // signal there was a change to the save data
+        buffer = 0;
+      }
+    } else {
+      // ignore end bit
+      assert( bit_count == (8+64) );
+      m_eepromWriteOK = true; // done writing
+      m_state = IDLE; // reset state to beginning
+    }
+    break;
+  }
+  bit_count++;
 }
 
 
