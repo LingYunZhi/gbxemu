@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<TITLE>TOC</TITLE>
+	<BASE target="MainFrame">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<P><A NAME="Table of Contents"></A><B>Table of Contents</B><BR>
+
+<HR ALIGN="CENTER">
+<FONT SIZE="2">1. </FONT><A HREF="CowBiteSpec.htm#Introduction"><FONT SIZE="2">Introduction</FONT></A><FONT SIZE="2"><BR>
+2. </FONT><A HREF="CowBiteSpec.htm#CPU"><FONT SIZE="2">CPU</FONT></A><FONT SIZE="2"><BR>
+3. </FONT><A HREF="CowBiteSpec.htm#Memory Map"><FONT SIZE="2">Memory</FONT></A><FONT SIZE="2"><BR>
+4. </FONT><A HREF="CowBiteSpec.htm#Graphics Hardware Overview"><FONT SIZE="2">Graphics Hardware Overview</FONT></A><A
+HREF="CowBiteSpec.htm#Video Modes"><FONT SIZE="2"><BR>
+</FONT></A><FONT SIZE="2">5. </FONT><A HREF="CowBiteSpec.htm#Backgrounds"><FONT SIZE="2">Backgrounds</FONT></A><FONT
+SIZE="2"><BR>
+6. </FONT><A HREF="CowBiteSpec.htm#OAM (sprites)"><FONT SIZE="2">OAM/Sprites</FONT></A><FONT SIZE="2"><BR>
+7. </FONT><A HREF="CowBiteSpec.htm#Windowing"><FONT SIZE="2">Windowing</FONT></A><FONT SIZE="2"><BR>
+8. </FONT><A HREF="CowBiteSpec.htm#Hardware Interrupts"><FONT SIZE="2">Hardware Interrupts</FONT></A><FONT SIZE="2"><BR>
+9. </FONT><A HREF="CowBiteSpec.htm#BIOS (Software Interrupts)"><FONT SIZE="2">BIOS</FONT></A><FONT SIZE="2"><BR>
+10. </FONT><A HREF="CowBiteSpec.htm#Memory-Mapped Hardware Registers"><FONT SIZE="2">Memory-Mapped Hardware Registers</FONT></A>
+
+<UL>
+	<LI><A HREF="CowBiteSpec.htm#Graphics Hardware Registers"><FONT SIZE="2">Display Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Background Registers"><FONT SIZE="2">Background Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Background Rotation/Scaling Regi"><FONT SIZE="2">Background Scaling/Rotation Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Windowing Registers"><FONT SIZE="2">Windowing Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Effects Registers"><FONT SIZE="2">Effects Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Sound Controls"><FONT SIZE="2">Sound Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#DMA Source Registers"><FONT SIZE="2">DMA Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Timer registers"><FONT SIZE="2">Timer Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Serial Communication Registers"><FONT SIZE="2">Serial Communication Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Keypad input and control registe"><FONT SIZE="2">Keyboard Registers</FONT></A>
+	<LI><A HREF="CowBiteSpec.htm#Interrupt Registers"><FONT SIZE="2">Interrupt Registers</FONT></A>
+</UL>
+
+<P><FONT SIZE="2">11. </FONT><A HREF="CowBiteSpec.htm#Miscellaneous"><FONT SIZE="2">Miscellaneous/Weirdness</FONT></A><FONT
+SIZE="2"><BR>
+12. </FONT><A HREF="CowBiteSpec.htm#Links"><FONT SIZE="2">Links</FONT></A><FONT SIZE="2"><BR>
+13. </FONT><A HREF="CowBiteSpec.htm#Thanks"><FONT SIZE="2">Thanks<BR>
+</FONT></A><FONT SIZE="2"><BR>
+<BR>
+<BR>
+</FONT><B>Register List</B><FONT SIZE="2"><B><BR>
+</B></FONT><FONT SIZE="1">(Offset from 0x04000000)</FONT> 
+<HR ALIGN="CENTER">
+</P>
+<PRE>0x000 - <A HREF="CowBiteSpec.htm#REG_DISPCNT">REG_DISPCNT</A>
+0x004 - <A HREF="CowBiteSpec.htm#REG_STAT">REG_DISPSTAT</A>
+0x006 - <A HREF="CowBiteSpec.htm#REG_VCOUNT">REG_VCOUNT
+</A>0x008 - <A HREF="CowBiteSpec.htm#REG_BG0">REG_BG0CNT
+</A>0x00A - <A HREF="CowBiteSpec.htm#REG_BG1">REG_BG1</A><A HREF="CowBiteSpec.htm#REG_BG0">CNT
+</A>0x00C - <A HREF="CowBiteSpec.htm#REG_BG2">REG_BG2CNT</A><A HREF="CowBiteSpec.htm#REG_BG0">
+</A>0x00E - <A HREF="CowBiteSpec.htm#REG_BG3">REG_BG3CNT</A>
+0x010 - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG0HOFS
+</A>0x012 - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG0VOFS
+</A>0x014 - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG1HOFS
+</A>0x016 - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG1VOFS
+</A>0x018 - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG2HOFS
+</A>0x01A - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG2V0FS
+</A>0x01C - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG3HOFS
+</A>0x01E - <A HREF="CowBiteSpec.htm#REG_BG0SCX">REG_BG3VOFS</A>
+0x020 - <A HREF="CowBiteSpec.htm#REG_BG2DX/PA">REG_BG2PA</A>
+0x022 - <A HREF="CowBiteSpec.htm#REG_BG2DMX/PB">REG_BG2PB</A>
+0x024 - <A HREF="CowBiteSpec.htm#REG_BG2DY/PC">REG_BG2PC
+</A>0x026 - <A HREF="CowBiteSpec.htm#REG_BG2DMY/PD">REG_BG2PD</A>
+0x028 - <A HREF="CowBiteSpec.htm#REG_BG2X">REG_BG2X</A>
+0x02C - <A HREF="CowBiteSpec.htm#REG_BG2Y">REG_BG2Y</A>
+0x030 - <A HREF="CowBiteSpec.htm#REG_BG3DX/PA">REG_BG3PA</A>
+0x032 - <A HREF="CowBiteSpec.htm#REG_BG3DMX/PB">REG_BG3PB</A>
+0x034 - <A HREF="CowBiteSpec.htm#REG_BG3DY/PC">REG_BG3PC</A>
+0x036 - <A HREF="CowBiteSpec.htm#REG_BG3DMY/PD">REG_BG3PD</A>
+0x038 - <A HREF="CowBiteSpec.htm#REG_BG3X">REG_BG3X</A>
+0x03C - <A HREF="CowBiteSpec.htm#REG_BG3Y">REG_BG3Y</A>
+0x040 - <A HREF="CowBiteSpec.htm#REG_WIN0_H">REG_WIN0H</A>
+0x042 - <A HREF="CowBiteSpec.htm#REG_WIN1_H">REG_WIN1H</A>
+0x044 - <A HREF="CowBiteSpec.htm#REG_WIN0_V">REG_WIN0V</A>
+0x046 - <A HREF="CowBiteSpec.htm#REG_WIN1_V">REG_WIN1V</A>
+0x048 - <A HREF="CowBiteSpec.htm#REG_WIN_IN">REG_WININ</A>
+0x04A - <A HREF="CowBiteSpec.htm#REG_WIN_OUT">REG_WINOUT</A>
+0x04C - <A HREF="CowBiteSpec.htm#REG_MOSAIC">REG_MOSAIC</A>
+0x050 - <A HREF="CowBiteSpec.htm#REG_BLDCNT">REG_BLDMOD</A>
+0x052 - <A HREF="CowBiteSpec.htm#REG_BLDALPHA">REG_COLEV</A>
+0x054 - <A HREF="CowBiteSpec.htm#REG_BLDY">REG_COLEY</A>
+0x060 - <A HREF="CowBiteSpec.htm#REG_SOUND1CNT_L">REG_SOUND1CNT_L</A>
+0x062 - <A HREF="CowBiteSpec.htm#REG_SOUND1CNT_H">REG_SOUND1CNT_H</A>
+0x064 - <A HREF="CowBiteSpec.htm#REG_SOUND1CNT_X">REG_SOUND1CNT_X</A>
+0x068 - <A HREF="CowBiteSpec.htm#REG_SOUND2CNT_L">REG_SOUND2CNT_L</A>
+0x06C - <A HREF="CowBiteSpec.htm#REG_SOUND2CNT_H">REG_SOUND2CNT_H</A>
+0x070 - <A HREF="CowBiteSpec.htm#REG_SOUND3CNT_L">REG_SOUND3CNT_L</A>
+0x072 - <A HREF="CowBiteSpec.htm#REG_SOUND3CNT_H">REG_SOUND3CNT_H</A>
+0x074 - <A HREF="CowBiteSpec.htm#REG_SOUND3CNT_X">REG_SOUND3CNT_X</A>
+0x078 - <A HREF="CowBiteSpec.htm#REG_SOUND4CNT_L">REG_SOUND4CNT_L</A>
+0x07C - <A HREF="CowBiteSpec.htm#REG_SOUND4CNT_H">REG_SOUND4CNT_H</A>
+0x080 - <A HREF="CowBiteSpec.htm#REG_SOUNDCNT_L">REG_SOUNDCNT_L</A>
+0x082 - <A HREF="CowBiteSpec.htm#REG_SOUNDCNT_H">REG_SOUNDCNT_H</A>
+0x084 - <A HREF="CowBiteSpec.htm#REG_SOUNDCNT_X">REG_SOUNDCNT_X</A>
+0x088 - <A HREF="CowBiteSpec.htm#REG_SOUNDBIAS">REG_SOUNDBIAS</A>
+0x090 - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM0_L</A>
+0x092 - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM0_H</A>
+0x094 - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM1_L</A>
+0x096 - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM1_H</A>
+0x098 - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM2_L</A>
+0x09A - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM2_H</A>
+0x09C - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM3_L</A>
+0x09E - <A HREF="CowBiteSpec.htm#REG_WAVE_RAM0_L">REG_WAVE_RAM3_H</A>
+0x0A0 - <A HREF="CowBiteSpec.htm#REG_FIFO_A_L">REG_FIF0_A_L</A>
+0x0A2 - <A HREF="CowBiteSpec.htm#REG_FIFO_A_L">REG_FIFO_A_H</A>
+0x0A4 - <A HREF="CowBiteSpec.htm#REG_FIFO_A_L">REG_FIFO_B_L</A>
+0x0A6 - <A HREF="CowBiteSpec.htm#REG_FIFO_A_L">REG_FIFO_B_H</A>
+0x0B0 - <A HREF="CowBiteSpec.htm#REG_DMA0SAD">REG_DMA0SAD</A>
+0x0B4 - <A HREF="CowBiteSpec.htm#REG_DMA0DST">REG_DMA0DAD</A>
+0x0B8 - <A HREF="CowBiteSpec.htm#REG_DMA0SIZE">REG_DMA0CNT_L</A>
+0x0BA - <A HREF="CowBiteSpec.htm#REG_DMA0CNT">REG_DMA0CNT_H</A>
+0x0BC - <A HREF="CowBiteSpec.htm#REG_DMA1SAD">REG_DMA1SAD</A>
+0x0C0 - <A HREF="CowBiteSpec.htm#REG_DMA1DST">REG_DMA1DAD</A>
+0x0C4 - <A HREF="CowBiteSpec.htm#REG_DMA1SIZE">REG_DMA1CNT_L</A>
+0x0C6 - <A HREF="CowBiteSpec.htm#REG_DMA1CNT">REG_DMA1CNT_H</A>
+0x0C8 - <A HREF="CowBiteSpec.htm#REG_DMA2SAD">REG_DMA2SAD</A>
+0x0CC - <A HREF="CowBiteSpec.htm#REG_DMA2DST">REG_DMA2DAD</A>
+0x0D0 - <A HREF="CowBiteSpec.htm#REG_DMA2SIZE">REG_DMA2CNT_L</A>
+0x0D2 - <A HREF="CowBiteSpec.htm#REG_DMA2CNT">REG_DMA2CNT_H</A>
+0x0D4 - <A HREF="CowBiteSpec.htm#REG_DMA3SAD">REG_DMA3SAD</A>
+0x0D8 - <A HREF="CowBiteSpec.htm#REG_DMA3DST">REG_DMA3DAD</A>
+0x0DC - <A HREF="CowBiteSpec.htm#REG_DMA3SIZE">REG_DMA3CNT_L</A>
+0x0DE - <A HREF="CowBiteSpec.htm#REG_DMA3CNT">REG_DMA3CNT_H</A>
+0x100 - <A HREF="CowBiteSpec.htm#REG_TM0DAT">REG_TM0D</A>
+0x102 - <A HREF="CowBiteSpec.htm#REG_TM0CNT">REG_TM0CNT</A>
+0x104 - <A HREF="CowBiteSpec.htm#REG_TM1DAT">REG_TM1D</A>
+0x106 - <A HREF="CowBiteSpec.htm#REG_TM1CNT">REG_TM1CNT</A>
+0x108 - <A HREF="CowBiteSpec.htm#REG_TM2DAT">REG_TM2D</A>
+0x10A - <A HREF="CowBiteSpec.htm#REG_TM2CNT">REG_TM2CNT</A>
+0x10C - <A HREF="CowBiteSpec.htm#REG_TM3DAT">REG_TM3D</A>
+0x10E - <A HREF="CowBiteSpec.htm#REG_TM3CNT">REG_TM3CNT</A>
+0x120 - <A HREF="CowBiteSpec.htm#REG_SCD0">REG_SCD0</A>
+0x122 - <A HREF="CowBiteSpec.htm#REG_SCD0">REG_SCD1</A>
+0x124 - <A HREF="CowBiteSpec.htm#REG_SCD0">REG_SCD2</A>
+0x126 - <A HREF="CowBiteSpec.htm#REG_SCD0">REG_SCD3</A>
+0x128 - <A HREF="CowBiteSpec.htm#REG_SCCNT_L">REG_SCCNT_L</A>
+0x12A - <A HREF="CowBiteSpec.htm#REG_SCCNT_H">REG_SCCNT_H</A>
+0x130 - <A HREF="CowBiteSpec.htm#REG_KEY">REG_KEY</A>
+0x132 - <A HREF="CowBiteSpec.htm#REG_KEYCNT">REG_P1CNT</A>
+0x134 - <A HREF="CowBiteSpec.htm#REG_R">REG_R</A>
+0x200 - <A HREF="CowBiteSpec.htm#REG_IE">REG_IE</A>
+0x202 - <A HREF="CowBiteSpec.htm#REG_IF">REG_IF</A>
+0x204 - <A HREF="CowBiteSpec.htm#REG_WS_CR">REG_WSCNT</A>
+0x208 - <A HREF="CowBiteSpec.htm#REG_IME">REG_IME
+</A>0x300 - <A HREF="CowBiteSpec.htm#REG_PAUSE">REG_PAUSE</A></PRE>
+<P>
+
+</BODY>
+
+</HTML>
