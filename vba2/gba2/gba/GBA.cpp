@@ -77,7 +77,10 @@ bool busPrefetch = false;
 bool busPrefetchEnable = false;
 u32 busPrefetchCount = 0;
 int cpuDmaTicksToUpdate = 0;
-int cpuDmaCount = 0;
+
+u32 cpuDmaCount = 0;
+bool eepromSizeDetected = false;
+
 bool cpuDmaHack = false;
 u32 cpuDmaLast = 0;
 int dummyAddress = 0;
@@ -885,6 +888,7 @@ void CPUCleanUp()
 
 int CPULoadRom(const u8 *const data, const int size)
 {
+  eepromSizeDetected = false;
   if( size > 0x2000000 ) return 0;
   romSize = 0x2000000; // currently necessary for accurate emulation ???
 
@@ -1528,6 +1532,7 @@ void doDMA(u32 &s, u32 &d, u32 si, u32 di, u32 c, int transfer32)
   int sc = c;
 
   cpuDmaCount = c;
+
   // This is done to get the correct waitstates.
   if (sm>15)
       sm=15;

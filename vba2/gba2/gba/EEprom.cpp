@@ -21,8 +21,6 @@
 #include <memory.h>
 #include <stddef.h> // for NULL
 
-extern int cpuDmaCount;
-
 int eepromMode = EEPROM_IDLE;
 int eepromByte = 0;
 int eepromBits = 0;

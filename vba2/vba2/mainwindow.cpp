@@ -234,7 +234,8 @@ bool MainWindow::loadBackupMedia() {
   if( file.open( QIODevice::ReadOnly ) ) {
     const qint64 read = file.read( (char *)data, size );
     file.close();
-    if( read != (int)size ) {
+    if( (read != (int)size) && (media->getType() != media->EEPROM) ) {
+      // exception for EEPROM: we can't know the correct size before emulation started
       QMessageBox::critical( this, tr("Error"), tr("Error reading from file: ") + m_saveFile );
       ok = false;
     }

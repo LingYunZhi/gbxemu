@@ -372,19 +372,25 @@ void CPUWriteHalfWord(u32 address, u16 value)
     } else /*if(!agbPrintWrite(address, value))*/ goto unwritable;
     break;
   case 13:
-    /*
-    if(cpuEEPROMEnabled) {
-      eepromWrite(address, (u8)value);
-      break;
-    }*/
-    if( backupMedia != NULL ) {
-      if( backupMedia->getType() == BackupMedia::EEPROM ) {
-        // TODO: further check address bits
-        backupMedia->write16( value, address );
+    {
+      /*
+      if(cpuEEPROMEnabled) {
+        eepromWrite(address, (u8)value);
         break;
+      }*/
+      if( backupMedia != NULL ) {
+        if( backupMedia->getType() == BackupMedia::EEPROM ) {
+          // autodetect EEPROM size
+          if( !eepromSizeDetected ) {
+            eepromSizeDetected = backupMedia->detectEEPROMSize( cpuDmaCount );
+          }
+          // TODO: further check address bits
+          backupMedia->write16( value, address );
+          break;
+        }
       }
+      goto unwritable;
     }
-    goto unwritable;
   case 14:
     int foo;
     foo = 123;

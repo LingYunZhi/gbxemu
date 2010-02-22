@@ -189,6 +189,8 @@ extern bool cpuSramEnabled;
 extern bool cpuFlashEnabled;
 extern bool cpuEEPROMEnabled;
 extern bool cpuEEPROMSensorEnabled;
+extern u32 cpuDmaCount; // this variable is necessary to be able to autodetect EEPROM size
+extern bool eepromSizeDetected; // true if size was detected successfully
 extern bool cpuDmaHack;
 extern u32 cpuDmaLast;
 extern bool timer0On;

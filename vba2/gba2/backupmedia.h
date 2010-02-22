@@ -41,6 +41,9 @@ public:
   void write8( u8 data, u32 address );
 
   // EEPROM
+  // call this before any reads/writes occured!
+  // if it fails, call it again next time
+  bool detectEEPROMSize( u32 dmaCount );
   u16 read16( u32 address );
   void write16( u16 data, u32 address );
 
@@ -58,11 +61,13 @@ private:
   static const u32 SIZE_SRAM         = 0x8000;
   static const u32 SIZE_EEPROM_SMALL = 0x0200;
   static const u32 SIZE_EEPROM_LARGE = 0x2000;
+  static const u32 ADDRESS_BITS_EEPROM_SMALL = 6+2;  // includes the two command bits
+  static const u32 ADDRESS_BITS_EEPROM_LARGE = 14+2; //   for faster code later
   typedef enum { IDLE, SETTING_ADDRESS, READING, WRITING } EEPROM_STATE;
   EEPROM_STATE m_state;
   u16 m_eepromAddress;
-  bool m_eepromWriteOK;
   u8 m_eepromBitsRead;
+  u8 m_eepromAddressBits;
 };
 
 
