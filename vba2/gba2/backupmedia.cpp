@@ -145,11 +145,8 @@ u16 BackupMedia::read16( u32 address ) {
   case IDLE:
   case SETTING_ADDRESS:
   case WRITING:
-    if( address == 0x0D000000 ) {
-      // acknowledge we are ready
-      return 1;
-    }
-    break;
+    // acknowledge we are ready
+    return 1;
   }
 
   // error: read occured, but no address was specified before
