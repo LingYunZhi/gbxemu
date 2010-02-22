@@ -21,9 +21,12 @@
 #include "RTC.h"
 #include "Sound.h"
 #include "gba.h"
+#include <assert.h>
 
 u8 CPUReadByte(u32 address)
 {
+  assert( !(address & 0xF0000000) );
+
   switch(address >> 24) {
   case 0:
     if (reg[15].I >> 24) {
@@ -117,6 +120,8 @@ unreadable:
 
 u32 CPUReadHalfWord(u32 address)
 {
+  assert( !(address & 0xF0000000) );
+
 #ifdef GBA_LOGGING
   if(address & 1) {
     if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
@@ -258,6 +263,9 @@ u16 CPUReadHalfWordSigned(u32 address)
 
 void CPUWriteMemory(u32 address, u32 value)
 {
+  assert( !(address & 0xF0000000) );
+
+
 #ifdef GBA_LOGGING
   if(address & 3) {
     if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
@@ -327,6 +335,9 @@ unwritable:
 
 void CPUWriteHalfWord(u32 address, u16 value)
 {
+  assert( !(address & 0xF0000000) );
+
+
 #ifdef GBA_LOGGING
   if(address & 1) {
     if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
@@ -418,6 +429,8 @@ unwritable:
 
 void CPUWriteByte(u32 address, u8 b)
 {
+  assert( !(address & 0xF0000000) );
+
   switch(address >> 24) {
   case 2:
       workRAM[address & 0x3FFFF] = b;
@@ -551,6 +564,9 @@ unwritable:
 
 u32 CPUReadMemory(u32 address)
 {
+  assert( !(address & 0xF0000000) );
+
+
 #ifdef GBA_LOGGING
   if(address & 3) {
     if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {

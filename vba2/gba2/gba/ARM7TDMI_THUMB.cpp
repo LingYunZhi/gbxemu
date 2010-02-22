@@ -928,7 +928,7 @@ static INSN_REGPARM void thumb60(u32 opcode)
 {
   if (busPrefetchCount == 0)
     busPrefetch = busPrefetchEnable;
-  u32 address = reg[(opcode>>3)&7].I + (((opcode>>6)&31)<<2);
+  const u32 address = reg[(opcode>>3)&7].I + (((opcode>>6)&31)<<2);
   CPUWriteMemory(address, reg[opcode&7].I);
   clockTicks = dataTicksAccess32(address) + codeTicksAccess16(armNextPC) + 2;
 }
