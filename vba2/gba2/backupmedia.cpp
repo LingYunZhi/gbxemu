@@ -424,6 +424,7 @@ u32 stringToValue( const char s[5] ) {
 BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize )
 {
   assert( romData != NULL );
+  if( romSize < 192 ) return NONE;
 
   /* possible strings are:
      - "EEPROM_V"
@@ -447,6 +448,7 @@ BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize
   const u32 _H512 = stringToValue( "H512" );
   const u32 _H1M_ = stringToValue( "H1M_" );
 
+  assert( romSize >= 8 );
   const u32 endAdress = ( romSize / 4 ) - 2;
   bool saveTypeFound = false;
   BACKUPMEDIATYPE result = NONE;

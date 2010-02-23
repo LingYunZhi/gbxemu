@@ -24,6 +24,9 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QTimer>
+#include <QDragEnterEvent>
+#include <QList>
+#include <QUrl>
 
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
@@ -128,43 +131,8 @@ void MainWindow::on_actionLoad_ROM_triggered()
 
   QString newFileName = QFileDialog::getOpenFileName( this, tr("Select ROM image to load"), startDir, tr("GBA ROMs (*.gba)") );
   if( newFileName.isEmpty() ) return;
-  QFile rom( newFileName );
-  qint64 size = rom.size();
-  if( size > (32*1024*1024) ) {
-    QMessageBox::critical( this, tr("Error"), tr("GBA ROM size must not exceed 32 MB.") );
-    return;
-  }
-  rom.open( QFile::ReadOnly );
-  QByteArray data = rom.readAll();
-  rom.close();
-  Q_ASSERT( size == data.size() );
-  const u8 *const romData = (const u8 *const)data.constData();
 
-  // build unique save game file name
-  CartridgeHeader header( romData );
-  QString version;
-  if( header.gameVersion > 0 ) {
-    // add version only if necessary
-    version = " [v" + QString::number( header.gameVersion ) + "]";
-  }
-  m_saveFile = m_settings->s_cartridgeSavesDir + "/" + header.gameTitle +
-               " (" + header.gameCode + ")" + version + ".sav";
-  // TODO: add exception for homebrew games with empty gameTitle
-
-  bool retVal = m_emuGBA->loadROM( romData, (u32)size );
-  if( !retVal ) {
-    QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
-    return;
-  }
-  m_fileName = newFileName;
-
-  loadBackupMedia();
-
-  ui->actionPlay_Pause->setEnabled( true );
-  if( !m_timer->isActive() ) {
-    // start emulation
-    ui->actionPlay_Pause->trigger();
-  }
+  loadGame( newFileName );
 }
 
 
@@ -251,6 +219,53 @@ bool MainWindow::loadBackupMedia() {
 }
 
 
+bool MainWindow::loadGame( QString romFile ) {
+  QFile rom( romFile );
+  qint64 size = rom.size();
+  if( size > (32*1024*1024) ) {
+    QMessageBox::critical( this, tr("Error"), tr("GBA ROM size must not exceed 32 MB.") );
+    return false;
+  }
+  if( size < 192 ) {
+    QMessageBox::critical( this, tr("Error"), tr("GBA ROM is too small.") );
+    return false;
+  }
+  rom.open( QFile::ReadOnly );
+  QByteArray data = rom.readAll();
+  rom.close();
+  Q_ASSERT( size == data.size() );
+  const u8 *const romData = (const u8 *const)data.constData();
+
+  // build unique save game file name
+  CartridgeHeader header( romData );
+  QString version;
+  if( header.gameVersion > 0 ) {
+    // add version only if necessary
+    version = " [v" + QString::number( header.gameVersion ) + "]";
+  }
+  m_saveFile = m_settings->s_cartridgeSavesDir + "/" + header.gameTitle +
+               " (" + header.gameCode + ")" + version + ".sav";
+  // TODO: add exception for homebrew games with empty gameTitle
+
+  bool retVal = m_emuGBA->loadROM( romData, (u32)size );
+  if( !retVal ) {
+    QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
+    return false;
+  }
+  m_fileName = romFile;
+
+  loadBackupMedia();
+
+  ui->actionPlay_Pause->setEnabled( true );
+  if( !m_timer->isActive() ) {
+    // start emulation
+    ui->actionPlay_Pause->trigger();
+  }
+
+  return true;
+}
+
+
 void MainWindow::on_actionUnload_ROM_triggered()
 {
   if( !m_fileName.isEmpty() ) {
@@ -264,6 +279,33 @@ void MainWindow::on_actionUnload_ROM_triggered()
     m_emuGBA->closeROM();
     m_fileName.clear();
     ui->actionPlay_Pause->setEnabled( false );
+  }
+}
+
+
+void MainWindow::dragEnterEvent( QDragEnterEvent *event ) {
+  if( event->mimeData()->hasUrls() ) {
+    event->acceptProposedAction();
+  }
+}
+
+
+void MainWindow::dropEvent( QDropEvent *event ) {
+  const QMimeData *data = event->mimeData();
+  // launch dropped game ROM
+  if( data->hasUrls() ) {
+    QList<QUrl> files = data->urls();
+    const int nFiles = files.size();
+    QString file;
+    for( int i = 0; i < nFiles; i++ ) {
+      file = files.at( i ).toLocalFile();
+      if( QFile::exists( file ) ) {
+        if( loadGame( file ) ) {
+          // if one of the files failed to load, try next one
+          break;
+        }
+      }
+    }
   }
 }
 

@@ -70,7 +70,12 @@ private:
   bool saveBackupMedia();
   // load save game data from file (if it exists)
   bool loadBackupMedia();
+  // load & run game, also load backup media if possible
+  bool loadGame( QString romFile );
 
+protected:
+  void dragEnterEvent( QDragEnterEvent *event );
+  void dropEvent( QDropEvent *event );
 
 private slots:
   // initialize or reinitialize sound output
