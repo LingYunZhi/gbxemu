@@ -18,7 +18,6 @@
 
 #include "memory.h"
 #include "../common/Port.h"
-#include "RTC.h"
 #include "Sound.h"
 #include "gba.h"
 #include <assert.h>
@@ -67,12 +66,6 @@ u8 CPUReadByte(u32 address)
   case 11:
   case 12:
     return rom[address & 0x1FFFFFF];
-  case 13:
-    /*
-    if(cpuEEPROMEnabled)
-      return eepromRead(address);
-      */
-    goto unreadable;
   case 14:
     if( backupMedia != NULL ) {
       switch( backupMedia->getType() ) {
@@ -84,23 +77,6 @@ u8 CPUReadByte(u32 address)
         return backupMedia->read8( address );
       }
     }
-    /*
-    if(cpuSramEnabled | cpuFlashEnabled)
-      return flashRead(address);
-    if(cpuEEPROMSensorEnabled) {
-      switch(address & 0x00008f00) {
-  case 0x8200:
-    return systemGetSensorX() & 255;
-  case 0x8300:
-    return (systemGetSensorX() >> 8)|0x80;
-  case 0x8400:
-    return systemGetSensorY() & 255;
-  case 0x8500:
-    return systemGetSensorY() >> 8;
-      }
-    }
-    */
-    // default
   default:
 unreadable:
 #ifdef GBA_LOGGING
@@ -202,17 +178,9 @@ u32 CPUReadHalfWord(u32 address)
   case 10:
   case 11:
   case 12:
-    if(address == 0x80000c4 || address == 0x80000c6 || address == 0x80000c8)
-      value = rtcRead(address);
-    else
-      value = READ16LE(((u16 *)&rom[address & 0x1FFFFFE]));
+    value = READ16LE(((u16 *)&rom[address & 0x1FFFFFE]));
     break;
   case 13:
-    /*
-    if(cpuEEPROMEnabled)
-      // no need to swap this
-      return  eepromRead(address);
-      */
     if( backupMedia != NULL ) {
       if( backupMedia->getType() == BackupMedia::EEPROM ) {
         // TODO: further check address bits
@@ -221,14 +189,6 @@ u32 CPUReadHalfWord(u32 address)
       }
     }
     goto unreadable;
-  case 14:
-    /*
-    if(cpuFlashEnabled | cpuSramEnabled)
-      // no need to swap this
-      return flashRead(address);
-      */
-    goto unreadable;
-    // default
   default:
 unreadable:
 #ifdef GBA_LOGGING
@@ -309,20 +269,6 @@ void CPUWriteMemory(u32 address, u32 value)
   case 0x07:
       WRITE32LE(((u32 *)&oam[address & 0x3fc]), value);
     break;
-  case 0x0D:
-    if(cpuEEPROMEnabled) {
-      eepromWrite(address, value);
-      break;
-    }
-    goto unwritable;
-  case 0x0E:
-    /*
-    if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled) {
-      (*cpuSaveGameFunc)(address, (u8)value);
-      break;
-    }
-    */
-    // default
   default:
 unwritable:
 #ifdef GBA_LOGGING
@@ -380,43 +326,19 @@ void CPUWriteHalfWord(u32 address, u16 value)
   case 7:
       WRITE16LE(((u16 *)&oam[address & 0x3fe]), value);
     break;
-  case 8:
-  case 9:
-    if(address == 0x80000c4 || address == 0x80000c6 || address == 0x80000c8) {
-      if(!rtcWrite(address, value))
-        goto unwritable;
-    } else /*if(!agbPrintWrite(address, value))*/ goto unwritable;
-    break;
   case 13:
-    {
-      /*
-      if(cpuEEPROMEnabled) {
-        eepromWrite(address, (u8)value);
-        break;
-      }*/
-      if( backupMedia != NULL ) {
-        if( backupMedia->getType() == BackupMedia::EEPROM ) {
-          // autodetect EEPROM size
-          if( !eepromSizeDetected ) {
-            eepromSizeDetected = backupMedia->detectEEPROMSize( cpuDmaCount );
-          }
-          // TODO: further check address bits
-          backupMedia->write16( value, address );
-          break;
+    if( backupMedia != NULL ) {
+      if( backupMedia->getType() == BackupMedia::EEPROM ) {
+        // autodetect EEPROM size
+        if( !eepromSizeDetected ) {
+          eepromSizeDetected = backupMedia->detectEEPROMSize( cpuDmaCount );
         }
+        // TODO: further check address bits
+        backupMedia->write16( value, address );
+        break;
       }
-      goto unwritable;
-    }
-  case 14:
-    int foo;
-    foo = 123;
-    /*
-    if((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled) {
-      (*cpuSaveGameFunc)(address, (u8)value);
-      break;
     }
     goto unwritable;
-    */
   default:
 unwritable:
 #ifdef GBA_LOGGING
@@ -529,12 +451,6 @@ void CPUWriteByte(u32 address, u8 b)
     // byte writes to OAM are ignored
     //    *((u16 *)&oam[address & 0x3FE]) = (b << 8) | b;
     break;
-  case 13:
-    if(cpuEEPROMEnabled) {
-      eepromWrite(address, b);
-      break;
-    }
-    goto unwritable;
   case 14:
     if( backupMedia != NULL ) {
       switch( backupMedia->getType() ) {
@@ -547,16 +463,7 @@ void CPUWriteByte(u32 address, u8 b)
       }
     }
     break;
-    /*
-    if ((saveType != 5) && ((!eepromInUse) | cpuSramEnabled | cpuFlashEnabled)) {
-
-      //if(!cpuEEPROMEnabled && (cpuSramEnabled | cpuFlashEnabled)) {
-
-      (*cpuSaveGameFunc)(address, b);
-
-      break;
-    }*/
-    // default  default:
+  default:
 unwritable:
 #ifdef GBA_LOGGING
     if(systemVerbose & VERBOSE_ILLEGAL_WRITE) {
@@ -566,7 +473,6 @@ unwritable:
         armMode ? armNextPC - 4 : armNextPC -2 );
     }
 #endif
-    break;
   }
 }
 
@@ -641,21 +547,6 @@ u32 CPUReadMemory(u32 address)
   case 12:
     value = READ32LE(((u32 *)&rom[address&0x1FFFFFC]));
     break;
-  case 13:
-    /*
-    if(cpuEEPROMEnabled)
-      // no need to swap this
-      return eepromRead(address);
-      */
-    goto unreadable;
-  case 14:
-    /*
-    if(cpuFlashEnabled | cpuSramEnabled)
-      // no need to swap this
-      return flashRead(address);
-      */
-    goto unreadable;
-    // default
   default:
 unreadable:
 #ifdef GBA_LOGGING

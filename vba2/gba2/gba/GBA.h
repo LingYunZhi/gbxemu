@@ -76,28 +76,17 @@ extern bool V_FLAG;
 extern bool armIrqEnable;
 extern bool armState;
 extern int armMode;
-extern void (*cpuSaveGameFunc)(u32,u8);
-
-// saveDataChanged is true if save data has changed. The new data should be written to a file.
-// TODO: reset to false on write
-extern bool saveDataChanged;
 
 
-bool CPUWriteBatteryFile(const char *);
-bool CPUReadBatteryFile(const char *);
 void CPUCleanUp();
 void CPUUpdateRender();
 void CPUUpdateRenderBuffers(bool);
-bool CPUReadState(const char *);
-bool CPUWriteState(const char *);
 int CPULoadRom(const u8 *const data, const int size);
 void CPUUpdateRegister(u32 address, u16 value);
 void CPUInit(const bool useBiosFile = false, const u8 *const data = NULL, const int size = 0);
 void CPUReset();
 void CPULoop(int);
 void CPUCheckDMA(int,int);
-
-extern struct EmulatedSystem GBASystem;
 
 #define R13_IRQ  18
 #define R14_IRQ  19
@@ -128,9 +117,6 @@ typedef struct {
   int size;
 } variable_desc;
 
-#include "EEprom.h"
-#include "Flash.h"
-
 #include "../backupmedia.h"
 extern BackupMedia *backupMedia;
 
@@ -155,8 +141,7 @@ enum ERR_CODE {
     ERR_INVALID_BIOS_FILE_SIZE,
     ERR_ERROR_CREATING_FILE,
     ERR_UNSUPPORTED_ARM_MODE,
-    ERR_OUT_OF_MEMORY,
-    ERR_UNKNOWN_RTC_COMMAND
+    ERR_OUT_OF_MEMORY
 };
 
 inline void printErrorMessage( ERR_CODE err ) {} // TODO: implement
@@ -185,10 +170,6 @@ extern const u32 cyclesPerFrame;
 
 
 // shared variables
-extern bool cpuSramEnabled;
-extern bool cpuFlashEnabled;
-extern bool cpuEEPROMEnabled;
-extern bool cpuEEPROMSensorEnabled;
 extern u32 cpuDmaCount; // this variable is necessary to be able to autodetect EEPROM size
 extern bool eepromSizeDetected; // true if size was detected successfully
 extern bool cpuDmaHack;
@@ -224,10 +205,8 @@ extern bool armState;
 extern bool armIrqEnable;
 extern u32 armNextPC;
 extern int armMode;
-extern int saveType;
 extern bool useBios;
 extern bool skipBios;
-extern bool syncToAudio;
 extern int layerSettings;
 extern int layerEnable;
 extern bool fastforward;

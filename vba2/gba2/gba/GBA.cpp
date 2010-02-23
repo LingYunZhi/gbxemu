@@ -24,12 +24,8 @@
 #include "GBA.h"
 #include "ARM7TDMI.h"
 #include "GBAGfx.h"
-#include "EEprom.h"
-#include "Flash.h"
 #include "Sound.h"
-#include "Sram.h"
 #include "bios.h"
-#include "RTC.h"
 #include "memory.h"
 #include "../common/Port.h"
 #include "../common/cdriver_graphics.h"
@@ -88,15 +84,10 @@ int dummyAddress = 0;
 bool cpuBreakLoop = false;
 int cpuNextEvent = 0;
 
-int gbaSaveType = 0; // used to remember the save type on reset
 bool intState = false;
 bool stopState = false;
 bool holdState = false;
 int holdType = 0;
-bool cpuSramEnabled = true;
-bool cpuFlashEnabled = true;
-bool cpuEEPROMEnabled = true;
-bool cpuEEPROMSensorEnabled = false;
 
 u32 cpuPrefetch[2]; // instruction pipeline
 
@@ -133,8 +124,6 @@ u32 dma2Source = 0;
 u32 dma2Dest = 0;
 u32 dma3Source = 0;
 u32 dma3Dest = 0;
-void (*cpuSaveGameFunc)(u32,u8) = flashSaveDecide;
-bool saveDataChanged = false;
 void (*renderLine)() = mode0RenderLine;
 bool fxOn = false;
 bool windowOn = false;
@@ -358,124 +347,6 @@ u32 myROM[] = {
 0x03007FE0
 };
 
-variable_desc saveGameStruct[] = {
-  { &DISPCNT  , sizeof(u16) },
-  { &DISPSTAT , sizeof(u16) },
-  { &VCOUNT   , sizeof(u16) },
-  { &BG0CNT   , sizeof(u16) },
-  { &BG1CNT   , sizeof(u16) },
-  { &BG2CNT   , sizeof(u16) },
-  { &BG3CNT   , sizeof(u16) },
-  { &BG0HOFS  , sizeof(u16) },
-  { &BG0VOFS  , sizeof(u16) },
-  { &BG1HOFS  , sizeof(u16) },
-  { &BG1VOFS  , sizeof(u16) },
-  { &BG2HOFS  , sizeof(u16) },
-  { &BG2VOFS  , sizeof(u16) },
-  { &BG3HOFS  , sizeof(u16) },
-  { &BG3VOFS  , sizeof(u16) },
-  { &BG2PA    , sizeof(u16) },
-  { &BG2PB    , sizeof(u16) },
-  { &BG2PC    , sizeof(u16) },
-  { &BG2PD    , sizeof(u16) },
-  { &BG2X_L   , sizeof(u16) },
-  { &BG2X_H   , sizeof(u16) },
-  { &BG2Y_L   , sizeof(u16) },
-  { &BG2Y_H   , sizeof(u16) },
-  { &BG3PA    , sizeof(u16) },
-  { &BG3PB    , sizeof(u16) },
-  { &BG3PC    , sizeof(u16) },
-  { &BG3PD    , sizeof(u16) },
-  { &BG3X_L   , sizeof(u16) },
-  { &BG3X_H   , sizeof(u16) },
-  { &BG3Y_L   , sizeof(u16) },
-  { &BG3Y_H   , sizeof(u16) },
-  { &WIN0H    , sizeof(u16) },
-  { &WIN1H    , sizeof(u16) },
-  { &WIN0V    , sizeof(u16) },
-  { &WIN1V    , sizeof(u16) },
-  { &WININ    , sizeof(u16) },
-  { &WINOUT   , sizeof(u16) },
-  { &MOSAIC   , sizeof(u16) },
-  { &BLDMOD   , sizeof(u16) },
-  { &COLEV    , sizeof(u16) },
-  { &COLY     , sizeof(u16) },
-  { &DM0SAD_L , sizeof(u16) },
-  { &DM0SAD_H , sizeof(u16) },
-  { &DM0DAD_L , sizeof(u16) },
-  { &DM0DAD_H , sizeof(u16) },
-  { &DM0CNT_L , sizeof(u16) },
-  { &DM0CNT_H , sizeof(u16) },
-  { &DM1SAD_L , sizeof(u16) },
-  { &DM1SAD_H , sizeof(u16) },
-  { &DM1DAD_L , sizeof(u16) },
-  { &DM1DAD_H , sizeof(u16) },
-  { &DM1CNT_L , sizeof(u16) },
-  { &DM1CNT_H , sizeof(u16) },
-  { &DM2SAD_L , sizeof(u16) },
-  { &DM2SAD_H , sizeof(u16) },
-  { &DM2DAD_L , sizeof(u16) },
-  { &DM2DAD_H , sizeof(u16) },
-  { &DM2CNT_L , sizeof(u16) },
-  { &DM2CNT_H , sizeof(u16) },
-  { &DM3SAD_L , sizeof(u16) },
-  { &DM3SAD_H , sizeof(u16) },
-  { &DM3DAD_L , sizeof(u16) },
-  { &DM3DAD_H , sizeof(u16) },
-  { &DM3CNT_L , sizeof(u16) },
-  { &DM3CNT_H , sizeof(u16) },
-  { &TM0D     , sizeof(u16) },
-  { &TM0CNT   , sizeof(u16) },
-  { &TM1D     , sizeof(u16) },
-  { &TM1CNT   , sizeof(u16) },
-  { &TM2D     , sizeof(u16) },
-  { &TM2CNT   , sizeof(u16) },
-  { &TM3D     , sizeof(u16) },
-  { &TM3CNT   , sizeof(u16) },
-  { &P1       , sizeof(u16) },
-  { &IE       , sizeof(u16) },
-  { &IF       , sizeof(u16) },
-  { &IME      , sizeof(u16) },
-  { &holdState, sizeof(bool) },
-  { &holdType, sizeof(int) },
-  { &lcdTicks, sizeof(int) },
-  { &timer0On , sizeof(bool) },
-  { &timer0Ticks , sizeof(int) },
-  { &timer0Reload , sizeof(int) },
-  { &timer0ClockReload  , sizeof(int) },
-  { &timer1On , sizeof(bool) },
-  { &timer1Ticks , sizeof(int) },
-  { &timer1Reload , sizeof(int) },
-  { &timer1ClockReload  , sizeof(int) },
-  { &timer2On , sizeof(bool) },
-  { &timer2Ticks , sizeof(int) },
-  { &timer2Reload , sizeof(int) },
-  { &timer2ClockReload  , sizeof(int) },
-  { &timer3On , sizeof(bool) },
-  { &timer3Ticks , sizeof(int) },
-  { &timer3Reload , sizeof(int) },
-  { &timer3ClockReload  , sizeof(int) },
-  { &dma0Source , sizeof(u32) },
-  { &dma0Dest , sizeof(u32) },
-  { &dma1Source , sizeof(u32) },
-  { &dma1Dest , sizeof(u32) },
-  { &dma2Source , sizeof(u32) },
-  { &dma2Dest , sizeof(u32) },
-  { &dma3Source , sizeof(u32) },
-  { &dma3Dest , sizeof(u32) },
-  { &fxOn, sizeof(bool) },
-  { &windowOn, sizeof(bool) },
-  { &N_FLAG , sizeof(bool) },
-  { &C_FLAG , sizeof(bool) },
-  { &Z_FLAG , sizeof(bool) },
-  { &V_FLAG , sizeof(bool) },
-  { &armState , sizeof(bool) },
-  { &armIrqEnable , sizeof(bool) },
-  { &armNextPC , sizeof(u32) },
-  { &armMode , sizeof(int) },
-  { &saveType , sizeof(int) },
-  { NULL, 0 }
-};
 
 static int romSize = 0x2000000;
 
@@ -574,267 +445,6 @@ void CPUUpdateRenderBuffers(bool force)
   }
 }
 
-static bool writeState( FILE *file )
-{
-    const u8 version = SAVE_GAME_VERSION_CURRENT;
-    fwrite( &version, sizeof(version), 1, file );
-
-    // game id string
-    fwrite( &rom[0xa0], 1, 16, file );
-
-    const int ub = useBios ? 1 : 0;
-    fwrite( &ub, sizeof(ub), 1, file );
-
-    // all cpu registers
-    fwrite( &reg[0], sizeof(reg), 1, file );
-
-    // all io registers
-    variable_desc *data = &saveGameStruct[0];
-    while( data->address ) {
-        fwrite( data->address, data->size, 1, file );
-        data++;
-    }
-
-    const int stop = stopState ? 1 : 0;
-    fwrite( &stop, sizeof(stop), 1, file );
-    
-    fwrite( &IRQTicks, sizeof(IRQTicks), 1, file );
-
-    // memory areas
-    fwrite( internalRAM, 1, 0x8000, file );
-    fwrite( paletteRAM, 1, 0x400, file );
-    fwrite( workRAM, 1, 0x40000, file );
-    fwrite( vram, 1, 0x20000, file );
-    fwrite( oam, 1, 0x400, file );
-    fwrite( pix, 1, pix_size, file );
-    fwrite( ioMem, 1, 0x400, file );
-    
-    soundSaveGame( file );
-    
-    return true;
-}
-
-static bool readState( FILE *file )
-{
-    u8 version = 0;
-    fread( &version, sizeof(version), 1, file );
-
-    if( version != SAVE_GAME_VERSION_CURRENT ) {
-        printErrorMessage(ERR_UNSUPPORTED_SGM_VER);
-        return false;
-    }
-    
-    u8 romname[16];
-    fread( &romname[0], 1, 16, file );
-    if( 0 != memcmp( &rom[0xa0], &romname[0], 16 ) ) {
-        printErrorMessage(ERR_CANNOT_LOAD_SGM_WRONG_GAME);
-        return false;
-    }
-
-    int ub = -1;
-    fread( &ub, sizeof(ub), 1, file );
-
-    bool stateUseBios = ( ub == 1 );
-    
-    if( stateUseBios != useBios ) {
-        if( useBios )
-            printErrorMessage(ERR_SAVE_GAME_NOT_USING_BIOS);
-        else
-            printErrorMessage(ERR_SAVE_GAME_USING_BIOS);
-        return false;
-    }
-
-    fread( &reg[0], sizeof(reg), 1, file );
-
-    variable_desc *data = &saveGameStruct[0];
-    while( data->address ) {
-        fread( data->address, data->size, 1, file );
-        data++;
-    }
-
-    int ss = -1;
-    fread( &ss, sizeof(ss), 1, file );
-    stopState = ( ss == 1 );
-
-    fread( &IRQTicks, sizeof(IRQTicks), 1, file );
-    if( IRQTicks > 0 ) {
-        intState = true;
-    } else {
-        intState = false;
-        IRQTicks = 0;
-    }
-
-    fread( internalRAM, 1, 0x8000, file );
-    fread( paletteRAM, 1, 0x400, file );
-    fread( workRAM, 1, 0x40000, file );
-    fread( vram, 1, 0x20000, file ); // TODO: why not 96 KB???
-    fread( oam, 1, 0x400, file );
-    fread( pix, 1, pix_size, file );
-    fread( ioMem, 1, 0x400, file );
-    
-    soundReadGame( file, version );
-    
-
-  // set pointers!
-  layerEnable = layerSettings & DISPCNT;
-
-  CPUUpdateRender();
-  CPUUpdateRenderBuffers(true);
-  CPUUpdateWindow0();
-  CPUUpdateWindow1();
-  gbaSaveType = 0;
-  switch(saveType) {
-  case 0:
-    cpuSaveGameFunc = flashSaveDecide;
-    break;
-  case 1:
-    cpuSaveGameFunc = sramWrite;
-    gbaSaveType = 1;
-    break;
-  case 2:
-    cpuSaveGameFunc = flashWrite;
-    gbaSaveType = 2;
-    break;
-  case 3:
-     break;
-  case 5:
-    gbaSaveType = 5;
-    break;
-  default:
-    printErrorMessage(ERR_UNSUPPORTED_SAVE_TYPE);
-    break;
-  }
-  if(eepromInUse)
-    gbaSaveType = 3;
-
-  if(armState) {
-    ARM_PREFETCH;
-  } else {
-    THUMB_PREFETCH;
-  }
-
-  CPUUpdateRegister(0x204, CPUReadHalfWordQuick(0x4000204));
-
-  return true;
-}
-
-bool CPUWriteState( const char *file )
-{
-    FILE *f = fopen( file, "wb" );
-
-    if( f == NULL ) {
-        printErrorMessage(ERR_ERROR_CREATING_FILE);
-        return false;
-    }
-
-    const bool res = writeState( f );
-
-    fclose(f);
-
-    return res;
-}
-
-bool CPUReadState( const char *file )
-{
-    FILE *f = fopen( file, "rb" );
-
-    if( f == NULL ) return false;
-
-    const bool res = readState( f );
-
-    fclose( f );
-
-    return res;
-}
-
-
-bool CPUWriteBatteryFile(const char *fileName)
-{
-  if(gbaSaveType == 0) {
-    if(eepromInUse)
-      gbaSaveType = 3;
-    else switch(saveType) {
-    case 1:
-      gbaSaveType = 1;
-      break;
-    case 2:
-      gbaSaveType = 2;
-      break;
-    }
-  }
-
-  if((gbaSaveType) && (gbaSaveType!=5)) {
-    FILE *file = fopen(fileName, "wb");
-
-    if(!file) {
-      printErrorMessage(ERR_ERROR_CREATING_FILE);
-      return false;
-    }
-
-    // only save if Flash/Sram in use or EEprom in use
-    if(gbaSaveType != 3) {
-      if(gbaSaveType == 2) {
-        if(fwrite(flashSaveMemory, 1, flashSize, file) != (size_t)flashSize) {
-          fclose(file);
-          return false;
-        }
-      } else {
-        if(fwrite(flashSaveMemory, 1, 0x10000, file) != 0x10000) {
-          fclose(file);
-          return false;
-        }
-      }
-    } else {
-      if(fwrite(eepromData, 1, eepromSize, file) != (size_t)eepromSize) {
-        fclose(file);
-        return false;
-      }
-    }
-    fclose(file);
-  }
-  saveDataChanged = false;
-  return true;
-}
-
-
-bool CPUReadBatteryFile(const char *fileName)
-{
-  FILE *file = fopen(fileName, "rb");
-
-  if(!file)
-    return false;
-
-  // check file size to know what we should read
-  fseek(file, 0, SEEK_END);
-
-  long size = ftell(file);
-  fseek(file, 0, SEEK_SET);
-  saveDataChanged = false;
-
-  if(size == 512 || size == 0x2000) {
-    if(fread(eepromData, 1, size, file) != (size_t)size) {
-      fclose(file);
-      return false;
-    }
-  } else {
-    if(size == 0x20000) {
-      if(fread(flashSaveMemory, 1, 0x20000, file) != 0x20000) {
-        fclose(file);
-        return false;
-      }
-      flashSetSize(0x20000);
-    } else {
-      if(fread(flashSaveMemory, 1, 0x10000, file) != 0x10000) {
-        fclose(file);
-        return false;
-      }
-      flashSetSize(0x10000);
-    }
-  }
-  fclose(file);
-  return true;
-}
-
 
 void CPUCleanUp()
 {
@@ -882,8 +492,6 @@ void CPUCleanUp()
     free(ioMem);
     ioMem = NULL;
   }
-
-  saveDataChanged = false;
 }
 
 int CPULoadRom(const u8 *const data, const int size)
@@ -895,8 +503,6 @@ int CPULoadRom(const u8 *const data, const int size)
   if(rom != NULL) {
     CPUCleanUp();
   }
-
-  saveDataChanged = false;
 
   rom = (u8 *)malloc(romSize);
   if(rom == NULL) {
@@ -961,9 +567,6 @@ int CPULoadRom(const u8 *const data, const int size)
     CPUCleanUp();
     return 0;
   }
-
-  flashInit();
-  eepromInit();
 
   CPUUpdateRenderBuffers(true);
 
@@ -2389,9 +1992,6 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
     cpuBiosSwapped = true;
   }
 #endif
-  gbaSaveType = 0;
-  eepromInUse = 0;
-  saveType = 0;
   useBios = false;
 
   if( useBiosFile ) {
@@ -2473,20 +2073,6 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
 
 void CPUReset()
 {
-  if(gbaSaveType == 0) {
-    if(eepromInUse)
-      gbaSaveType = 3;
-    else
-      switch(saveType) {
-      case 1:
-        gbaSaveType = 1;
-        break;
-      case 2:
-        gbaSaveType = 2;
-        break;
-      }
-  }
-  rtcReset();
   // clean registers
   memset(&reg[0], 0, sizeof(reg));
   // clean OAM
@@ -2645,12 +2231,10 @@ void CPUReset()
   dma2Dest = 0;
   dma3Source = 0;
   dma3Dest = 0;
-  cpuSaveGameFunc = flashSaveDecide;
   renderLine = mode0RenderLine;
   fxOn = false;
   windowOn = false;
 //  frameCount = 0;
-  saveType = 0;
   layerEnable = DISPCNT & layerSettings;
 
   CPUUpdateRenderBuffers(true);
@@ -2682,11 +2266,6 @@ void CPUReset()
   map[10].mask = 0x1FFFFFF;
   map[12].address = rom;
   map[12].mask = 0x1FFFFFF;
-  map[14].address = flashSaveMemory;
-  map[14].mask = 0xFFFF;
-
-  eepromReset();
-  flashReset();
 
   soundReset();
 
@@ -2697,123 +2276,7 @@ void CPUReset()
   if(!useBios)
       BIOS_RegisterRamReset(0xff);
 
-  // auto-detect save type & real time clock
-  const int address_max = romSize - 10;
-  
-  const u32 EEPR = 'E' | ( 'E' << 8 ) | ( 'P' << 16 ) | ( 'R' << 24 );
-  const u32 SRAM = 'S' | ( 'R' << 8 ) | ( 'A' << 16 ) | ( 'M' << 24 );
-  const u32 FLAS = 'F' | ( 'L' << 8 ) | ( 'A' << 16 ) | ( 'S' << 24 );
-  const u32 SIIR = 'S' | ( 'I' << 8 ) | ( 'I' << 16 ) | ( 'R' << 24 );
-
-  u8 cpuSaveType = 5; // NONE
-  int flashSizeFound = 0;
-  bool saveTypeFound = false;
-  bool rtcFound = false;
-  
-  for( int address = 0; address < address_max; address += 4 ) {
-      if( saveTypeFound && rtcFound ) break; // stop searching if everything was detected
-
-      const u32 check = READ32LE(&rom[address]);
-
-      if( !saveTypeFound ) {
-          if( EEPR == check ) {
-              if( 0 == strncmp( (const char *)&rom[address], "EEPROM_V", 8 ) ) {
-                  cpuSaveType = 1;
-                  saveTypeFound = true;
-              }
-          }
-
-          if( SRAM == check ) {
-              if( ( 0 == strncmp( (const char *)&rom[address], "SRAM_V", 6 ) ) ||
-                  ( 0 == strncmp( (const char *)&rom[address], "SRAM_F_V", 8 ) ) ) {
-                      cpuSaveType = 2;
-                      saveTypeFound = true;
-              }
-          }
-
-          if( FLAS == check ) {
-              if( ( 0 == strncmp( (const char *)&rom[address], "FLASH_V", 7 ) ) ||
-                  ( 0 == strncmp( (const char *)&rom[address], "FLASH512_V", 10 ) ) ) {
-                      cpuSaveType = 3;
-                      flashSizeFound = 0x10000; // 64 KB
-                      saveTypeFound = true;
-              } else if( 0 == strncmp( (const char *)&rom[address], "FLASH1M_V", 9 ) ) {
-                  cpuSaveType = 3;
-                  flashSizeFound = 0x20000; // 128 KB
-                  saveTypeFound = true;
-              }
-          }
-      }
-
-      if( !rtcFound ) {
-          if( SIIR == check ) {
-              if( 0 == strncmp( (const char *)&rom[address], "SIIRTC_V", 8 ) ) {
-                  rtcFound = true;
-              }
-          }
-      }
-  } // end save type detect
-
-
-  // set up real time clock
-  rtcEnable( rtcFound );
-
-
-  // set up save type
-  switch(cpuSaveType) {
-  case 0: // automatic
-    cpuSramEnabled = true;
-    cpuFlashEnabled = true;
-    cpuEEPROMEnabled = true;
-    cpuEEPROMSensorEnabled = false;
-    saveType = gbaSaveType = 0;
-    break;
-  case 1: // EEPROM
-    cpuSramEnabled = false;
-    cpuFlashEnabled = false;
-    cpuEEPROMEnabled = true;
-    cpuEEPROMSensorEnabled = false;
-    saveType = gbaSaveType = 3;
-    // EEPROM usage is automatically detected
-    break;
-  case 2: // SRAM
-    cpuSramEnabled = true;
-    cpuFlashEnabled = false;
-    cpuEEPROMEnabled = false;
-    cpuEEPROMSensorEnabled = false;
-    cpuSaveGameFunc = sramDelayedWrite; // to insure we detect the write
-    saveType = gbaSaveType = 1;
-    break;
-  case 3: // FLASH
-    cpuSramEnabled = false;
-    cpuFlashEnabled = true;
-    cpuEEPROMEnabled = false;
-    cpuEEPROMSensorEnabled = false;
-    cpuSaveGameFunc = flashDelayedWrite; // to insure we detect the write
-    saveType = gbaSaveType = 2;
-    flashSetSize( flashSizeFound );
-    break;
-  case 4: // EEPROM+Sensor
-    cpuSramEnabled = false;
-    cpuFlashEnabled = false;
-    cpuEEPROMEnabled = true;
-    cpuEEPROMSensorEnabled = true;
-    // EEPROM usage is automatically detected
-    saveType = gbaSaveType = 3;
-    break;
-  case 5: // NONE
-    cpuSramEnabled = false;
-    cpuFlashEnabled = false;
-    cpuEEPROMEnabled = false;
-    cpuEEPROMSensorEnabled = false;
-    // no save at all
-    saveType = gbaSaveType = 5;
-    break;
-  }
-
   ARM_PREFETCH;
-
-  saveDataChanged = false;
 
   cpuDmaHack = false;
 
@@ -2982,8 +2445,6 @@ void CPULoop(int ticks)
               if( ( P1 & 0x00C0 ) == 0 ) {
                   P1 |= 0x0080; // release down button
               }
-              if(cpuEEPROMSensorEnabled)
-                systemUpdateMotionSensor();
               UPDATE_REG(0x130, P1);
               u16 P1CNT = READ16LE(((u16 *)&ioMem[0x132]));
               // this seems wrong, but there are cases where the game
@@ -3298,29 +2759,6 @@ void CPULoop(int ticks)
 
 
 
-struct EmulatedSystem GBASystem = {
-  // emuMain
-  CPULoop,
-  // emuReset
-  CPUReset,
-  // emuCleanUp
-  CPUCleanUp,
-  // emuReadBattery
-  CPUReadBatteryFile,
-  // emuWriteBattery
-  CPUWriteBatteryFile,
-  // emuReadState
-  CPUReadState,
-  // emuWriteState
-  CPUWriteState,
-  // emuUpdateCPSR
-  CPUUpdateCPSR,
-  // emuHasDebugger
-  true,
-  // emuCount
-  cyclesPerFrame
-};
-
 
 
 // globals
@@ -3335,10 +2773,8 @@ bool armState = true;
 bool armIrqEnable = true;
 u32 armNextPC = 0x00000000;
 int armMode = 0x1f;
-int saveType = 0;
 bool useBios = false;
 bool skipBios = false;
-bool syncToAudio = true;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 

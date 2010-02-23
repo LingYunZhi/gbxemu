@@ -13,9 +13,7 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/apu/Gb_Apu.cpp \
     ../gba2/apu/Effects_Buffer.cpp \
     ../gba2/apu/Blip_Buffer.cpp \
-    ../gba2/gba/Sram.cpp \
     ../gba2/gba/Sound.cpp \
-    ../gba2/gba/RTC.cpp \
     ../gba2/gba/Mode5.cpp \
     ../gba2/gba/Mode4.cpp \
     ../gba2/gba/Mode3.cpp \
@@ -25,8 +23,6 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/gba/memory.cpp \
     ../gba2/gba/GBAGfx.cpp \
     ../gba2/gba/GBA.cpp \
-    ../gba2/gba/Flash.cpp \
-    ../gba2/gba/EEprom.cpp \
     ../gba2/gba/bios.cpp \
     ../gba2/cemugba.cpp \
     ../vba2/paintwidget.cpp \
@@ -55,14 +51,10 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/common/Types.h \
     ../gba2/common/cdriver_sound.h \
     ../gba2/common/Port.h \
-    ../gba2/gba/Sram.h \
     ../gba2/gba/Sound.h \
-    ../gba2/gba/RTC.h \
     ../gba2/gba/memory.h \
     ../gba2/gba/GBAGfx.h \
     ../gba2/gba/GBA.h \
-    ../gba2/gba/Flash.h \
-    ../gba2/gba/EEprom.h \
     ../gba2/gba/bios.h \
     ../gba2/System.h \
     ../gba2/cemugba.h \

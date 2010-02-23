@@ -31,10 +31,7 @@ operating in THUMB mode (16 bit opcodes).
 
 #include "GBA.h"
 #include "ARM7TDMI.h"
-#include "EEprom.h"
-#include "Flash.h"
 #include "Sound.h"
-#include "Sram.h"
 #include "bios.h"
 #include "memory.h"
 #include "../System.h"
