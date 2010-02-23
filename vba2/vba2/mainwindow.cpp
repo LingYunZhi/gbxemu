@@ -47,7 +47,7 @@
 #define FRAME_RATE 120
 
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget *parent, QString file)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -103,6 +103,10 @@ MainWindow::MainWindow(QWidget *parent)
   m_emuGBA->setDriverInput( m_inp );
 
   ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
+
+  if( !file.isEmpty() ) {
+    loadGame( file );
+  }
 }
 
 MainWindow::~MainWindow()

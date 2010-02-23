@@ -17,6 +17,7 @@
 
 
 #include <QApplication>
+#include <QFileInfo>
 #include "mainwindow.h"
 
 
@@ -24,11 +25,24 @@ int main(int argc, char *argv[])
 {
   /* skins
   QStyle *style = NULL;
-  style = QApplication::setStyle( "cleanlooks" );
+  style = QApplication::setStyle( "plastique" );
   Q_ASSERT( style != 0 );
   */
   QApplication a(argc, argv);
-  MainWindow w;
+  QString startRom;
+  QStringList argList = a.arguments();
+  const int nArguments = argList.size();
+  for( int i = 0; i < nArguments; i++ ) {
+    // load & run first *.gba file we find in the argument list
+    QString filePath = argList.at(i);
+    QFileInfo fileInfo( filePath );
+    if( !fileInfo.exists() ) continue;
+    if( fileInfo.suffix().toLower() == "gba" ) {
+      startRom = filePath;
+      break;
+    }
+  }
+  MainWindow w( 0, startRom );
   w.show();
   return a.exec();
 }
