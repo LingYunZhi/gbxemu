@@ -75,7 +75,12 @@ u8 CPUReadByte(u32 address)
     goto unreadable;
   case 14:
     if( backupMedia != NULL ) {
-      if( backupMedia->getType() == BackupMedia::SRAM ) {
+      switch( backupMedia->getType() ) {
+      default:
+        break;
+      case BackupMedia::SRAM:
+      case BackupMedia::FLASH64KiB:
+      case BackupMedia::FLASH128KiB:
         return backupMedia->read8( address );
       }
     }
@@ -532,7 +537,12 @@ void CPUWriteByte(u32 address, u8 b)
     goto unwritable;
   case 14:
     if( backupMedia != NULL ) {
-      if( backupMedia->getType() == BackupMedia::SRAM ) {
+      switch( backupMedia->getType() ) {
+      default:
+        break;
+      case BackupMedia::SRAM:
+      case BackupMedia::FLASH64KiB:
+      case BackupMedia::FLASH128KiB:
         backupMedia->write8( b, address );
       }
     }
@@ -546,8 +556,7 @@ void CPUWriteByte(u32 address, u8 b)
 
       break;
     }*/
-    // default
-  default:
+    // default  default:
 unwritable:
 #ifdef GBA_LOGGING
     if(systemVerbose & VERBOSE_ILLEGAL_WRITE) {

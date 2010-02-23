@@ -58,16 +58,48 @@ private:
   BACKUPMEDIATYPE m_type;
   u8 *m_data;
   u32 m_size;
-  static const u32 SIZE_SRAM         = 0x8000;
+
+  // EEPROM
   static const u32 SIZE_EEPROM_SMALL = 0x0200;
   static const u32 SIZE_EEPROM_LARGE = 0x2000;
   static const u32 ADDRESS_BITS_EEPROM_SMALL = 6+2;  // includes the two command bits
   static const u32 ADDRESS_BITS_EEPROM_LARGE = 14+2; //   for faster code later
-  typedef enum { IDLE, SETTING_ADDRESS, READING, WRITING } EEPROM_STATE;
-  EEPROM_STATE m_state;
+  typedef enum { IDLE,
+                 SETTING_ADDRESS,
+                 READING,
+                 WRITING } EEPROM_STATE;
+  EEPROM_STATE m_eepromState;
   u16 m_eepromAddress;
   u8 m_eepromBitsRead;
   u8 m_eepromAddressBits;
+
+  // SRAM
+  static const u32 SIZE_SRAM = 0x8000;
+
+  // FLASH
+  static const u32 SIZE_FLASH_SMALL = 0x10000;
+  static const u32 SIZE_FLASH_LARGE = 0x20000;
+  typedef enum { F_IDLE, // = READ mode
+                 F_RECEIVING_COMMAND1,
+                 F_RECEIVING_COMMAND2,
+                 F_ID_MODE,
+                 F_BANK_MODE,
+                 F_WRITE_SINGLE_BYTE } FLASH_STATE;
+  FLASH_STATE m_flashState;
+  bool m_flashEraseMode;
+  bool m_bankSwitched; // true to access high 64 KiB of a 128 KiB flash chip
+
+  u8 m_mfgID;
+  u8 m_deviceID;
+  /* known flash chips:
+    Manufacturer  chip name     Manufacturer ID Device ID  size in KiB
+    Sanyo or SST  LE39FW512     0xBF            0xD4        64
+    Atmel         AT29LV512     0x1F            0x3D        64
+    Macronix      MX29L512      0xC2            0x1C        64
+    Panasonic     MN63F805MNP   0x32            0x1B        64
+    Macronix      MX29L010      0xC2            0x09       128
+    Sanyo         LE26FV10N1TS  0x62            0x13       128
+  */
 };
 
 
