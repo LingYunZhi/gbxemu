@@ -46,10 +46,12 @@ void CAppSettings::save() {
 
 
 void CAppSettings::load() {
+  QString appDir = qApp->applicationDirPath();
+
   QSettings s;
   s_soundOutputDevice = s.value( "audioOutput/deviceID", 0 ).toInt();
-  s_cartridgeFilesDir = s.value( "directories/cartridgeFiles" ).toString();
-  s_cartridgeSavesDir = s.value( "directories/cartridgeSaves" ).toString();
+  s_cartridgeFilesDir = s.value( "directories/cartridgeFiles", appDir ).toString();
+  s_cartridgeSavesDir = s.value( "directories/cartridgeSaves", appDir ).toString();
   s_enableVSync = s.value( "graphicsOutput/enableVSync", true ).toBool();
   s_enableAudioSync = s.value( "soundOutput/enableAudioSync", true ).toBool();
 }
