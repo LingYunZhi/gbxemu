@@ -261,7 +261,7 @@ bool MainWindow::loadGame( QString romFile ) {
                " (" + header.gameCode + ")" + version + ".sav";
   // TODO: add exception for homebrew games with empty gameTitle
 
-  bool retVal = m_emuGBA->loadROM( romData, (u32)size );
+  bool retVal = m_emuGBA->initialize( romData, (u32)size );
   if( !retVal ) {
     QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
     return false;
@@ -290,7 +290,7 @@ void MainWindow::on_actionUnload_ROM_triggered()
 
     saveBackupMedia();
 
-    m_emuGBA->closeROM();
+    m_emuGBA->shutDown();
     m_fileName.clear();
     ui->actionPlay_Pause->setEnabled( false );
   }

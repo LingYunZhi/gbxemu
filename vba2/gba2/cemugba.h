@@ -38,8 +38,8 @@ public:
     bool setDriverInput   ( CDriver_Input    *drv );
     bool setDebugDriverGraphics( CDriver_Graphics *drv );
 
-    bool loadROM( const u8 *const romData, const u32 romSize );
-    bool closeROM();
+    bool initialize( const u8 *const romData, const u32 romSize );
+    bool shutDown();
 
     bool emulate();
 
@@ -62,7 +62,9 @@ private:
     CDriver_Input    *m_inp;
     bool m_inputDriverLoaded;
 
-    bool m_romLoaded;
+    u8 *m_gameROM;
+    u32 m_gameROMSize;
+    bool m_initialized;
     bool m_soundInitialized;
 
     BackupMedia *m_backupMedia;

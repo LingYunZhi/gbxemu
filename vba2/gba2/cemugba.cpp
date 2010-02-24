@@ -22,6 +22,7 @@
 #include "gba/GBA.h"
 #include "gba/Sound.h"
 #include <assert.h>
+#include <string.h> // memcpy
 
 
 CEmuGBA::CEmuGBA()
@@ -38,7 +39,9 @@ CEmuGBA::CEmuGBA()
   m_inp = NULL;
   m_inputDriverLoaded = false;
 
-  m_romLoaded = false;
+  m_gameROM = NULL;
+  m_gameROMSize = 0;
+  m_initialized = false;
   m_soundInitialized = false;
 
   m_backupMedia = NULL;
@@ -50,10 +53,14 @@ CEmuGBA::~CEmuGBA()
   if( m_backupMedia != NULL ) {
     delete m_backupMedia;
   }
+
+  if( m_gameROM != NULL ) {
+    delete[] m_gameROM;
+  }
 }
 
 
-bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
+bool CEmuGBA::initialize( const u8 *const romData, const u32 romSize )
 {
   const bool allDriversLoaded =
              m_soundDriverLoaded &&
@@ -61,15 +68,33 @@ bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
              m_inputDriverLoaded;
   if( !allDriversLoaded ) return false;
 
+  if( romSize < 192 ) return false;
+
+  // allocate new ROM memory if old and new ROM size are not equal
+  if( romSize != m_gameROMSize ) {
+    // free old ROM memory
+    if( m_gameROM != NULL ) {
+      delete[] m_gameROM;
+      m_gameROM = NULL;
+    }
+    m_gameROM = new u8[romSize];
+    assert( m_gameROM != NULL );
+    m_gameROMSize = romSize;
+  }
+
+  // copy over rom data
+  assert( m_gameROMSize == romSize );
+  memcpy( m_gameROM, romData, m_gameROMSize );
+
   // initialize backup media
   if( m_backupMedia != NULL ) {
     delete m_backupMedia;
     m_backupMedia = NULL;
   }
-  m_backupMedia = new BackupMedia( (u32*)romData, romSize );
+  m_backupMedia = new BackupMedia( (u32*)m_gameROM, m_gameROMSize );
   backupMedia = m_backupMedia; // set global variable in core
 
-  CPULoadRom( romData, romSize );
+  CPULoadRom( m_gameROM, m_gameROMSize );
 
   if( m_soundInitialized ) {
     soundReset();
@@ -80,16 +105,16 @@ bool CEmuGBA::loadROM( const u8 *const romData, const u32 romSize )
   }
   CPUInit();
   CPUReset();
-  m_romLoaded = true;
+  m_initialized = true;
   return true;
 }
 
 
-bool CEmuGBA::closeROM()
+bool CEmuGBA::shutDown()
 {
-  if( m_romLoaded ) {
+  if( m_initialized ) {
     CPUCleanUp();
-    m_romLoaded = false;
+    m_initialized = false;
     return true;
   }
 
@@ -99,7 +124,7 @@ bool CEmuGBA::closeROM()
 
 bool CEmuGBA::emulate()
 {
-  if( !m_romLoaded ) return false;
+  if( !m_initialized ) return false;
   CPULoop( cyclesPerFrame );
   return true;
 }
