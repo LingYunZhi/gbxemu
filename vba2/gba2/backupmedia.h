@@ -40,9 +40,8 @@ public:
   u8 read8( u32 address );
   void write8( u8 data, u32 address );
 
-  // EEPROM
-  // call this before any reads/writes occured!
-  // if it fails, call it again next time
+  // EEPROM, FLASH
+  // call this before any reads/writes from/to EEPROM occured! if it fails, call it again next time
   bool detectEEPROMSize( u32 dmaCount );
   u16 read16( u32 address );
   void write16( u16 data, u32 address );
