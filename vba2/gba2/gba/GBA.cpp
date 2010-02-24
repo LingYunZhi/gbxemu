@@ -53,8 +53,7 @@ const u32 VERBOSE_DMA1             = 0x020;
 const u32 VERBOSE_DMA2             = 0x040;
 const u32 VERBOSE_DMA3             = 0x080;
 const u32 VERBOSE_UNDEFINED        = 0x100;
-const u32 VERBOSE_AGBPRINT         = 0x200;
-const u32 VERBOSE_SOUNDOUTPUT      = 0x400;
+const u32 VERBOSE_SOUNDOUTPUT      = 0x200;
 
 u32 systemVerbose = 0;
 
@@ -835,10 +834,6 @@ void CPUSoftwareInterrupt()
 void CPUSoftwareInterrupt(int comment)
 {
   if(armState) comment >>= 16;
-  if(comment == 0xfa) {
-    //agbPrintFlush();
-    return;
-  }
   if(useBios) {
 #ifdef GBA_LOGGING
     if(systemVerbose & VERBOSE_SWI) {
@@ -2066,9 +2061,7 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
   if(romSize < 0x1fe2000) {
     *((u16 *)&rom[0x1fe209c]) = 0xdffa; // SWI 0xFA
     *((u16 *)&rom[0x1fe209e]) = 0x4770; // BX LR
-  }/* else {
-    agbPrintEnable(false);
-  }*/
+  }
 }
 
 void CPUReset()

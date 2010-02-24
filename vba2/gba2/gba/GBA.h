@@ -157,7 +157,6 @@ extern const u32 VERBOSE_DMA1;
 extern const u32 VERBOSE_DMA2;
 extern const u32 VERBOSE_DMA3;
 extern const u32 VERBOSE_UNDEFINED;
-extern const u32 VERBOSE_AGBPRINT;
 extern const u32 VERBOSE_SOUNDOUTPUT;
 
 extern u32 systemVerbose;
