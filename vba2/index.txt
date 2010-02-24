@@ -11,6 +11,10 @@ The compiled binaries will also end up there.
 Contains documentation meant for the end user, like the license agreement and a readme file.
 
 
+"emu-doc"
+Documentation related to GBA hardware emulation can be found here.
+
+
 "doxygen"
 Contains documentation targeted at developers.
 It will be automatically extracted from the source code using the Doxygen tool.
