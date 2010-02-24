@@ -107,6 +107,13 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   if( !file.isEmpty() ) {
     loadGame( file );
   }
+
+  // create a timer that writes the save game to a file every two minutes (only if save data changed in memory)
+  QTimer *saveTimer = NULL;
+  saveTimer = new QTimer( this );
+  Q_ASSERT( saveTimer != NULL );
+  connect( saveTimer, SIGNAL(timeout()), this, SLOT(saveBackupMedia()) );
+  saveTimer->start( 2 * 60 * 1000 );
 }
 
 MainWindow::~MainWindow()
@@ -141,6 +148,9 @@ void MainWindow::on_actionLoad_ROM_triggered()
 
 
 bool MainWindow::saveBackupMedia() {
+  // function called by timer but no ROM loaded
+  if( m_fileName.isEmpty() ) return false;
+
   if( m_saveFile.isEmpty() ) {
     Q_ASSERT( false );
     return true;

@@ -48,7 +48,7 @@ public:
 private:
   Ui::MainWindow *ui;
   CEmuGBA *m_emuGBA;
-  QString m_fileName;
+  QString m_fileName; // ROM file path, or empty when no ROM loaded
   QString m_saveFile;
   bool m_playing; // true: playing  false: paused
   int m_timeoutCounter;
@@ -66,6 +66,11 @@ private:
 
   CAppSettings *m_settings;
 
+protected:
+  void dragEnterEvent( QDragEnterEvent *event );
+  void dropEvent( QDropEvent *event );
+
+private slots:
   // backup save game data to file
   bool saveBackupMedia();
   // load save game data from file (if it exists)
@@ -73,11 +78,6 @@ private:
   // load & run game, also load backup media if possible
   bool loadGame( QString romFile );
 
-protected:
-  void dragEnterEvent( QDragEnterEvent *event );
-  void dropEvent( QDropEvent *event );
-
-private slots:
   // initialize or reinitialize sound output
   void resetSound();
   void timer_timeout();
