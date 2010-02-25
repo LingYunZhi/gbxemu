@@ -1,10 +1,32 @@
+/*
+  GBA memory viewer
+  Written Feb 25, 2010 by Spacy
+  You may freely redistribute the source code and the binary of this application.
+  You are not restricted in any way.
+  Do whatever you like.
+*/
+
 #include <gba_console.h>
 #include <gba_video.h>
 #include <gba_interrupt.h>
 #include <gba_systemcalls.h>
 #include <gba_input.h>
+#include <gba_base.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+
+// write 32 KiB from address to SRAM
+void writeSRAM( u32 address ) {
+  vu16 *REG_WAITCNT = (vu16*)0x04000204;
+  *REG_WAITCNT |= 3; // 8 waitstates to access SRAM
+
+  u8 *sram = (u8*)SRAM;
+  u8 *source = (u8*)address;
+  for( u16 c = 0; c < 0x8000; c++ ) {
+    *(sram++) = *(source++);
+  }
+}
 
 
 inline void printMemory( u32 address, u8 busSize ) {
@@ -80,22 +102,30 @@ int main(void) {
   bool update = true;
   while (1) {
     scanKeys();
-    setRepeat( 20, 5 );
+    setRepeat( 20, 3 );
     const u16 keys = keysDownRepeat();
     if( keys & KEY_DOWN ) {
-      address+=8;
+      if( !(REG_KEYINPUT & (KEY_START)) ) {
+        address++;
+      } else {
+        address+=8;
+      }
       update = true;
     }
     if( keys & KEY_UP ) {
-      address-=8;
+      if( !(REG_KEYINPUT & (KEY_START)) ) {
+        address--;
+      } else {
+        address-=8;
+      }
       update = true;
     }
     if( keys & KEY_RIGHT ) {
-      address+=0x100;
+      address+=0x80;
       update = true;
     }
     if( keys & KEY_LEFT ) {
-      address-=0x100;
+      address-=0x80;
       update = true;
     }
     if( keys & KEY_R ) {
@@ -116,22 +146,31 @@ int main(void) {
       address-=0x10000;
       update = true;
     }
+    static u8 forcedUpdate = 0;
     if( keys & KEY_SELECT ) {
-      switch( busSize ) {
-      case 8:
-        busSize = 16;
-        break;
-      case 16:
-        busSize = 32;
-        break;
-      case 32:
-        busSize = 8;
-        break;
+      if( !(REG_KEYINPUT & KEY_START) ) {
+        writeSRAM( address );
+        iprintf(CON_CLS() "Wrote 32 KiB to SRAM.\n");
+        forcedUpdate = 0;
+      } else {
+        switch( busSize ) {
+        case 8:
+          busSize = 16;
+          break;
+        case 16:
+          busSize = 32;
+          break;
+        case 32:
+          busSize = 8;
+          break;
+        }
+        iprintf(CON_CLS());
+        update = true;
       }
-      iprintf(CON_CLS());
-      update = true;
     }
-    if( update ) {
+    // force screen refresh two second
+    ++forcedUpdate % 120;
+    if( update || !forcedUpdate ) {
       update = false;
       printMemory( address, busSize );
     }
