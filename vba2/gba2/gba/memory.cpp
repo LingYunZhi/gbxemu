@@ -60,13 +60,24 @@ u8 CPUReadByte(u32 address)
     return vram[address];
   case 7:
     return oam[address & 0x3ff];
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12:
-    return rom[address & 0x1FFFFFF];
-  case 14:
+
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0D:
+    {
+      const u32 romAddress = address & 0x01FFFFFF;
+      if( romAddress < romSize ) {
+        return rom[romAddress];
+      }
+      assert( false );
+      goto unreadable;
+      break;
+    }
+
+  case 0x0E:
     if( backupMedia != NULL ) {
       switch( backupMedia->getType() ) {
       default:
@@ -77,6 +88,10 @@ u8 CPUReadByte(u32 address)
         return backupMedia->read8( address );
       }
     }
+    assert( false );
+    goto unreadable;
+    break;
+
   default:
 unreadable:
 #ifdef GBA_LOGGING
@@ -173,22 +188,33 @@ u32 CPUReadHalfWord(u32 address)
   case 7:
     value = READ16LE(((u16 *)&oam[address & 0x3fe]));
     break;
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12:
-    value = READ16LE(((u16 *)&rom[address & 0x1FFFFFE]));
-    break;
-  case 13:
+
+  case 0x0D:
+    // EEPROM could be here as well
+    // If not, ROM access request is assumed
+    // EEPROM can be accessed from 0x0D000000 to 0x0DFFFFFF
     if( backupMedia != NULL ) {
       if( backupMedia->getType() == BackupMedia::EEPROM ) {
-        // TODO: further check address bits
         value = backupMedia->read16( address );
         break;
       }
     }
-    goto unreadable;
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+    {
+      const u32 romAddress = address & 0x01FFFFFE;
+      if( romAddress < romSize ) {
+        value = READ16LE( &rom[romAddress] );
+        break;
+      }
+      assert( false );
+      goto unreadable;
+      break;
+    }
+
   default:
 unreadable:
 #ifdef GBA_LOGGING
@@ -540,13 +566,24 @@ u32 CPUReadMemory(u32 address)
   case 7:
     value = READ32LE(((u32 *)&oam[address & 0x3FC]));
     break;
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12:
-    value = READ32LE(((u32 *)&rom[address&0x1FFFFFC]));
-    break;
+
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0D:
+    {
+      const u32 romAddress = address & 0x01FFFFFC;
+      if( romAddress < romSize ) {
+        value = READ32LE( &rom[romAddress] );
+        break;
+      }
+      assert( false );
+      goto unreadable;
+      break;
+    }
+
   default:
 unreadable:
 #ifdef GBA_LOGGING

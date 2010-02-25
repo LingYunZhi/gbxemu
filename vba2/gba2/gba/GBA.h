@@ -81,7 +81,7 @@ extern int armMode;
 void CPUCleanUp();
 void CPUUpdateRender();
 void CPUUpdateRenderBuffers(bool);
-int CPULoadRom(const u8 *const data, const int size);
+bool CPULoadRom(u8 *data, int size); // data must be valid as long as the emu is running
 void CPUUpdateRegister(u32 address, u16 value);
 void CPUInit(const bool useBiosFile = false, const u8 *const data = NULL, const int size = 0);
 void CPUReset();
@@ -212,6 +212,7 @@ extern bool fastforward;
 
 extern u8 *bios;
 extern u8 *rom;
+extern u32 romSize;
 extern u8 *internalRAM;
 extern u8 *workRAM;
 extern u8 *paletteRAM;

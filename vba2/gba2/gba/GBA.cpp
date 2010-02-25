@@ -347,9 +347,6 @@ u32 myROM[] = {
 };
 
 
-static int romSize = 0x2000000;
-
-
 inline int CPUUpdateTicks()
 {
   int cpuLoopTicks = lcdTicks;
@@ -447,11 +444,6 @@ void CPUUpdateRenderBuffers(bool force)
 
 void CPUCleanUp()
 {
-  if(rom != NULL) {
-    free(rom);
-    rom = NULL;
-  }
-
   if(vram != NULL) {
     free(vram);
     vram = NULL;
@@ -493,83 +485,83 @@ void CPUCleanUp()
   }
 }
 
-int CPULoadRom(const u8 *const data, const int size)
+bool CPULoadRom(u8 *data, int size)
 {
-  eepromSizeDetected = false;
-  if( size > 0x2000000 ) return 0;
-  romSize = 0x2000000; // currently necessary for accurate emulation ???
+  if( data == NULL ) return false;
+  if( size > 0x2000000 ) return false;
+  if( size < 192 ) return false; // TODO: determine minimal possible ROM size
 
-  if(rom != NULL) {
+  eepromSizeDetected = false;
+
+  if(workRAM != NULL) {
     CPUCleanUp();
   }
 
-  rom = (u8 *)malloc(romSize);
-  if(rom == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
-    return 0;
-  }
+  rom = data;
+  romSize = size;
+
   workRAM = (u8 *)calloc(1, 0x40000);
   if(workRAM == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     return 0;
   }
 
-  memcpy(rom, data, size);
-
-  //this code fills up the remaining bytes to 32 MB with up-counting bytes ???
-  u16 *temp = (u16 *)(rom+((romSize+1)&~1));
-  int i;
-  for(i = (romSize+1)&~1; i < 0x2000000; i+=2) {
-    WRITE16LE(temp, (i >> 1) & 0xFFFF);
-    temp++;
-  }
+// TODO:
+// What's this? If this is useful, move it to memory.cpp
+//this code fills up the remaining bytes to 32 MB with up-counting bytes ???
+//  u16 *temp = (u16 *)(rom+((romSize+1)&~1));
+//  int i;
+//  for(i = (romSize+1)&~1; i < 0x2000000; i+=2) {
+//    WRITE16LE(temp, (i >> 1) & 0xFFFF);
+//    temp++;
+//  }
 
   bios = (u8 *)calloc(1,0x4000);
   if(bios == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
   internalRAM = (u8 *)calloc(1,0x8000);
   if(internalRAM == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
   paletteRAM = (u8 *)calloc(1,0x400);
   if(paletteRAM == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
   vram = (u8 *)calloc(1, 0x20000);
   if(vram == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
   oam = (u8 *)calloc(1, 0x400);
   if(oam == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
   pix = (u16 *)calloc(1, pix_size);
   if(pix == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
   ioMem = (u8 *)calloc(1, 0x400);
   if(ioMem == NULL) {
     printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
-    return 0;
+    return false;
   }
 
   CPUUpdateRenderBuffers(true);
 
-  return romSize;
+  return true;
 }
 
 
@@ -2058,10 +2050,12 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
   for(i = 0x304; i < 0x400; i++)
     ioReadable[i] = false;
 
-  if(romSize < 0x1fe2000) {
-    *((u16 *)&rom[0x1fe209c]) = 0xdffa; // SWI 0xFA
-    *((u16 *)&rom[0x1fe209e]) = 0x4770; // BX LR
-  }
+// TODO:
+// What's this? If this is useful, move it to memory.cpp
+//  if(romSize < 0x1fe2000) {
+//    *((u16 *)&rom[0x1fe209c]) = 0xdffa; // SWI 0xFA
+//    *((u16 *)&rom[0x1fe209e]) = 0x4770; // BX LR
+//  }
 }
 
 void CPUReset()
@@ -2775,6 +2769,7 @@ BackupMedia *backupMedia = NULL;
 
 u8 *bios = 0;
 u8 *rom = 0;
+u32 romSize = 0;
 u8 *internalRAM = 0;
 u8 *workRAM = 0;
 u8 *paletteRAM = 0;
