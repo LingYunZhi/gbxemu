@@ -2049,13 +2049,6 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
     ioReadable[i] = false;
   for(i = 0x304; i < 0x400; i++)
     ioReadable[i] = false;
-
-// TODO:
-// What's this? If this is useful, move it to memory.cpp
-//  if(romSize < 0x1fe2000) {
-//    *((u16 *)&rom[0x1fe209c]) = 0xdffa; // SWI 0xFA
-//    *((u16 *)&rom[0x1fe209e]) = 0x4770; // BX LR
-//  }
 }
 
 void CPUReset()
