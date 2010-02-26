@@ -74,6 +74,10 @@ private:
 
   // SRAM
   static const u32 SIZE_SRAM = 0x8000;
+  /** SRAM chip label of Metroid Fusion (Europe) (En,Fr,De,Es,It)
+        "256K SRAM" besides chip
+        "Hynix 0239A" "HY62WT081ED70C" "KOREA"
+    */
 
   // FLASH
   static const u32 SIZE_FLASH_SMALL = 0x10000;
