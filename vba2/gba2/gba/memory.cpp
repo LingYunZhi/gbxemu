@@ -114,7 +114,7 @@ unreadable:
 }
 
 
-u32 CPUReadHalfWord(u32 address)
+u16 CPUReadHalfWord(u32 address)
 {
   assert( !(address & 0xF0000000) );
 
@@ -239,15 +239,6 @@ unreadable:
     value = (value >> 8) | (value << 24);
   }
 
-  return value;
-}
-
-
-u16 CPUReadHalfWordSigned(u32 address)
-{
-  u16 value = CPUReadHalfWord(address);
-  if((address & 1))
-    value = (s8)value;
   return value;
 }
 
