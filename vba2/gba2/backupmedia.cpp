@@ -21,19 +21,9 @@
 #include <assert.h>
 #include <string.h>
 
-//#define FLASH_DEBUG
-#ifdef FLASH_DEBUG
-#include <stdio.h>
-FILE *f = NULL;
-#endif
-
 
 BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 {
-#ifdef FLASH_DEBUG
-  f = fopen( "flash_debug.txt", "w" );
-#endif
-
   m_type = findOutType( romData, romSize );
   m_data = NULL;
   m_size = 0;
@@ -89,10 +79,6 @@ BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 
 
 BackupMedia::~BackupMedia() {
-#ifdef FLASH_DEBUG
-  fclose( f );
-#endif
-
   if( m_data != NULL ) {
     delete[] m_data;
   }
@@ -104,10 +90,6 @@ BackupMedia::BACKUPMEDIATYPE BackupMedia::getType() {
 }
 
 u8 BackupMedia::read8( u32 address ) {
-#ifdef FLASH_DEBUG
-  fprintf( f, "read: %X\n", address );
-#endif
-
   assert( address & 0x0E000000 );
   address &= 0xFFFF;
 
@@ -144,9 +126,6 @@ u8 BackupMedia::read8( u32 address ) {
 
 
 void BackupMedia::write8( u8 data, u32 address ) {
-#ifdef FLASH_DEBUG
-  fprintf( f, "write: %X -> %X\n", data, address );
-#endif
   assert( address & 0x0E000000 );
   address &= 0xFFFF;
 
@@ -421,6 +400,14 @@ u32 stringToValue( const char s[5] ) {
 }
 
 
+/**
+  This function detects the type of backup chip used in a commercial (!) cartridge by searching the whole
+  game ROM for specific strings that are inserted by Nintendo's build system.
+
+  This does also work for the "Classic NES" series of games, which try to prevent piracy by reading from
+  the SRAM area twice at bootup even though they actually use EEPROM later on. Fortunately, these game ROMs
+  still only contain the EEPROM string, but not the SRAM string.
+  */
 BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize )
 {
   assert( romData != NULL );
