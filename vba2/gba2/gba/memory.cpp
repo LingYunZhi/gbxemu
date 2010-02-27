@@ -24,9 +24,7 @@
 
 u8 CPUReadByte(u32 address)
 {
-  assert( !(address & 0xF0000000) );
-
-  switch(address >> 24) {
+  switch( address >> 24 ) {
   case 0:
     if (reg[15].I >> 24) {
       if(address < 0x4000) {
@@ -71,10 +69,7 @@ u8 CPUReadByte(u32 address)
       const u32 romAddress = address & 0x01FFFFFF;
       if( romAddress < romSize ) {
         return rom[romAddress];
-      }
-      assert( false );
-      goto unreadable;
-      break;
+      } else goto unreadable;
     }
 
   case 0x0E:
@@ -88,48 +83,29 @@ u8 CPUReadByte(u32 address)
         return backupMedia->read8( address );
       }
     }
-    assert( false );
     goto unreadable;
-    break;
 
   default:
-unreadable:
-#ifdef GBA_LOGGING
-    if(systemVerbose & VERBOSE_ILLEGAL_READ) {
-      log("Illegal byte read: %08x at %08x\n", address, armMode ?
-        armNextPC - 4 : armNextPC - 2);
-    }
-#endif
-    if(cpuDmaHack) {
+  unreadable:
+    assert( false );
+    if( cpuDmaHack ) {
       return cpuDmaLast & 0xFF;
     } else {
-      if(armState) {
+      if( armState ) {
         return CPUReadByteQuick(reg[15].I+(address & 3));
       } else {
         return CPUReadByteQuick(reg[15].I+(address & 1));
       }
     }
-    break;
   }
 }
 
 
-u16 CPUReadHalfWord(u32 address)
+u16 CPUReadHalfWord( u32 address )
 {
-  assert( !(address & 0xF0000000) );
+  u16 value;
 
-#ifdef GBA_LOGGING
-  if(address & 1) {
-    if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
-      log("Unaligned halfword read: %08x at %08x\n", address, armMode ?
-        armNextPC - 4 : armNextPC - 2);
-    }
-  }
-#endif
-
-  u32 value;
-
-  switch(address >> 24) {
+  switch( address >> 24 ) {
   case 0:
     if (reg[15].I >> 24) {
       if(address < 0x4000) {
@@ -195,10 +171,11 @@ u16 CPUReadHalfWord(u32 address)
     // EEPROM can be accessed from 0x0D000000 to 0x0DFFFFFF
     if( backupMedia != NULL ) {
       if( backupMedia->getType() == BackupMedia::EEPROM ) {
-        value = backupMedia->read16( address );
+        value = backupMedia->read16( address & 0x01FFFFFE );
         break;
       }
     }
+    // no break here (continue below, if not EEPROM access)
   case 0x08:
   case 0x09:
   case 0x0A:
@@ -209,34 +186,27 @@ u16 CPUReadHalfWord(u32 address)
       if( romAddress < romSize ) {
         value = READ16LE( &rom[romAddress] );
         break;
-      }
-      assert( false );
-      goto unreadable;
-      break;
+      } else goto unreadable;
     }
 
   default:
-unreadable:
-#ifdef GBA_LOGGING
-    if(systemVerbose & VERBOSE_ILLEGAL_READ) {
-      log("Illegal halfword read: %08x at %08x\n", address, armMode ?
-        armNextPC - 4 : armNextPC - 2);
-    }
-#endif
-    if(cpuDmaHack) {
+  unreadable:
+    assert( false );
+    if( cpuDmaHack ) {
       value = cpuDmaLast & 0xFFFF;
     } else {
-      if(armState) {
-        value = CPUReadHalfWordQuick(reg[15].I + (address & 2));
+      if( armState ) {
+        value = CPUReadHalfWordQuick( reg[15].I + (address & 2) ); // verified
       } else {
-        value = CPUReadHalfWordQuick(reg[15].I);
+        value = CPUReadHalfWordQuick( reg[15].I ); // verified
       }
     }
-    break;
   }
 
-  if(address & 1) {
-    value = (value >> 8) | (value << 24);
+
+  // unaligned read
+  if( address & 1) {
+    value >>= 8; // verified
   }
 
   return value;
@@ -494,22 +464,11 @@ unwritable:
 }
 
 
-u32 CPUReadMemory(u32 address)
+u32 CPUReadMemory( u32 address )
 {
-  assert( !(address & 0xF0000000) );
-
-
-#ifdef GBA_LOGGING
-  if(address & 3) {
-    if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
-      log("Unaligned word read: %08x at %08x\n", address, armMode ?
-        armNextPC - 4 : armNextPC - 2);
-    }
-  }
-#endif
-
   u32 value;
-  switch(address >> 24) {
+
+  switch( address >> 24 ) {
   case 0:
     if(reg[15].I >> 24) {
       if(address < 0x4000) {
@@ -569,37 +528,36 @@ u32 CPUReadMemory(u32 address)
       if( romAddress < romSize ) {
         value = READ32LE( &rom[romAddress] );
         break;
-      }
-      assert( false );
-      goto unreadable;
-      break;
+      } else goto unreadable;
     }
 
   default:
-unreadable:
-#ifdef GBA_LOGGING
-    if(systemVerbose & VERBOSE_ILLEGAL_READ) {
-      log("Illegal word read: %08x at %08x\n", address, armMode ?
-        armNextPC - 4 : armNextPC - 2);
-    }
-#endif
-
-    if(cpuDmaHack) {
-      value = cpuDmaLast;
-    } else {
-      if(armState) {
-        value = CPUReadMemoryQuick(reg[15].I);
+  unreadable:
+    {
+      assert( false ); // this should usually not happen
+      if( cpuDmaHack ) {
+        value = cpuDmaLast;
       } else {
-        value = CPUReadHalfWordQuick(reg[15].I) |
-          CPUReadHalfWordQuick(reg[15].I) << 16;
+        // return the last prefetched opcode
+        if( armState ) {
+          value = CPUReadMemoryQuick( reg[15].I );
+        } else {
+          // verified
+          const u16 lastOp = CPUReadHalfWordQuick( reg[15].I );
+          value = (lastOp<<16) | lastOp; // fill high and low 16 bit with lastOp
+        }
       }
     }
   }
 
-  if(address & 3) {
-    int shift = (address & 3) << 3;
+
+  // unaligned read
+  const u32 offset = address & 3; // not a multiple of four
+  if( offset ) {
+    const u32 shift = offset << 3; // 1 -> 8   2 -> 16   3 -> 24
     value = (value >> shift) | (value << (32 - shift));
   }
+
   return value;
 }
 
