@@ -92,9 +92,9 @@ u8 CPUReadByte(u32 address)
       return cpuDmaLast & 0xFF;
     } else {
       if( armState ) {
-        return CPUReadByteQuick(reg[15].I+(address & 3));
+        return CPUReadByteQuick(reg[15].I+(address & 3)); // verified
       } else {
-        return CPUReadByteQuick(reg[15].I+(address & 1));
+        return CPUReadByteQuick( reg[15].I + (address & 1) ); // verified
       }
     }
   }
