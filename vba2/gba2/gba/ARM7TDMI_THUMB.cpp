@@ -910,17 +910,14 @@ static INSN_REGPARM void thumb5C(u32 opcode)
   clockTicks = 3 + dataTicksAccess16(address) + codeTicksAccess16(armNextPC);
 }
 
-// LDSH Rd, [Rs, Rn]
+// LDRSH Rd, [Rs, Rn]
 static INSN_REGPARM void thumb5E(u32 opcode)
 {
   if (busPrefetchCount == 0)
     busPrefetch = busPrefetchEnable;
   u32 address = reg[(opcode>>3)&7].I + reg[(opcode>>6)&7].I;
-  u16 value = CPUReadHalfWord(address);
-  if( address & 1 ) {
-    value = (s8)value;
-  }
-  reg[opcode&7].I = (s16)value;
+  const s32 value = (address & 1) ? (s8)CPUReadByte(address) : (s16)CPUReadHalfWord(address);
+  reg[opcode&7].I = (s32)value;
   clockTicks = 3 + dataTicksAccess16(address) + codeTicksAccess16(armNextPC);
 }
 
