@@ -126,9 +126,6 @@ u32 dma3Dest = 0;
 void (*renderLine)() = mode0RenderLine;
 bool fxOn = false;
 bool windowOn = false;
-//int frameCount = 0;
-//u32 lastTime = 0;
-//int count = 0;
 
 const int TIMER_TICKS[4] = {
   0,
@@ -505,16 +502,6 @@ bool CPULoadRom(u8 *data, int size)
     printErrorMessage(ERR_OUT_OF_MEMORY);
     return 0;
   }
-
-// TODO:
-// What's this? If this is useful, move it to memory.cpp
-//this code fills up the remaining bytes to 32 MB with up-counting bytes ???
-//  u16 *temp = (u16 *)(rom+((romSize+1)&~1));
-//  int i;
-//  for(i = (romSize+1)&~1; i < 0x2000000; i+=2) {
-//    WRITE16LE(temp, (i >> 1) & 0xFFFF);
-//    temp++;
-//  }
 
   bios = (u8 *)calloc(1,0x4000);
   if(bios == NULL) {
@@ -2214,7 +2201,6 @@ void CPUReset()
   renderLine = mode0RenderLine;
   fxOn = false;
   windowOn = false;
-//  frameCount = 0;
   layerEnable = DISPCNT & layerSettings;
 
   CPUUpdateRenderBuffers(true);
@@ -2259,8 +2245,6 @@ void CPUReset()
   ARM_PREFETCH;
 
   cpuDmaHack = false;
-
-//  lastTime = systemGetClock();
 
   SWITicks = 0;
 }
@@ -2400,22 +2384,6 @@ void CPULoop(int ticks)
             lcdTicks += 1008;
             DISPSTAT &= 0xFFFD;
             if(VCOUNT == 160) { // V-BLANK reached
-//              count++;
-//              systemFrame();
-
-//              if((count % 10) == 0) {
-//                system10Frames(60);
-//              }
-//              if(count == 60) {
-//                u32 time = systemGetClock();
-//                if(time != lastTime) {
-//                  u32 t = 100000/(time - lastTime);
-//                  systemShowSpeed(t);
-//                } else
-//                  systemShowSpeed(0);
-//                lastTime = time;
-//                count = 0;
-//              }
               // update joystick information
               P1 = 0x03FF ^ (inputDriver->getKeyStates() & 0x03FF);
               // disallow left+right and up+down at the same time
