@@ -78,7 +78,6 @@ bool eepromSizeDetected = false;
 
 bool cpuDmaHack = false;
 u32 cpuDmaLast = 0;
-int dummyAddress = 0;
 
 bool cpuBreakLoop = false;
 int cpuNextEvent = 0;
@@ -2205,6 +2204,7 @@ void CPUReset()
 
   CPUUpdateRenderBuffers(true);
 
+  static u32 dummyAddress = 0;
   for(int i = 0; i < 256; i++) {
     map[i].address = (u8 *)&dummyAddress;
     map[i].mask = 0;
@@ -2224,14 +2224,20 @@ void CPUReset()
   map[6].mask = 0x1FFFF;
   map[7].address = oam;
   map[7].mask = 0x3FF;
+
+  // TODO: DANGER: program crash possible if romSize < 32 MiB
   map[8].address = rom;
-  map[8].mask = 0x1FFFFFF;
-  map[9].address = rom;
-  map[9].mask = 0x1FFFFFF;
-  map[10].address = rom;
-  map[10].mask = 0x1FFFFFF;
-  map[12].address = rom;
-  map[12].mask = 0x1FFFFFF;
+  map[8].mask = 0xFFFFFF;
+  map[9].address = rom + 0x01000000;
+  map[9].mask = 0xFFFFFF;
+  map[10].address = map[8].address;
+  map[10].mask = map[8].mask;
+  map[10].address = map[9].address;
+  map[10].mask = map[9].mask;
+  map[11].address = map[8].address;
+  map[11].mask = map[8].mask;
+  map[12].address = map[9].address;
+  map[12].mask = map[9].mask;
 
   soundReset();
 
