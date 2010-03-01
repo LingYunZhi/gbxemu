@@ -67,13 +67,13 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   m_emuGBA = new CEmuGBA;
   Q_ASSERT( m_emuGBA != NULL );
 
-  m_playing = false;
-
   m_timer = NULL;
   m_timer = new QTimer( this );
   Q_ASSERT( m_timer != NULL );
   m_timer->setInterval( 5 ); // 1000/60 only produces ~37 fps  -  5 produces ~200 fps
   connect( m_timer, SIGNAL(timeout()), this, SLOT(timer_timeout()) );
+
+  m_paused = false;
 
   m_renderTarget = NULL;
   m_renderTarget = new PaintWidget( this );
@@ -116,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   saveTimer->start( 2 * 60 * 1000 );
 }
 
+
 MainWindow::~MainWindow()
 {
     on_actionUnload_ROM_triggered();
@@ -133,6 +134,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 void MainWindow::on_actionLoad_ROM_triggered()
 {
   QString startDir = m_fileName;
@@ -140,10 +142,51 @@ void MainWindow::on_actionLoad_ROM_triggered()
     startDir = m_settings->s_cartridgeFilesDir;
   }
 
+  const bool wasPaused = m_paused;
+
+  if( !wasPaused ) {
+    // pause emulation while browsing for a file
+    pauseEmulation();
+  }
   QString newFileName = QFileDialog::getOpenFileName( this, tr("Select ROM image to load"), startDir, tr("GBA ROMs (*.gba)") );
-  if( newFileName.isEmpty() ) return;
+  if( newFileName.isEmpty() ) {
+    if( !wasPaused ) {
+      resumeEmulation();
+    }
+    return;
+  }
 
   loadGame( newFileName );
+
+  if( !wasPaused ) {
+    resumeEmulation();
+  }
+}
+
+
+void MainWindow::pauseEmulation() {
+  if( !m_paused ) {
+    m_paused = true;
+    ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
+    ui->actionPlay_Pause->setText( tr("Play") );
+    if( m_timer->isActive() ) {
+      m_timer->stop();
+    }
+  }
+}
+
+
+void MainWindow::resumeEmulation() {
+  if( m_paused ) {
+    m_paused = false;
+    ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
+    ui->actionPlay_Pause->setText( tr("Pause") );
+    if( !m_timer->isActive() ) {
+      m_timeoutCounter = 0;
+      m_timeCounter.start();
+      m_timer->start();
+    }
+  }
 }
 
 
@@ -270,12 +313,6 @@ bool MainWindow::loadGame( QString romFile ) {
 
   loadBackupMedia();
 
-  ui->actionPlay_Pause->setEnabled( true );
-  if( !m_timer->isActive() ) {
-    // start emulation
-    ui->actionPlay_Pause->trigger();
-  }
-
   return true;
 }
 
@@ -292,7 +329,6 @@ void MainWindow::on_actionUnload_ROM_triggered()
 
     m_emuGBA->shutDown();
     m_fileName.clear();
-    ui->actionPlay_Pause->setEnabled( false );
   }
 }
 
@@ -360,26 +396,17 @@ void MainWindow::timer_timeout()
     if( retVal == false ) {
       Q_ASSERT( false ); // debug emulator code
       QMessageBox::critical( this, tr("Error"), tr("Emulator code messed up. Pausing emulation.") );
-      if( m_timer->isActive() ) {
-        m_timer->stop();
-      }
+      pauseEmulation();
     }
   }
 }
 
+
 void MainWindow::on_actionPlay_Pause_triggered()
 {
-  if( !m_fileName.isEmpty() ) {
-    if( m_timer->isActive() ) {
-      ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
-      m_timer->stop();
-    } else {
-      ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
-      m_timeoutCounter = 0;
-      m_timeCounter.start();
-      m_timer->start();
-    }
+  if( m_paused ) {
+    resumeEmulation();
   } else {
-    Q_ASSERT( false ); // should not be able to arrive here
+    pauseEmulation();
   }
 }

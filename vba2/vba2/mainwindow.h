@@ -50,7 +50,7 @@ private:
   CEmuGBA *m_emuGBA;
   QString m_fileName; // ROM file path, or empty when no ROM loaded
   QString m_saveFile;
-  bool m_playing; // true: playing  false: paused
+  bool m_paused; // true: emulation paused  false: emulation running
   int m_timeoutCounter;
   QTime m_timeCounter;
 
@@ -71,6 +71,8 @@ protected:
   void dropEvent( QDropEvent *event );
 
 private slots:
+  void pauseEmulation();
+  void resumeEmulation();
   // backup save game data to file
   bool saveBackupMedia();
   // load save game data from file (if it exists)
