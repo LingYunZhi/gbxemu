@@ -5,7 +5,10 @@ TARGET = vba2
 TEMPLATE = app
 QT += opengl \
     multimedia
-CONFIG(release) {
+CONFIG(debug, debug|release) {
+# debug
+} else {
+# release
     # remove assert() functions
     DEFINES += NDEBUG
 }
