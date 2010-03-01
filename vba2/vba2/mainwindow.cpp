@@ -156,16 +156,13 @@ void MainWindow::on_actionLoad_ROM_triggered()
     return;
   }
 
+  m_paused = wasPaused;
   loadGame( newFileName );
-
-  if( !wasPaused ) {
-    resumeEmulation();
-  }
 }
 
 
 void MainWindow::pauseEmulation() {
-  if( !m_paused ) {
+  if( m_timer->isActive() ) {
     m_paused = true;
     ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/play_button.png") );
     ui->actionPlay_Pause->setText( tr("Play") );
@@ -177,7 +174,7 @@ void MainWindow::pauseEmulation() {
 
 
 void MainWindow::resumeEmulation() {
-  if( m_paused ) {
+  if( !m_timer->isActive() ) {
     m_paused = false;
     ui->actionPlay_Pause->setIcon( QIcon(":/MainWindow/pause_button.png") );
     ui->actionPlay_Pause->setText( tr("Pause") );
@@ -312,6 +309,10 @@ bool MainWindow::loadGame( QString romFile ) {
   m_fileName = romFile;
 
   loadBackupMedia();
+
+  if( !m_paused ) {
+    resumeEmulation();
+  }
 
   return true;
 }
