@@ -40,8 +40,6 @@ CDriver_Input    *inputDriver    = NULL;
 
 CGBAGraphics graphics2; // brand new high-level graphics emulation class
 
-bool fastforward = false;
-
 
 // verbose info
 const u32 VERBOSE_SWI              = 0x001;

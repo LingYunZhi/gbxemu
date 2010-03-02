@@ -208,7 +208,6 @@ extern bool useBios;
 extern bool skipBios;
 extern int layerSettings;
 extern int layerEnable;
-extern bool fastforward;
 
 extern u8 *bios;
 extern u8 *rom;

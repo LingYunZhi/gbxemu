@@ -172,11 +172,6 @@ bool CEmuGBA::setDriverInput( CDriver_Input *drv )
 }
 
 
-void CEmuGBA::toggleFastForward( const bool enable ) {
-  fastforward = enable;
-}
-
-
 BackupMedia *CEmuGBA::getBackupMedia() {
   return m_backupMedia;
 }

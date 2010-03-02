@@ -43,8 +43,6 @@ public:
 
     bool emulate();
 
-    void toggleFastForward( const bool enable );
-
     BackupMedia *getBackupMedia();
 
 
