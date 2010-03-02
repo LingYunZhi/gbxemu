@@ -25,10 +25,6 @@
 #include "../System.h"
 
 
-const u8 SAVE_GAME_VERSION_VBA2 = 20;
-const u8 SAVE_GAME_VERSION_CURRENT = SAVE_GAME_VERSION_VBA2;
-
-
 typedef struct {
   u8 *address;
   u32 mask;
@@ -130,22 +126,6 @@ extern CDriver_Graphics *graphicsDebugDriver; // a driver to use for debugging
 class CDriver_Input;
 extern CDriver_Input    *inputDriver;
 
-// error codes
-enum ERR_CODE {
-    ERR_UNSUPPORTED_SGM_VER,
-    ERR_CANNOT_LOAD_SGM_WRONG_GAME,
-    ERR_SAVE_GAME_NOT_USING_BIOS,
-    ERR_SAVE_GAME_USING_BIOS,
-    ERR_UNSUPPORTED_SAVE_TYPE,
-    ERR_UNSUPPORTED_BIOS_FUNCTION,
-    ERR_INVALID_BIOS_FILE_SIZE,
-    ERR_ERROR_CREATING_FILE,
-    ERR_UNSUPPORTED_ARM_MODE,
-    ERR_OUT_OF_MEMORY
-};
-
-inline void printErrorMessage( ERR_CODE err ) {} // TODO: implement
-
 
 // verbose info
 extern const u32 VERBOSE_SWI;
@@ -161,8 +141,6 @@ extern const u32 VERBOSE_SOUNDOUTPUT;
 
 extern u32 systemVerbose;
 
-
-// constants
 
 // how many cycles one frame takes
 extern const u32 cyclesPerFrame;

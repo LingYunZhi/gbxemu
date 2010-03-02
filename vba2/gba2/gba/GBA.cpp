@@ -496,49 +496,41 @@ bool CPULoadRom(u8 *data, int size)
 
   workRAM = (u8 *)calloc(1, 0x40000);
   if(workRAM == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     return 0;
   }
 
   bios = (u8 *)calloc(1,0x4000);
   if(bios == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
   internalRAM = (u8 *)calloc(1,0x8000);
   if(internalRAM == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
   paletteRAM = (u8 *)calloc(1,0x400);
   if(paletteRAM == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
   vram = (u8 *)calloc(1, 0x20000);
   if(vram == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
   oam = (u8 *)calloc(1, 0x400);
   if(oam == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
   pix = (u16 *)calloc(1, pix_size);
   if(pix == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
   ioMem = (u8 *)calloc(1, 0x400);
   if(ioMem == NULL) {
-    printErrorMessage(ERR_OUT_OF_MEMORY);
     CPUCleanUp();
     return false;
   }
@@ -766,7 +758,7 @@ void CPUSwitchMode(int mode, bool saveState, bool breakLoop)
       reg[17].I = reg[SPSR_UND].I;
     break;
   default:
-    printErrorMessage(ERR_UNSUPPORTED_ARM_MODE);
+//    printErrorMessage(ERR_UNSUPPORTED_ARM_MODE);
     break;
   }
   armMode = mode;
@@ -1064,12 +1056,6 @@ void CPUSoftwareInterrupt(int comment)
           VCOUNT);
     }
 #endif
-
-    static bool disableMessage = false;
-    if( !disableMessage ) {
-        printErrorMessage(ERR_UNSUPPORTED_BIOS_FUNCTION);
-        disableMessage = true;
-    }
     break;
   }
 }
@@ -1970,7 +1956,7 @@ void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
           memcpy( bios, data, size );
           useBios = true;
       } else {
-          printErrorMessage(ERR_INVALID_BIOS_FILE_SIZE);
+//          printErrorMessage(ERR_INVALID_BIOS_FILE_SIZE);
       }
   }
 
