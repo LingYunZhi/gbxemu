@@ -19,8 +19,6 @@
 #ifndef GBA_H
 #define GBA_H
 
-// compile logging functionality
-#define GBA_LOGGING
 
 #include "../System.h"
 
@@ -126,21 +124,9 @@ extern CDriver_Graphics *graphicsDebugDriver; // a driver to use for debugging
 class CDriver_Input;
 extern CDriver_Input    *inputDriver;
 
-
-// verbose info
-extern const u32 VERBOSE_SWI;
-extern const u32 VERBOSE_UNALIGNED_MEMORY;
-extern const u32 VERBOSE_ILLEGAL_WRITE;
-extern const u32 VERBOSE_ILLEGAL_READ;
-extern const u32 VERBOSE_DMA0;
-extern const u32 VERBOSE_DMA1;
-extern const u32 VERBOSE_DMA2;
-extern const u32 VERBOSE_DMA3;
-extern const u32 VERBOSE_UNDEFINED;
-extern const u32 VERBOSE_SOUNDOUTPUT;
-
-extern u32 systemVerbose;
-
+// interface for logging warnings
+#include "../cverbose.h"
+extern CVerbose *verbose;
 
 // how many cycles one frame takes
 extern const u32 cyclesPerFrame;

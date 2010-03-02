@@ -19,7 +19,7 @@
 #include "memory.h"
 #include "../common/Port.h"
 #include "Sound.h"
-#include "gba.h"
+#include "GBA.h"
 #include <assert.h>
 
 u8 CPUReadByte(u32 address)
@@ -460,6 +460,7 @@ unwritable:
         armMode ? armNextPC - 4 : armNextPC -2 );
     }
 #endif
+    break;
   }
 }
 

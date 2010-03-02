@@ -40,23 +40,8 @@ CDriver_Input    *inputDriver    = NULL;
 
 CGBAGraphics graphics2; // brand new high-level graphics emulation class
 
+CVerbose *verbose = NULL;
 
-// verbose info
-const u32 VERBOSE_SWI              = 0x001;
-const u32 VERBOSE_UNALIGNED_MEMORY = 0x002;
-const u32 VERBOSE_ILLEGAL_WRITE    = 0x004;
-const u32 VERBOSE_ILLEGAL_READ     = 0x008;
-const u32 VERBOSE_DMA0             = 0x010;
-const u32 VERBOSE_DMA1             = 0x020;
-const u32 VERBOSE_DMA2             = 0x040;
-const u32 VERBOSE_DMA3             = 0x080;
-const u32 VERBOSE_UNDEFINED        = 0x100;
-const u32 VERBOSE_SOUNDOUTPUT      = 0x200;
-
-u32 systemVerbose = 0;
-
-
-// constants
 
 // visible+blanking pixels * 4 cylces per pixel
 const u32 cyclesPerFrame = (240+68)*(160+68)*4;

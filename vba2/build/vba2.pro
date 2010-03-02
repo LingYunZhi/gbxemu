@@ -5,13 +5,13 @@ TARGET = vba2
 TEMPLATE = app
 QT += opengl \
     multimedia
-CONFIG(debug, debug|release) {
+CONFIG(debug, debug|release):
+
 # debug
-} else {
-# release
-    # remove assert() functions
-    DEFINES += NDEBUG
-}
+else:# release
+
+# remove assert() functions
+DEFINES += NDEBUG
 SOURCES += ../vba2/main.cpp \
     ../vba2/mainwindow.cpp \
     ../gba2/apu/Multi_Buffer.cpp \
@@ -80,7 +80,8 @@ HEADERS += ../vba2/mainwindow.h \
     ../vba2/settings/settingssheet_directories.h \
     ../vba2/settings/settingssheet.h \
     ../gba2/backupmedia.h \
-    ../gba2/cartridgeheader.h
+    ../gba2/cartridgeheader.h \
+    ../gba2/cverbose.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
