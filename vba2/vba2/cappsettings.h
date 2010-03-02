@@ -38,10 +38,11 @@ private:
 
 public: // settings:
   int     s_soundOutputDevice;
+  bool    s_enableAudioSync;
   QString s_cartridgeFilesDir;
   QString s_cartridgeSavesDir;
   bool    s_enableVSync;
-  bool    s_enableAudioSync;
+  bool    s_enableSmoothStretching;
 };
 
 

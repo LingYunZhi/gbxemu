@@ -42,6 +42,7 @@ void CAppSettings::save() {
   s.setValue( "directories/cartridgeFiles", s_cartridgeFilesDir );
   s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
   s.setValue( "graphicsOutput/enableVSync", s_enableVSync );
+  s.setValue( "graphicsOutput/enableSmoothStretching", s_enableSmoothStretching );
 }
 
 
@@ -54,4 +55,5 @@ void CAppSettings::load() {
   s_cartridgeFilesDir = s.value( "directories/cartridgeFiles", appDir ).toString();
   s_cartridgeSavesDir = s.value( "directories/cartridgeSaves", appDir ).toString();
   s_enableVSync = s.value( "graphicsOutput/enableVSync", true ).toBool();
+  s_enableSmoothStretching = s.value( "graphicsOutput/enableSmoothStretching", false ).toBool();
 }

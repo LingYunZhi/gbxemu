@@ -62,9 +62,11 @@ private:
   static const int srcImgPixelCount = srcImgWidth * srcImgHeight;
 
   u16 m_keys;
+  bool m_smooth;
 
 public slots:
   void enableVSync( bool enable );
+  void enableSmoothStretching( bool enable );
 };
 
 

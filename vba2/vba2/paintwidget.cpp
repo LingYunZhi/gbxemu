@@ -41,6 +41,7 @@ PaintWidget::PaintWidget( QWidget *parent )
   Q_ASSERT( m_placement != NULL );
 
   m_keys = CDriver_Input::BUTTON__NONE;
+  m_smooth = false;
 }
 
 
@@ -64,6 +65,11 @@ void PaintWidget::enableVSync( bool enable ) {
     f.setSwapInterval( enable ? 1 : 0 );
     setFormat( f );
   }
+}
+
+
+void PaintWidget::enableSmoothStretching( bool enable ) {
+  m_smooth = enable;
 }
 
 
@@ -109,6 +115,7 @@ void PaintWidget::resizeEvent( QResizeEvent *event )
 void PaintWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p( this );
+    p.setRenderHint( QPainter::SmoothPixmapTransform, m_smooth );
     p.drawImage( *m_placement, *m_pixels );
 }
 

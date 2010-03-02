@@ -79,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   m_renderTarget = new PaintWidget( this );
   Q_ASSERT( m_renderTarget != NULL );
   m_renderTarget->enableVSync( m_settings->s_enableVSync );
+  m_renderTarget->enableSmoothStretching( m_settings->s_enableSmoothStretching );
   setCentralWidget( m_renderTarget );
 
 //    m_debugGraphics = NULL;
