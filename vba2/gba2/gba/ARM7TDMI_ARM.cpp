@@ -30,6 +30,8 @@ over and over again.
 #include <memory.h>
 #include <stdarg.h>
 #include <string.h>
+#include <assert.h>
+#include <assert.h>
 
 #include "GBA.h"
 #include "ARM7TDMI.h"
@@ -2004,10 +2006,8 @@ static INSN_REGPARM void arm9F0(u32 opcode)
 // B <offset>
 static INSN_REGPARM void armA00(u32 opcode)
 {
-    int offset = opcode & 0x00FFFFFF;
-    if (offset & 0x00800000)
-        offset |= 0xFF000000;  // negative offset
-    reg[15].I += offset<<2;
+    const s32 offset = ((s32)(opcode << 8)) >> 6;
+    reg[15].I += offset;
     armNextPC = reg[15].I;
     reg[15].I += 4;
     ARM_PREFETCH;
@@ -2020,18 +2020,8 @@ static INSN_REGPARM void armA00(u32 opcode)
 // BL <offset>
 static INSN_REGPARM void armB00(u32 opcode)
 {
-    int offset = opcode & 0x00FFFFFF;
-    if (offset & 0x00800000)
-        offset |= 0xFF000000;  // negative offset
-    reg[14].I = reg[15].I - 4;
-    reg[15].I += offset<<2;
-    armNextPC = reg[15].I;
-    reg[15].I += 4;
-    ARM_PREFETCH;
-    clockTicks = codeTicksAccessSeq32(armNextPC) + 1;
-    clockTicks += 2 + codeTicksAccess32(armNextPC)
-                    + codeTicksAccessSeq32(armNextPC);
-    busPrefetchCount = 0;
+    reg[14].I = reg[15].I - 4; // link
+    armA00(opcode); // B without link
 }
 
 
