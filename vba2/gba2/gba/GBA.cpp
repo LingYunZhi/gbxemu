@@ -2173,41 +2173,6 @@ void CPUReset()
 
   CPUUpdateRenderBuffers(true);
 
-  static u32 dummyAddress = 0;
-  for(int i = 0; i < 256; i++) {
-    map[i].address = (u8 *)&dummyAddress;
-    map[i].mask = 0;
-  }
-
-  map[0].address = bios;
-  map[0].mask = 0x3FFF;
-  map[2].address = workRAM;
-  map[2].mask = 0x3FFFF;
-  map[3].address = internalRAM;
-  map[3].mask = 0x7FFF;
-  map[4].address = ioMem;
-  map[4].mask = 0x3FF;
-  map[5].address = paletteRAM;
-  map[5].mask = 0x3FF;
-  map[6].address = vram;
-  map[6].mask = 0x1FFFF;
-  map[7].address = oam;
-  map[7].mask = 0x3FF;
-
-  // TODO: DANGER: program crash possible if romSize < 32 MiB
-  map[8].address = rom;
-  map[8].mask = 0xFFFFFF;
-  map[9].address = rom + 0x01000000;
-  map[9].mask = 0xFFFFFF;
-  map[10].address = map[8].address;
-  map[10].mask = map[8].mask;
-  map[10].address = map[9].address;
-  map[10].mask = map[9].mask;
-  map[11].address = map[8].address;
-  map[11].mask = map[8].mask;
-  map[12].address = map[9].address;
-  map[12].mask = map[9].mask;
-
   soundReset();
 
   CPUUpdateWindow0();
@@ -2686,7 +2651,6 @@ void CPULoop(int ticks)
 
 // globals
 reg_pair reg[45];
-memoryMap map[256];
 bool ioReadable[0x400];
 bool N_FLAG = 0;
 bool C_FLAG = 0;

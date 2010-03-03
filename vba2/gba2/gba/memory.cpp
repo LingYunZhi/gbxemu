@@ -91,11 +91,14 @@ u8 CPUReadByte(u32 address)
     if( cpuDmaHack ) {
       return cpuDmaLast & 0xFF;
     } else {
+      return 0;
+      /*
       if( armState ) {
         return CPUReadByteQuick(reg[15].I+(address & 3)); // verified
       } else {
         return CPUReadByteQuick( reg[15].I + (address & 1) ); // verified
       }
+      */
     }
   }
 }
@@ -195,11 +198,14 @@ u16 CPUReadHalfWord( u32 address )
     if( cpuDmaHack ) {
       value = cpuDmaLast & 0xFFFF;
     } else {
+      return 0;
+      /*
       if( armState ) {
         value = CPUReadHalfWordQuick( reg[15].I + (address & 2) ); // verified
       } else {
         value = CPUReadHalfWordQuick( reg[15].I ); // verified
       }
+      */
     }
   }
 
@@ -539,7 +545,9 @@ u32 CPUReadMemory( u32 address )
       if( cpuDmaHack ) {
         value = cpuDmaLast;
       } else {
+        return 0;
         // return the last prefetched opcode
+        /*
         if( armState ) {
           value = CPUReadMemoryQuick( reg[15].I );
         } else {
@@ -547,6 +555,7 @@ u32 CPUReadMemory( u32 address )
           const u16 lastOp = CPUReadHalfWordQuick( reg[15].I );
           value = (lastOp<<16) | lastOp; // fill high and low 16 bit with lastOp
         }
+        */
       }
     }
   }

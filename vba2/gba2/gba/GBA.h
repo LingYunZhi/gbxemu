@@ -23,10 +23,7 @@
 #include "../System.h"
 
 
-typedef struct {
-  u8 *address;
-  u32 mask;
-} memoryMap;
+
 
 typedef union {
   struct {
@@ -57,8 +54,6 @@ typedef union {
 	u32 I;
 #endif
 } reg_pair;
-
-extern memoryMap map[256];
 
 extern reg_pair reg[45];
 extern u8 biosProtected[4];
