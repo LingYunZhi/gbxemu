@@ -5,13 +5,7 @@ TARGET = vba2
 TEMPLATE = app
 QT += opengl \
     multimedia
-CONFIG(debug, debug|release):
-
-# debug
-else:# release
-
-# remove assert() functions
-DEFINES += NDEBUG
+include( vba2_include.pro )
 SOURCES += ../vba2/main.cpp \
     ../vba2/mainwindow.cpp \
     ../gba2/apu/Multi_Buffer.cpp \
