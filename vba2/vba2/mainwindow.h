@@ -79,6 +79,12 @@ private slots:
   bool loadBackupMedia();
   // load & run game, also load backup media if possible
   bool loadGame( QString romFile );
+  // add file path to recent files list
+  void addToRecentFiles( QString file );
+  // manage recent files in menu bar
+  void manageRecentFiles();
+  // slot to manage click on recent file item
+  void openRecentFile();
 
   // initialize or reinitialize sound output
   void resetSound();

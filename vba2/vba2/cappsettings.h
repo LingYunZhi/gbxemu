@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QtMultimedia/QAudioDeviceInfo>
+#include <QStringList>
 
 
 class CAppSettings : public QObject
@@ -36,13 +37,18 @@ private:
   void save();
   void load();
 
-public: // settings:
+public:
+  // constants:
+  static const int maxRecentFiles = 5;
+
+  // settings:
   int     s_soundOutputDevice;
   bool    s_enableAudioSync;
   QString s_cartridgeFilesDir;
   QString s_cartridgeSavesDir;
   bool    s_enableVSync;
   bool    s_enableSmoothStretching;
+  QStringList s_recentFiles;
 };
 
 

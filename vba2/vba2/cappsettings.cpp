@@ -19,6 +19,7 @@
 #include "cappsettings.h"
 #include <QSettings>
 #include <QtCore/QCoreApplication>
+#include <QFile>
 
 
 CAppSettings::CAppSettings( QObject *parent )
@@ -43,6 +44,15 @@ void CAppSettings::save() {
   s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
   s.setValue( "graphicsOutput/enableVSync", s_enableVSync );
   s.setValue( "graphicsOutput/enableSmoothStretching", s_enableSmoothStretching );
+
+  // recent files
+  s.remove( "recentFiles" ); // to prevent dead entries when some files don't exist anymore
+  int nFiles = s_recentFiles.size();
+  if( nFiles > maxRecentFiles ) nFiles = maxRecentFiles;
+  s.setValue( "recentFiles/count", nFiles );
+  for( int i = 0; i < nFiles; i++ ) {
+    s.setValue( "recentFiles/slot" + QString::number(i), s_recentFiles.at(i) );
+  }
 }
 
 
@@ -56,4 +66,18 @@ void CAppSettings::load() {
   s_cartridgeSavesDir = s.value( "directories/cartridgeSaves", appDir ).toString();
   s_enableVSync = s.value( "graphicsOutput/enableVSync", true ).toBool();
   s_enableSmoothStretching = s.value( "graphicsOutput/enableSmoothStretching", false ).toBool();
+
+  // recent files
+  int nFiles = s.value( "recentFiles/count", 0 ).toInt();
+  if( nFiles > maxRecentFiles ) nFiles = maxRecentFiles;
+  QString temp;
+  QString keyName;
+  for( int i = 0; i < nFiles; i++ ) {
+    keyName = "recentFiles/slot" + QString::number(i);
+    temp = s.value( keyName, "" ).toString();
+    if( temp.isEmpty() ) continue;
+    // check if file still exists
+    if( !QFile::exists( temp ) ) continue;
+    s_recentFiles.append( temp );
+  }
 }

@@ -27,6 +27,7 @@
 #include <QDragEnterEvent>
 #include <QList>
 #include <QUrl>
+#include <QAction>
 
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
@@ -105,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent, QString file)
 
   ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
 
+  manageRecentFiles();
+
   if( !file.isEmpty() ) {
     loadGame( file );
   }
@@ -115,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   Q_ASSERT( saveTimer != NULL );
   connect( saveTimer, SIGNAL(timeout()), this, SLOT(saveBackupMedia()) );
   saveTimer->start( 2 * 60 * 1000 );
+
 }
 
 
@@ -309,6 +313,8 @@ bool MainWindow::loadGame( QString romFile ) {
   }
   m_fileName = romFile;
 
+  addToRecentFiles( m_fileName );
+
   loadBackupMedia();
 
   if( !m_paused ) {
@@ -316,6 +322,66 @@ bool MainWindow::loadGame( QString romFile ) {
   }
 
   return true;
+}
+
+
+void MainWindow::addToRecentFiles( QString file ) {
+  const int position = m_settings->s_recentFiles.indexOf( file );
+  if( position == -1 ) {
+    // add file to the front of the recent files list
+    m_settings->s_recentFiles.prepend( m_fileName );
+    // max sure there are not too many entries
+    while( m_settings->s_recentFiles.size() > m_settings->maxRecentFiles ) {
+      m_settings->s_recentFiles.removeLast();
+    }
+  } else {
+    // move last accessed item to the top
+    m_settings->s_recentFiles.move( position, 0 );
+  }
+
+  // update menu
+  manageRecentFiles();
+}
+
+
+void MainWindow::manageRecentFiles() {
+  // static container to remember all recent file menu actions
+  static QList<QAction*> *actions = NULL;
+  if( actions == NULL ) {
+    actions = new QList<QAction*>;
+  }
+  Q_ASSERT( actions != NULL );
+
+  // clear recent files from menu
+  const int nActions = actions->size();
+  for( int i = 0; i < nActions; i++ ) {
+    QAction *a = actions->at(i);
+    ui->menuFile->removeAction( a );
+    disconnect( a, SIGNAL(triggered()), this, SLOT(openRecentFile()) );
+  }
+  actions->clear();
+
+  // add recent file items
+  int c = m_settings->s_recentFiles.size();
+  if( c > m_settings->maxRecentFiles ) c = m_settings->maxRecentFiles;
+  for( int i = 0; i < c; i++ ) {
+    QString filePath = m_settings->s_recentFiles.at(i);
+    QFileInfo info( filePath );
+    QAction *a = new QAction( info.fileName(), this );
+    a->setData( filePath );
+    a->setStatusTip( info.path() );
+    actions->append( a );
+    ui->menuFile->addAction( a );
+    connect( a, SIGNAL(triggered()), this, SLOT(openRecentFile()) );
+  }
+}
+
+
+void MainWindow::openRecentFile() {
+  QAction *a = (QAction *)sender();
+  if( a != NULL ) {
+    loadGame( a->data().toString() );
+  }
 }
 
 
