@@ -1,0 +1,25 @@
+Here are the names and numbers written on the chips inside of GBA game cartridges:
+
+###############
+Game Name (No-Intro dat set)
+---------------
+ROM
+---------------
+SRAM/FLASH/EEPROM
+###############
+ChuChu Rocket! (Europe) (En,Ja,Fr,De,Es)
+---------------
+U1 MASKROM AGB
+MX
+M014321-M
+MX23L3206-12B
+AGB-ACRP-0 H2
+2E279500B0
+ACRP-0
+---------------
+U2 512K FLASH MEMORY:
+SST
+MPF
+39VF512
+70-4C-WH
+###############
