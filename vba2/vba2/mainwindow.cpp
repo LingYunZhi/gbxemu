@@ -348,6 +348,7 @@ bool MainWindow::loadBIOS( QString biosFile ) {
   f.open( QIODevice::ReadOnly );
   const qint64 bytesRead = f.read( data, readSize );
   f.close();
+  chip->unlockData();
   if( bytesRead != readSize ) {
     Q_ASSERT( false );
     QMessageBox::critical( this, tr("Error"), tr("Error reading from BIOS file.") );
