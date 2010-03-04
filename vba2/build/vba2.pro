@@ -40,7 +40,8 @@ SOURCES += ../vba2/main.cpp \
     ../vba2/settings/settingssheet_directories.cpp \
     ../gba2/backupmedia.cpp \
     ../gba2/cartridgeheader.cpp \
-    ../gba2/bioschip.cpp
+    ../gba2/bioschip.cpp \
+    ../vba2/settings/settingssheet_graphicsoutput.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -77,11 +78,13 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/backupmedia.h \
     ../gba2/cartridgeheader.h \
     ../gba2/cverbose.h \
-    ../gba2/bioschip.h
+    ../gba2/bioschip.h \
+    ../vba2/settings/settingssheet_graphicsoutput.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
     ../vba2/settings/settingssheet_keyboardinput.ui \
-    ../vba2/settings/settingssheet_directories.ui
+    ../vba2/settings/settingssheet_directories.ui \
+    ../vba2/settings/settingssheet_graphicsoutput.ui
 RESOURCES += ../vba2/resource/resource.qrc
 RC_FILE = ../vba2/resource/windows.rc

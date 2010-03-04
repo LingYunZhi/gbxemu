@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resource/resource.qrc">
-    <normaloff>:/MainWindow/keyboard.png</normaloff>:/MainWindow/keyboard.png</iconset>
+    <normaloff>:/Settings/keyboard.png</normaloff>:/Settings/keyboard.png</iconset>
   </property>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">

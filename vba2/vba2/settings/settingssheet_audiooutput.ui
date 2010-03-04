@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resource/resource.qrc">
-    <normaloff>:/MainWindow/sound.png</normaloff>:/MainWindow/sound.png</iconset>
+    <normaloff>:/Settings/sound.png</normaloff>:/Settings/sound.png</iconset>
   </property>
   <layout class="QFormLayout">
    <item row="0" column="0">

@@ -1,3 +1,6 @@
+display.png
+Created by Spacy, GPL v3
+
 loadCartridge.png
 This graphic is a modified version of:
 http://commons.wikimedia.org/wiki/File:Gba-cartridge.png

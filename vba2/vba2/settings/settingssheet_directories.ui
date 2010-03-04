@@ -2,12 +2,20 @@
 <ui version="4.0">
  <class>SettingsSheet_Directories</class>
  <widget class="QWidget" name="SettingsSheet_Directories">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>334</width>
+    <height>99</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Directories</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resource/resource.qrc">
-    <normaloff>:/MainWindow/folder.png</normaloff>:/MainWindow/folder.png</iconset>
+    <normaloff>:/Settings/folder.png</normaloff>:/Settings/folder.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

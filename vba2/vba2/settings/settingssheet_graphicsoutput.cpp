@@ -16,39 +16,26 @@
 */
 
 
-#ifndef FRAMEDIALOG_H
-#define FRAMEDIALOG_H
-
-
-#include <QDialog>
-#include "settingssheet.h"
-#include "settingssheet_keyboardinput.h"
 #include "settingssheet_graphicsoutput.h"
-#include "settingssheet_audiooutput.h"
-#include "settingssheet_directories.h"
+#include "ui_settingssheet_graphicsoutput.h"
 
 
-namespace Ui {
-  class FrameDialog;
+SettingsSheet_GraphicsOutput::SettingsSheet_GraphicsOutput( CAppSettings &settings, QWidget *parent )
+  : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_GraphicsOutput)
+{
+  ui->setupUi(this);
 }
 
 
-class FrameDialog : public QDialog {
-  Q_OBJECT
-  RETRANSLATE_DECL
-
-public:
-  FrameDialog( CAppSettings &settings, QWidget *parent = 0 );
-  ~FrameDialog();
-  SettingsSheet_KeyboardInput  *sh_keyboardInput;
-  SettingsSheet_GraphicsOutput *sh_graphicsOutput;
-  SettingsSheet_AudioOutput    *sh_audioOutput;
-  SettingsSheet_Directories    *sh_directories;
+SettingsSheet_GraphicsOutput::~SettingsSheet_GraphicsOutput()
+{
+  delete ui;
+}
 
 
-private:
-  Ui::FrameDialog *ui;
-};
+void SettingsSheet_GraphicsOutput::applySettings() {
+
+}
 
 
-#endif // FRAMEDIALOG_H
+RETRANSLATE_CODE( SettingsSheet_GraphicsOutput )

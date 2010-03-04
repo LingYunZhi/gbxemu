@@ -44,6 +44,7 @@ FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
   ui->setupUi( this );
 
   ADD_SHEET( SettingsSheet_KeyboardInput, sh_keyboardInput );
+  ADD_SHEET( SettingsSheet_GraphicsOutput, sh_graphicsOutput );
   ADD_SHEET( SettingsSheet_AudioOutput, sh_audioOutput );
   ADD_SHEET( SettingsSheet_Directories, sh_directories );
 
