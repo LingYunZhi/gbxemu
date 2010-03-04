@@ -70,6 +70,12 @@ protected:
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
+public slots:
+  // load & run game, also load backup media if possible
+  bool loadGame( QString romFile );
+  // load BIOS from file
+  bool loadBIOS( QString biosFile );
+
 private slots:
   void pauseEmulation();
   void resumeEmulation();
@@ -77,8 +83,6 @@ private slots:
   bool saveBackupMedia();
   // load save game data from file (if it exists)
   bool loadBackupMedia();
-  // load & run game, also load backup media if possible
-  bool loadGame( QString romFile );
   // add file path to recent files list
   void addToRecentFiles( QString file );
   // manage recent files in menu bar

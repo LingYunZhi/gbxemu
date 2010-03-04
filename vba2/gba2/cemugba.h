@@ -24,6 +24,7 @@ class CDriver_Sound;
 class CDriver_Graphics;
 class CDriver_Input;
 class BackupMedia;
+class BiosChip;
 
 class CEmuGBA
 {
@@ -44,6 +45,7 @@ public:
     bool emulate();
 
     BackupMedia *getBackupMedia();
+    BiosChip *getBiosChip();
 
 
 private:
@@ -66,6 +68,7 @@ private:
     bool m_soundInitialized;
 
     BackupMedia *m_backupMedia;
+    BiosChip *m_biosChip;
 };
 
 #endif // CEMUGBA_H

@@ -21,7 +21,8 @@
 
 
 #include "../System.h"
-
+#include "../bioschip.h"
+extern BiosChip *biosChip;
 
 
 
@@ -56,7 +57,6 @@ typedef union {
 } reg_pair;
 
 extern reg_pair reg[45];
-extern u8 biosProtected[4];
 
 extern bool N_FLAG;
 extern bool Z_FLAG;
@@ -72,7 +72,7 @@ void CPUUpdateRender();
 void CPUUpdateRenderBuffers(bool);
 bool CPULoadRom(u8 *data, int size); // data must be valid as long as the emu is running
 void CPUUpdateRegister(u32 address, u16 value);
-void CPUInit(const bool useBiosFile = false, const u8 *const data = NULL, const int size = 0);
+void CPUInit();
 void CPUReset();
 void CPULoop(int);
 void CPUCheckDMA(int,int);
@@ -163,8 +163,6 @@ extern bool armState;
 extern bool armIrqEnable;
 extern u32 armNextPC;
 extern int armMode;
-extern bool useBios;
-extern bool skipBios;
 extern int layerSettings;
 extern int layerEnable;
 

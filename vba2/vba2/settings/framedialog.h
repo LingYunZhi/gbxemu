@@ -22,6 +22,9 @@
 
 #include <QDialog>
 #include "settingssheet.h"
+#include "settingssheet_audiooutput.h"
+#include "settingssheet_keyboardinput.h"
+#include "settingssheet_directories.h"
 
 
 namespace Ui {
@@ -36,6 +39,10 @@ class FrameDialog : public QDialog {
 public:
   FrameDialog( CAppSettings &settings, QWidget *parent = 0 );
   ~FrameDialog();
+  SettingsSheet_KeyboardInput *sh_keyboardInput;
+  SettingsSheet_AudioOutput   *sh_audioOutput;
+  SettingsSheet_Directories   *sh_directories;
+
 
 private:
   Ui::FrameDialog *ui;

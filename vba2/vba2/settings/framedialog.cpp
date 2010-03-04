@@ -18,27 +18,22 @@
 
 #include "framedialog.h"
 #include "ui_framedialog.h"
-
-#include "settingssheet_audiooutput.h"
-#include "settingssheet_keyboardinput.h"
-#include "settingssheet_directories.h"
-
 #include <QListWidgetItem>
 
 
-#define ADD_SHEET( SHEET_TYPE ) \
+#define ADD_SHEET( SHEET_TYPE, POINTER ) \
 { \
-  SHEET_TYPE *s = NULL; \
+  POINTER = NULL; \
   /* parent will be assigned by the addWidget function */ \
-  s = new SHEET_TYPE( settings ); \
-  Q_ASSERT( s != NULL ); \
-  ui->stackedWidget->addWidget( s ); \
+  POINTER = new SHEET_TYPE( settings ); \
+  Q_ASSERT( POINTER != NULL ); \
+  ui->stackedWidget->addWidget( POINTER ); \
   QListWidgetItem *i; \
   i = NULL; \
-  i = new QListWidgetItem( s->windowIcon(), s->windowTitle() ); \
+  i = new QListWidgetItem( (POINTER)->windowIcon(), (POINTER)->windowTitle() ); \
   Q_ASSERT( i != NULL ); \
   ui->listWidget->addItem( i ); \
-  connect( this, SIGNAL(accepted()), s, SLOT(applySettings()) ); \
+  connect( this, SIGNAL(accepted()), POINTER, SLOT(applySettings()) ); \
 }
 
 
@@ -48,9 +43,9 @@ FrameDialog::FrameDialog( CAppSettings &settings, QWidget *parent )
 {
   ui->setupUi( this );
 
-  ADD_SHEET( SettingsSheet_KeyboardInput );
-  ADD_SHEET( SettingsSheet_AudioOutput );
-  ADD_SHEET( SettingsSheet_Directories );
+  ADD_SHEET( SettingsSheet_KeyboardInput, sh_keyboardInput );
+  ADD_SHEET( SettingsSheet_AudioOutput, sh_audioOutput );
+  ADD_SHEET( SettingsSheet_Directories, sh_directories );
 
   // clicking on item activates corresponding settings sheet
   connect( ui->listWidget, SIGNAL(currentRowChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)) );

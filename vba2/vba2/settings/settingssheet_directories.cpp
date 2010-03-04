@@ -21,12 +21,15 @@
 
 
 #include <QFileDialog>
+#include <QString>
+#include <QFile>
 
 
 SettingsSheet_Directories::SettingsSheet_Directories( CAppSettings &settings, QWidget *parent )
   : SettingsSheet( settings, parent ), ui(new Ui::SettingsSheet_Directories)
 {
   ui->setupUi( this );
+  ui->lineEditBIOS->setText( m_settings.s_biosFile );
   ui->lineEditGameCartridges->setText( m_settings.s_cartridgeFilesDir );
   ui->lineEditCartridgeSaves->setText( m_settings.s_cartridgeSavesDir );
 }
@@ -39,6 +42,12 @@ SettingsSheet_Directories::~SettingsSheet_Directories()
 
 
 void SettingsSheet_Directories::applySettings() {
+  const QString oldBios = m_settings.s_biosFile;
+  const QString newBios = ui->lineEditBIOS->text();
+  if( oldBios != newBios ) {
+    m_settings.s_biosFile = newBios;
+    emit biosFileChanged( newBios );
+  }
   m_settings.s_cartridgeFilesDir = ui->lineEditGameCartridges->text();
   m_settings.s_cartridgeSavesDir = ui->lineEditCartridgeSaves->text();
 }
@@ -48,11 +57,21 @@ RETRANSLATE_CODE( SettingsSheet_Directories )
 
 
 void SettingsSheet_Directories::selectDir( QLineEdit *editControl ) {
+  const QString oldDir = editControl->text();
   const QString dir =
-      QFileDialog::getExistingDirectory( this, tr("Select Directory"),
-                                         editControl->text() );
+      QFileDialog::getExistingDirectory( this, tr("Select Directory"), oldDir );
   if( !dir.isEmpty() ) {
     editControl->setText( dir );
+  }
+}
+
+
+void SettingsSheet_Directories::selectFile( QLineEdit *editControl ) {
+  const QString oldFile = editControl->text();
+  const QString file =
+      QFileDialog::getOpenFileName( this, tr("Select File"), oldFile );
+  if( !file.isEmpty() ) {
+    editControl->setText( file );
   }
 }
 
@@ -66,4 +85,10 @@ void SettingsSheet_Directories::on_pushButtonGameCartridges_clicked()
 void SettingsSheet_Directories::on_pushButtonCartridgeSaves_clicked()
 {
   selectDir( ui->lineEditCartridgeSaves );
+}
+
+
+void SettingsSheet_Directories::on_pushButtonBIOS_clicked()
+{
+  selectFile( ui->lineEditBIOS );
 }

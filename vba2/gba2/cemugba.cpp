@@ -18,6 +18,7 @@
 
 #include "cemugba.h"
 #include "backupmedia.h"
+#include "bioschip.h"
 
 #include "gba/GBA.h"
 #include "gba/Sound.h"
@@ -45,11 +46,21 @@ CEmuGBA::CEmuGBA()
   m_soundInitialized = false;
 
   m_backupMedia = NULL;
+
+  m_biosChip = NULL;
+  m_biosChip = new BiosChip();
+  assert( m_biosChip != NULL );
+
+  biosChip = m_biosChip; // set global variable in core
 }
 
 
 CEmuGBA::~CEmuGBA()
 {
+  if( m_biosChip != NULL ) {
+    delete m_biosChip;
+  }
+
   if( m_backupMedia != NULL ) {
     delete m_backupMedia;
   }
@@ -174,4 +185,9 @@ bool CEmuGBA::setDriverInput( CDriver_Input *drv )
 
 BackupMedia *CEmuGBA::getBackupMedia() {
   return m_backupMedia;
+}
+
+
+BiosChip *CEmuGBA::getBiosChip() {
+  return m_biosChip;
 }

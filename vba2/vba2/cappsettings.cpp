@@ -40,6 +40,7 @@ void CAppSettings::save() {
   QSettings s;
   s.setValue( "soundOutput/deviceID", s_soundOutputDevice );
   s.setValue( "soundOutput/enableAudioSync", s_enableAudioSync );
+  s.setValue( "directories/biosFile", s_biosFile );
   s.setValue( "directories/cartridgeFiles", s_cartridgeFilesDir );
   s.setValue( "directories/cartridgeSaves", s_cartridgeSavesDir );
   s.setValue( "graphicsOutput/enableVSync", s_enableVSync );
@@ -62,6 +63,7 @@ void CAppSettings::load() {
   QSettings s;
   s_soundOutputDevice = s.value( "soundOutput/deviceID", 0 ).toInt();
   s_enableAudioSync = s.value( "soundOutput/enableAudioSync", true ).toBool();
+  s_biosFile = s.value( "directories/biosFile", "" ).toString();
   s_cartridgeFilesDir = s.value( "directories/cartridgeFiles", appDir ).toString();
   s_cartridgeSavesDir = s.value( "directories/cartridgeSaves", appDir ).toString();
   s_enableVSync = s.value( "graphicsOutput/enableVSync", true ).toBool();

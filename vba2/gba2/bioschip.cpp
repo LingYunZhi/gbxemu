@@ -16,41 +16,51 @@
 */
 
 
-#ifndef CAPPSETTINGS_H
-#define CAPPSETTINGS_H
+#include "bioschip.h"
+#include <string.h>
+#include <assert.h>
+#include "common/Port.h"
 
 
-#include <QObject>
-#include <QtMultimedia/QAudioDeviceInfo>
-#include <QStringList>
-
-
-class CAppSettings : public QObject
+BiosChip::BiosChip()
 {
-  Q_OBJECT
-
-public:
-  CAppSettings( QObject *parent = 0 );
-  ~CAppSettings();
-
-private:
-  void save();
-  void load();
-
-public:
-  // constants:
-  static const int maxRecentFiles = 5;
-
-  // settings:
-  int     s_soundOutputDevice;
-  bool    s_enableAudioSync;
-  QString s_biosFile;
-  QString s_cartridgeFilesDir;
-  QString s_cartridgeSavesDir;
-  bool    s_enableVSync;
-  bool    s_enableSmoothStretching;
-  QStringList s_recentFiles;
-};
+  m_locked = false;
+  m_loaded = false;
+  m_lastRead = 0;
+}
 
 
-#endif // CAPPSETTINGS_H
+void *BiosChip::lockData() {
+  memset( m_data, 0x00, SIZE );
+  m_locked = true;
+  return m_data;
+}
+
+
+void BiosChip::unlockData() {
+  if( m_locked ) {
+    m_loaded = true;
+    m_locked = false;
+  }
+}
+
+
+bool BiosChip::isLoaded() {
+  return m_loaded;
+}
+
+
+u32 BiosChip::read32( u32 address ) {
+  assert( m_loaded && !m_locked && (address<SIZE) && !(address&3) );
+
+  // return new data
+  m_lastRead = m_data[address/4];
+
+  return m_lastRead;
+}
+
+
+u32 BiosChip::getLast() {
+  assert( m_loaded && !m_locked );
+  return m_lastRead;
+}

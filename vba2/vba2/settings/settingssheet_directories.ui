@@ -2,14 +2,6 @@
 <ui version="4.0">
  <class>SettingsSheet_Directories</class>
  <widget class="QWidget" name="SettingsSheet_Directories">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>400</width>
-    <height>105</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>Directories</string>
   </property>
@@ -19,41 +11,62 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Game Cartridges</string>
+      <string>BIOS file (16 KiB)</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="lineEditGameCartridges">
+    <widget class="QLineEdit" name="lineEditBIOS">
      <property name="toolTip">
       <string>This directory should contain the ROM dumps of the game cartridges.</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QPushButton" name="pushButtonGameCartridges">
+    <widget class="QPushButton" name="pushButtonBIOS">
      <property name="text">
       <string>Browse...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Game Cartridges</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lineEditGameCartridges">
+     <property name="toolTip">
+      <string>This directory should contain the ROM dumps of the game cartridges.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButtonGameCartridges">
+     <property name="text">
+      <string>Browse...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Cartridge Save Files</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <widget class="QLineEdit" name="lineEditCartridgeSaves">
      <property name="toolTip">
       <string>This directory will be used to store game save data compatible to the original hardware.</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
+   <item row="2" column="2">
     <widget class="QPushButton" name="pushButtonCartridgeSaves">
      <property name="text">
       <string>Browse...</string>

@@ -34,6 +34,7 @@
 #include "../gba2/common/cdriver_input.h"    // for dummy keypad input
 #include "../gba2/cartridgeheader.h"
 #include "../gba2/backupmedia.h"
+#include "../gba2/bioschip.h"
 
 #include "paintwidget.h"
 //#include "cdebugwindow_graphics.h"
@@ -58,15 +59,16 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   m_settings = new CAppSettings( this );
   Q_ASSERT( m_settings != NULL );
 
+  m_emuGBA = NULL;
+  m_emuGBA = new CEmuGBA;
+  Q_ASSERT( m_emuGBA != NULL );
+
   settingsDialog = NULL;
   settingsDialog = new FrameDialog( *m_settings, this );
   Q_ASSERT( settingsDialog != NULL );
   connect( ui->actionSettings, SIGNAL(triggered()), settingsDialog, SLOT(show()) );
   connect( settingsDialog, SIGNAL(accepted()), this, SLOT(resetSound()) );
-
-  m_emuGBA = NULL;
-  m_emuGBA = new CEmuGBA;
-  Q_ASSERT( m_emuGBA != NULL );
+  connect( settingsDialog->sh_directories, SIGNAL(biosFileChanged(QString)), this, SLOT(loadBIOS(QString)) );
 
   m_timer = NULL;
   m_timer = new QTimer( this );
@@ -104,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   Q_ASSERT( m_inp != NULL );
   m_emuGBA->setDriverInput( m_inp );
 
+  loadBIOS( m_settings->s_biosFile );
+
   ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
 
   manageRecentFiles();
@@ -118,7 +122,6 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   Q_ASSERT( saveTimer != NULL );
   connect( saveTimer, SIGNAL(timeout()), this, SLOT(saveBackupMedia()) );
   saveTimer->start( 2 * 60 * 1000 );
-
 }
 
 
@@ -321,6 +324,35 @@ bool MainWindow::loadGame( QString romFile ) {
     resumeEmulation();
   }
 
+  return true;
+}
+
+
+bool MainWindow::loadBIOS( QString biosFile ) {
+  // do not change BIOS while emulation is running
+  if( !m_fileName.isEmpty() ) return false;
+
+  QFile f( biosFile );
+  if( !f.exists() ) {
+    Q_ASSERT( false );
+    QMessageBox::critical( this, tr("Error"), tr("BIOS file does not exist.") );
+    return false;
+  }
+  BiosChip *chip = m_emuGBA->getBiosChip();
+  Q_ASSERT( chip != NULL );
+  const qint64 fileSize = f.size();
+  const qint64 maxSize = (qint64)chip->SIZE;
+  const qint64 readSize = qMin( fileSize, maxSize );
+  char *data = (char *)chip->lockData();
+  Q_ASSERT( data != NULL );
+  f.open( QIODevice::ReadOnly );
+  const qint64 bytesRead = f.read( data, readSize );
+  f.close();
+  if( bytesRead != readSize ) {
+    Q_ASSERT( false );
+    QMessageBox::critical( this, tr("Error"), tr("Error reading from BIOS file.") );
+    return false;
+  }
   return true;
 }
 

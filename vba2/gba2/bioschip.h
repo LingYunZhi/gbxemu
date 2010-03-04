@@ -16,41 +16,35 @@
 */
 
 
-#ifndef CAPPSETTINGS_H
-#define CAPPSETTINGS_H
+#ifndef BIOSCHIP_H
+#define BIOSCHIP_H
 
 
-#include <QObject>
-#include <QtMultimedia/QAudioDeviceInfo>
-#include <QStringList>
+#include "common/Types.h"
 
 
-class CAppSettings : public QObject
+class BiosChip
 {
-  Q_OBJECT
-
 public:
-  CAppSettings( QObject *parent = 0 );
-  ~CAppSettings();
+  BiosChip();
+
+  // use these functions to load the BIOS ROM from a file
+  void *lockData();
+  void unlockData();
+
+  bool isLoaded();
+
+  u32 read32( u32 address );
+  u32 getLast();
+
+  static const u32 SIZE = 0x4000; // 16 KiB
 
 private:
-  void save();
-  void load();
-
-public:
-  // constants:
-  static const int maxRecentFiles = 5;
-
-  // settings:
-  int     s_soundOutputDevice;
-  bool    s_enableAudioSync;
-  QString s_biosFile;
-  QString s_cartridgeFilesDir;
-  QString s_cartridgeSavesDir;
-  bool    s_enableVSync;
-  bool    s_enableSmoothStretching;
-  QStringList s_recentFiles;
+  u32 m_data[SIZE/4];
+  bool m_locked;
+  bool m_loaded;
+  u32 m_lastRead;
 };
 
 
-#endif // CAPPSETTINGS_H
+#endif // BIOSCHIP_H

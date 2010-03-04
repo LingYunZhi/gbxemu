@@ -25,19 +25,19 @@
 u8 CPUReadByte(u32 address)
 {
   switch( address >> 24 ) {
-  case 0:
-    if (reg[15].I >> 24) {
-      if(address < 0x4000) {
-#ifdef GBA_LOGGING
-        if(systemVerbose & VERBOSE_ILLEGAL_READ) {
-          log("Illegal byte read: %08x at %08x\n", address, armMode ?
-            armNextPC - 4 : armNextPC - 2);
+  case 0: {
+      if( address < biosChip->SIZE ) {
+        u32 value32 = 0;
+        if( reg[15].I >> 24 ) { // is this exact enough?
+          value32 = biosChip->getLast();
+        } else {
+          value32 = biosChip->read32( address & 0x3FFC );
         }
-#endif
-        return biosProtected[address & 3];
+        // convert to 8 bit
+        const u32 shift = ( address & 3 ) * 8;
+        return (u8)( (value32 >> shift) & 0xFF );
       } else goto unreadable;
     }
-    return bios[address & 0x3FFF];
   case 2:
     return workRAM[address & 0x3FFFF];
   case 3:
@@ -109,20 +109,23 @@ u16 CPUReadHalfWord( u32 address )
   u16 value;
 
   switch( address >> 24 ) {
-  case 0:
-    if (reg[15].I >> 24) {
-      if(address < 0x4000) {
-#ifdef GBA_LOGGING
-        if(systemVerbose & VERBOSE_ILLEGAL_READ) {
-          log("Illegal halfword read: %08x at %08x\n", address, armMode ?
-            armNextPC - 4 : armNextPC - 2);
+  case 0: {
+      if( address < biosChip->SIZE ) {
+        u32 value32 = 0;
+        if( reg[15].I >> 24 ) { // is this exact enough?
+          value32 = biosChip->getLast();
+        } else {
+          value32 = biosChip->read32( address & 0x3FFC );
         }
-#endif
-        value = READ16LE(((u16 *)&biosProtected[address&2]));
+        // convert to 16 bit
+        if( address & 2 ) {
+          value = (u16)((value32>>16) & 0xFFFF);
+        } else {
+          value = (u16)(value32 & 0xFFFF);
+        }
+        break;
       } else goto unreadable;
-    } else
-      value = READ16LE(((u16 *)&bios[address & 0x3FFE]));
-    break;
+    }
   case 2:
     value = READ16LE(((u16 *)&workRAM[address & 0x3FFFE]));
     break;
@@ -477,21 +480,14 @@ u32 CPUReadMemory( u32 address )
 
   switch( address >> 24 ) {
   case 0:
-    if(reg[15].I >> 24) {
-      if(address < 0x4000) {
-#ifdef GBA_LOGGING
-        if(systemVerbose & VERBOSE_ILLEGAL_READ) {
-          log("Illegal word read: %08x at %08x\n", address, armMode ?
-            armNextPC - 4 : armNextPC - 2);
-        }
-#endif
-
-        value = READ32LE(((u32 *)&biosProtected));
+    if( address < biosChip->SIZE ) {
+      if( reg[15].I >> 24 ) { // is this exact enough?
+        value = biosChip->getLast();
+      } else {
+        value = biosChip->read32( address & 0x3FFC );
       }
-      else goto unreadable;
-    } else
-      value = READ32LE(((u32 *)&bios[address & 0x3FFC]));
-    break;
+      break;
+    } else goto unreadable;
   case 2:
     value = READ32LE(((u32 *)&workRAM[address & 0x3FFFC]));
     break;

@@ -42,6 +42,8 @@ CGBAGraphics graphics2; // brand new high-level graphics emulation class
 
 CVerbose *verbose = NULL;
 
+BiosChip *biosChip = NULL;
+
 
 // visible+blanking pixels * 4 cylces per pixel
 const u32 cyclesPerFrame = (240+68)*(160+68)*4;
@@ -75,7 +77,7 @@ u32 cpuPrefetch[2]; // instruction pipeline
 int cpuTotalTicks = 0;
 
 
-int lcdTicks = (useBios && !skipBios) ? 1008 : 208;
+int lcdTicks = 1008;
 u8 timerOnOffDelay = 0;
 u16 timer0Value = 0;
 bool timer0On = false;
@@ -141,189 +143,6 @@ u8 memoryWaitSeq32[16] =
 // Not used for now (too problematic with current code).
 //const u8 videoMemoryWait[16] =
 //  {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-
-u8 biosProtected[4];
-
-#ifdef WORDS_BIGENDIAN
-bool cpuBiosSwapped = false;
-#endif
-
-u32 myROM[] = {
-0xEA000006,
-0xEA000093,
-0xEA000006,
-0x00000000,
-0x00000000,
-0x00000000,
-0xEA000088,
-0x00000000,
-0xE3A00302,
-0xE1A0F000,
-0xE92D5800,
-0xE55EC002,
-0xE28FB03C,
-0xE79BC10C,
-0xE14FB000,
-0xE92D0800,
-0xE20BB080,
-0xE38BB01F,
-0xE129F00B,
-0xE92D4004,
-0xE1A0E00F,
-0xE12FFF1C,
-0xE8BD4004,
-0xE3A0C0D3,
-0xE129F00C,
-0xE8BD0800,
-0xE169F00B,
-0xE8BD5800,
-0xE1B0F00E,
-0x0000009C,
-0x0000009C,
-0x0000009C,
-0x0000009C,
-0x000001F8,
-0x000001F0,
-0x000000AC,
-0x000000A0,
-0x000000FC,
-0x00000168,
-0xE12FFF1E,
-0xE1A03000,
-0xE1A00001,
-0xE1A01003,
-0xE2113102,
-0x42611000,
-0xE033C040,
-0x22600000,
-0xE1B02001,
-0xE15200A0,
-0x91A02082,
-0x3AFFFFFC,
-0xE1500002,
-0xE0A33003,
-0x20400002,
-0xE1320001,
-0x11A020A2,
-0x1AFFFFF9,
-0xE1A01000,
-0xE1A00003,
-0xE1B0C08C,
-0x22600000,
-0x42611000,
-0xE12FFF1E,
-0xE92D0010,
-0xE1A0C000,
-0xE3A01001,
-0xE1500001,
-0x81A000A0,
-0x81A01081,
-0x8AFFFFFB,
-0xE1A0000C,
-0xE1A04001,
-0xE3A03000,
-0xE1A02001,
-0xE15200A0,
-0x91A02082,
-0x3AFFFFFC,
-0xE1500002,
-0xE0A33003,
-0x20400002,
-0xE1320001,
-0x11A020A2,
-0x1AFFFFF9,
-0xE0811003,
-0xE1B010A1,
-0xE1510004,
-0x3AFFFFEE,
-0xE1A00004,
-0xE8BD0010,
-0xE12FFF1E,
-0xE0010090,
-0xE1A01741,
-0xE2611000,
-0xE3A030A9,
-0xE0030391,
-0xE1A03743,
-0xE2833E39,
-0xE0030391,
-0xE1A03743,
-0xE2833C09,
-0xE283301C,
-0xE0030391,
-0xE1A03743,
-0xE2833C0F,
-0xE28330B6,
-0xE0030391,
-0xE1A03743,
-0xE2833C16,
-0xE28330AA,
-0xE0030391,
-0xE1A03743,
-0xE2833A02,
-0xE2833081,
-0xE0030391,
-0xE1A03743,
-0xE2833C36,
-0xE2833051,
-0xE0030391,
-0xE1A03743,
-0xE2833CA2,
-0xE28330F9,
-0xE0000093,
-0xE1A00840,
-0xE12FFF1E,
-0xE3A00001,
-0xE3A01001,
-0xE92D4010,
-0xE3A03000,
-0xE3A04001,
-0xE3500000,
-0x1B000004,
-0xE5CC3301,
-0xEB000002,
-0x0AFFFFFC,
-0xE8BD4010,
-0xE12FFF1E,
-0xE3A0C301,
-0xE5CC3208,
-0xE15C20B8,
-0xE0110002,
-0x10222000,
-0x114C20B8,
-0xE5CC4208,
-0xE12FFF1E,
-0xE92D500F,
-0xE3A00301,
-0xE1A0E00F,
-0xE510F004,
-0xE8BD500F,
-0xE25EF004,
-0xE59FD044,
-0xE92D5000,
-0xE14FC000,
-0xE10FE000,
-0xE92D5000,
-0xE3A0C302,
-0xE5DCE09C,
-0xE35E00A5,
-0x1A000004,
-0x05DCE0B4,
-0x021EE080,
-0xE28FE004,
-0x159FF018,
-0x059FF018,
-0xE59FD018,
-0xE8BD5000,
-0xE169F00C,
-0xE8BD5000,
-0xE25EF004,
-0x03007FF0,
-0x09FE2000,
-0x09FFC000,
-0x03007FE0
-};
 
 
 inline int CPUUpdateTicks()
@@ -787,7 +606,7 @@ void CPUSoftwareInterrupt()
 void CPUSoftwareInterrupt(int comment)
 {
   if(armState) comment >>= 16;
-  if(useBios) {
+
 #ifdef GBA_LOGGING
     if(systemVerbose & VERBOSE_SWI) {
       log("SWI: %08x at %08x (0x%08x,0x%08x,0x%08x,VCOUNT = %2d)\n", comment,
@@ -799,12 +618,8 @@ void CPUSoftwareInterrupt(int comment)
     }
 #endif
     CPUSoftwareInterrupt();
-    return;
-  }
-  // This would be correct, but it causes problems if uncommented
-  //  else {
-  //    biosProtected = 0xe3a02004;
-  //  }
+    return; // !
+
 
   switch(comment) {
   case 0x00:
@@ -1924,37 +1739,9 @@ void CPUUpdateRegister(u32 address, u16 value)
 u8 cpuBitsSet[256];
 u8 cpuLowestBitSet[256];
 
-void CPUInit(const bool useBiosFile, const u8 *const data, const int size)
+void CPUInit()
 {
-#ifdef WORDS_BIGENDIAN
-  if(!cpuBiosSwapped) {
-    for(unsigned int i = 0; i < sizeof(myROM)/4; i++) {
-      WRITE32LE(&myROM[i], myROM[i]);
-    }
-    cpuBiosSwapped = true;
-  }
-#endif
-  useBios = false;
-
-  if( useBiosFile ) {
-      if( size == 0x4000) {
-          memcpy( bios, data, size );
-          useBios = true;
-      } else {
-//          printErrorMessage(ERR_INVALID_BIOS_FILE_SIZE);
-      }
-  }
-
-  if(!useBios) {
-    memcpy(bios, myROM, sizeof(myROM));
-  }
-
   int i = 0;
-
-  biosProtected[0] = 0x00;
-  biosProtected[1] = 0xf0;
-  biosProtected[2] = 0x29;
-  biosProtected[3] = 0xe1;
 
   for(i = 0; i < 256; i++) {
     int count = 0;
@@ -2023,7 +1810,7 @@ void CPUReset()
 
   DISPCNT  = 0x0080;
   DISPSTAT = 0x0000;
-  VCOUNT   = (useBios && !skipBios) ? 0 :0x007E;
+  VCOUNT   = 0x0000;
   BG0CNT   = 0x0000;
   BG1CNT   = 0x0000;
   BG2CNT   = 0x0000;
@@ -2101,18 +1888,9 @@ void CPUReset()
 
   armMode = 0x1F;
 
-    if(useBios && !skipBios) {
-      reg[15].I = 0x00000000;
-      armMode = 0x13;
-      armIrqEnable = false;
-    } else {
-      reg[13].I = 0x03007F00;
-      reg[15].I = 0x08000000;
-      reg[16].I = 0x00000000;
-      reg[R13_IRQ].I = 0x03007FA0;
-      reg[R13_SVC].I = 0x03007FE0;
-      armIrqEnable = true;
-    }
+  reg[15].I = 0x00000000;
+  armMode = 0x13;
+  armIrqEnable = false;
   armState = true;
   C_FLAG = V_FLAG = N_FLAG = Z_FLAG = false;
   UPDATE_REG(0x00, DISPCNT);
@@ -2136,12 +1914,7 @@ void CPUReset()
   holdState = false;
   holdType = 0;
 
-  biosProtected[0] = 0x00;
-  biosProtected[1] = 0xf0;
-  biosProtected[2] = 0x29;
-  biosProtected[3] = 0xe1;
-
-  lcdTicks = (useBios && !skipBios) ? 1008 : 208;
+  lcdTicks = 1008;
   timer0On = false;
   timer0Ticks = 0;
   timer0Reload = 0;
@@ -2179,8 +1952,8 @@ void CPUReset()
   CPUUpdateWindow1();
 
   // make sure registers are correctly initialized if not using BIOS
-  if(!useBios)
-      BIOS_RegisterRamReset(0xff);
+//  if(!useBios)
+//      BIOS_RegisterRamReset(0xff);
 
   ARM_PREFETCH;
 
@@ -2204,12 +1977,6 @@ void CPUInterrupt()
   armNextPC = reg[15].I;
   reg[15].I += 4;
   ARM_PREFETCH;
-
-  //  if(!holdState)
-  biosProtected[0] = 0x02;
-  biosProtected[1] = 0xc0;
-  biosProtected[2] = 0x5e;
-  biosProtected[3] = 0xe5;
 }
 
 void CPULoop(int ticks)
@@ -2660,8 +2427,6 @@ bool armState = true;
 bool armIrqEnable = true;
 u32 armNextPC = 0x00000000;
 int armMode = 0x1f;
-bool useBios = false;
-bool skipBios = false;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 
