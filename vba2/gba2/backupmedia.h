@@ -95,8 +95,9 @@ private:
   u8 m_mfgID;
   u8 m_deviceID;
   /* known flash chips:
-    Manufacturer  chip name     Manufacturer ID Device ID  size in KiB
+    Manufacturer  chip name     Manufacturer ID Device ID  size/KiB
     Sanyo or SST  LE39FW512     0xBF            0xD4        64
+    SST           SST39VF512    0xBF            0xD4        64
     Atmel         AT29LV512     0x1F            0x3D        64
     Macronix      MX29L512      0xC2            0x1C        64
     Panasonic     MN63F805MNP   0x32            0x1B        64
