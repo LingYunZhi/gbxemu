@@ -24,7 +24,7 @@
 
 BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 {
-  m_type = findOutType( romData, romSize );
+  m_type = findOutType( romData, romSize, m_rtcPresent );
   m_data = NULL;
   m_size = 0;
   writeOccured = false;
@@ -408,36 +408,46 @@ u32 stringToValue( const char s[5] ) {
   the SRAM area twice at bootup even though they actually use EEPROM later on. Fortunately, these game ROMs
   still only contain the EEPROM string, but not the SRAM string.
   */
-BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize )
+BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize, bool &rtcFound )
 {
   assert( romData != NULL );
   if( romSize < 192 ) return NONE;
 
   /* possible strings are:
+
+     backup media:
      - "EEPROM_V"
      - "SRAM_V"
      - "SRAM_F_V"
      - "FLASH_V"
      - "FLASH512_V"
      - "FLASH1M_V"
+
+     real-time clock:
+     - "SIIRTC_V"
+
+     It is assumed, that all strings are word-aligned.
   */
 
   // first part
-  const u32 _EEPR = stringToValue( "EEPR" );
-  const u32 _SRAM = stringToValue( "SRAM" );
-  const u32 _FLAS = stringToValue( "FLAS" );
+  const u32 _EEPR = stringToValue( "EEPR" ); // EEPROM
+  const u32 _SRAM = stringToValue( "SRAM" ); // SRAM
+  const u32 _FLAS = stringToValue( "FLAS" ); // FLASH
+  const u32 _SIIR = stringToValue( "SIIR" ); // RTC
 
   // following parts
-  const u32 _OM_V = stringToValue( "OM_V" );
-  const u32 __Vxx = stringToValue(   "_V" );
-  const u32 __F_V = stringToValue( "_F_V" );
-  const u32 _H_Vx = stringToValue(  "H_V" );
-  const u32 _H512 = stringToValue( "H512" );
-  const u32 _H1M_ = stringToValue( "H1M_" );
+  const u32 _OM_V = stringToValue( "OM_V" ); // EEPROM
+  const u32 __Vxx = stringToValue(   "_V" ); // SRAM
+  const u32 __F_V = stringToValue( "_F_V" ); // SRAM
+  const u32 _H_Vx = stringToValue(  "H_V" ); // FLASH  64 KiB
+  const u32 _H512 = stringToValue( "H512" ); // FLASH  64 KiB
+  const u32 _H1M_ = stringToValue( "H1M_" ); // FLASH 128 KiB
+  const u32 _TC_V = stringToValue( "TC_V" ); // RTC
 
   assert( romSize >= 8 );
   const u32 endAdress = ( romSize / 4 ) - 2;
   bool saveTypeFound = false;
+  rtcFound = false;
   BACKUPMEDIATYPE result = NONE;
 
   for( u32 a/*ddress*/ = 0; a < endAdress; a++ ) {
@@ -467,8 +477,14 @@ BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize
         result = FLASH64KiB;
         saveTypeFound = true;
       }
+    } else if( block == _SIIR ) { // RTC
+      const u32 next32 = romData[a+1];
+      if( next32 == _TC_V ) {
+        rtcFound = true;
+      }
     }
-    if( saveTypeFound ) break; // finished
+
+    if( saveTypeFound && rtcFound ) break; // finished
   }
 
   return result;

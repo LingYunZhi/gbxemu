@@ -33,7 +33,7 @@ public:
   ~BackupMedia();
 
   typedef enum { NONE, SRAM, EEPROM, FLASH64KiB, FLASH128KiB } BACKUPMEDIATYPE;
-  static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize );
+  static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize, bool &rtcFound );
   BACKUPMEDIATYPE getType();
 
   // SRAM
@@ -55,6 +55,7 @@ public:
 
 private:
   BACKUPMEDIATYPE m_type;
+  bool m_rtcPresent;
   u8 *m_data;
   u32 m_size;
 
