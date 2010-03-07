@@ -20,55 +20,62 @@
 #define CEMUGBA_H
 
 #include "common/Types.h"
+#include "cartridge.h"
+#include "bioschip.h"
+
 class CDriver_Sound;
 class CDriver_Graphics;
 class CDriver_Input;
-class BackupMedia;
-class BiosChip;
+
 
 class CEmuGBA
 {
 public:
-    CEmuGBA();
-    ~CEmuGBA();
+  CEmuGBA();
+  ~CEmuGBA();
 
-    // load drivers before loading ROM
-    // use CDummyDriver_xxx if no custom driver present
-    bool setDriverSound   ( CDriver_Sound    *drv );
-    bool setDriverGraphics( CDriver_Graphics *drv );
-    bool setDriverInput   ( CDriver_Input    *drv );
-    bool setDebugDriverGraphics( CDriver_Graphics *drv );
+  // load drivers before loading ROM
+  // use CDummyDriver_xxx if no custom driver present
+  bool setDriverSound   ( CDriver_Sound    *drv );
+  bool setDriverGraphics( CDriver_Graphics *drv );
+  bool setDriverInput   ( CDriver_Input    *drv );
+  bool setDebugDriverGraphics( CDriver_Graphics *drv );
 
-    bool initialize( const u8 *const romData, const u32 romSize );
-    bool shutDown();
+  // load ROM with lock-write-unlock mechanism
+  IChipMemory &lockROM();
+  void unlockROM();
 
-    bool emulate();
+  // call this after loading ROM
+  bool initialize();
+  bool shutDown();
 
-    BackupMedia *getBackupMedia();
-    BiosChip *getBiosChip();
+  bool emulate();
+
+  CartridgeInfo &getCartridgeInfo();
+  BackupMedia &getBackupMedia();
+  BiosChip *getBiosChip();
 
 
 private:
-    CDriver_Sound    *m_snd;
-    bool m_soundDriverLoaded;
+  CDriver_Sound    *m_snd;
+  bool m_soundDriverLoaded;
 
-    CDriver_Graphics *m_gfx;
-    bool m_graphicsDriverLoaded;
+  CDriver_Graphics *m_gfx;
+  bool m_graphicsDriverLoaded;
 
-    // a second graphics driver which can be used for debugging purposes
-    CDriver_Graphics *m_gfxdbg;
-    bool m_graphicsDebugDriverLoaded;
+  // a second graphics driver which can be used for debugging purposes
+  CDriver_Graphics *m_gfxdbg;
+  bool m_graphicsDebugDriverLoaded;
 
-    CDriver_Input    *m_inp;
-    bool m_inputDriverLoaded;
+  CDriver_Input    *m_inp;
+  bool m_inputDriverLoaded;
 
-    u8 *m_gameROM;
-    u32 m_gameROMSize;
-    bool m_initialized;
-    bool m_soundInitialized;
+  bool m_initialized;
+  bool m_soundInitialized;
+  bool m_romLocked;
 
-    BackupMedia *m_backupMedia;
-    BiosChip *m_biosChip;
+  Cartridge *m_cartridge;
+  BiosChip *m_biosChip;
 };
 
 #endif // CEMUGBA_H

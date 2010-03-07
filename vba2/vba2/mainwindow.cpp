@@ -32,7 +32,6 @@
 #include "../gba2/common/cdriver_sound.h"    // for dummy sound output
 #include "../gba2/common/cdriver_graphics.h" // for dummy graphics output
 #include "../gba2/common/cdriver_input.h"    // for dummy keypad input
-#include "../gba2/cartridgeheader.h"
 #include "../gba2/backupmedia.h"
 #include "../gba2/bioschip.h"
 
@@ -204,20 +203,19 @@ bool MainWindow::saveBackupMedia() {
     return true;
   }
 
-  BackupMedia *media = m_emuGBA->getBackupMedia();
-  if( media == NULL ) return true;
+  BackupMedia &media = m_emuGBA->getBackupMedia();
 
-  const u32 size = media->getSize();
+  const u32 size = media.getSize();
   if( size == 0 ) return true;
 
   // don't save if nothing changed
-  if( !media->writeOccured ) return true;
+  if( !media.writeOccured ) return true;
 
   bool ok = true;
 
   QFile file( m_saveFile );
   // TODO: create backup before overwriting old save game?
-  const u8 *data = media->getData();
+  const u8 *data = media.getData();
   Q_ASSERT( data != NULL );
 
   if( file.open( QIODevice::WriteOnly ) ) {
@@ -233,7 +231,7 @@ bool MainWindow::saveBackupMedia() {
   }
 
   // reset flag because we created a backup just now
-  media->writeOccured = false;
+  media.writeOccured = false;
 
   return ok;
 }
@@ -245,10 +243,9 @@ bool MainWindow::loadBackupMedia() {
     return true;
   }
 
-  BackupMedia *media = m_emuGBA->getBackupMedia();
-  if( media == NULL ) return true;
+  BackupMedia &media = m_emuGBA->getBackupMedia();
 
-  const u32 size = media->getSize();
+  const u32 size = media.getSize();
   if( size == 0 ) return true;
 
   bool ok = true;
@@ -258,13 +255,13 @@ bool MainWindow::loadBackupMedia() {
 
   // TODO: if(media->writeOccured) create a backup of the currently loaded data before overwriting it
 
-  u8 *data = media->getData();
+  u8 *data = media.getData();
   Q_ASSERT( data != NULL );
 
   if( file.open( QIODevice::ReadOnly ) ) {
     const qint64 read = file.read( (char *)data, size );
     file.close();
-    if( (read != (int)size) && (media->getType() != media->EEPROM) ) {
+    if( (read != (int)size) && (media.getType() != EEPROM) ) {
       // exception for EEPROM: we can't know the correct size before emulation started
       QMessageBox::critical( this, tr("Error"), tr("Error reading from file: ") + m_saveFile );
       ok = false;
@@ -275,43 +272,54 @@ bool MainWindow::loadBackupMedia() {
   }
 
   // reset flag because we modified it just now
-  media->writeOccured = false;
+  media.writeOccured = false;
 
   return ok;
 }
 
 
 bool MainWindow::loadGame( QString romFile ) {
-  QFile rom( romFile );
-  qint64 size = rom.size();
-  if( size > (32*1024*1024) ) {
+  bool result;
+  QFile file( romFile );
+  IChipMemory &rom = m_emuGBA->lockROM();
+  result = rom.setSize( file.size() );
+  if( !result ) {
     QMessageBox::critical( this, tr("Error"), tr("GBA ROM size must not exceed 32 MB.") );
     return false;
   }
-  if( size < 192 ) {
-    QMessageBox::critical( this, tr("Error"), tr("GBA ROM is too small.") );
+  result = file.open( QIODevice::ReadOnly );
+  if( !result ) {
+    m_emuGBA->unlockROM();
+    QMessageBox::critical( this, tr("Error"), tr("Can not open ROM file.") );
     return false;
   }
-  rom.open( QFile::ReadOnly );
-  QByteArray data = rom.readAll();
-  rom.close();
-  Q_ASSERT( size == data.size() );
-  const u8 *const romData = (const u8 *const)data.constData();
+  const qint64 requestedSize = (qint64)rom.getSize();
+  const qint64 bytesRead = file.read( (char *)rom.lockData(), requestedSize );
+  file.close();
+  rom.unlockData();
+  m_emuGBA->unlockROM();
+  if( bytesRead != requestedSize ) {
+    QMessageBox::critical( this, tr("Error"), tr("Can not read ROM file.") );
+    return false;
+  }
+
 
   // build unique save game file name
-  CartridgeHeader header( romData );
+  CartridgeInfo &info = m_emuGBA->getCartridgeInfo();
   QString version;
-  if( header.gameVersion > 0 ) {
+  if( info.gameVersion > 0 ) {
     // add version only if necessary
-    version = " [v" + QString::number( header.gameVersion ) + "]";
+    version = " [v" + QString::number( info.gameVersion ) + "]";
   }
-  m_saveFile = m_settings->s_cartridgeSavesDir + "/" + header.gameTitle +
-               " (" + header.gameCode + ")" + version + ".sav";
+  m_saveFile = m_settings->s_cartridgeSavesDir + "/" + info.gameTitle +
+               " (" + info.gameCode + ")" + version + ".sav";
   // TODO: add exception for homebrew games with empty gameTitle
 
-  bool retVal = m_emuGBA->initialize( romData, (u32)size );
+
+  bool retVal = m_emuGBA->initialize();
   if( !retVal ) {
-    QMessageBox::critical( this, tr("Error"), tr("ROM loading failed.") );
+    Q_ASSERT( false );
+    QMessageBox::critical( this, tr("Error"), tr("Initializing GBA emulator failed.") );
     return false;
   }
   m_fileName = romFile;

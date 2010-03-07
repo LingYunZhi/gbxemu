@@ -21,9 +21,16 @@
 
 
 #include "../System.h"
+
+#include "../Cartridge.h"
+extern Cartridge *cartridge;
+extern const u8 *rom;
+extern u32 romSize;
+extern BackupMedia *backupMedia;
+
+
 #include "../bioschip.h"
 extern BiosChip *biosChip;
-
 
 
 typedef union {
@@ -70,7 +77,7 @@ extern int armMode;
 void CPUCleanUp();
 void CPUUpdateRender();
 void CPUUpdateRenderBuffers(bool);
-bool CPULoadRom(u8 *data, int size); // data must be valid as long as the emu is running
+bool CPULoadRom( Cartridge *cart/*ridge*/ );
 void CPUUpdateRegister(u32 address, u16 value);
 void CPUInit();
 void CPUReset();
@@ -105,9 +112,6 @@ typedef struct {
   void *address;
   int size;
 } variable_desc;
-
-#include "../backupmedia.h"
-extern BackupMedia *backupMedia;
 
 
 // interface to display GBA LCD to user
@@ -166,9 +170,6 @@ extern int armMode;
 extern int layerSettings;
 extern int layerEnable;
 
-extern u8 *bios;
-extern u8 *rom;
-extern u32 romSize;
 extern u8 *internalRAM;
 extern u8 *workRAM;
 extern u8 *paletteRAM;

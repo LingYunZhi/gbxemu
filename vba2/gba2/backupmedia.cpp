@@ -17,18 +17,27 @@
 
 
 #include "backupmedia.h"
-
 #include <assert.h>
-#include <string.h>
+#include <string.h> // memset
 
 
-BackupMedia::BackupMedia( u32 *romData, u32 romSize )
-{
-  m_type = findOutType( romData, romSize, m_rtcPresent );
+BackupMedia::BackupMedia() {
+  m_type = NONE;
   m_data = NULL;
   m_size = 0;
   writeOccured = false;
-  m_eepromBitsRead = 68; // 68 means can not read more
+}
+
+
+BackupMedia::~BackupMedia() {
+  if( m_data != NULL ) {
+    delete[] m_data;
+  }
+}
+
+
+void BackupMedia::setType( BACKUPMEDIATYPE type ) {
+  m_type = type;
 
   switch( m_type ) {
   case NONE:
@@ -41,8 +50,6 @@ BackupMedia::BackupMedia( u32 *romData, u32 romSize )
     memset( m_data, 0xFF, SIZE_SRAM );
     break;
   case EEPROM:
-    // game ROM size is restricted to max. 16 MiB when using EEPROM
-    assert( romSize <= (16*1024*1024) );
     // EEPROM is either 512 Bytes or 8 KiB
     m_size = 0; // has to be detected first!
     m_eepromAddressBits = 0;
@@ -50,6 +57,7 @@ BackupMedia::BackupMedia( u32 *romData, u32 romSize )
     assert( m_data != NULL );
     memset( m_data, 0xFF, SIZE_EEPROM_LARGE );
     m_eepromState = IDLE;
+    m_eepromBitsRead = 68; // 68 means can not read more
     break;
   case FLASH64KiB:
     m_size = SIZE_FLASH_SMALL;
@@ -78,16 +86,10 @@ BackupMedia::BackupMedia( u32 *romData, u32 romSize )
 }
 
 
-BackupMedia::~BackupMedia() {
-  if( m_data != NULL ) {
-    delete[] m_data;
-  }
-}
-
-
-BackupMedia::BACKUPMEDIATYPE BackupMedia::getType() {
+BACKUPMEDIATYPE BackupMedia::getType() {
   return m_type;
 }
+
 
 u8 BackupMedia::read8( u32 address ) {
   assert( address & 0x0E000000 );
@@ -385,107 +387,4 @@ u32 BackupMedia::getSize() {
 
 u8 *BackupMedia::getData() {
   return m_data;
-}
-
-
-// used by findOutType()
-u32 stringToValue( const char s[5] ) {
-  // maximum string length: 4 characters + zero byte
-  u64 result = 0;
-  for( int i = 0; i < 4; i++ ) {
-    if( s[i] == 0 ) break;
-    result |= ( s[i] << (i*8) );
-  }
-  return result;
-}
-
-
-/**
-  This function detects the type of backup chip used in a commercial (!) cartridge by searching the whole
-  game ROM for specific strings that are inserted by Nintendo's build system.
-
-  This does also work for the "Classic NES" series of games, which try to prevent piracy by reading from
-  the SRAM area twice at bootup even though they actually use EEPROM later on. Fortunately, these game ROMs
-  still only contain the EEPROM string, but not the SRAM string.
-  */
-BackupMedia::BACKUPMEDIATYPE BackupMedia::findOutType( u32 *romData, u32 romSize, bool &rtcFound )
-{
-  assert( romData != NULL );
-  if( romSize < 192 ) return NONE;
-
-  /* possible strings are:
-
-     backup media:
-     - "EEPROM_V"
-     - "SRAM_V"
-     - "SRAM_F_V"
-     - "FLASH_V"
-     - "FLASH512_V"
-     - "FLASH1M_V"
-
-     real-time clock:
-     - "SIIRTC_V"
-
-     It is assumed, that all strings are word-aligned.
-  */
-
-  // first part
-  const u32 _EEPR = stringToValue( "EEPR" ); // EEPROM
-  const u32 _SRAM = stringToValue( "SRAM" ); // SRAM
-  const u32 _FLAS = stringToValue( "FLAS" ); // FLASH
-  const u32 _SIIR = stringToValue( "SIIR" ); // RTC
-
-  // following parts
-  const u32 _OM_V = stringToValue( "OM_V" ); // EEPROM
-  const u32 __Vxx = stringToValue(   "_V" ); // SRAM
-  const u32 __F_V = stringToValue( "_F_V" ); // SRAM
-  const u32 _H_Vx = stringToValue(  "H_V" ); // FLASH  64 KiB
-  const u32 _H512 = stringToValue( "H512" ); // FLASH  64 KiB
-  const u32 _H1M_ = stringToValue( "H1M_" ); // FLASH 128 KiB
-  const u32 _TC_V = stringToValue( "TC_V" ); // RTC
-
-  assert( romSize >= 8 );
-  const u32 endAdress = ( romSize / 4 ) - 2;
-  bool saveTypeFound = false;
-  rtcFound = false;
-  BACKUPMEDIATYPE result = NONE;
-
-  for( u32 a/*ddress*/ = 0; a < endAdress; a++ ) {
-    const u32 block = romData[a];
-
-    if( block == _EEPR ) { // EEPROM
-      if( romData[a+1] == _OM_V ) {
-        result = EEPROM;
-        saveTypeFound = true;
-      }
-    } else if( block == _SRAM ) { // SRAM
-      const u32 next32 = romData[a+1];
-      const u32 next16 = next32 & 0xFFFF;
-      if( ( next32 == __F_V ) ||
-          ( next16 == __Vxx ) ) {
-        result = SRAM;
-        saveTypeFound = true;
-      }
-    } else if( block == _FLAS ) { // FLASH
-      const u32 next32 = romData[a+1];
-      const u32 next24 = next32 & 0xFFFFFF;
-      if( next32 == _H1M_ ) {
-        result = FLASH128KiB;
-        saveTypeFound = true;
-      } else if( ( next32 == _H512 ) ||
-                 ( next24 == _H_Vx ) ) {
-        result = FLASH64KiB;
-        saveTypeFound = true;
-      }
-    } else if( block == _SIIR ) { // RTC
-      const u32 next32 = romData[a+1];
-      if( next32 == _TC_V ) {
-        rtcFound = true;
-      }
-    }
-
-    if( saveTypeFound && rtcFound ) break; // finished
-  }
-
-  return result;
 }

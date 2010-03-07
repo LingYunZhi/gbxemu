@@ -17,8 +17,6 @@
 
 
 #include "cemugba.h"
-#include "backupmedia.h"
-#include "bioschip.h"
 
 #include "gba/GBA.h"
 #include "gba/Sound.h"
@@ -40,18 +38,20 @@ CEmuGBA::CEmuGBA()
   m_inp = NULL;
   m_inputDriverLoaded = false;
 
-  m_gameROM = NULL;
-  m_gameROMSize = 0;
   m_initialized = false;
   m_soundInitialized = false;
 
-  m_backupMedia = NULL;
+  m_cartridge = NULL;
+  m_cartridge = new Cartridge();
+  assert( m_cartridge != NULL );
 
   m_biosChip = NULL;
   m_biosChip = new BiosChip();
   assert( m_biosChip != NULL );
 
   biosChip = m_biosChip; // set global variable in core
+
+  m_romLocked = false;
 }
 
 
@@ -61,57 +61,43 @@ CEmuGBA::~CEmuGBA()
     delete m_biosChip;
   }
 
-  if( m_backupMedia != NULL ) {
-    delete m_backupMedia;
-  }
-
-  if( m_gameROM != NULL ) {
-    delete[] m_gameROM;
+  if( m_cartridge != NULL ) {
+    delete m_cartridge;
   }
 }
 
 
-bool CEmuGBA::initialize( const u8 *const romData, const u32 romSize )
-{
+IChipMemory &CEmuGBA::lockROM() {
+  assert( !m_romLocked );
+  m_romLocked = true;
+  return (IChipMemory &)m_cartridge->getROM();
+}
+
+
+void CEmuGBA::unlockROM() {
+  assert( m_romLocked );
+  m_romLocked = false;
+}
+
+bool CEmuGBA::initialize() {
   const bool allDriversLoaded =
              m_soundDriverLoaded &&
              m_graphicsDriverLoaded &&
              m_inputDriverLoaded;
-  if( !allDriversLoaded ) return false;
-
-  if( romSize < 192 ) return false;
-
-  // allocate new ROM memory if old and new ROM size are not equal
-  if( romSize != m_gameROMSize ) {
-    // free old ROM memory
-    if( m_gameROM != NULL ) {
-      delete[] m_gameROM;
-      m_gameROM = NULL;
-    }
-    m_gameROM = new u8[romSize];
-    assert( m_gameROM != NULL );
-    m_gameROMSize = romSize;
+  if( !allDriversLoaded ) {
+    assert( false );
+    return false;
   }
 
-  // copy over rom data
-  assert( m_gameROMSize == romSize );
-  memcpy( m_gameROM, romData, m_gameROMSize );
-
-  // initialize backup media
-  if( m_backupMedia != NULL ) {
-    delete m_backupMedia;
-    m_backupMedia = NULL;
-  }
-  m_backupMedia = new BackupMedia( (u32*)m_gameROM, m_gameROMSize );
-  backupMedia = m_backupMedia; // set global variable in core
-
-  CPULoadRom( m_gameROM, m_gameROMSize );
+  bool result = CPULoadRom( m_cartridge );
+  assert( result );
 
   if( m_soundInitialized ) {
     soundReset();
   } else {
     soundDriver = m_snd; // set global variable in core
-    soundInit();
+    result = soundInit();
+    assert( result );
     m_soundInitialized = true;
   }
   CPUInit();
@@ -183,8 +169,15 @@ bool CEmuGBA::setDriverInput( CDriver_Input *drv )
 }
 
 
-BackupMedia *CEmuGBA::getBackupMedia() {
-  return m_backupMedia;
+CartridgeInfo &CEmuGBA::getCartridgeInfo() {
+  assert( m_cartridge != NULL );
+  return m_cartridge->getInfo();
+}
+
+
+BackupMedia &CEmuGBA::getBackupMedia() {
+  assert( m_cartridge != NULL );
+  return *m_cartridge->getSave();
 }
 
 

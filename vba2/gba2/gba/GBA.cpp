@@ -34,6 +34,13 @@
 #include "../graphics/cgbagraphics.h"
 
 
+Cartridge *cartridge = NULL;
+const u8 *rom = NULL;
+u32 romSize = 0;
+BackupMedia *backupMedia = NULL;
+
+BiosChip *biosChip = NULL;
+
 CDriver_Graphics *graphicsDriver = NULL;
 CDriver_Graphics *graphicsDebugDriver = NULL;
 CDriver_Input    *inputDriver    = NULL;
@@ -41,8 +48,6 @@ CDriver_Input    *inputDriver    = NULL;
 CGBAGraphics graphics2; // brand new high-level graphics emulation class
 
 CVerbose *verbose = NULL;
-
-BiosChip *biosChip = NULL;
 
 
 // visible+blanking pixels * 4 cylces per pixel
@@ -262,11 +267,6 @@ void CPUCleanUp()
     workRAM = NULL;
   }
 
-  if(bios != NULL) {
-    free(bios);
-    bios = NULL;
-  }
-
   if(pix != NULL) {
     free(pix);
     pix = NULL;
@@ -283,30 +283,20 @@ void CPUCleanUp()
   }
 }
 
-bool CPULoadRom(u8 *data, int size)
+bool CPULoadRom( Cartridge *cart/*ridge*/ )
 {
-  if( data == NULL ) return false;
-  if( size > 0x2000000 ) return false;
-  if( size < 192 ) return false; // TODO: determine minimal possible ROM size
-
+  cartridge = cart;
+  rom = (const u8 *)cartridge->getROM().getData();
+  romSize = cartridge->getROM().getSize();
+  backupMedia = cartridge->getSave();
   eepromSizeDetected = false;
 
   if(workRAM != NULL) {
     CPUCleanUp();
   }
-
-  rom = data;
-  romSize = size;
-
   workRAM = (u8 *)calloc(1, 0x40000);
   if(workRAM == NULL) {
     return 0;
-  }
-
-  bios = (u8 *)calloc(1,0x4000);
-  if(bios == NULL) {
-    CPUCleanUp();
-    return false;
   }
   internalRAM = (u8 *)calloc(1,0x8000);
   if(internalRAM == NULL) {
@@ -1796,7 +1786,7 @@ void CPUInit()
 void CPUReset()
 {
   // clean registers
-  memset(&reg[0], 0, sizeof(reg));
+  memset( &(reg[0]), 0, sizeof(reg) );
   // clean OAM
   memset(oam, 0, 0x400);
   // clean palette
@@ -1950,10 +1940,6 @@ void CPUReset()
 
   CPUUpdateWindow0();
   CPUUpdateWindow1();
-
-  // make sure registers are correctly initialized if not using BIOS
-//  if(!useBios)
-//      BIOS_RegisterRamReset(0xff);
 
   ARM_PREFETCH;
 
@@ -2430,11 +2416,6 @@ int armMode = 0x1f;
 int layerSettings = 0xff00;
 int layerEnable = 0xff00;
 
-BackupMedia *backupMedia = NULL;
-
-u8 *bios = 0;
-u8 *rom = 0;
-u32 romSize = 0;
 u8 *internalRAM = 0;
 u8 *workRAM = 0;
 u8 *paletteRAM = 0;

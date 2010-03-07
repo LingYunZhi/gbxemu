@@ -21,6 +21,7 @@
 
 
 #include "common/Types.h"
+#include "cartridgeinfo.h"
 
 
 /**
@@ -29,11 +30,11 @@
 class BackupMedia
 {
 public:
-  BackupMedia( u32 *romData, u32 romSize );
+  BackupMedia();
   ~BackupMedia();
 
-  typedef enum { NONE, SRAM, EEPROM, FLASH64KiB, FLASH128KiB } BACKUPMEDIATYPE;
-  static BACKUPMEDIATYPE findOutType( u32 *romData, u32 romSize, bool &rtcFound );
+  // Do not forget to use setType before using this class.
+  void setType( BACKUPMEDIATYPE type );
   BACKUPMEDIATYPE getType();
 
   // SRAM
@@ -47,6 +48,7 @@ public:
   void write16( u16 data, u32 address );
 
   // use these functions when loading/saving the backup media content from/to a file
+  // TODO: Use IChipMemory interface for this purpose.
   u32 getSize();
   u8 *getData();
 
