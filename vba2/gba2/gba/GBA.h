@@ -22,11 +22,10 @@
 
 #include "../System.h"
 
-#include "../Cartridge.h"
+#include "../cartridge.h"
 extern Cartridge *cartridge;
 extern const u8 *rom;
 extern u32 romSize;
-extern BackupMedia *backupMedia;
 
 
 #include "../bioschip.h"

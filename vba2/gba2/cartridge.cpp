@@ -48,40 +48,16 @@ BackupMedia *Cartridge::getSave() {
 
 
 bool Cartridge::read8( u32 address, u8 &value ) {
-  assert( address & 0x08000000 );
-
-  if( address >= 0x0E000000 ) {
-  } else {
-    // address < 0x0E000000
+  switch( address >> 24 ) {
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0D:
     return m_rom.read8( address, value );
-  }
-
-  assert( false );
-  return false;
-}
-
-
-bool Cartridge::read16( u32 address, u16 &value ) {
-  assert( address & 0x08000000 );
-
-  if( address >= 0x0E000000 ) {
-  } else {
-    // address < 0x0E000000
-    return m_rom.read16( address, value );
-  }
-
-  assert( false );
-  return false;
-}
-
-
-bool Cartridge::read32( u32 address, u32 &value ) {
-  assert( address & 0x08000000 );
-
-  if( address >= 0x0E000000 ) {
-  } else {
-    // address < 0x0E000000
-    return m_rom.read32( address, value );
+  case 0x0E:
+    return m_save.read8( address, value );
   }
 
   assert( false );
@@ -90,18 +66,75 @@ bool Cartridge::read32( u32 address, u32 &value ) {
 
 
 bool Cartridge::write8( u32 address, u8 value ) {
-  assert( address & 0x08000000 );
+  switch( address >> 24 ) {
+  case 0x0E:
+    return m_save.write8( address, value );
+  }
+
+  assert( false );
+  return false;
+}
+
+
+bool Cartridge::read16( u32 address, u16 &value ) {
+  switch( address >> 24 ) {
+  case 0x0D:
+    // EEPROM could be here as well
+    // If not, ROM access request is assumed
+    // EEPROM can be accessed from 0x0D000000 to 0x0DFFFFFF
+    // ROM size is limited to 16 MiB if EEPROM chip is used
+    if( m_save.getType() == EEPROM ) {
+      return m_save.read16( address, value );
+    }
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+    return m_rom.read16( address, value );
+  }
+
+  assert( false );
   return false;
 }
 
 
 bool Cartridge::write16( u32 address, u16 value ) {
-  assert( address & 0x08000000 );
+  switch( address >> 24 ) {
+  case 0x08:
+    // GPIO could be here
+    if( m_info.usesRTC ) {
+      switch( address ) {
+      case 0x080000C4:
+      case 0x080000C6:
+      case 0x080000C8:
+        return 0; // TODO: implement
+      }
+    }
+    break;
+
+  case 0x0D:
+    if( m_save.getType() == EEPROM ) {
+      return m_save.write16( address, value );
+    }
+  }
+
+  assert( false );
   return false;
 }
 
 
-bool Cartridge::write32( u32 address, u32 value ) {
-  assert( address & 0x08000000 );
+bool Cartridge::read32( u32 address, u32 &value ) {
+  switch( address >> 24 ) {
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0D:
+    return m_rom.read32( address, value );
+  }
+
+  assert( false );
   return false;
 }

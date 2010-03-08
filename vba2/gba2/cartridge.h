@@ -46,11 +46,10 @@ public:
   // - address range from 0x08000000 to 0x0FFFFFFF is handled
   // - returns false if address could not be accessed
   bool read8  ( u32 address,  u8 &value );
-  bool read16 ( u32 address, u16 &value );
-  bool read32 ( u32 address, u32 &value );
   bool write8 ( u32 address,  u8  value );
+  bool read16 ( u32 address, u16 &value );
   bool write16( u32 address, u16  value );
-  bool write32( u32 address, u32  value );
+  bool read32 ( u32 address, u32 &value );
 
 private:
   CartridgeROM  m_rom;

@@ -131,7 +131,7 @@ bool CartridgeROM::read16( u32 address, u16 &value ) {
   assert( m_loaded );
   address &= 0x01FFFFFE;
   if( address >= m_size ) {
-    assert( false );
+//    assert( false );
     return false;
   }
 

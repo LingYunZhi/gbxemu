@@ -50,7 +50,7 @@ u8 CPUReadByte(u32 address)
     return paletteRAM[address & 0x3ff];
   case 6:
     address = (address & 0x1ffff);
-    // TODO. is this correct?
+    // TODO: is this correct?
     if (((DISPCNT & 7) >2) && ((address & 0x1C000) == 0x18000))
       return 0;
     if ((address & 0x18000) == 0x18000)
@@ -65,28 +65,13 @@ u8 CPUReadByte(u32 address)
   case 0x0B:
   case 0x0C:
   case 0x0D:
-    {
-      const u32 romAddress = address & 0x01FFFFFF;
-      if( romAddress < romSize ) {
-        return rom[romAddress];
-      } else goto unreadable;
-    }
-
   case 0x0E:
-    if( backupMedia != NULL ) {
-      switch( backupMedia->getType() ) {
-      default:
-        break;
-      case SRAM:
-      case FLASH64KiB:
-      case FLASH128KiB:
-        u8 value;
-        if( backupMedia->read8( address, value ) ) {
-          return value;
-        }
-      }
-    }
-    goto unreadable;
+  case 0x0F: {
+    u8 value;
+    if( cartridge->read8( address, value ) ) {
+      return value;
+    } else goto unreadable;
+  }
 
   default:
   unreadable:
@@ -174,35 +159,23 @@ u16 CPUReadHalfWord( u32 address )
     value = READ16LE(((u16 *)&oam[address & 0x3fe]));
     break;
 
-  case 0x0D:
-    // EEPROM could be here as well
-    // If not, ROM access request is assumed
-    // EEPROM can be accessed from 0x0D000000 to 0x0DFFFFFF
-    if( backupMedia != NULL ) {
-      if( backupMedia->getType() == EEPROM ) {
-        if( !backupMedia->read16( address & 0x01FFFFFE, value ) ) {
-          goto unreadable;
-        }
-        break;
-      }
-    }
-    // no break here (continue below, if not EEPROM access)
   case 0x08:
   case 0x09:
   case 0x0A:
   case 0x0B:
   case 0x0C:
-    {
-      const u32 romAddress = address & 0x01FFFFFE;
-      if( romAddress < romSize ) {
-        value = READ16LE( &rom[romAddress] );
-        break;
-      } else goto unreadable;
+  case 0x0D:
+  case 0x0E:
+  case 0x0F:
+    if( cartridge->read16( address, value ) ) {
+      break;
+    } else {
+      goto unreadable;
     }
 
   default:
   unreadable:
-    assert( false );
+//    assert( false ); // TODO: find out why BIOS wants to read from 0xBFFFFE0
     if( cpuDmaHack ) {
       value = cpuDmaLast & 0xFFFF;
     } else {
@@ -270,6 +243,21 @@ void CPUWriteMemory(u32 address, u32 value)
   case 0x07:
       WRITE32LE(((u32 *)&oam[address & 0x3fc]), value);
     break;
+
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0D:
+  case 0x0E:
+  case 0x0F:
+    if( cartridge->write32( address, value ) ) {
+      break;
+    } else {
+      goto unwritable;
+    }
+
   default:
 unwritable:
 #ifdef GBA_LOGGING
@@ -327,19 +315,25 @@ void CPUWriteHalfWord(u32 address, u16 value)
   case 7:
       WRITE16LE(((u16 *)&oam[address & 0x3fe]), value);
     break;
-  case 13:
-    if( backupMedia != NULL ) {
-      if( backupMedia->getType() == EEPROM ) {
-        // autodetect EEPROM size
-        if( !eepromSizeDetected ) {
-          eepromSizeDetected = backupMedia->detectEEPROMSize( cpuDmaCount );
-        }
-        // TODO: further check address bits
-        backupMedia->write16( address, value );
-        break;
-      }
+    
+  case 0x0D:
+    // autodetect EEPROM size
+    if( !eepromSizeDetected ) {
+      eepromSizeDetected = cartridge->getSave()->detectEEPROMSize( cpuDmaCount );
     }
-    goto unwritable;
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0E:
+  case 0x0F:
+    if( cartridge->write16( address, value ) ) {
+      break;
+    } else {
+      goto unwritable;
+    }
+      
   default:
 unwritable:
 #ifdef GBA_LOGGING
@@ -452,18 +446,21 @@ void CPUWriteByte(u32 address, u8 b)
     // byte writes to OAM are ignored
     //    *((u16 *)&oam[address & 0x3FE]) = (b << 8) | b;
     break;
-  case 14:
-    if( backupMedia != NULL ) {
-      switch( backupMedia->getType() ) {
-      default:
-        break;
-      case SRAM:
-      case FLASH64KiB:
-      case FLASH128KiB:
-        backupMedia->write8( address, b  );
-      }
+
+  case 0x08:
+  case 0x09:
+  case 0x0A:
+  case 0x0B:
+  case 0x0C:
+  case 0x0D:
+  case 0x0E:
+  case 0x0F:
+    if( cartridge->write8( address, b ) ) {
+      break;
+    } else {
+      goto unwritable;
     }
-    break;
+
   default:
 unwritable:
 #ifdef GBA_LOGGING
@@ -531,12 +528,12 @@ u32 CPUReadMemory( u32 address )
   case 0x0B:
   case 0x0C:
   case 0x0D:
-    {
-      const u32 romAddress = address & 0x01FFFFFC;
-      if( romAddress < romSize ) {
-        value = READ32LE( &rom[romAddress] );
-        break;
-      } else goto unreadable;
+  case 0x0E:
+  case 0x0F:
+    if( cartridge->read32( address, value ) ) {
+      break;
+    } else {
+      goto unreadable;
     }
 
   default:

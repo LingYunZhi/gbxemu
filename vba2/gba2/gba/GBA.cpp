@@ -37,7 +37,6 @@
 Cartridge *cartridge = NULL;
 const u8 *rom = NULL;
 u32 romSize = 0;
-BackupMedia *backupMedia = NULL;
 
 BiosChip *biosChip = NULL;
 
@@ -288,7 +287,6 @@ bool CPULoadRom( Cartridge *cart/*ridge*/ )
   cartridge = cart;
   rom = (const u8 *)cartridge->getROM().getData();
   romSize = cartridge->getROM().getSize();
-  backupMedia = cartridge->getSave();
   eepromSizeDetected = false;
 
   if(workRAM != NULL) {
