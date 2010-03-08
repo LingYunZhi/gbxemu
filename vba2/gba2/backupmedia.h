@@ -21,6 +21,7 @@
 
 
 #include "common/Types.h"
+#include "common/ichipaccess.h"
 #include "cartridgeinfo.h"
 
 
@@ -38,14 +39,14 @@ public:
   BACKUPMEDIATYPE getType();
 
   // SRAM
-  u8 read8( u32 address );
-  void write8( u8 data, u32 address );
+  bool read8  ( u32 address,  u8 &value );
+  bool write8 ( u32 address,  u8  value );
 
   // EEPROM, FLASH
   // call this before any reads/writes from/to EEPROM occured! if it fails, call it again next time
   bool detectEEPROMSize( u32 dmaCount );
-  u16 read16( u32 address );
-  void write16( u16 data, u32 address );
+  bool read16 ( u32 address, u16 &value );
+  bool write16( u32 address, u16  value );
 
   // use these functions when loading/saving the backup media content from/to a file
   // TODO: Use IChipMemory interface for this purpose.

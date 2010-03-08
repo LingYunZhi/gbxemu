@@ -84,7 +84,8 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/cartridge.h \
     ../gba2/cartridgerom.h \
     ../gba2/common/ichipmemory.h \
-    ../gba2/cartridgeinfo.h
+    ../gba2/cartridgeinfo.h \
+    ../gba2/common/ichipaccess.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \

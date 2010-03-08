@@ -22,12 +22,13 @@
 
 #include "common/Types.h"
 #include "common/ichipmemory.h"
+#include "common/ichipaccess.h"
 #include "cartridgerom.h"
 #include "cartridgeinfo.h"
 #include "backupmedia.h"
 
 
-class Cartridge
+class Cartridge : public IChipAccess
 {
 public:
   Cartridge();
@@ -41,7 +42,8 @@ public:
   BackupMedia *getSave();
 
 
-  // access cartridge bus
+  // access cartridge bus (ROM and additional chips)
+  // - address range from 0x08000000 to 0x0FFFFFFF is handled
   // - returns false if address could not be accessed
   bool read8  ( u32 address,  u8 &value );
   bool read16 ( u32 address, u16 &value );

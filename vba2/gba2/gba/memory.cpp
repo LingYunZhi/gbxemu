@@ -80,7 +80,10 @@ u8 CPUReadByte(u32 address)
       case SRAM:
       case FLASH64KiB:
       case FLASH128KiB:
-        return backupMedia->read8( address );
+        u8 value;
+        if( backupMedia->read8( address, value ) ) {
+          return value;
+        }
       }
     }
     goto unreadable;
@@ -177,7 +180,9 @@ u16 CPUReadHalfWord( u32 address )
     // EEPROM can be accessed from 0x0D000000 to 0x0DFFFFFF
     if( backupMedia != NULL ) {
       if( backupMedia->getType() == EEPROM ) {
-        value = backupMedia->read16( address & 0x01FFFFFE );
+        if( !backupMedia->read16( address & 0x01FFFFFE, value ) ) {
+          goto unreadable;
+        }
         break;
       }
     }
@@ -330,7 +335,7 @@ void CPUWriteHalfWord(u32 address, u16 value)
           eepromSizeDetected = backupMedia->detectEEPROMSize( cpuDmaCount );
         }
         // TODO: further check address bits
-        backupMedia->write16( value, address );
+        backupMedia->write16( address, value );
         break;
       }
     }
@@ -455,7 +460,7 @@ void CPUWriteByte(u32 address, u8 b)
       case SRAM:
       case FLASH64KiB:
       case FLASH128KiB:
-        backupMedia->write8( b, address );
+        backupMedia->write8( address, b  );
       }
     }
     break;
