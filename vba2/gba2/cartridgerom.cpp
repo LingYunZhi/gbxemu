@@ -118,12 +118,17 @@ bool CartridgeROM::read8( u32 address, u8 &value ) {
   assert( m_loaded );
   address &= 0x01FFFFFF;
   if( address >= m_size ) {
-    assert( false );
-    return false;
+    // see notes in read16() function
+    if( address & 1 ) {
+      value = ( (address & 0x1FFFE) >> (1+8) ) & 0xFF;
+    } else {
+      value = ( (address & 0x1FFFE) >> 1 ) & 0xFF;
+    }
+    return true;
+  } else {
+    value = m_data[address];
+    return true;
   }
-
-  value = m_data[address];
-  return true;
 }
 
 
@@ -131,12 +136,17 @@ bool CartridgeROM::read16( u32 address, u16 &value ) {
   assert( m_loaded );
   address &= 0x01FFFFFE;
   if( address >= m_size ) {
-//    assert( false );
-    return false;
+    // reads beyond the ROM data seem to be filled with:
+    // 0xx00000: 0000 0001 0002 .. FFFF: 0xx1FFFE
+    // 0xx20000: 0000 0001 0002 .. FFFF: 0xx3FFFE
+    // (Incrementing 16 bit values, mirrored each 128 KiB)
+    // [Verified on EZ-Flash IV]
+    value = (address & 0x1FFFE) >> 1;
+    return true;
+  } else {
+    value = READ16LE( m_data + address );
+    return true;
   }
-
-  value = READ16LE( m_data + address );
-  return true;
 }
 
 
@@ -144,10 +154,15 @@ bool CartridgeROM::read32( u32 address, u32 &value ) {
   assert( m_loaded );
   address &= 0x01FFFFFC;
   if( address >= m_size ) {
-    assert( false );
-    return false;
+    // see notes in read16() function
+    // 32 bit reads return the same value of a 16 bit read mirrored in high and low halfword
+    // Only even values are returned!
+    // [Verified on EZ-Flash IV]
+    value = (address & 0x1FFFC) >> 1;
+    value |= value << 16;
+    return true;
+  } else {
+    value = READ32LE( m_data + address );
+    return true;
   }
-
-  value = READ32LE( m_data + address );
-  return true;
 }
