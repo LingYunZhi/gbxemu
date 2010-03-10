@@ -16,48 +16,33 @@
 */
 
 
-#ifndef CARTRIDGE_H
-#define CARTRIDGE_H
+#ifndef CARTRIDGEGPIO_H
+#define CARTRIDGEGPIO_H
 
 
 #include "common/Types.h"
-#include "common/ichipmemory.h"
 #include "common/ichipaccess.h"
-#include "cartridgerom.h"
-#include "cartridgeinfo.h"
-#include "backupmedia.h"
-#include "cartridgegpio.h"
+#include "common/igpio.h"
 
 
-class Cartridge : public IChipAccess
+/**
+  This class represents the 4 bit general purpose input/output bus contained in some ROM chips.
+
+  Special devices like real-time clocks, light/movement sensors or rumble modules can be attached to it.
+  */
+class CartridgeGPIO : public IChipAccess
 {
 public:
-  Cartridge();
-  ~Cartridge();
-
-  // return interface to game ROM
-  IChipMemory &getROM();
-  // return interface to cartridge info
-  CartridgeInfo &getInfo();
-  // return interface to backup chip (SRAM / EEPROM / FLASH)
-  BackupMedia *getSave();
-
-
-  // access cartridge bus (ROM and additional chips)
-  // - address range from 0x08000000 to 0x0FFFFFFF is handled
-  // - returns false if address could not be accessed
-  bool read8  ( u32 address,  u8 &value );
-  bool write8 ( u32 address,  u8  value );
+  CartridgeGPIO();
+  void connectDevice( IGPIO *device );
   bool read16 ( u32 address, u16 &value );
   bool write16( u32 address, u16  value );
-  bool read32 ( u32 address, u32 &value );
 
 private:
-  CartridgeROM  m_rom;
-  CartridgeInfo m_info;
-  BackupMedia   m_save;
-  CartridgeGPIO m_gpio;
+  bool m_writeOnly;
+  u8   m_dataDirection; // 4 lowest bits control data port bits direction: 0=receive, 1=send
+  IGPIO *m_connectedDevice;
 };
 
 
-#endif // CARTRIDGE_H
+#endif // CARTRIDGEGPIO_H

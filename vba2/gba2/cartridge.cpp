@@ -18,6 +18,7 @@
 
 #include "cartridge.h"
 #include <assert.h>
+#include <stdio.h>
 
 
 Cartridge::Cartridge()
@@ -87,6 +88,9 @@ bool Cartridge::read16( u32 address, u16 &value ) {
       return m_save.read16( address, value );
     }
   case 0x08:
+    if( m_info.usesRTC && m_gpio.read16( address, value ) ) {
+      return true;
+    }
   case 0x09:
   case 0x0A:
   case 0x0B:
@@ -102,14 +106,8 @@ bool Cartridge::read16( u32 address, u16 &value ) {
 bool Cartridge::write16( u32 address, u16 value ) {
   switch( address >> 24 ) {
   case 0x08:
-    // GPIO could be here
-    if( m_info.usesRTC ) {
-      switch( address ) {
-      case 0x080000C4:
-      case 0x080000C6:
-      case 0x080000C8:
-        return 0; // TODO: implement
-      }
+    if( m_info.usesRTC && m_gpio.write16( address, value ) ) {
+      return true;
     }
     break;
 

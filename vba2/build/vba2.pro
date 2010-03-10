@@ -43,7 +43,8 @@ SOURCES += ../vba2/main.cpp \
     ../vba2/settings/settingssheet_graphicsoutput.cpp \
     ../gba2/cartridge.cpp \
     ../gba2/cartridgerom.cpp \
-    ../gba2/cartridgeinfo.cpp
+    ../gba2/cartridgeinfo.cpp \
+    ../gba2/cartridgegpio.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -85,7 +86,9 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/cartridgerom.h \
     ../gba2/common/ichipmemory.h \
     ../gba2/cartridgeinfo.h \
-    ../gba2/common/ichipaccess.h
+    ../gba2/common/ichipaccess.h \
+    ../gba2/cartridgegpio.h \
+    ../gba2/common/igpio.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
