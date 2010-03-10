@@ -39,7 +39,7 @@ over and over again.
 #include "bios.h"
 #include "memory.h"
 #include "../System.h"
-#include "../common/port.h"
+#include "../common/Port.h"
 
 
 static int clockTicks;

@@ -35,7 +35,7 @@ operating in THUMB mode (16 bit opcodes).
 #include "bios.h"
 #include "memory.h"
 #include "../System.h"
-#include "../common/port.h"
+#include "../common/Port.h"
 
 
 #ifdef _MSC_VER
