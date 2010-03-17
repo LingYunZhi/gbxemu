@@ -519,3 +519,16 @@ void MainWindow::on_actionPlay_Pause_triggered()
     pauseEmulation();
   }
 }
+
+
+void MainWindow::on_actionAbout_triggered()
+{
+  QString info;
+  info += "VisualBoyAdvance 2\n";
+  info += "Copyright (C) 2009-2010 VBA development team\n\n";
+  info += "This program comes with ABSOLUTELY NO WARRANTY.\n";
+  info += "This is free software, and you are welcome to redistribute it under the conditions of the GNU General Public License (version 3). ";
+  info += "You should have received a copy of the GNU GPL v3 along with this application, ";
+  info += "if not, visit http://www.gnu.org/licenses/gpl.html";
+  QMessageBox::information( this, "License", info );
+}

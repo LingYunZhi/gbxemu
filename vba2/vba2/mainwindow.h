@@ -77,6 +77,7 @@ public slots:
   bool loadBIOS( QString biosFile );
 
 private slots:
+  void on_actionAbout_triggered();
   void pauseEmulation();
   void resumeEmulation();
   // backup save game data to file

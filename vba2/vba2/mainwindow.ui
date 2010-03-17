@@ -78,11 +78,18 @@
     <addaction name="separator"/>
     <addaction name="actionRecent_Files"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionLoad_ROM">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/loadCartridge.png</normaloff>:/MainWindow/loadCartridge.png</iconset>
    </property>
    <property name="text">
@@ -94,7 +101,7 @@
   </action>
   <action name="actionUnload_ROM">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/unloadCartridge.png</normaloff>:/MainWindow/unloadCartridge.png</iconset>
    </property>
    <property name="text">
@@ -106,7 +113,7 @@
   </action>
   <action name="actionPlay_Pause">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/pause_button.png</normaloff>:/MainWindow/pause_button.png</iconset>
    </property>
    <property name="text">
@@ -118,7 +125,7 @@
   </action>
   <action name="actionSettings">
    <property name="icon">
-    <iconset resource="resource/resource.qrc">
+    <iconset>
      <normaloff>:/MainWindow/settings.png</normaloff>:/MainWindow/settings.png</iconset>
    </property>
    <property name="text">
@@ -133,10 +140,13 @@
     <string>Recent Files</string>
    </property>
   </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resource/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
