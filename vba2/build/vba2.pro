@@ -44,7 +44,10 @@ SOURCES += ../vba2/main.cpp \
     ../gba2/cartridge.cpp \
     ../gba2/cartridgerom.cpp \
     ../gba2/cartridgeinfo.cpp \
-    ../gba2/cartridgegpio.cpp
+    ../gba2/cartridgegpio.cpp \
+    ../gba2/graphicschip.cpp \
+    ../gba2/genericmemory.cpp \
+    ../gba2/reg_dispcnt.cpp
 HEADERS += ../vba2/mainwindow.h \
     ../gba2/apu/Multi_Buffer.h \
     ../gba2/apu/Gb_Oscs.h \
@@ -88,7 +91,11 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/cartridgeinfo.h \
     ../gba2/common/ichipaccess.h \
     ../gba2/cartridgegpio.h \
-    ../gba2/common/igpio.h
+    ../gba2/common/igpio.h \
+    ../gba2/graphicschip.h \
+    ../gba2/genericmemory.h \
+    ../gba2/reg_dispcnt.h \
+    ../gba2/common/genericioregister.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
