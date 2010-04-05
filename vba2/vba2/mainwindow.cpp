@@ -105,7 +105,11 @@ MainWindow::MainWindow(QWidget *parent, QString file)
   Q_ASSERT( m_inp != NULL );
   m_emuGBA->setDriverInput( m_inp );
 
-  loadBIOS( m_settings->s_biosFile );
+  if( !m_settings->s_biosFile.isEmpty() ) {
+    loadBIOS( m_settings->s_biosFile );
+  } else {
+    QMessageBox::warning( this, tr("Important"), tr("You must select a BIOS file in the settings dialog in order to be able to run games. This hindrance will eventually be removed in a later version.") );
+  }
 
   ui->statusBar->showMessage( tr("Welcome to VisualBoyAdvance 2.") );
 
@@ -157,7 +161,7 @@ void MainWindow::on_actionLoad_ROM_triggered()
   }
   QString newFileName = QFileDialog::getOpenFileName( this, tr("Select ROM image to load"), startDir, tr("GBA ROMs (*.gba)") );
   if( newFileName.isEmpty() ) {
-    if( !wasPaused ) {
+    if( !wasPaused && !m_fileName.isEmpty() ) {
       resumeEmulation();
     }
     return;
