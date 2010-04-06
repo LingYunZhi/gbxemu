@@ -38,9 +38,14 @@ public:
 
 private:
   Ui::SettingsSheet_KeyboardInput *ui;
+  CAppSettings &m_settings;
 
 public slots:
   void applySettings();
+
+private slots:
+  void on_tableWidget_cellDoubleClicked(int row, int column);
+  void on_assign_all_clicked();
 };
 
 

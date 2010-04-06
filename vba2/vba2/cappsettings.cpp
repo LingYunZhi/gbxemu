@@ -20,23 +20,28 @@
 #include <QSettings>
 #include <QtCore/QCoreApplication>
 #include <QFile>
+#include "../gba2/common/cdriver_input.h"
 
 
 CAppSettings::CAppSettings( QObject *parent )
   : QObject( parent )
 {
+  loadDefaultKeyAssignments();
+
   QCoreApplication::setOrganizationName( "Open Source" );
   QCoreApplication::setApplicationName( "VisualBoyAdvance 2" );
   load();
 }
 
 
-CAppSettings::~CAppSettings() {
+CAppSettings::~CAppSettings()
+{
   save();
 }
 
 
-void CAppSettings::save() {
+void CAppSettings::save()
+{
   QSettings s;
   s.setValue( "soundOutput/deviceID", s_soundOutputDevice );
   s.setValue( "soundOutput/enableAudioSync", s_enableAudioSync );
@@ -54,10 +59,16 @@ void CAppSettings::save() {
   for( int i = 0; i < nFiles; i++ ) {
     s.setValue( "recentFiles/slot" + QString::number(i), s_recentFiles.at(i) );
   }
+
+  // key assignments
+  for( int i = 0; i < s_keyAssignments.size(); i++ ) {
+    s.setValue( "keyAssignments/" + s_keyAssignments.at(i)->getActionName(), s_keyAssignments.at(i)->getKeyCode() );
+  }
 }
 
 
-void CAppSettings::load() {
+void CAppSettings::load()
+{
   QString appDir = qApp->applicationDirPath();
 
   QSettings s;
@@ -82,4 +93,30 @@ void CAppSettings::load() {
     if( !QFile::exists( temp ) ) continue;
     s_recentFiles.append( temp );
   }
+
+  // key assignments
+  for( int i = 0; i < s_keyAssignments.size(); i++ ) {
+    bool ok;
+    const int key = s.value( "keyAssignments/" + s_keyAssignments.at(i)->getActionName(), 0 ).toInt( &ok );
+    if( (key != 0) && ok ) {
+      s_keyAssignments.at(i)->setKeyCode( key );
+    }
+  }
+}
+
+
+void CAppSettings::loadDefaultKeyAssignments()
+{
+  s_keyAssignments.clear();
+
+  s_keyAssignments.append( new KeyAssignment( "UP", Qt::Key_Up, CDriver_Input::BUTTON_UP, this ) );
+  s_keyAssignments.append( new KeyAssignment( "DOWN", Qt::Key_Down, CDriver_Input::BUTTON_DOWN, this ) );
+  s_keyAssignments.append( new KeyAssignment( "LEFT", Qt::Key_Left, CDriver_Input::BUTTON_LEFT, this ) );
+  s_keyAssignments.append( new KeyAssignment( "RIGHT", Qt::Key_Right, CDriver_Input::BUTTON_RIGHT, this ) );
+  s_keyAssignments.append( new KeyAssignment( "B", Qt::Key_A, CDriver_Input::BUTTON_B, this ) );
+  s_keyAssignments.append( new KeyAssignment( "A", Qt::Key_S, CDriver_Input::BUTTON_A, this ) );
+  s_keyAssignments.append( new KeyAssignment( "L", Qt::Key_Q, CDriver_Input::BUTTON_L, this ) );
+  s_keyAssignments.append( new KeyAssignment( "R", Qt::Key_W, CDriver_Input::BUTTON_R, this ) );
+  s_keyAssignments.append( new KeyAssignment( "SELECT", Qt::Key_X, CDriver_Input::BUTTON_SELECT, this ) );
+  s_keyAssignments.append( new KeyAssignment( "START", Qt::Key_Return, CDriver_Input::BUTTON_START, this ) );
 }

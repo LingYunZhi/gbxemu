@@ -27,6 +27,7 @@ class QResizeEvent;
 class QPaintEvent;
 class QImage;
 class QPoint;
+class CAppSettings;
 
 
 // PaintWidget is a Qt Widget that offers GBA graphic output capabilities.
@@ -45,7 +46,7 @@ public:
 
   // ### Widget code:
 public:
-  PaintWidget( QWidget *parent = 0 );
+  PaintWidget( CAppSettings &settings, QWidget *parent = 0 );
   ~PaintWidget();
 
 protected:
@@ -55,13 +56,14 @@ protected:
   void keyReleaseEvent( QKeyEvent *event );
 
 private:
+  CAppSettings &m_settings;
   QImage *m_pixels;
   QRectF *m_placement;
   static const int srcImgWidth = 240;
   static const int srcImgHeight = 160;
   static const int srcImgPixelCount = srcImgWidth * srcImgHeight;
 
-  u16 m_keys;
+  u16 m_buttonStates;
   bool m_smooth;
 
 public slots:

@@ -16,48 +16,36 @@
 */
 
 
-#ifndef CAPPSETTINGS_H
-#define CAPPSETTINGS_H
+#ifndef PRESSKEYDIALOG_H
+#define PRESSKEYDIALOG_H
 
 
-#include <QObject>
-#include <QtMultimedia/QAudioDeviceInfo>
-#include <QStringList>
-#include <QList>
-#include "keyassignment.h"
+#include <QDialog>
+#include <QLabel>
+#include <QKeyEvent>
+#include <QString>
 
 
-class CAppSettings : public QObject
+class PressKeyDialog : public QDialog
 {
   Q_OBJECT
 
 public:
-  CAppSettings( QObject *parent = 0 );
-  ~CAppSettings();
+  PressKeyDialog( QString message, QWidget *parent = 0 )
+    : QDialog( parent )
+  {
+    this->setWindowTitle( tr("Assign Key") );
 
-private:
-  void save();
-  void load();
+    QLabel *label = new QLabel( message, this );
+    label->setAlignment( Qt::AlignCenter );
+    label->setWordWrap( true );
+  }
 
-  void loadDefaultKeyAssignments();
-
-public:
-  // constants:
-  static const int maxRecentFiles = 5;
-
-  // settings:
-  int     s_soundOutputDevice;
-  bool    s_enableAudioSync;
-  QString s_biosFile;
-  QString s_cartridgeFilesDir;
-  QString s_cartridgeSavesDir;
-  bool    s_enableVSync;
-  bool    s_enableSmoothStretching;
-  QStringList
-          s_recentFiles;
-  QList<KeyAssignment*>
-          s_keyAssignments;
+protected:
+  void keyPressEvent( QKeyEvent *e ) {
+    done( e->key() );
+  }
 };
 
 
-#endif // CAPPSETTINGS_H
+#endif // PRESSKEYDIALOG_H

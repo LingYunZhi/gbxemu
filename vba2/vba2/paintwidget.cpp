@@ -23,10 +23,11 @@
 #include <QPaintEvent>
 #include <QImage>
 #include <QPoint>
+#include "cappsettings.h"
 
 
-PaintWidget::PaintWidget( QWidget *parent )
-  : QGLWidget( parent )
+PaintWidget::PaintWidget( CAppSettings &settings, QWidget *parent )
+  : QGLWidget( parent ), m_settings( settings )
 {
   setMinimumSize( srcImgWidth, srcImgHeight );
   setFocusPolicy( Qt::StrongFocus );
@@ -40,7 +41,7 @@ PaintWidget::PaintWidget( QWidget *parent )
   m_placement = new QRectF( 0, 0, 1, 1 );
   Q_ASSERT( m_placement != NULL );
 
-  m_keys = CDriver_Input::BUTTON__NONE;
+  m_buttonStates = CDriver_Input::BUTTON__NONE;
   m_smooth = false;
 }
 
@@ -91,10 +92,12 @@ bool PaintWidget::displayFrame( const void *const data )
     return true;
 }
 
+
 u16 PaintWidget::getKeyStates()
 {
-    return m_keys;
+    return m_buttonStates;
 }
+
 
 void PaintWidget::resizeEvent( QResizeEvent *event )
 {
@@ -112,6 +115,7 @@ void PaintWidget::resizeEvent( QResizeEvent *event )
     m_placement->setSize( QSizeF( scaledWidth, scaledHeight ) );
 }
 
+
 void PaintWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p( this );
@@ -119,80 +123,42 @@ void PaintWidget::paintEvent( QPaintEvent *event )
     p.drawImage( *m_placement, *m_pixels );
 }
 
+
 void PaintWidget::keyPressEvent( QKeyEvent *event )
 {
-    switch( event->key() )
-    {
-    case Qt::Key_S:
-        m_keys |= CDriver_Input::BUTTON_A;
-        break;
-    case Qt::Key_A:
-        m_keys |= CDriver_Input::BUTTON_B;
-        break;
-    case Qt::Key_Y:
-        m_keys |= CDriver_Input::BUTTON_SELECT;
-        break;
-    case Qt::Key_X:
-        m_keys |= CDriver_Input::BUTTON_START;
-        break;
-    case Qt::Key_Right:
-        m_keys |= CDriver_Input::BUTTON_RIGHT;
-        break;
-    case Qt::Key_Left:
-        m_keys |= CDriver_Input::BUTTON_LEFT;
-        break;
-    case Qt::Key_Up:
-        m_keys |= CDriver_Input::BUTTON_UP;
-        break;
-    case Qt::Key_Down:
-        m_keys |= CDriver_Input::BUTTON_DOWN;
-        break;
-    case Qt::Key_W:
-        m_keys |= CDriver_Input::BUTTON_R;
-        break;
-    case Qt::Key_Q:
-        m_keys |= CDriver_Input::BUTTON_L;
-        break;
-    default:
-        QWidget::keyPressEvent( event );
+  const int pressedKey = event->key();
+  bool found = false;
+  const int nKeys = m_settings.s_keyAssignments.size();
+  for( int i = 0; i < nKeys; i++ ) {
+    const KeyAssignment *a = m_settings.s_keyAssignments.at(i);
+    if( pressedKey == a->getKeyCode() ) {
+      m_buttonStates |= a->getGBAButtonCode();
+      found = true;
+      break;
     }
+  }
+
+  if( !found ) {
+    QWidget::keyPressEvent( event );
+  }
 }
+
 
 void PaintWidget::keyReleaseEvent( QKeyEvent *event )
 {
-    switch( event->key() )
-    {
-    case Qt::Key_S:
-        m_keys ^= CDriver_Input::BUTTON_A;
-        break;
-    case Qt::Key_A:
-        m_keys ^= CDriver_Input::BUTTON_B;
-        break;
-    case Qt::Key_Y:
-        m_keys ^= CDriver_Input::BUTTON_SELECT;
-        break;
-    case Qt::Key_X:
-        m_keys ^= CDriver_Input::BUTTON_START;
-        break;
-    case Qt::Key_Right:
-        m_keys ^= CDriver_Input::BUTTON_RIGHT;
-        break;
-    case Qt::Key_Left:
-        m_keys ^= CDriver_Input::BUTTON_LEFT;
-        break;
-    case Qt::Key_Up:
-        m_keys ^= CDriver_Input::BUTTON_UP;
-        break;
-    case Qt::Key_Down:
-        m_keys ^= CDriver_Input::BUTTON_DOWN;
-        break;
-    case Qt::Key_W:
-        m_keys ^= CDriver_Input::BUTTON_R;
-        break;
-    case Qt::Key_Q:
-        m_keys ^= CDriver_Input::BUTTON_L;
-        break;
-    default:
-        QWidget::keyReleaseEvent( event );
+  const int releasedKey = event->key();
+  bool found = false;
+  const int nKeys = m_settings.s_keyAssignments.size();
+  for( int i = 0; i < nKeys; i++ ) {
+    const KeyAssignment *a = m_settings.s_keyAssignments.at(i);
+    if( releasedKey == a->getKeyCode() ) {
+      m_buttonStates ^= a->getGBAButtonCode();
+      found = true;
+      break;
     }
+  }
+
+  if( !found ) {
+    QWidget::keyReleaseEvent( event );
+  }
 }

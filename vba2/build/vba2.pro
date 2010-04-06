@@ -95,7 +95,9 @@ HEADERS += ../vba2/mainwindow.h \
     ../gba2/graphicschip.h \
     ../gba2/genericmemory.h \
     ../gba2/reg_dispcnt.h \
-    ../gba2/common/genericioregister.h
+    ../gba2/common/genericioregister.h \
+    ../vba2/keyassignment.h \
+    ../vba2/settings/presskeydialog.h
 FORMS += ../vba2/mainwindow.ui \
     ../vba2/settings/framedialog.ui \
     ../vba2/settings/settingssheet_audiooutput.ui \
