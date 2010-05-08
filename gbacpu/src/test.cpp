@@ -31,6 +31,6 @@ class DummyMem : public IMemory {
 
 int main() {
     DummyMem *mem = new DummyMem();
-    Gbacpu *cpu = new Gbacpu( *mem );
+    GbaCpu *cpu = new GbaCpu( *mem );
     return 0;
 }

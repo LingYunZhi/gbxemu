@@ -5,11 +5,8 @@
 #include <assert.h>
 #include "imemory.h"
 
-class Gbacpu {
+class GbaCpu {
 private:
-    typedef u32 ADDRESS;
-    typedef u32 OPCODE;
-
     // TODO: only works on little-endian, use WRITE/READLE macros
     typedef union {
         u32 uw;    // unsigned word
@@ -21,19 +18,22 @@ private:
     } REGISTER;
 
     // current/saved program status register
-    typedef struct {
-        // control bits
-        unsigned mode : 5; // MODE_xxx
-        unsigned thumb : 1; // 0=ARM  1=THUMB
-        unsigned fiq : 1; // 1=FIQ disabled
-        unsigned irq : 1; // 1=IRQ disabled
-        // reserved
-        unsigned reserved : 20; // do not change
-        // condition code flags
-        unsigned v : 1; // overflow flag
-        unsigned c : 1; // carry or borrow or extend flag
-        unsigned z : 1; // zero flag
-        unsigned n : 1; // negative or less than
+    typedef union {
+        u32 uw;
+        struct {
+            // control bits
+            unsigned mode : 5; // MODE_xxx
+            unsigned thumb : 1; // 0=ARM  1=THUMB
+            unsigned fiq : 1; // 1=FIQ disabled
+            unsigned irq : 1; // 1=IRQ disabled
+            // reserved
+            unsigned reserved : 20; // do not change
+            // condition code flags
+            unsigned v : 1; // overflow flag
+            unsigned c : 1; // carry or borrow or extend flag
+            unsigned z : 1; // zero flag
+            unsigned n : 1; // negative or less than
+        };
     } PROGRAM_STATUS_REGISTER;
     static const u8 MODE_USR = 0x10; // user
     static const u8 MODE_FIQ = 0x11; // fast interrupt
@@ -48,12 +48,61 @@ private:
     PROGRAM_STATUS_REGISTER cpsr;
     // TODO: add SPSR for every(?) mode
 
-    IMemory &mem;
+    IMemory &mem; // reference to memory interface
+
+    // aXXX methods are ARM versions
+    // tXXX methods are THUMB versions
+
+    // ARM instruction format
+    typedef union {
+        // unsigned word
+        u32 uw;
+
+        // data processing
+        struct {
+            // shifter operand
+            unsigned so : 12;
+            // instruction
+            unsigned Rd : 4; // register
+            unsigned Rn : 4; // register
+            unsigned S : 1; // 1=update CPSR
+            unsigned type : 4; // type of data processing instruction
+            unsigned I : 1; // immediate
+            unsigned op : 2; // opcode category, must be 0 or 1
+            // condition
+            unsigned cond : 4;
+        };
+    } aINSTRUCTION;
+
+
+    aINSTRUCTION cop; // current opcode being processed
+    u32 cso; // shifter operand value of cop
+    bool sco; // shifter carry out
+
+
+    void aDecodeAndExecute(); // execute appropriate data processing instruction
+    void aAND(); // logical and
+    void aEOR(); // logical xor
+    void aSUB(); // subtract
+    void aRSB(); // reverse subtract
+    void aADD(); // add
+    void aADC(); // add with carry
+    void aSBC(); // subtract with carry
+    void aRSC(); // reverse subtract with carry
+    void aTST(); // test
+    void aTEQ(); // test equivalence
+    void aCMP(); // compare
+    void aCMN(); // compare negated
+    void aORR(); // logical or
+    void aMOV(); // move
+    void aBIC(); // bit clear
+    void aMVN(); // move not
 
 public:
-    Gbacpu( IMemory &memoryInterface )
+    GbaCpu( IMemory &memoryInterface )
         : mem( memoryInterface )
     {
+        testMyself();
         reset();
     }
 
@@ -68,13 +117,17 @@ public:
     void testMyself() {
         assert( sizeof(REGISTER) == 4 );
         assert( sizeof(PROGRAM_STATUS_REGISTER) == 4 );
+        assert( sizeof(aINSTRUCTION) == 4 );
     }
 
     // execute a single instruction
     void step() {
-        // fetch instruction from memory
-        OPCODE o;
-        mem.load32( (u32*)&o, reg[15].uw - 8 );
+        if( cpsr.thumb ) { // THUMB mode
+        } else { // ARM mode
+            // fetch instruction from memory
+            mem.load32( &cop.uw, reg[15].uw - 8 );
+            aDecodeAndExecute();
+        }
     }
 };
 

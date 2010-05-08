@@ -5,7 +5,8 @@ QT -= core \
     gui
 TARGET = gbacpu
 TEMPLATE = app
-SOURCES += src/test.cpp
+SOURCES += src/test.cpp \
+    src/gbacpu_arm_ins.cpp
 HEADERS += src/types.h \
     src/port.h \
     src/gbacpu.h \
