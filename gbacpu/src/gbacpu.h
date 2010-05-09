@@ -76,8 +76,8 @@ private:
 
 
     aINSTRUCTION cop; // current opcode being processed
-    u32 cso; // shifter operand value of cop
-    bool sco; // shifter carry out
+    REGISTER shifter_operand; // shifter operand value of current opcode (cop)
+    bool shifter_carry_out;
 
 
     void aDecodeAndExecute(); // execute appropriate data processing instruction
