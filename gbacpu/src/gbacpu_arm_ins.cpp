@@ -5,18 +5,18 @@
 // V flag for: LEFT + RIGHT = RESULT
 #define SIGNED_OVERFLOW( LEFT, RIGHT, RESULT ) \
     ( \
-      ( ((s32)(left) >= 0) && ((s32)(right) >= 0) && ((s32)(result) < 0) ) \
+      ( ((s32)(LEFT) >= 0) && ((s32)(RIGHT) >= 0) && ((s32)(RESULT) < 0) ) \
       || \
-      ( ((s32)(left) < 0) && ((s32)(right) < 0) && ((s32)(result) >= 0) ) \
+      ( ((s32)(LEFT) < 0) && ((s32)(RIGHT) < 0) && ((s32)(RESULT) >= 0) ) \
     )
 
 
 // V flag for: LEFT - RIGHT = RESULT
 #define SIGNED_UNDERFLOW( LEFT, RIGHT, RESULT ) \
     ( \
-      ( ((s32)(left) >= 0) && ((s32)(right) < 0) && ((s32)(result) < 0) ) \
+      ( ((s32)(LEFT) >= 0) && ((s32)(RIGHT) < 0) && ((s32)(RESULT) < 0) ) \
       || \
-      ( ((s32)(left) < 0) && ((s32)(right) >= 0) && ((s32)(result) >= 0) ) \
+      ( ((s32)(LEFT) < 0) && ((s32)(RIGHT) >= 0) && ((s32)(RESULT) >= 0) ) \
     )
 
 
@@ -211,41 +211,119 @@ void GbaCpu::aRSC() {
 }
 
 
+// test bits
+// TST{<cond>}  <Rn>, <shifter_operand>
 void GbaCpu::aTST() {
+    const u32 temp = reg[cop.Rn].uw & shifter_operand.uw;
 
+    cpsr.n = (temp >> 31);
+    cpsr.z = (temp == 0);
+    cpsr.c = shifter_carry_out;
 }
 
 
+// test equivalence
+// TEQ{<cond>}  <Rn>, <shifter_operand>
 void GbaCpu::aTEQ() {
+    const u32 temp = reg[cop.Rn].uw ^ shifter_operand.uw;
 
+    cpsr.n = (temp >> 31);
+    cpsr.z = (temp == 0);
+    cpsr.c = shifter_carry_out;
 }
 
 
+// compare
+// CMP{<cond>}  <Rn>, <shifter_operand>
 void GbaCpu::aCMP() {
+    const u32 left = reg[cop.Rn].uw;
+    const u32 right = shifter_operand.uw;
+    const u32 temp = left - right;
 
+    cpsr.n = (temp >> 31);
+    cpsr.z = (temp == 0);
+    cpsr.c = !(right > left);
+    cpsr.v = SIGNED_UNDERFLOW( left, right, temp );
 }
 
 
+// compare negative
+// CMN{<cond>}  <Rn>, <shifter_operand>
 void GbaCpu::aCMN() {
+    const u32 left = reg[cop.Rn].uw;
+    const u32 right = shifter_operand.uw;
+    const u32 temp = left + right;
 
+    cpsr.n = (temp >> 31);
+    cpsr.z = (temp == 0);
+    cpsr.c = (right >= -left);
+    cpsr.v = SIGNED_OVERFLOW( left, right, temp );
 }
 
 
+// bitwise or
+// ORR{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
 void GbaCpu::aORR() {
+    const u32 left = reg[cop.Rn].uw;
+    const u32 right = shifter_operand.uw;
+    const u32 result = left | right;
 
+    if( cop.S ) {
+        // TODO: handle Rd==15
+        cpsr.n = (result >> 31);
+        cpsr.z = (result == 0);
+        cpsr.c = shifter_carry_out;
+    }
+
+    reg[cop.Rd].uw = result;
 }
 
 
+// move
+// MOV{<cond>}{S}  <Rd>, <shifter_operand>
 void GbaCpu::aMOV() {
+    const u32 result = shifter_operand.uw;
 
+    if( cop.S ) {
+        // TODO: handle Rd==15
+        cpsr.n = (result >> 31);
+        cpsr.z = (result == 0);
+        cpsr.c = shifter_carry_out;
+    }
+
+    reg[cop.Rd].uw = result;
 }
 
 
+// bit clear
+// BIC{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
 void GbaCpu::aBIC() {
+    const u32 left = reg[cop.Rn].uw;
+    const u32 right = shifter_operand.uw;
+    const u32 result = left & (~right);
 
+    if( cop.S ) {
+        // TODO: handle Rd==15
+        cpsr.n = (result >> 31);
+        cpsr.z = (result == 0);
+        cpsr.c = shifter_carry_out;
+    }
+
+    reg[cop.Rd].uw = result;
 }
 
 
+// move not
+// MVN{<cond>}{S}  <Rd>, <shifter_operand>
 void GbaCpu::aMVN() {
+    const u32 result = ~(shifter_operand.uw);
 
+    if( cop.S ) {
+        // TODO: handle Rd==15
+        cpsr.n = (result >> 31);
+        cpsr.z = (result == 0);
+        cpsr.c = shifter_carry_out;
+    }
+
+    reg[cop.Rd].uw = result;
 }
