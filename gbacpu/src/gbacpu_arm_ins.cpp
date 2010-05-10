@@ -19,10 +19,28 @@
       ( ((s32)(LEFT) < 0) && ((s32)(RIGHT) >= 0) && ((s32)(RESULT) >= 0) ) \
     )
 
+#define ROTATE_RIGHT32( VALUE, ROTATE ) \
+    ( ((u32)(VALUE) >> (u32)(ROTATE)) | ((u32)(VALUE) << (32-(u32)(ROTATE))) );
+
 
 void GbaCpu::aDecodeAndExecute() {
     // TODO: check condition field
-    // TODO: decode shifter operand to shifter_operand and shifter_carry_out
+
+    if( cop.I ) {
+        // immediate shifter operand
+        const u32 immed_8 = cop.uw & 0xFF;
+        const u32 rotate_imm = (cop.uw & 0xF00) >> 7;
+        shifter_operand.uw = ROTATE_RIGHT32( immed_8, rotate_imm );
+        if( rotate_imm == 0 ) {
+            shifter_carry_out = cpsr.c;
+        } else {
+            shifter_carry_out = (shifter_operand.uw >> 31);
+        }
+    } else {
+        // register shifter operand
+    }
+
+
     if( cop.op == 0 ) {
         switch( cop.type ) {
         case 0x0: aAND(); break;

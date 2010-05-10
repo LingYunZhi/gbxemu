@@ -67,7 +67,7 @@ private:
             unsigned Rn : 4; // register
             unsigned S : 1; // 1=update CPSR
             unsigned type : 4; // type of data processing instruction
-            unsigned I : 1; // immediate
+            unsigned I : 1; // immediate shifter operand
             unsigned op : 2; // opcode category, must be 0 or 1
             // condition
             unsigned cond : 4;

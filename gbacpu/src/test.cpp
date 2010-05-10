@@ -32,5 +32,7 @@ class DummyMem : public IMemory {
 int main() {
     DummyMem *mem = new DummyMem();
     GbaCpu *cpu = new GbaCpu( *mem );
+    delete cpu;
+    delete mem;
     return 0;
 }
