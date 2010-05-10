@@ -26,20 +26,7 @@
 void GbaCpu::aDecodeAndExecute() {
     // TODO: check condition field
 
-    if( cop.I ) {
-        // immediate shifter operand
-        const u32 immed_8 = cop.uw & 0xFF;
-        const u32 rotate_imm = (cop.uw & 0xF00) >> 7;
-        shifter_operand.uw = ROTATE_RIGHT32( immed_8, rotate_imm );
-        if( rotate_imm == 0 ) {
-            shifter_carry_out = cpsr.c;
-        } else {
-            shifter_carry_out = (shifter_operand.uw >> 31);
-        }
-    } else {
-        // register shifter operand
-    }
-
+    aShifterOperand();
 
     if( cop.op == 0 ) {
         switch( cop.type ) {
@@ -62,6 +49,45 @@ void GbaCpu::aDecodeAndExecute() {
         }
     }
 }
+
+
+void GbaCpu::aShifterOperand() {
+    if( cop.I ) {
+        // immediate shifter operand
+        const u32 immed_8 = cop.uw & 0xFF;
+        const u32 rotate_imm = (cop.uw & 0xF00) >> 7;
+        shifter_operand.uw = ROTATE_RIGHT32( immed_8, rotate_imm );
+        if( rotate_imm == 0 ) {
+            shifter_carry_out = cpsr.c;
+        } else {
+            shifter_carry_out = (shifter_operand.uw >> 31);
+        }
+    } else {
+        // register shifter operand
+        const u8 op = (cop.uw >> 4) & (BIT0|BIT1|BIT2);
+        const u32 Rm = reg[cop.uw & 0xF].uw;
+        switch( op ) {
+        case 0: {
+                const u32 shift_imm = (cop.uw >> 7) & 0x1F;
+                if( shift_imm == 0 ) {
+                    // <Rm>
+                    shifter_operand.uw = Rm;
+                    shifter_carry_out = cpsr.c;
+                } else {
+                    // <Rm>, LSL #<shift_imm>
+                    shifter_operand.uw = Rm << shift_imm;
+                    shifter_carry_out = (Rm >> (32 - shift_imm)) & 1;
+                }
+            }
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        }
+    }}
 
 
 /*
