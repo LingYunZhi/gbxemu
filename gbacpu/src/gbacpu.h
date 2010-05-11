@@ -81,6 +81,7 @@ private:
 
 
     void aDecodeAndExecute(); // execute appropriate data processing instruction
+    bool aConditionMet();
     void aShifterOperand(); // calculate shifter operand
     void aAND(); // logical and
     void aEOR(); // logical xor

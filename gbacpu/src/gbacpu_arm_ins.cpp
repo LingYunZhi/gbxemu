@@ -23,8 +23,13 @@
     ( ((u32)(VALUE) >> (u32)(ROTATE)) | ((u32)(VALUE) << (32-(u32)(ROTATE))) );
 
 
-void GbaCpu::aDecodeAndExecute() {
-    // TODO: check condition field
+inline void GbaCpu::aDecodeAndExecute() {
+    // avoid subroutine call when instruction is unconditional
+    if( cop.cond != 0xE ) {
+        if( !aConditionMet() ) {
+            return;
+        }
+    }
 
     aShifterOperand();
 
@@ -51,7 +56,64 @@ void GbaCpu::aDecodeAndExecute() {
 }
 
 
-void GbaCpu::aShifterOperand() {
+inline bool GbaCpu::aConditionMet() {
+    switch( cop.cond ) {
+    case 0x0:
+        // EQ - equal
+        return cpsr.z == 1;
+    case 0x1:
+        // NE - not equal
+        return cpsr.z == 0;
+    case 0x2:
+        // CS/HS - carry set/unsigned higher or same
+        return cpsr.c == 1;
+    case 0x3:
+        // CC/LO - carry clear/unsigned lower
+        return cpsr.c == 0;
+    case 0x4:
+        // MI - minus/negative
+        return cpsr.n == 1;
+    case 0x5:
+        // PL - plus/positive or zero
+        return cpsr.n == 0;
+    case 0x6:
+        // VS - overflow
+        return cpsr.v == 1;
+    case 0x7:
+        // VC - no overflow
+        return cpsr.v == 0;
+
+    case 0x8:
+        // HI - unsigned higher
+        return (cpsr.c == 1) && (cpsr.z == 0);
+    case 0x9:
+        // LS - unsigned lower or same
+        return (cpsr.c == 0) && (cpsr.z == 1);
+    case 0xA:
+        // GE - signed greather than or equal
+        return (cpsr.n == cpsr.v);
+    case 0xB:
+        // LT - signed less than
+        return (cpsr.n != cpsr.v);
+    case 0xC:
+        // GT - signed greater than
+        return (cpsr.z == 0) && (cpsr.n == cpsr.v);
+    case 0xD:
+        // LE - signed less than or equal
+        return (cpsr.z == 1) || (cpsr.n != cpsr.v);
+
+    case 0xE:
+        // AL - always (unconditional)
+        return true;
+
+    default:
+        assert( false );
+        return false;
+    }
+}
+
+
+inline void GbaCpu::aShifterOperand() {
     if( cop.I ) {
         // immediate shifter operand
         const u32 immed_8 = cop.uw & 0xFF;
@@ -221,7 +283,7 @@ void GbaCpu::aShifterOperand() {
 
 // bitwise and
 // AND{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aAND() {
+inline void GbaCpu::aAND() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 result = left & right;
@@ -239,7 +301,7 @@ void GbaCpu::aAND() {
 
 // bitwise exclusive or
 // EOR{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aEOR() {
+inline void GbaCpu::aEOR() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 result = left ^ right;
@@ -257,7 +319,7 @@ void GbaCpu::aEOR() {
 
 // subtract
 // SUB{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aSUB() {
+inline void GbaCpu::aSUB() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 result = left - right;
@@ -276,7 +338,7 @@ void GbaCpu::aSUB() {
 
 // reverse subtract
 // RSB{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aRSB() {
+inline void GbaCpu::aRSB() {
     const u32 left = shifter_operand.uw;
     const u32 right = reg[cop.Rn].uw;
     const u32 result = left - right;
@@ -295,7 +357,7 @@ void GbaCpu::aRSB() {
 
 // add
 // ADD{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aADD() {
+inline void GbaCpu::aADD() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 result = left + right;
@@ -314,7 +376,7 @@ void GbaCpu::aADD() {
 
 // add with carry
 // ADC{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aADC() {
+inline void GbaCpu::aADC() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 carry = (u32)cpsr.c;
@@ -336,7 +398,7 @@ void GbaCpu::aADC() {
 
 // subtract with carry
 // SBC{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aSBC() {
+inline void GbaCpu::aSBC() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 borrow = (u32)(cpsr.c == 0);
@@ -358,7 +420,7 @@ void GbaCpu::aSBC() {
 
 // reverse subtract with carry
 // RSC{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aRSC() {
+inline void GbaCpu::aRSC() {
     const u32 left = shifter_operand.uw;
     const u32 right = reg[cop.Rn].uw;
     const u32 borrow = (u32)(cpsr.c == 0);
@@ -380,7 +442,7 @@ void GbaCpu::aRSC() {
 
 // test bits
 // TST{<cond>}  <Rn>, <shifter_operand>
-void GbaCpu::aTST() {
+inline void GbaCpu::aTST() {
     const u32 temp = reg[cop.Rn].uw & shifter_operand.uw;
 
     cpsr.n = (temp >> 31);
@@ -391,7 +453,7 @@ void GbaCpu::aTST() {
 
 // test equivalence
 // TEQ{<cond>}  <Rn>, <shifter_operand>
-void GbaCpu::aTEQ() {
+inline void GbaCpu::aTEQ() {
     const u32 temp = reg[cop.Rn].uw ^ shifter_operand.uw;
 
     cpsr.n = (temp >> 31);
@@ -402,7 +464,7 @@ void GbaCpu::aTEQ() {
 
 // compare
 // CMP{<cond>}  <Rn>, <shifter_operand>
-void GbaCpu::aCMP() {
+inline void GbaCpu::aCMP() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 temp = left - right;
@@ -416,7 +478,7 @@ void GbaCpu::aCMP() {
 
 // compare negative
 // CMN{<cond>}  <Rn>, <shifter_operand>
-void GbaCpu::aCMN() {
+inline void GbaCpu::aCMN() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 temp = left + right;
@@ -430,7 +492,7 @@ void GbaCpu::aCMN() {
 
 // bitwise or
 // ORR{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aORR() {
+inline void GbaCpu::aORR() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 result = left | right;
@@ -448,7 +510,7 @@ void GbaCpu::aORR() {
 
 // move
 // MOV{<cond>}{S}  <Rd>, <shifter_operand>
-void GbaCpu::aMOV() {
+inline void GbaCpu::aMOV() {
     const u32 result = shifter_operand.uw;
 
     if( cop.S ) {
@@ -464,7 +526,7 @@ void GbaCpu::aMOV() {
 
 // bit clear
 // BIC{<cond>}{S}  <Rd>, <Rn>, <shifter_operand>
-void GbaCpu::aBIC() {
+inline void GbaCpu::aBIC() {
     const u32 left = reg[cop.Rn].uw;
     const u32 right = shifter_operand.uw;
     const u32 result = left & (~right);
@@ -482,7 +544,7 @@ void GbaCpu::aBIC() {
 
 // move not
 // MVN{<cond>}{S}  <Rd>, <shifter_operand>
-void GbaCpu::aMVN() {
+inline void GbaCpu::aMVN() {
     const u32 result = ~(shifter_operand.uw);
 
     if( cop.S ) {
