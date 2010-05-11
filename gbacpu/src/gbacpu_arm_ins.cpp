@@ -134,16 +134,83 @@ void GbaCpu::aShifterOperand() {
                 }
             }
             break;
-        case 4:
+        case 4: {
+                // <Rm>, ASR #<shift_imm>
+                const u32 shift_imm = (cop.uw >> 7) & 0x1F;
+                if( shift_imm == 0 ) {
+                    if( Rm >> 31 ) {
+                        // Rm.MSB set
+                        shifter_operand.uw = 0xFFFFFFFF;
+                        shifter_carry_out = 1;
+                    } else {
+                        // Rm.MSB clear
+                        shifter_operand.uw = 0;
+                        shifter_carry_out = 0;
+                    }
+                } else {
+                    shifter_operand.uw = ((s32)Rm) >> shift_imm;
+                    shifter_carry_out = (Rm >> (shift_imm - 1)) & 1;
+                }
+            }
             break;
-        case 5:
+        case 5: {
+                // <Rm>, ASR <Rs>
+                const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw & 0xFF;
+                if( Rs == 0 ) {
+                    shifter_operand.uw = Rm;
+                    shifter_carry_out = cpsr.c;
+                } else {
+                    if( Rs < 32 ) {
+                        shifter_operand.uw = ((s32)Rm) >> Rs;
+                        shifter_carry_out = (Rm >> (Rs - 1)) & 1;
+                    } else { // Rs >= 32
+                        shifter_carry_out = Rm >> 31;
+                        if( Rm >> 31 ) {
+                            shifter_operand.uw = 0xFFFFFFFF;
+                        } else {
+                            shifter_operand.uw = 0;
+                        }
+                    }
+                }
+
+            }
             break;
-        case 6:
+        case 6: {
+                const u32 shift_imm = (cop.uw >> 7) & 0x1F;
+                if( shift_imm == 0 ) {
+                    // <Rm>, RRX
+                    shifter_operand.uw = (((u32)cpsr.c) << 31) | (Rm >> 1);
+                    shifter_carry_out = Rm & 1;
+                } else {
+                    // <Rm>, ROR #<shift_imm>
+                    shifter_operand.uw = ROTATE_RIGHT32( Rm, shift_imm );
+                    shifter_carry_out = (Rm >> (shift_imm - 1)) & 1;
+                }
+
+            }
             break;
-        case 7:
+        case 7: {
+                // <Rm>, ROR <Rs>
+                const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw & 0xFF;
+                if( Rs == 0 ) {
+                    shifter_operand.uw = Rm;
+                    shifter_carry_out = cpsr.c;
+                } else {
+                    const u32 Rs5 = Rs & 0x1F;
+                    if( Rs5 == 0 ) {
+                        shifter_operand.uw = Rm;
+                        shifter_carry_out = Rm >> 31;
+                    } else {
+                        shifter_operand.uw = ROTATE_RIGHT32( Rm, Rs5 );
+                        shifter_carry_out = (Rm >> (Rs5 - 1)) & 1;
+                    }
+                }
+
+            }
             break;
         }
-    }}
+    }
+}
 
 
 /*
