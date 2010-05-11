@@ -79,13 +79,69 @@ void GbaCpu::aShifterOperand() {
                     shifter_carry_out = (Rm >> (32 - shift_imm)) & 1;
                 }
             }
-        case 1:
-        case 2:
-        case 3:
+            break;
+        case 1: {
+                // <Rm>, LSL <Rs>
+                const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw & 0xFF;
+                if( Rs == 0 ) {
+                    shifter_operand.uw = Rm;
+                    shifter_carry_out = cpsr.c;
+                } else {
+                    if( Rs < 32 ) {
+                        shifter_operand.uw = Rm << Rs;
+                        shifter_carry_out = (Rm >> (32 - Rs)) & 1;
+                    } else { // Rs >= 32
+                        shifter_operand.uw = 0;
+                        if( Rs == 32 ) {
+                            shifter_carry_out = Rm & 1;
+                        } else { // Rs > 32
+                            shifter_carry_out = 0;
+                        }
+                    }
+                }
+            }
+            break;
+        case 2: {
+                // <Rm>, LSR #<shift_imm>
+                const u32 shift_imm = (cop.uw >> 7) & 0x1F;
+                if( shift_imm == 0 ) {
+                    shifter_operand.uw = 0;
+                    shifter_carry_out = Rm >> 31;
+                } else {
+                    shifter_operand.uw = Rm >> shift_imm;
+                    shifter_carry_out = (Rm >> (shift_imm - 1)) & 1;
+                }
+            }
+            break;
+        case 3: {
+                // <Rm>, LSR <Rs>
+                const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw & 0xFF;
+                if( Rs == 0 ) {
+                    shifter_operand.uw = Rm;
+                    shifter_carry_out = cpsr.c;
+                } else {
+                    if( Rs < 32 ) {
+                        shifter_operand.uw = Rm >> Rs;
+                        shifter_carry_out = (Rm >> (Rs - 1)) & 1;
+                    } else { // Rs >= 32
+                        shifter_operand.uw = 0;
+                        if( Rs == 32 ) {
+                            shifter_carry_out = Rm >> 31;
+                        } else { // Rs > 32
+                            shifter_carry_out = 0;
+                        }
+                    }
+                }
+            }
+            break;
         case 4:
+            break;
         case 5:
+            break;
         case 6:
+            break;
         case 7:
+            break;
         }
     }}
 
