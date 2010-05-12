@@ -100,6 +100,13 @@ private:
     void aMOV(); // move
     void aBIC(); // bit clear
     void aMVN(); // move not
+    // multiply instructions
+    void aMUL(); // multiply
+    void aMLA(); // multiply accumulate
+    void aUMULL(); // unsigned multiply long
+    void aUMLAL(); // unsigned multiply accumulate long
+    void aSMULL(); // signed multiply long
+    void aSMLAL(); // signed multiply accumulate long
     // branch instructions
     void aB_BL(); // branch, branch and link
 

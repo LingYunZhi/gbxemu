@@ -32,24 +32,37 @@ inline void GbaCpu::aDecodeAndExecute() {
     }
 
     if( cop.op == 0 ) {
-        aShifterOperand();
-        switch( cop.type ) {
-        case 0x0: aAND(); break;
-        case 0x1: aEOR(); break;
-        case 0x2: aSUB(); break;
-        case 0x3: aRSB(); break;
-        case 0x4: aADD(); break;
-        case 0x5: aADC(); break;
-        case 0x6: aSBC(); break;
-        case 0x7: aRSC(); break;
-        case 0x8: aTST(); break;
-        case 0x9: aTEQ(); break;
-        case 0xA: aCMP(); break;
-        case 0xB: aCMN(); break;
-        case 0xC: aORR(); break;
-        case 0xD: aMOV(); break;
-        case 0xE: aBIC(); break;
-        case 0xF: aMVN(); break;
+        if( (cop.uw & BIT4) && (cop.uw & BIT7) ) {
+            // multiply instructions
+            switch( cop.type ) {
+            case 0x0: aMUL(); break;
+            case 0x1: aMLA(); break;
+            case 0x4: aUMULL(); break;
+            case 0x5: aUMLAL(); break;
+            case 0x6: aSMULL(); break;
+            case 0x7: aSMLAL(); break;
+            }
+        } else {
+            // ALU instructions
+            aShifterOperand();
+            switch( cop.type ) {
+            case 0x0: aAND(); break;
+            case 0x1: aEOR(); break;
+            case 0x2: aSUB(); break;
+            case 0x3: aRSB(); break;
+            case 0x4: aADD(); break;
+            case 0x5: aADC(); break;
+            case 0x6: aSBC(); break;
+            case 0x7: aRSC(); break;
+            case 0x8: aTST(); break;
+            case 0x9: aTEQ(); break;
+            case 0xA: aCMP(); break;
+            case 0xB: aCMN(); break;
+            case 0xC: aORR(); break;
+            case 0xD: aMOV(); break;
+            case 0xE: aBIC(); break;
+            case 0xF: aMVN(); break;
+            }
         }
     } else if( (cop.uw & (BIT25|BIT26|BIT27)) == (BIT25|BIT27) ) {
         aB_BL();
@@ -592,6 +605,106 @@ inline void GbaCpu::aMVN() {
     }
 
     reg[cop.Rd].uw = result;
+}
+
+
+// multiply
+// MUL{<cond>}{S}  <Rd>, <Rm>, <Rs>
+inline void GbaCpu::aMUL() {
+    const u32 Rm = reg[cop.uw & 0xF].uw;
+    const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw;
+    const u32 Rd = (cop.uw >> 16) & 0xF;
+    const u32 result = Rm * Rs;
+    if( cop.S ) {
+        cpsr.n = (result >> 31);
+        cpsr.z = (result == 0);
+    }
+    reg[Rd].uw = result;
+}
+
+
+// multiply accumulate
+// MLA{<cond>}{S}  <Rd>, <Rm>, <Rs>, <Rn>
+inline void GbaCpu::aMLA() {
+    const u32 Rm = reg[cop.uw & 0xF].uw;
+    const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw;
+    const u32 Rn = reg[(cop.uw >> 12) & 0xF].uw;
+    const u32 Rd = (cop.uw >> 16) & 0xF;
+    const u32 result = (Rm * Rs) + Rn;
+    if( cop.S ) {
+        cpsr.n = (result >> 31);
+        cpsr.z = (result == 0);
+    }
+    reg[Rd].uw = result;
+}
+
+
+// unsigned multiply long
+// UMULL{<cond>}{S}  <RdLo>, <RdHi>, <Rm>, <Rs>
+inline void GbaCpu::aUMULL() {
+    const u32 Rm = reg[cop.uw & 0xF].uw;
+    const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw;
+    const u32 RdLo = (cop.uw >> 12) & 0xF;
+    const u32 RdHi = (cop.uw >> 16) & 0xF;
+    const u64 result = Rm * Rs;
+    if( cop.S ) {
+        cpsr.n = (result >> 63);
+        cpsr.z = (result == 0);
+    }
+    reg[RdHi].uw = result >> 32;
+    reg[RdLo].uw = result & 0xFFFFFFFF;
+}
+
+
+// unsigned multiply accumulate long
+// UMLAL{<cond>}{S}  <RdLo>, <RdHi>, <Rm>, <Rs>
+inline void GbaCpu::aUMLAL() {
+    const u32 Rm = reg[cop.uw & 0xF].uw;
+    const u32 Rs = reg[(cop.uw >> 8) & 0xF].uw;
+    const u32 RdLo = (cop.uw >> 12) & 0xF;
+    const u32 RdHi = (cop.uw >> 16) & 0xF;
+    u64 result = (((u64)reg[RdHi].uw) << 32) | ((u64)reg[RdLo].uw);
+    result += ((u64)Rm * (u64)Rs);
+    if( cop.S ) {
+        cpsr.n = (result >> 63);
+        cpsr.z = (result == 0);
+    }
+    reg[RdHi].uw = result >> 32;
+    reg[RdLo].uw = result & 0xFFFFFFFF;
+}
+
+
+// signed multiply long
+// SMULL{<cond>}{S}  <RdLo>, <RdHi>, <Rm>, <Rs>
+inline void GbaCpu::aSMULL() {
+    const s32 Rm = reg[cop.uw & 0xF].sw;
+    const s32 Rs = reg[(cop.uw >> 8) & 0xF].sw;
+    const u32 RdLo = (cop.uw >> 12) & 0xF;
+    const u32 RdHi = (cop.uw >> 16) & 0xF;
+    const s64 result = Rm * Rs;
+    if( cop.S ) {
+        cpsr.n = (result < 0);
+        cpsr.z = (result == 0);
+    }
+    reg[RdHi].uw = ((u64)result) >> 32;
+    reg[RdLo].uw = result & 0xFFFFFFFF;
+}
+
+
+// signed multiply accumulate long
+inline void GbaCpu::aSMLAL() {
+    const s32 Rm = reg[cop.uw & 0xF].sw;
+    const s32 Rs = reg[(cop.uw >> 8) & 0xF].sw;
+    const u32 RdLo = (cop.uw >> 12) & 0xF;
+    const u32 RdHi = (cop.uw >> 16) & 0xF;
+    s64 result = (s64)((((u64)reg[RdHi].uw) << 32) | ((u64)reg[RdLo].uw));
+    result += ((s64)Rm * (s64)Rs);
+    if( cop.S ) {
+        cpsr.n = (result < 0);
+        cpsr.z = (result == 0);
+    }
+    reg[RdHi].uw = ((u64)result) >> 32;
+    reg[RdLo].uw = result & 0xFFFFFFFF;
 }
 
 
