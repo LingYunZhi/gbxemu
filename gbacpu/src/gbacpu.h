@@ -7,7 +7,7 @@
 
 class GbaCpu {
 private:
-    // TODO: only works on little-endian, use WRITE/READLE macros
+    // TODO: WRITE/READLE macros to transfer this to memory
     typedef union {
         u32 uw;    // unsigned word
         s32 sw;    //   signed word
@@ -46,7 +46,7 @@ private:
     // will be replaced by the banked registers on mode switch
     REGISTER reg[16]; // 13=SP  14=LR  15=PC
     PROGRAM_STATUS_REGISTER cpsr;
-    // TODO: add SPSR for every(?) mode
+    PROGRAM_STATUS_REGISTER spsr[5]; // FIQ, IRQ, SVC, ABT, UND
 
     IMemory &mem; // reference to memory interface
 
@@ -68,7 +68,7 @@ private:
             unsigned S : 1; // 1=update CPSR
             unsigned type : 4; // type of data processing instruction
             unsigned I : 1; // immediate shifter operand
-            unsigned op : 2; // opcode category, must be 0 or 1
+            unsigned op : 2; // opcode category, must be 0
             // condition
             unsigned cond : 4;
         };
@@ -82,6 +82,7 @@ private:
 
     void aDecodeAndExecute(); // execute appropriate data processing instruction
     bool aConditionMet();
+    // data processing instructions
     void aShifterOperand(); // calculate shifter operand
     void aAND(); // logical and
     void aEOR(); // logical xor
@@ -99,6 +100,10 @@ private:
     void aMOV(); // move
     void aBIC(); // bit clear
     void aMVN(); // move not
+    // branch instructions
+    void aB_BL(); // branch, branch and link
+
+    void copyCurrentSpsrToCpsr();
 
 public:
     GbaCpu( IMemory &memoryInterface )

@@ -31,9 +31,8 @@ inline void GbaCpu::aDecodeAndExecute() {
         }
     }
 
-    aShifterOperand();
-
     if( cop.op == 0 ) {
+        aShifterOperand();
         switch( cop.type ) {
         case 0x0: aAND(); break;
         case 0x1: aEOR(); break;
@@ -52,6 +51,8 @@ inline void GbaCpu::aDecodeAndExecute() {
         case 0xE: aBIC(); break;
         case 0xF: aMVN(); break;
         }
+    } else if( (cop.uw & (BIT25|BIT26|BIT27)) == (BIT25|BIT27) ) {
+        aB_BL();
     }
 }
 
@@ -289,10 +290,13 @@ inline void GbaCpu::aAND() {
     const u32 result = left & right;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = shifter_carry_out;
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = shifter_carry_out;
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -307,10 +311,13 @@ inline void GbaCpu::aEOR() {
     const u32 result = left ^ right;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = shifter_carry_out;
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = shifter_carry_out;
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -325,11 +332,14 @@ inline void GbaCpu::aSUB() {
     const u32 result = left - right;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = !(right > left);
-        cpsr.v = SIGNED_UNDERFLOW( left, right, result );
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = !(right > left);
+            cpsr.v = SIGNED_UNDERFLOW( left, right, result );
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -344,11 +354,14 @@ inline void GbaCpu::aRSB() {
     const u32 result = left - right;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = !(right > left);
-        cpsr.v = SIGNED_UNDERFLOW( left, right, result );
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = !(right > left);
+            cpsr.v = SIGNED_UNDERFLOW( left, right, result );
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -363,11 +376,14 @@ inline void GbaCpu::aADD() {
     const u32 result = left + right;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = (right >= -left);
-        cpsr.v = SIGNED_OVERFLOW( left, right, result );
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = (right >= -left);
+            cpsr.v = SIGNED_OVERFLOW( left, right, result );
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -384,12 +400,15 @@ inline void GbaCpu::aADC() {
     const u32 result = temp + carry;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = (right >= -left) || (carry && (temp == 0xFFFFFFFF));
-        cpsr.v = SIGNED_OVERFLOW( left, right, temp )
-              || SIGNED_OVERFLOW( temp, carry, result );
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = (right >= -left) || (carry && (temp == 0xFFFFFFFF));
+            cpsr.v = SIGNED_OVERFLOW( left, right, temp )
+                  || SIGNED_OVERFLOW( temp, carry, result );
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -406,12 +425,15 @@ inline void GbaCpu::aSBC() {
     const u32 result = temp - borrow;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = !( (right > left) || (borrow > temp) );
-        cpsr.v = SIGNED_UNDERFLOW( left, right, temp )
-              || SIGNED_UNDERFLOW( temp, borrow, result );
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = !( (right > left) || (borrow > temp) );
+            cpsr.v = SIGNED_UNDERFLOW( left, right, temp )
+                  || SIGNED_UNDERFLOW( temp, borrow, result );
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -428,12 +450,15 @@ inline void GbaCpu::aRSC() {
     const u32 result = temp - borrow;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = !( (right > left) || (borrow > temp) );
-        cpsr.v = SIGNED_UNDERFLOW( left, right, temp )
-              || SIGNED_UNDERFLOW( temp, borrow, result );
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = !( (right > left) || (borrow > temp) );
+            cpsr.v = SIGNED_UNDERFLOW( left, right, temp )
+                  || SIGNED_UNDERFLOW( temp, borrow, result );
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -498,10 +523,13 @@ inline void GbaCpu::aORR() {
     const u32 result = left | right;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = shifter_carry_out;
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = shifter_carry_out;
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -514,10 +542,13 @@ inline void GbaCpu::aMOV() {
     const u32 result = shifter_operand.uw;
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = shifter_carry_out;
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = shifter_carry_out;
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -532,10 +563,13 @@ inline void GbaCpu::aBIC() {
     const u32 result = left & (~right);
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = shifter_carry_out;
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = shifter_carry_out;
+        }
     }
 
     reg[cop.Rd].uw = result;
@@ -548,11 +582,38 @@ inline void GbaCpu::aMVN() {
     const u32 result = ~(shifter_operand.uw);
 
     if( cop.S ) {
-        // TODO: handle Rd==15
-        cpsr.n = (result >> 31);
-        cpsr.z = (result == 0);
-        cpsr.c = shifter_carry_out;
+        if( cop.Rd == 15 ) {
+            copyCurrentSpsrToCpsr();
+        } else {
+            cpsr.n = (result >> 31);
+            cpsr.z = (result == 0);
+            cpsr.c = shifter_carry_out;
+        }
     }
 
     reg[cop.Rd].uw = result;
+}
+
+
+// branch, branch and link
+// B{L}{<cond>}  <target_address>
+inline void GbaCpu::aB_BL() {
+    const bool L = cop.uw & BIT24; // link
+    const s32 signed_immed_24 = ((s32)(cop.uw << 8)) >> 6;
+    if( L ) {
+        reg[14].uw = reg[15].uw - 4;
+    }
+    reg[15].sw += signed_immed_24;
+
+}
+
+
+void GbaCpu::copyCurrentSpsrToCpsr() {
+    switch( cpsr.mode ) {
+    case MODE_FIQ: cpsr.uw = spsr[0].uw; break;
+    case MODE_IRQ: cpsr.uw = spsr[1].uw; break;
+    case MODE_SVC: cpsr.uw = spsr[2].uw; break;
+    case MODE_ABT: cpsr.uw = spsr[3].uw; break;
+    case MODE_UND: cpsr.uw = spsr[4].uw; break;
+    }
 }
